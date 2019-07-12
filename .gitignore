@@ -1,2 +1,26 @@
 build/
 
+*.avi
+*.pptx
+*.fls
+*.gz
+*.log
+*.aux
+*.fdb_latexmk
+test/data/*
+*.[oa]
+*.os
+*.class
+*.so
+*.pyc
+
+
+# Backups, SCons databases, core dumps, and temporary 'stuff'
+*~
+.sconsign*
+core.*
+*.avi
+*.patch
+*.log
+/*_generator*.arch
+# Last one is ApPredict lookup tables
