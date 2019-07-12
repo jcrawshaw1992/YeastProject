@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2005-2012, University of Oxford.
+Copyright (c) 2005-2013, University of Oxford.
 All rights reserved.
 
 University of Oxford means the Chancellor, Masters and Scholars of the
@@ -33,63 +33,47 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+#ifndef DAMAGEDCELLMUTATIONSTATE_HPP_
+#define DAMAGEDCELLMUTATIONSTATE_HPP_
+
+#include "AbstractCellMutationState.hpp"
+#include "ChasteSerialization.hpp"
+#include <boost/serialization/base_object.hpp>
+
 /**
- * @file
+ * Damaged Cell mutations state.
  *
- * This file gives an example of how you can create your own executable
- * in a user project.
+ * Cells with this mutation state experience different spring constants to represent damaged tissue.
+ *
  */
-
-#include <iostream>
-#include <string>
-
-#include "ExecutableSupport.hpp"
-#include "Exception.hpp"
-#include "PetscTools.hpp"
-#include "PetscException.hpp"
-
-#include "Hello.hpp"
-
-int main(int argc, char *argv[])
+class DamagedCellMutationState : public AbstractCellMutationState
 {
-    // This sets up PETSc and prints out copyright information, etc.
-    ExecutableSupport::StandardStartup(&argc, &argv);
+private:
 
-    int exit_code = ExecutableSupport::EXIT_OK;
-
-    // You should put all the main code within a try-catch, to ensure that
-    // you clean up PETSc before quitting.
-    try
+    /** Needed for serialization. */
+    friend class boost::serialization::access;
+    /**
+     * Archive the member variables.
+     *
+     * @param archive the archive
+     * @param version the current version of this class
+     */
+    template<class Archive>
+    void serialize(Archive & archive, const unsigned int version)
     {
-        if (argc<2)
-        {
-            ExecutableSupport::PrintError("Usage: ExampleApp arguments ...", true);
-            exit_code = ExecutableSupport::EXIT_BAD_ARGUMENTS;
-        }
-        else
-        {
-            for (int i=1; i<argc; i++)
-            {
-                if (PetscTools::AmMaster())
-                {
-                    std::string arg_i(argv[i]);
-                    Hello world(arg_i);
-                    std::cout << "Argument " << i << " is " << world.GetMessage() << std::endl << std::flush;
-                }
-            }
-        }
-    }
-    catch (const Exception& e)
-    {
-        ExecutableSupport::PrintError(e.GetMessage());
-        exit_code = ExecutableSupport::EXIT_ERROR;
+        archive & boost::serialization::base_object<AbstractCellMutationState>(*this);
     }
 
-	// Optional - write the machine info to file.
-    ExecutableSupport::WriteMachineInfoFile("machine_info");
-    
-    // End by finalizing PETSc, and returning a suitable exit code.
-    // 0 means 'no error'
-    ExecutableSupport::FinalizePetsc();
-    return exit_code;
-}
+public:
+
+    /**
+     * Constructor.
+     */
+    DamagedCellMutationState();
+};
+
+#include "SerializationExportWrapper.hpp"
+// Declare identifier for the serializer
+CHASTE_CLASS_EXPORT(DamagedCellMutationState)
+
+#endif /* DAMAGEDCELLMUTATIONSTATE_HPP_ */

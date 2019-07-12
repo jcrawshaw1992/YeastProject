@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2005-2012, University of Oxford.
+Copyright (c) 2005-2014, University of Oxford.
 All rights reserved.
 
 University of Oxford means the Chancellor, Masters and Scholars of the
@@ -33,63 +33,48 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+#ifndef POTTSMESHFROMMUTABLEMESHGENERATOR_HPP_
+#define POTTSMESHFROMMUTABLEMESHGENERATOR_HPP_
+
+#include <cmath>
+#include <vector>
+
+#include "PottsMesh.hpp"
+#include "MutableMesh.hpp"
+
 /**
- * @file
+ * Generator of regular Potts meshes, used as starting points for many simulations.
  *
- * This file gives an example of how you can create your own executable
- * in a user project.
+ * This class takes in options such as width, height,
+ *
+ * NOTE: the user should delete the mesh after use to manage memory.
  */
-
-#include <iostream>
-#include <string>
-
-#include "ExecutableSupport.hpp"
-#include "Exception.hpp"
-#include "PetscTools.hpp"
-#include "PetscException.hpp"
-
-#include "Hello.hpp"
-
-int main(int argc, char *argv[])
+template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+class PottsMeshFromMutableMeshGenerator
 {
-    // This sets up PETSc and prints out copyright information, etc.
-    ExecutableSupport::StandardStartup(&argc, &argv);
+private:
 
-    int exit_code = ExecutableSupport::EXIT_OK;
+    /** A pointer to the mesh this class creates */
+    PottsMesh<SPACE_DIM>* mpMesh;
 
-    // You should put all the main code within a try-catch, to ensure that
-    // you clean up PETSc before quitting.
-    try
-    {
-        if (argc<2)
-        {
-            ExecutableSupport::PrintError("Usage: ExampleApp arguments ...", true);
-            exit_code = ExecutableSupport::EXIT_BAD_ARGUMENTS;
-        }
-        else
-        {
-            for (int i=1; i<argc; i++)
-            {
-                if (PetscTools::AmMaster())
-                {
-                    std::string arg_i(argv[i]);
-                    Hello world(arg_i);
-                    std::cout << "Argument " << i << " is " << world.GetMessage() << std::endl << std::flush;
-                }
-            }
-        }
-    }
-    catch (const Exception& e)
-    {
-        ExecutableSupport::PrintError(e.GetMessage());
-        exit_code = ExecutableSupport::EXIT_ERROR;
-    }
+public:
 
-	// Optional - write the machine info to file.
-    ExecutableSupport::WriteMachineInfoFile("machine_info");
-    
-    // End by finalizing PETSc, and returning a suitable exit code.
-    // 0 means 'no error'
-    ExecutableSupport::FinalizePetsc();
-    return exit_code;
-}
+    /**
+     * Constructor to generate mesh from existing MutableMesh
+     *
+     * @param rMesh the mutable mesh to be used as template
+     */
+    PottsMeshFromMutableMeshGenerator(MutableMesh<ELEMENT_DIM,SPACE_DIM>& rMesh);
+
+    /**
+     * Destructor - deletes the mesh object and pointer
+     */
+    virtual ~PottsMeshFromMutableMeshGenerator();
+
+    /**
+     * @return the generated Potts mesh.
+     */
+    PottsMesh<SPACE_DIM>* GetMesh();
+};
+
+#endif /*POTTSMESHFROMMUTABLEMESHGENERATOR_HPP_*/

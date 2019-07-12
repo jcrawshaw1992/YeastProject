@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2005-2012, University of Oxford.
+Copyright (c) 2005-2014, University of Oxford.
 All rights reserved.
 
 University of Oxford means the Chancellor, Masters and Scholars of the
@@ -33,63 +33,50 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
 
+#ifndef POTTSARBITRARYMESHFROMMUTABLEMESHGENERATOR_HPP_
+#define POTTSARBITRARYMESHFROMMUTABLEMESHGENERATOR_HPP_
+
+#include "PottsArbitrarySurfacein3DMesh.hpp"
+#include "MutableMesh.hpp"
+
 /**
- * @file
+ * Generator of arbitrary Potts meshes, used as starting points for many simulations.
  *
- * This file gives an example of how you can create your own executable
- * in a user project.
+ * NOTE: the user should delete the mesh after use to manage memory.
  */
-
-#include <iostream>
-#include <string>
-
-#include "ExecutableSupport.hpp"
-#include "Exception.hpp"
-#include "PetscTools.hpp"
-#include "PetscException.hpp"
-
-#include "Hello.hpp"
-
-int main(int argc, char *argv[])
+template<unsigned SPACE_DIM>
+class PottsArbitraryMeshFromMutableMeshGenerator
 {
-    // This sets up PETSc and prints out copyright information, etc.
-    ExecutableSupport::StandardStartup(&argc, &argv);
+private:
+	/** We are only going to consider this case for the time being */
+	static const unsigned ELEMENT_DIM = 2;
 
-    int exit_code = ExecutableSupport::EXIT_OK;
+    /** A pointer to the mesh this class creates */
+    PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>* mpMesh;
 
-    // You should put all the main code within a try-catch, to ensure that
-    // you clean up PETSc before quitting.
-    try
-    {
-        if (argc<2)
-        {
-            ExecutableSupport::PrintError("Usage: ExampleApp arguments ...", true);
-            exit_code = ExecutableSupport::EXIT_BAD_ARGUMENTS;
-        }
-        else
-        {
-            for (int i=1; i<argc; i++)
-            {
-                if (PetscTools::AmMaster())
-                {
-                    std::string arg_i(argv[i]);
-                    Hello world(arg_i);
-                    std::cout << "Argument " << i << " is " << world.GetMessage() << std::endl << std::flush;
-                }
-            }
-        }
-    }
-    catch (const Exception& e)
-    {
-        ExecutableSupport::PrintError(e.GetMessage());
-        exit_code = ExecutableSupport::EXIT_ERROR;
-    }
+public:
 
-	// Optional - write the machine info to file.
-    ExecutableSupport::WriteMachineInfoFile("machine_info");
-    
-    // End by finalizing PETSc, and returning a suitable exit code.
-    // 0 means 'no error'
-    ExecutableSupport::FinalizePetsc();
-    return exit_code;
-}
+    /**
+     * Constructor to generate a Potts mesh from an existing MutableMesh. The approach is
+     * to consider each of the triangles in the mesh as a lattice site in the Potts simulation.
+     *
+     * @param rMesh the mutable mesh to be used as template
+     */
+    PottsArbitraryMeshFromMutableMeshGenerator(MutableMesh<ELEMENT_DIM,SPACE_DIM>& rMesh);
+
+    /**
+     * Destructor - deletes the mesh object and pointer
+     */
+    virtual ~PottsArbitraryMeshFromMutableMeshGenerator();
+
+    /**
+     * @return the generated Potts mesh.
+     */
+    PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>* GetMesh();
+};
+
+//#include "SerializationExportWrapper.hpp"
+//EXPORT_TEMPLATE_CLASS1(PottsArbitraryMeshFromMutableMeshGenerator, 2)
+//EXPORT_TEMPLATE_CLASS1(PottsArbitraryMeshFromMutableMeshGenerator, 3)
+
+#endif /*POTTSMESHFROMMUTABLEMESHGENERATOR_HPP_*/

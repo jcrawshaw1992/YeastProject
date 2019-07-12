@@ -1,6 +1,6 @@
 /*
 
-Copyright (c) 2005-2012, University of Oxford.
+Copyright (c) 2005-2016, University of Oxford.
 All rights reserved.
 
 University of Oxford means the Chancellor, Masters and Scholars of the
@@ -32,64 +32,37 @@ LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
+#ifndef CPMGTPASEEVENTHANDLER_HPP_
+#define CPMGTPASEEVENTHANDLER_HPP_
+
+#include "GenericEventHandler.hpp"
 
 /**
- * @file
- *
- * This file gives an example of how you can create your own executable
- * in a user project.
+ * An event class that can be used to calculate the time taken to
+ * execute various parts of a CPM+GTPase simulation.
  */
-
-#include <iostream>
-#include <string>
-
-#include "ExecutableSupport.hpp"
-#include "Exception.hpp"
-#include "PetscTools.hpp"
-#include "PetscException.hpp"
-
-#include "Hello.hpp"
-
-int main(int argc, char *argv[])
+class CPMGTPaseEventHandler : public GenericEventHandler<11, CPMGTPaseEventHandler>
 {
-    // This sets up PETSc and prints out copyright information, etc.
-    ExecutableSupport::StandardStartup(&argc, &argv);
+public:
 
-    int exit_code = ExecutableSupport::EXIT_OK;
+    /** Character array holding cell_based event names. There are eleven cell_based events. */
+    static const char* EventName[11];
 
-    // You should put all the main code within a try-catch, to ensure that
-    // you clean up PETSc before quitting.
-    try
+    /** Definition of cell_based event types. */
+    typedef enum
     {
-        if (argc<2)
-        {
-            ExecutableSupport::PrintError("Usage: ExampleApp arguments ...", true);
-            exit_code = ExecutableSupport::EXIT_BAD_ARGUMENTS;
-        }
-        else
-        {
-            for (int i=1; i<argc; i++)
-            {
-                if (PetscTools::AmMaster())
-                {
-                    std::string arg_i(argv[i]);
-                    Hello world(arg_i);
-                    std::cout << "Argument " << i << " is " << world.GetMessage() << std::endl << std::flush;
-                }
-            }
-        }
-    }
-    catch (const Exception& e)
-    {
-        ExecutableSupport::PrintError(e.GetMessage());
-        exit_code = ExecutableSupport::EXIT_ERROR;
-    }
+        VOLUME=0,
+        SURFACE,
+        ADHESION,
+        SETUP_MESH,
+        UPDATE_SOLUTION,
+        SOLVE_PDE,
+        UPDATE_CELL_DATA,
+        IO,
+        RHO_CONTRACTION,
+        BARBED_ENDS,
+        EVERYTHING
+    } CPMGTPaseEventType;
+};
 
-	// Optional - write the machine info to file.
-    ExecutableSupport::WriteMachineInfoFile("machine_info");
-    
-    // End by finalizing PETSc, and returning a suitable exit code.
-    // 0 means 'no error'
-    ExecutableSupport::FinalizePetsc();
-    return exit_code;
-}
+#endif /*CPMGTPASEEVENTHANDLER_HPP_*/

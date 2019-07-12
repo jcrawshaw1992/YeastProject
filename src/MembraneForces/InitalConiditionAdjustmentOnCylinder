@@ -1,0 +1,35 @@
+Original Altering of the initial conditions in a cylinder 
+
+      cell_iter != rCellPopulation.End();
+         ++cell_iter)
+    {
+        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter); //p_cell_population->GetLocationIndexUsingCell(*cell_iter);
+        Node<3>* p_node = rCellPopulation.GetNode(node_index);
+
+        c_vector<double, 3> NodeLocation = p_node->rGetLocation();
+
+        double Original_Mesh_Radius = norm_2(Create_c_vector(NodeLocation[0], NodeLocation[1]));
+        double Inital_Vessel_Radius = (Original_Mesh_Radius) / mScalling;
+
+        double Theta = atan(NodeLocation[1] / NodeLocation[0]);
+
+        double x = NodeLocation[0];
+        double y = NodeLocation[1];
+
+        if (x < 0 && y > 0)
+        {
+            Theta = Theta + M_PI;
+        }
+        else if (x < 0 && y < 0)
+        {
+            Theta = Theta + M_PI;
+        }
+        // PRINT_3_VARIABLES(Inital_Vessel_Radius, Original_Mesh_Radius);
+
+        c_vector<double, 3> PositionVector = NodeLocation;// Create_c_vector(Inital_Vessel_Radius * cos(Theta), Inital_Vessel_Radius * sin(Theta), NodeLocation[2]);
+        // mAdjustedInitalNodeLocation[node_index] = PositionVector;
+        (cell_iter)->GetCellData()->SetItem("Initial_Location_X", PositionVector[0]);
+        (cell_iter)->GetCellData()->SetItem("Initial_Location_Y", PositionVector[1]);
+        (cell_iter)->GetCellData()->SetItem("Initial_Location_Z", PositionVector[2]);
+    }
+    
