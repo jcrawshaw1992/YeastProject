@@ -13,10 +13,10 @@ import numpy as np
 
 # Start with cylinder 
 
-working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/HemeLBSmallCylinder' 
+working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/HetrogeneousCylinder/CenterCollapse' 
 data_path = working_directory  + '/SetUpData/'
 chaste_setup_exe = '/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/build/optimised/TestSetupMeshRunner'
-chaste_run_exe = '/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/build/optimised/TestRunFlowInPipeRunner'
+# chaste_run_exe = '/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/build/optimised/TestRunFlowInPipeRunner'
 
 
 print "Setting Up Mesh"

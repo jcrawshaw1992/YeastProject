@@ -309,13 +309,13 @@ double ComputeMeshTotalArea(TetrahedralMesh<2,3>& mutable_mesh)
 
 
         //   //  -----------------------------
-        //   //  Surface Area Force
-        //   //  ----------------------------
+        // //   //  Surface Area Force
+        // //   //  ----------------------------
 
-            boost::shared_ptr<MembraneSurfaceForceCylinder> p_surface_force(new MembraneSurfaceForceCylinder());
-            p_surface_force->SetupInitialAreas(cell_population);
-            p_surface_force->SetMembraneStiffness(1e-13);
-            simulator.AddForce(p_surface_force);
+        //     boost::shared_ptr<MembraneSurfaceForceCylinder> p_surface_force(new MembraneSurfaceForceCylinder());
+        //     p_surface_force->SetupInitialAreas(cell_population);
+        //     p_surface_force->SetMembraneStiffness(1e-13);
+        //     simulator.AddForce(p_surface_force);
 
         //  //  -----------------------------
         //  //  Bending Force 

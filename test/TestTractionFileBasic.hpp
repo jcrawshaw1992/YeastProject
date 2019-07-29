@@ -36,119 +36,12 @@
 
 #include "AppliedForce.hpp"
 #include "AppliedForceModifier.hpp"
-
-//  #include "EmptyBasementMatrix.hpp"
-//  #include "LostEndothelialCell.hpp"
-//  #include "HasEndothelialCell.hpp"
+#include "CompressiveTissueForce.hpp"
 
 
 static const double M_TIME_FOR_SIMULATION = 0.01;//40; //50
 static const double M_SAMPLING_TIME_STEP = 100; //50
 static const double M_TIME_STEP = 0.002;
-
-
-
-
-class RadialForce : public AbstractForce<2, 3>
-{
-private:
-    double mStrength;
-
-    friend class boost::serialization::access;
-    template <class Archive>
-    void serialize(Archive& archive, const unsigned int version)
-    {
-        archive& boost::serialization::base_object<AbstractForce<2, 3> >(*this);
-        archive& mStrength;
-    }
-
-public:
-    RadialForce(double strength = 1.0)
-            : AbstractForce<2, 3>(),
-              mStrength(strength)
-    {
-        assert(mStrength > 0.0);
-    }
-
-    void AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
-    {
-        MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
-        
-
-       // Calculate midpoint
-        c_vector<double, 3> centroid = zero_vector<double>(3);
-        for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
-             cell_iter != rCellPopulation.End();
-             ++cell_iter)
-        {
-            unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-            centroid += rCellPopulation.GetNode(node_index)->rGetLocation();
-           // Area += rCellPopulation.GetVolumeOfCell(*cell_iter);
-        }
-        centroid /= rCellPopulation.GetNumRealCells();
-        
-        
-        for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
-             cell_iter != rCellPopulation.End();
-             ++cell_iter)
-        {
-
-            unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-            Node<3>* p_node = rCellPopulation.GetNode(node_index);
-            c_vector<double, 3> cell_location = p_node->rGetLocation() - centroid;
-            cell_location(2) = 0.0;
-            cell_location /= norm_2(cell_location);
-
-            c_vector<long double, 3> Normal = zero_vector<long double>(3);
-            long double Area = 0;
-            std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
-            assert(containing_elements.size() > 0);
-            for (std::set<unsigned>::iterator iter = containing_elements.begin();
-                 iter != containing_elements.end();
-                 ++iter)
-            {
-                Node<3>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
-                Node<3>* pNode1= p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
-                Node<3>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
-
-                c_vector<long double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
-                c_vector<long double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
-
-                c_vector<long double, 3> normalVector = VectorProduct(vector_12, vector_13);
-                Area+= norm_2(normalVector)/6;
-            }
-            
-             c_vector<long double, 3> force = mStrength * cell_location; // / norm_2(cell_location);
-         //   PRINT_VECTOR(force);
-
-            rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(force);
-
-            cell_iter->GetCellData()->SetItem("applied_force_x", force[0]);
-            cell_iter->GetCellData()->SetItem("applied_force_y", force[1]);
-            cell_iter->GetCellData()->SetItem("applied_force_z", force[2]);
-            cell_iter->GetCellData()->SetItem("applied_force_mag", norm_2(force));
-
-            // cell_iter->GetCellData()->SetItem("norm_x", normal[0]);
-            // cell_iter->GetCellData()->SetItem("norm_y", normal[1]);
-            // cell_iter->GetCellData()->SetItem("norm_z", normal[2]);
-        }
-    }
-
-    void OutputForceParameters(out_stream& rParamsFile)
-    {
-        *rParamsFile << "\t\t\t<Strength>" << mStrength << "</Strength>\n";
-        AbstractForce<2, 3>::OutputForceParameters(rParamsFile);
-    }
-};
-
-
-
-#include "SerializationExportWrapper.hpp"
-CHASTE_CLASS_EXPORT(RadialForce)
-
-#include "SerializationExportWrapperForCpp.hpp"
-CHASTE_CLASS_EXPORT(RadialForce)
-
 
 
 class SurfaceAreaForceOnCylinder : public AbstractCellBasedTestSuite
@@ -173,7 +66,7 @@ private:
 public:
     void TestAreaFroceDragCorrectedEqui() throw(Exception)
     {
-        unsigned N_D = 10;
+        unsigned N_D = 100;
         unsigned N_Z = N_D*0.5;
         double Length = 3e-3;//12e-3; //12e-3;
         double trans = -1.5e-3;
@@ -188,7 +81,7 @@ public:
 
         std::stringstream out;
 
-        std::string output_directory = "RoughMesh";//Shrinking"; // + Parameters + "/";
+        std::string output_directory = "Collapse";//Shrinking"; // + Parameters + "/";
 
         // Create cells
         MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
@@ -236,7 +129,7 @@ public:
         OffLatticeSimulation<2, 3> simulator(cell_population);
         simulator.SetOutputDirectory(output_directory);
         simulator.SetEndTime(10); //(M_TIME_FOR_SIMULATION);
-        simulator.SetDt(0.00001);
+        simulator.SetDt(0.0001);
         simulator.SetSamplingTimestepMultiple(100);
         simulator.SetUpdateCellPopulationRule(false); // No remeshing.
 
@@ -246,8 +139,7 @@ public:
         ----------------------------
         */
 
-        // std::string working_directory = "/Users/jcrawshaw/Documents/ChasteWorkingDirectory/DeformingCylindricalBasicHetroWallTesting/";
-        // std::string working_directory = "/Users/jcrawshaw/Documents/ChasteWorkingDirectory/FluidFlowInPipe/";
+        // std::string working_directory = "/Users/jcrawshaw/Documents/ChasteWorkingDirectory/DeformingCylinder/";
 
         //  // Create an Applied Force modifier to couple to Flow
         // std::string traction_file = working_directory + "results/Extracted/surface-tractions.xtr";
@@ -259,12 +151,9 @@ public:
         
         // p_force_modifier->SetMembraneConstants(ElasticShearModulus , AreaDilationModulus, Area_constant, membrane_constant );
         
-
-        // boost::shared_ptr<AppliedForce<2, 3> > p_pressure_force(new AppliedForce<2, 3>());
-        // simulator.AddForce(p_pressure_force);
-            //  double pressure = 0.02;//1.0666e4; // to match 80mmhg
-            // MAKE_PTR_ARGS(RadialForce, p_radial_force, (pressure));
-            // simulator.AddForce(p_radial_force);
+            double pressure = 0.00002;//1.0666e4; // to match 80mmhg
+            MAKE_PTR_ARGS(CompressiveTissueForce, p_CompressiveTissueForce, (pressure));
+            simulator.AddForce(p_CompressiveTissueForce);
 
 
 //         /*
@@ -273,26 +162,26 @@ public:
 //         ----------------------------
 //         */
 
-    //  double ElasticShearModulus = 4.4e-05;
-    //   double  AreaDilationModulus = 0.9e-4; 
-    //   double  membrane_constant =0.75e-13 ; 
-    //   double Area_constant = 0.9e-4;
+     double ElasticShearModulus = 4.4e-05;
+      double  AreaDilationModulus = 0.9e-4; 
+      double  membrane_constant =0.75e-13 ; 
+      double Area_constant = 0.9e-4;
 
-    //     // double ElasticShearModulus = 0 ;//4.6e-07; //0.5 * 1e-4; // n/m 0.5 * 1e-7;
-    //     // double AreaDilationModulus = 0 ;//1e-10;//1e-9;
-    //     double Scalling =1; 
-    //     // bool HetroMembrane = 1;
+        // double ElasticShearModulus = 0 ;//4.6e-07; //0.5 * 1e-4; // n/m 0.5 * 1e-7;
+        // double AreaDilationModulus = 0 ;//1e-10;//1e-9;
+        double Scalling =1; 
+        // bool HetroMembrane = 1;
         
 
-    //     boost::shared_ptr<MembraneShearForce> p_shear_force(new MembraneShearForce());
-    //     p_shear_force->SetScallingShear(Scalling);
+        boost::shared_ptr<MembraneShearForce> p_shear_force(new MembraneShearForce());
+        p_shear_force->SetScallingShear(Scalling);
         
-    //     p_shear_force->SetAreaDilationModulus(AreaDilationModulus);
+        p_shear_force->SetAreaDilationModulus(AreaDilationModulus);
         
-    //     p_shear_force->SetElasticShearModulus(ElasticShearModulus);
-    //     p_shear_force->SetupMembraneConfiguration(cell_population);
+        p_shear_force->SetElasticShearModulus(ElasticShearModulus);
+        p_shear_force->SetupMembraneConfiguration(cell_population);
         
-    //     simulator.AddForce(p_shear_force);
+        simulator.AddForce(p_shear_force);
 
 
 //         /*
@@ -304,12 +193,12 @@ public:
 
         // double Area_constant = 0 ;//1 * 1e-11;//  0.5 * 1e-7;
         
-        // boost::shared_ptr<MembraneSurfaceForce> p_surface_force(new MembraneSurfaceForce());
-        // p_surface_force->SetScallingArea(Scalling);
-        // p_surface_force->SetMembraneStiffness(Area_constant);
-        // p_surface_force->SetupInitialAreas(cell_population);
+        boost::shared_ptr<MembraneSurfaceForce> p_surface_force(new MembraneSurfaceForce());
+        p_surface_force->SetScallingArea(Scalling);
+        p_surface_force->SetMembraneStiffness(Area_constant);
+        p_surface_force->SetupInitialAreas(cell_population);
         
-        // simulator.AddForce(p_surface_force);
+        simulator.AddForce(p_surface_force);
 
 
        /*

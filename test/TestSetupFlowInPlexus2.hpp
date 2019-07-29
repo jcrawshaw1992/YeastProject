@@ -11,12 +11,12 @@
 #include "Debug.hpp"
 
 // Must be included before other cell_based headers
-#include "cell_based/src/simulation/CellBasedSimulationArchiver.hpp"
+#include "CellBasedSimulationArchiver.hpp"
 #include "HoneycombMeshGenerator.hpp"
 
 #include "CylindricalHoneycombMeshGenerator.hpp"
 #include "Honeycomb3DCylinderMeshGenerator.hpp"
-#include "cell_based/src/simulation/OffLatticeSimulation.hpp"
+#include "OffLatticeSimulation.hpp"
 #include "AppliedForceModifier.hpp"
 #include "AppliedForce.hpp"
 #include "SpringLengthModifier.hpp"
@@ -55,7 +55,7 @@
  #include "HasEndothelialCell.hpp"
 
   #include "EdgeCorrectionForce.hpp"
-  #include "/Users/jcrawshaw/Documents/Chaste/cell_based/src/cell/properties/mutations/BetaCateninOneHitCellMutationState.hpp"
+  #include "BetaCateninOneHitCellMutationState.hpp"
 
 
 
@@ -83,10 +83,6 @@ private:
 
     void ReadHemeLBv3Vector(c_vector<double,3>& vector, xercesc::DOMElement* xmlElement)
     {
-        TRACE("ReadHemeLBv3Vector is the problem");
-        // PRINT_VECTOR(ReadHemeLBv3Vector);
-        
-        PRINT_VARIABLE(xmlElement->getAttribute(X("value")));
         std::stringstream raw_value(X2C(xmlElement->getAttribute(X("value"))));
         char left_par, comma1, comma2, right_par;
         double x, y, z;
@@ -312,9 +308,9 @@ PRINT_VARIABLE(mesh_file);
         boost::shared_ptr<AppliedForce<2,3>> p_pressure_force(new AppliedForce<2,3>());
         simulator.AddForce(p_pressure_force);
 
-        //    -----------------------------
-        //    Shearing Force 
-        //   ----------------------------
+          //  -----------------------------
+          //  Shearing Force 
+          //----------------------------
     
         boost::shared_ptr<MembraneShearForce> p_shear_force(new MembraneShearForce());
         p_shear_force->SetScallingShear(Scalling);
@@ -375,6 +371,38 @@ PRINT_2_VARIABLES(-boundary_plane_normals[boundary_id],boundary_plane_radii[boun
 
 
         }
+
+
+
+
+ //  Dont know why, but it appears I need to hard code in the boundaryies 
+
+    
+//  std::vector<c_vector<double,3> > Normal1 = Create_c_vector(-0.9008839745881594, -0.39010239459956014,  -0.19033703280741193);
+//  double Radius1 = 15.881209666332802;
+ 
+//   std::vector<c_vector<double,3> > Normal2 = Create_c_vector( 0.6574403004455708, 0.7462561136191282,  0.10427878133212136);
+//   double Radius2 = 20.96239637501186;
+  
+//   std::vector<c_vector<double,3> > Normal3 = Create_c_vector( 0.1515338351682889, 0.9884517726193287,  0.0007681177621169074);
+//   double Radius3 = 14.295443680029416;
+  
+//   std::vector<c_vector<double,3> > Normal4 = Create_c_vector( 0.6825034608339906, -0.7306503377252079,  0.018414937731761612);
+//   double Radius4 = 33.331662832608984;
+  
+//   std::vector<c_vector<double,3> > Normal5 = Create_c_vector( -0.7064734217049318, 0.7026342470102235,  -0.08485528476707792);
+//   double Radius5 = 27.415992220091436;
+ 
+
+//   std::vector<c_vector<double,3> > Normal6 = Create_c_vector( 0.9991563491372428, 0.037641976176355715,  -0.016421681042902248);
+//     double Radius6 = 24.64488975593843;
+    
+//   std::vector<c_vector<double,3> > Normal7 = Create_c_vector( -0.8169434886699287, -0.5637573233221373,  -0.12157720477320225);
+//   double Radius7 = 33.277460614782896;
+
+
+  
+        
 
 
 

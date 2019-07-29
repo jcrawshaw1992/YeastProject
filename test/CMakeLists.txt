@@ -35,4 +35,7 @@
 
 # This allows us to build tests of the project.
 # Simply set the project name in the line below.
-chaste_do_test_project(Vascular_Remodelling)
+find_package(Chaste COMPONENTS cell_based)
+
+
+chaste_do_test_project(VascularRemodelling)

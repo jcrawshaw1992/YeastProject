@@ -15,30 +15,18 @@
 #include "CylindricalHoneycombMeshGenerator.hpp"
 #include "Honeycomb3DCylinderMeshGenerator.hpp"
 #include "OffLatticeSimulation.hpp"
-#include "AppliedForceModifier.hpp"
-#include "SpringLengthModifier.hpp"
 
 #include "CellIdWriter.hpp"
-#include "CellMutationStatesWriter.hpp"
-#include "CellProliferativeTypesWriter.hpp"
 
 #include "CellsGenerator.hpp"
-// #include "FixedDurationGenerationBasedCellCycleModel.hpp"
-#include "FixedG1GenerationalCellCycleModel.hpp"
-#include "GeneralisedLinearSpringForce.hpp"
-#include "AppliedForce.hpp"
 #include "AbstractCellBasedTestSuite.hpp"
 #include "MeshBasedCellPopulation.hpp"
-#include "FixedRegionBoundaryCondition.hpp"
 #include "SmartPointers.hpp"
-#include "DifferentiatedCellProliferativeType.hpp"
 #include "VtkMeshWriter.hpp"
 #include "CommandLineArguments.hpp"
 #include "MembraneStiffnessForce.hpp"
 #include "PetscSetupAndFinalize.hpp"
 
-
-#include "HemodynamicTraction.hpp"
 
 
 #include "XmlTools.hpp"
@@ -70,7 +58,7 @@ public:
 
 // I want a regular mesh 
 
-        int N_D = 20;
+        int N_D = 80;
         int N_Z = 1.5 * N_D;
         double mesh_scale = 1e-3;
         Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z,1.5e-3, 12e-3);

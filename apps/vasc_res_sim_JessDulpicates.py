@@ -257,7 +257,7 @@ def WriteReadme(ElasticShearModulus, AreaDilationModulus, membrane_constant, Are
 
 
 if __name__=="__main__":
-    working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/DeformingCylinder/' 
+    working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/FlowFolder/' 
     data_path =working_directory + 'SetUpData/'
     
     shutil.copy(data_path +'config.stl' , working_directory +'config.stl' )
@@ -288,8 +288,8 @@ if __name__=="__main__":
         os.makedirs(Hemepath)
 
 
-    duration =  0.001
-    dt = 0.0001 # changed from 0.0001
+    duration =  0.01# changed from 0.001
+    dt = 0.001 # changed from 0.0001
     SamplingTimestepMultiple = 5
     TimeStep = dt * SamplingTimestepMultiple
     EndMeshFileNumber = duration /dt
@@ -373,7 +373,7 @@ if __name__=="__main__":
             # Step 3: HemeLB simulation
             run_hemelb2() 
             print'\n HemeLB simulation complete \n'
-        
+        pause()
   
         # # Step 4: Run Chaste with the tractions previously computed
         traction_filename = working_directory + 'results/Extracted/surface-tractions.xtr'

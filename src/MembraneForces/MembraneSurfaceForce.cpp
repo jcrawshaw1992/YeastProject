@@ -92,6 +92,105 @@ void MembraneSurfaceForce::AddForceContribution(AbstractCellPopulation<2, 3>& rC
 
 
 
+void MembraneSurfaceForce::SetScallingArea(double Scalling)
+{
+       mScalling=Scalling;
+}
+
+
+/*
+ * This method is called at the begining, specifically from the primary simulation to calculate the areas of each element. This 
+ * is then saved as a protected member variable (a map) with the element index as the key, and the area as the vaule. This member 
+ * can be easily accessed from the other methods in this class. 
+*/
+void MembraneSurfaceForce::SetupInitialAreas(AbstractCellPopulation<2, 3>& rCellPopulation)
+{
+
+    //std::map<unsigned, double> InitialAreaMap;
+    MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
+   // Loop over all nodes and come up with a new inital position 
+    for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
+         cell_iter != rCellPopulation.End();
+         ++cell_iter)
+    {
+        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter); //p_cell_population->GetLocationIndexUsingCell(*cell_iter);
+        Node<3>* p_node = rCellPopulation.GetNode(node_index);
+          
+        c_vector<double, 3> NodeLocation =  p_node->rGetLocation();
+        
+        c_vector<long double, 3> normal = zero_vector<long double>(3);
+
+        std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
+        assert(containing_elements.size() > 0);
+        for (std::set<unsigned>::iterator iter = containing_elements.begin();
+                iter != containing_elements.end();
+                ++iter)
+        {
+            // Negative as normals point inwards for these surface meshes
+            normal += - p_cell_population->rGetMesh().GetElement(*iter)->CalculateNormal();
+        }
+        normal /= norm_2(normal);
+
+        // Need to walk backward into the mesh by the scalling factor 
+        c_vector<double, 3> PositionVector = NodeLocation - mScalling * normal;
+
+
+        (cell_iter)->GetCellData()->SetItem("Initial_Location_X", NodeLocation[0]);
+        (cell_iter)->GetCellData()->SetItem("Initial_Location_Y", NodeLocation[1]);
+        (cell_iter)->GetCellData()->SetItem("Initial_Location_Z", NodeLocation[2]);
+
+    }
+
+
+
+    for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
+         elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
+         ++elem_iter)
+    {
+        // Get location of each node in the element
+        unsigned elem_index = elem_iter->GetIndex();
+        c_vector<c_vector<double, 3>, 3> PositionVector;
+        
+        unsigned node_index;
+        CellPtr p_cell;
+
+        for (int i = 0; i < 3; i++) // Loop over the three cells and get their intial vessel locations
+        {
+            node_index = elem_iter->GetNodeGlobalIndex(i);
+            p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
+        
+            // Get the inital locations for node i
+            PositionVector[i][0] = p_cell->GetCellData()->GetItem("Initial_Location_X");
+            PositionVector[i][1] = p_cell->GetCellData()->GetItem("Initial_Location_Y");
+            PositionVector[i][2] = p_cell->GetCellData()->GetItem("Initial_Location_Z");
+        
+        }
+        c_vector<double, 3> vector_A = PositionVector[0] - PositionVector[2] ;
+        c_vector<double, 3> vector_B = PositionVector[1]  - PositionVector[2] ;
+
+        c_vector<double, 3> normal = VectorProduct(vector_A, vector_B);
+
+        // Find the inital area
+        double Area = 0.5 * norm_2(normal);
+
+        // Save the inital area in the Original area map
+         mOriginalAreas[elem_index] = Area;
+         mMembraneSurfaceMaps[elem_index]  = mMembraneSurface;
+
+
+        //  if (abs(PositionVector[0][2]) < 1.6e-3 || abs(PositionVector[1][2]) < 1.5e-3 || abs(PositionVector[2][2]) < 1.5e-3 )
+        // {
+        //     mMembraneSurfaceMaps[elem_index]  = mMembraneSurface*10;
+        // }else 
+        // {
+            mMembraneSurfaceMaps[elem_index]  = mMembraneSurface;
+        // }
+        
+
+
+
+    }
+}
 
 
 
@@ -176,104 +275,8 @@ void MembraneSurfaceForce::UpdateMembraneSurfaceForceProperties(AbstractCellPopu
 
 
 
-void MembraneSurfaceForce::SetScallingArea(double Scalling)
-{
-       mScalling=Scalling;
-}
 
 
-/*
- * This method is called at the begining, specifically from the primary simulation to calculate the areas of each element. This 
- * is then saved as a protected member variable (a map) with the element index as the key, and the area as the vaule. This member 
- * can be easily accessed from the other methods in this class. 
-*/
-void MembraneSurfaceForce::SetupInitialAreas(AbstractCellPopulation<2, 3>& rCellPopulation)
-{
-
-    //std::map<unsigned, double> InitialAreaMap;
-    MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
-   // Loop over all nodes and come up with a new inital position 
-    for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
-         cell_iter != rCellPopulation.End();
-         ++cell_iter)
-    {
-        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter); //p_cell_population->GetLocationIndexUsingCell(*cell_iter);
-        Node<3>* p_node = rCellPopulation.GetNode(node_index);
-          
-        c_vector<double, 3> NodeLocation =  p_node->rGetLocation();
-        
-        c_vector<long double, 3> normal = zero_vector<long double>(3);
-
-        std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
-        assert(containing_elements.size() > 0);
-        for (std::set<unsigned>::iterator iter = containing_elements.begin();
-                iter != containing_elements.end();
-                ++iter)
-        {
-            // Negative as normals point inwards for these surface meshes
-            normal += - p_cell_population->rGetMesh().GetElement(*iter)->CalculateNormal();
-        }
-        normal /= norm_2(normal);
-
-        // Need to walk backward into the mesh by the scalling factor 
-        c_vector<double, 3> PositionVector = NodeLocation - mScalling * normal;
-
-
-        (cell_iter)->GetCellData()->SetItem("Initial_Location_X", PositionVector[0]);
-        (cell_iter)->GetCellData()->SetItem("Initial_Location_Y", PositionVector[1]);
-        (cell_iter)->GetCellData()->SetItem("Initial_Location_Z", PositionVector[2]);
-
-    }
-
-
-
-    for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
-         elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
-         ++elem_iter)
-    {
-        // Get location of each node in the element
-        unsigned elem_index = elem_iter->GetIndex();
-        c_vector<c_vector<double, 3>, 3> PositionVector;
-        
-        unsigned node_index;
-        CellPtr p_cell;
-
-        for (int i = 0; i < 3; i++) // Loop over the three cells and get their intial vessel locations
-        {
-            node_index = elem_iter->GetNodeGlobalIndex(i);
-            p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
-        
-            // Get the inital locations for node i
-            PositionVector[i][0] = p_cell->GetCellData()->GetItem("Initial_Location_X");
-            PositionVector[i][1] = p_cell->GetCellData()->GetItem("Initial_Location_Y");
-            PositionVector[i][2] = p_cell->GetCellData()->GetItem("Initial_Location_Z");
-        }
-        c_vector<double, 3> vector_A = PositionVector[0] - PositionVector[2] ;
-        c_vector<double, 3> vector_B = PositionVector[1]  - PositionVector[2] ;
-
-        c_vector<double, 3> normal = VectorProduct(vector_A, vector_B);
-
-        // Find the inital area
-        double Area = 0.5 * norm_2(normal);
-
-        // Save the inital area in the Original area map
-         mOriginalAreas[elem_index] = Area;
-         mMembraneSurfaceMaps[elem_index]  = mMembraneSurface;
-
-
-        //  if (abs(PositionVector[0][2]) < 1.6e-3 || abs(PositionVector[1][2]) < 1.5e-3 || abs(PositionVector[2][2]) < 1.5e-3 )
-        // {
-        //     mMembraneSurfaceMaps[elem_index]  = mMembraneSurface*10;
-        // }else 
-        // {
-            mMembraneSurfaceMaps[elem_index]  = mMembraneSurface;
-        // }
-        
-
-
-
-    }
-}
 
 void MembraneSurfaceForce::OutputForceParameters(out_stream& rParamsFile)
 {

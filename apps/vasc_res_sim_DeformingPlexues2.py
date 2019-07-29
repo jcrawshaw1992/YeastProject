@@ -18,8 +18,8 @@ import math
 from vasc_res_sim import *
 
 Iterations=100
-working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/BifurcationSecond/' 
-chaste_setup_exe = '/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/build/optimised/TestSetupFlowInPlexusRunner'
+working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/BiThird/' 
+chaste_setup_exe = '/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/build/optimised/TestSetupFlowInPlexus2Runner'
 
 data_path =working_directory + 'SetUpData/'
 
@@ -99,7 +99,7 @@ WriteReadme(working_directory, ElasticShearModulus, AreaDilationModulus, membran
 
 chaste_setup_call = chaste_setup_exe +' -mesh ' + mesh_filename + ' -xml ' + xml_filename + ' -div_threshold ' +  str(args.div_threshold) + ' -mesh_scale ' +  str(args.mesh_scale) + ' -wss_threshold ' + str(0.025)  + ElasticShearModulus + AreaDilationModulus + membrane_constant + Area_constant + Time_step  +Sampling +ScallingFactor
 subprocess.call(chaste_setup_call, shell=True)
-# pause()
+pause()
 print ' ------- Chaste is set up ------- '
 
 

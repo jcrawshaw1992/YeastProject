@@ -20,7 +20,7 @@ void MembraneShearForce::SetAreaDilationModulus(double AreaDilationModulus)
 
 void MembraneShearForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
-    // TRACE("Add Shear Force");
+    TRACE("Add Shear Force");
     MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
 
     for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
@@ -37,6 +37,7 @@ void MembraneShearForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCel
         c_vector<long double, 3> Vector1 = pNode1->rGetLocation();
         c_vector<long double, 3> Vector2 = pNode2->rGetLocation();
         c_vector<long double, 3> Vector0 = pNode0->rGetLocation();
+        PRINT_VECTOR(Vector0 );
 
         c_vector<long double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
         c_vector<long double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 33);
@@ -83,6 +84,7 @@ void MembraneShearForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCel
         // Strain invarients 
         long double I1 = tr(G) - 2;
         long double I2 = det(G) - 1;
+
 
         c_vector<c_vector<long double, 3>, 3> RotatedForceOnNode;
         c_vector<long double, 3> RotatedMag;
@@ -136,7 +138,9 @@ void MembraneShearForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCel
             node_index = elem_iter->GetNodeGlobalIndex(i);
             CellArea = rCellPopulation.GetVolumeOfCell(rCellPopulation.GetCellUsingLocationIndex(node_index));
             ForceOnNode[i] /= CellArea;
+            PRINT_VARIABLE(CellArea);
         }
+
 
         //Add the forces to the node
         pNode0->AddAppliedForceContribution(ForceOnNode[0]);
@@ -144,23 +148,24 @@ void MembraneShearForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCel
         pNode2->AddAppliedForceContribution(ForceOnNode[2]);
     }
 
-    for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
-         cell_iter != rCellPopulation.End();
-         ++cell_iter)
-    {
-        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-        Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
-        c_vector<double, 3> Force = pNode->rGetAppliedForce();
+TRACE("DONE");
+    // for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
+    //      cell_iter != rCellPopulation.End();
+    //      ++cell_iter)
+    // {
+    //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+    //     Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
+    //     c_vector<double, 3> Force = pNode->rGetAppliedForce();
 
-        double RadialForce = norm_2(Create_c_vector(Force[0], Force[1]));
-        // double Beta = atan(Force[1] / Force[0]);
-        // double Z = Force[2];
+    //     double RadialForce = norm_2(Create_c_vector(Force[0], Force[1]));
+    //     // double Beta = atan(Force[1] / Force[0]);
+    //     // double Z = Force[2];
 
-        cell_iter->GetCellData()->SetItem("RadialStrainForce", RadialForce);
-        cell_iter->GetCellData()->SetItem("StrainForceX", Force[0]);
-        cell_iter->GetCellData()->SetItem("StrainForceY", Force[1]);
-        cell_iter->GetCellData()->SetItem("StrainForceZ", Force[2]);
-    }
+    //     cell_iter->GetCellData()->SetItem("RadialStrainForce", RadialForce);
+    //     cell_iter->GetCellData()->SetItem("StrainForceX", Force[0]);
+    //     cell_iter->GetCellData()->SetItem("StrainForceY", Force[1]);
+    //     cell_iter->GetCellData()->SetItem("StrainForceZ", Force[2]);
+    // }
 }
 
 /*
@@ -173,224 +178,224 @@ void MembraneShearForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCel
 
 void MembraneShearForce::UpdateMembraneProperties(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
-//     TRACE("Modifiing membrane properties");
+    //     TRACE("Modifiing membrane properties");
 
-//     TRACE("Currently assume only if all three nodes of the element are mutant, then the element will be altered, however I might want to think about this down the track. It might be more physically relevant to set conditions for if 1 or 2 or 3 nodes are mutant");
+    //     TRACE("Currently assume only if all three nodes of the element are mutant, then the element will be altered, however I might want to think about this down the track. It might be more physically relevant to set conditions for if 1 or 2 or 3 nodes are mutant");
 
-//     c_vector<c_vector<double, 2>, 3> InitalVectors;
-//     c_vector<long double, 3> aVector;
-//     c_vector<long double, 3> bVector;
-//     double theta_0;
-//     double ScallingFactor = 15;
-//     std::vector<unsigned> LabledElements;
-//     double NumberOfNeighbouringECs;
+    //     c_vector<c_vector<double, 2>, 3> InitalVectors;
+    //     c_vector<long double, 3> aVector;
+    //     c_vector<long double, 3> bVector;
+    //     double theta_0;
+    //     double ScallingFactor = 15;
+    //     std::vector<unsigned> LabledElements;
+    //     double NumberOfNeighbouringECs;
 
-//     PRINT_VARIABLE(LabledElements.size());
-
-
-// //  mNeighbours[node_index] 
-    
-//     // LabledElements.push_back(1);
-//     MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
-//     // Loop over all the mutant elements and
-//     for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
-//          cell_iter != rCellPopulation.End();
-//          ++cell_iter)
-//     {
-//         // if mutant
-//          if ((cell_iter)->GetMutationState()->IsType<LostEndothelialCell>()) // If on edge
-//         {
-//             unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter); //p_cell_population->GetLocationIndexUsingCell(*cell_iter);
-//             Node<3>* p_node = rCellPopulation.GetNode(node_index);
-//             PRINT_VARIABLE( node_index );
-//             // Need to check how many of the neighbours have ECs -> the more EC surrounding the empty node, the slower it is going to pull
-//             // Into the lumen. Conversly an emtpy node with no surrounding ECs is going to fall quicker. 
-
-//             std::vector<unsigned> NeighboursVector = mNeighbours[node_index] ;
-//             PRINT_VECTOR(NeighboursVector)
-//             NumberOfNeighbouringECs = 0;
-
-//             // PRINT_VECTOR(NeighboursVector);
-//             // itterate over the nighbours and count the number with cells
-//             for (int i=0; i < NeighboursVector.size(); i++)
-//             {
-//                 // PRINT_VARIABLE(i);
-//                 // get the cell iterator from the node index
-//                 CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(NeighboursVector[i]);
-//                 if (p_cell->GetMutationState()->IsType<HasEndothelialCell>())
-//                     {
-//                         NumberOfNeighbouringECs +=1;
-//                         PRINT_VARIABLE( node_index );
-//                     } 
-//             }
-//             PRINT_VARIABLE(NumberOfNeighbouringECs);
-           
-//             // // This will set if has two neighbours with nodes scalling factor is halved
-//             double Scalling = ScallingFactor ;
-//             PRINT_VARIABLE(Scalling );
-//             // double Scalling = 1+ (ScallingFactor -1)/(exp(NumberOfNeighbouringECs));
-//             // PRINT_VARIABLE(Scalling);
-
-//             (cell_iter)->GetCellData()->SetItem("Scalling", Scalling);
-     
-
-//             c_vector<double, 3> NodeLocation;
-//             NodeLocation[0] = cell_iter->GetCellData()->GetItem("Initial_Location_X");
-//             NodeLocation[1] = cell_iter->GetCellData()->GetItem("Initial_Location_Y");
-//             NodeLocation[2] = cell_iter->GetCellData()->GetItem("Initial_Location_Z");
-//             PRINT_VECTOR(NodeLocation);
-
-//             double Original_Radius = norm_2(Create_c_vector(NodeLocation[0], NodeLocation[1]));
-//             double New_Radius = (Original_Radius) / Scalling;
-//             theta_0 = atan(NodeLocation[1] / NodeLocation[0]);
-
-//             double x = NodeLocation[0];
-//             double y = NodeLocation[1];
-
-//             if (x < 0 && y > 0)
-//             {
-//                 theta_0 = theta_0 + M_PI;
-//             }
-//             else if (x < 0 && y < 0)
-//             {
-//                 theta_0 = theta_0 + M_PI;
-//             }
-//             PRINT_3_VARIABLES(New_Radius, Original_Radius, Scalling);
-            
-
-//             c_vector<double, 3> PositionVector = Create_c_vector(New_Radius * cos(theta_0), New_Radius * sin(theta_0), NodeLocation[2]);
-//             // mAdjustedInitalNodeLocation[node_index] = PositionVector;
-//             (cell_iter)->GetCellData()->SetItem("Initial_Location_X", PositionVector[0]);
-//             (cell_iter)->GetCellData()->SetItem("Initial_Location_Y", PositionVector[1]);
-//             (cell_iter)->GetCellData()->SetItem("Initial_Location_Z", PositionVector[2]);
-//             mHaveAdjustedPositionMap[node_index] = 1;
-
-//             // This piece records all the elements associated with a mutant cell
-//             std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
-//             assert(containing_elements.size() > 0);
-//             // LabledElements.push_back(containing_elements);
-//             for (std::set<unsigned>::iterator iter = containing_elements.begin();
-//                  iter != containing_elements.end();
-//                  ++iter)
-//             {
-//                 LabledElements.push_back(*iter);
-//             }
-//         }
-//     }
-//     sort(LabledElements.begin(), LabledElements.end());
-//     LabledElements.erase(unique(LabledElements.begin(), LabledElements.end()), LabledElements.end());
-//     PRINT_VARIABLE(LabledElements.size());
-//     if (LabledElements.size()>0)
-//     {
-//         for (int i = 0; i < LabledElements.size(); i++) //
-//         {
-//         unsigned elem_index = LabledElements[i];
-//             c_vector<c_vector<double, 3>, 3> PositionVectors;
-//             Node<3>* pNode;
-//             unsigned node_index;
-//             CellPtr p_cell;
-//             double NumberOfMutants=0;
-
-//             for (int j = 0; j < 3; j++) //
-//             {
-//                 pNode = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(LabledElements[i])->GetNodeGlobalIndex(j));
-//                 node_index = pNode->GetIndex();
-//                 p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
-//                 PositionVectors[j][0] = p_cell->GetCellData()->GetItem("Initial_Location_X");
-//                 PositionVectors[j][1] = p_cell->GetCellData()->GetItem("Initial_Location_Y");
-//                 PositionVectors[j][2] = p_cell->GetCellData()->GetItem("Initial_Location_Z");
-
-//             if (( p_cell)->GetMutationState()->IsType<LostEndothelialCell>()) // If on edge
-//             {
-//                 NumberOfMutants+=1;
-//             }
-            
-//             }
-
-//             c_vector<double, 3> Adapted_vector_12 = PositionVectors[1] - PositionVectors[0]; // Vector 1 to 2
-//             c_vector<double, 3> Adapted_vector_13 = PositionVectors[2] - PositionVectors[0]; // Vector 1 to 3
-
-//             // Find the intial area, A0 = 0.5*norm(normal)
-//             c_vector<long double, 3> normalVector = VectorProduct(Adapted_vector_12, Adapted_vector_13);
-//             // PRINT_VECTOR(normalVector);
-//             long double Area = 0.5 * norm_2(normalVector);
-
-//             long double a = norm_2(Adapted_vector_12); // Lenght a -> edge connecting P1 and P2
-//             long double b = norm_2(Adapted_vector_13); // Lenght b -> edge connecting P1 and P3
-//             long double alpha = acos(inner_prod(Adapted_vector_12, Adapted_vector_13) / (a * b));
-//             double Y = b * sin(alpha);
-
-//             mArea0[elem_index] = Area;
-
-//             c_vector<long double, 2> x1 = Create_c_vector(0, 0);
-//             c_vector<long double, 2> x2 = Create_c_vector(a, 0);
-//             c_vector<long double, 2> x3 = Create_c_vector(b * cos(alpha), b * sin(alpha));
-
-//             //Save the intial position vectors
-//             mInitalVectors[elem_index][0] = x1;
-//             mInitalVectors[elem_index][1] = x2;
-//             mInitalVectors[elem_index][2] = x3;
-
-//             // FInd the 6 shape function constants
-//             aVector[0] = (x2[1] - x3[1]) / (2 * Area);
-//             aVector[1] = (x3[1] - x1[1]) / (2 * Area);
-//             aVector[2] = (x1[1] - x2[1]) / (2 * Area);
-
-//             bVector[0] = (x3[0] - x2[0]) / (2 * Area);
-//             bVector[1] = (x1[0] - x3[0]) / (2 * Area);
-//             bVector[2] = (x2[0] - x1[0]) / (2 * Area);
+    //     PRINT_VARIABLE(LabledElements.size());
 
 
-//             mACoefficients[elem_index] = aVector;
-//             mBCoefficients[elem_index] = bVector;
-
-//             /// ADAPT THE MEMBRNE CONSTANTS BASED ON THE NUMBER OF MUTANTS ON THE ELEMENT 
-
-                
+    // //  mNeighbours[node_index] 
         
-//             if (NumberOfMutants==1 ) // 6 - NumberOfNeighbourinEcs = Basement matrix sites 
-//             {
+    //     // LabledElements.push_back(1);
+    //     MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
+    //     // Loop over all the mutant elements and
+    //     for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
+    //          cell_iter != rCellPopulation.End();
+    //          ++cell_iter)
+    //     {
+    //         // if mutant
+    //          if ((cell_iter)->GetMutationState()->IsType<LostEndothelialCell>()) // If on edge
+    //         {
+    //             unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter); //p_cell_population->GetLocationIndexUsingCell(*cell_iter);
+    //             Node<3>* p_node = rCellPopulation.GetNode(node_index);
+    //             PRINT_VARIABLE( node_index );
+    //             // Need to check how many of the neighbours have ECs -> the more EC surrounding the empty node, the slower it is going to pull
+    //             // Into the lumen. Conversly an emtpy node with no surrounding ECs is going to fall quicker. 
 
-//                 mElasticShearModulusMap[elem_index] /=25;
-//                 mAreaDilationModulusMap[elem_index] /=50;
+    //             std::vector<unsigned> NeighboursVector = mNeighbours[node_index] ;
+    //             PRINT_VECTOR(NeighboursVector)
+    //             NumberOfNeighbouringECs = 0;
 
-//             } else if(NumberOfMutants== 2)
-//             {
-//                 mElasticShearModulusMap[elem_index] /=100;
-//                 mAreaDilationModulusMap[elem_index] /=250;
+    //             // PRINT_VECTOR(NeighboursVector);
+    //             // itterate over the nighbours and count the number with cells
+    //             for (int i=0; i < NeighboursVector.size(); i++)
+    //             {
+    //                 // PRINT_VARIABLE(i);
+    //                 // get the cell iterator from the node index
+    //                 CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(NeighboursVector[i]);
+    //                 if (p_cell->GetMutationState()->IsType<HasEndothelialCell>())
+    //                     {
+    //                         NumberOfNeighbouringECs +=1;
+    //                         PRINT_VARIABLE( node_index );
+    //                     } 
+    //             }
+    //             PRINT_VARIABLE(NumberOfNeighbouringECs);
+            
+    //             // // This will set if has two neighbours with nodes scalling factor is halved
+    //             double Scalling = ScallingFactor ;
+    //             PRINT_VARIABLE(Scalling );
+    //             // double Scalling = 1+ (ScallingFactor -1)/(exp(NumberOfNeighbouringECs));
+    //             // PRINT_VARIABLE(Scalling);
 
-//             } else if(NumberOfMutants== 3)
-//             {
-//                 mElasticShearModulusMap[elem_index] /=200;
-//                 mAreaDilationModulusMap[elem_index] /=300;
-//             }
+    //             (cell_iter)->GetCellData()->SetItem("Scalling", Scalling);
+        
 
-//         }
-//     }
+    //             c_vector<double, 3> NodeLocation;
+    //             NodeLocation[0] = cell_iter->GetCellData()->GetItem("Initial_Location_X");
+    //             NodeLocation[1] = cell_iter->GetCellData()->GetItem("Initial_Location_Y");
+    //             NodeLocation[2] = cell_iter->GetCellData()->GetItem("Initial_Location_Z");
+    //             PRINT_VECTOR(NodeLocation);
+
+    //             double Original_Radius = norm_2(Create_c_vector(NodeLocation[0], NodeLocation[1]));
+    //             double New_Radius = (Original_Radius) / Scalling;
+    //             theta_0 = atan(NodeLocation[1] / NodeLocation[0]);
+
+    //             double x = NodeLocation[0];
+    //             double y = NodeLocation[1];
+
+    //             if (x < 0 && y > 0)
+    //             {
+    //                 theta_0 = theta_0 + M_PI;
+    //             }
+    //             else if (x < 0 && y < 0)
+    //             {
+    //                 theta_0 = theta_0 + M_PI;
+    //             }
+    //             PRINT_3_VARIABLES(New_Radius, Original_Radius, Scalling);
+                
+
+    //             c_vector<double, 3> PositionVector = Create_c_vector(New_Radius * cos(theta_0), New_Radius * sin(theta_0), NodeLocation[2]);
+    //             // mAdjustedInitalNodeLocation[node_index] = PositionVector;
+    //             (cell_iter)->GetCellData()->SetItem("Initial_Location_X", PositionVector[0]);
+    //             (cell_iter)->GetCellData()->SetItem("Initial_Location_Y", PositionVector[1]);
+    //             (cell_iter)->GetCellData()->SetItem("Initial_Location_Z", PositionVector[2]);
+    //             mHaveAdjustedPositionMap[node_index] = 1;
+
+    //             // This piece records all the elements associated with a mutant cell
+    //             std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
+    //             assert(containing_elements.size() > 0);
+    //             // LabledElements.push_back(containing_elements);
+    //             for (std::set<unsigned>::iterator iter = containing_elements.begin();
+    //                  iter != containing_elements.end();
+    //                  ++iter)
+    //             {
+    //                 LabledElements.push_back(*iter);
+    //             }
+    //         }
+    //     }
+    //     sort(LabledElements.begin(), LabledElements.end());
+    //     LabledElements.erase(unique(LabledElements.begin(), LabledElements.end()), LabledElements.end());
+    //     PRINT_VARIABLE(LabledElements.size());
+    //     if (LabledElements.size()>0)
+    //     {
+    //         for (int i = 0; i < LabledElements.size(); i++) //
+    //         {
+    //         unsigned elem_index = LabledElements[i];
+    //             c_vector<c_vector<double, 3>, 3> PositionVectors;
+    //             Node<3>* pNode;
+    //             unsigned node_index;
+    //             CellPtr p_cell;
+    //             double NumberOfMutants=0;
+
+    //             for (int j = 0; j < 3; j++) //
+    //             {
+    //                 pNode = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(LabledElements[i])->GetNodeGlobalIndex(j));
+    //                 node_index = pNode->GetIndex();
+    //                 p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
+    //                 PositionVectors[j][0] = p_cell->GetCellData()->GetItem("Initial_Location_X");
+    //                 PositionVectors[j][1] = p_cell->GetCellData()->GetItem("Initial_Location_Y");
+    //                 PositionVectors[j][2] = p_cell->GetCellData()->GetItem("Initial_Location_Z");
+
+    //             if (( p_cell)->GetMutationState()->IsType<LostEndothelialCell>()) // If on edge
+    //             {
+    //                 NumberOfMutants+=1;
+    //             }
+                
+    //             }
+
+    //             c_vector<double, 3> Adapted_vector_12 = PositionVectors[1] - PositionVectors[0]; // Vector 1 to 2
+    //             c_vector<double, 3> Adapted_vector_13 = PositionVectors[2] - PositionVectors[0]; // Vector 1 to 3
+
+    //             // Find the intial area, A0 = 0.5*norm(normal)
+    //             c_vector<long double, 3> normalVector = VectorProduct(Adapted_vector_12, Adapted_vector_13);
+    //             // PRINT_VECTOR(normalVector);
+    //             long double Area = 0.5 * norm_2(normalVector);
+
+    //             long double a = norm_2(Adapted_vector_12); // Lenght a -> edge connecting P1 and P2
+    //             long double b = norm_2(Adapted_vector_13); // Lenght b -> edge connecting P1 and P3
+    //             long double alpha = acos(inner_prod(Adapted_vector_12, Adapted_vector_13) / (a * b));
+    //             double Y = b * sin(alpha);
+
+    //             mArea0[elem_index] = Area;
+
+    //             c_vector<long double, 2> x1 = Create_c_vector(0, 0);
+    //             c_vector<long double, 2> x2 = Create_c_vector(a, 0);
+    //             c_vector<long double, 2> x3 = Create_c_vector(b * cos(alpha), b * sin(alpha));
+
+    //             //Save the intial position vectors
+    //             mInitalVectors[elem_index][0] = x1;
+    //             mInitalVectors[elem_index][1] = x2;
+    //             mInitalVectors[elem_index][2] = x3;
+
+    //             // FInd the 6 shape function constants
+    //             aVector[0] = (x2[1] - x3[1]) / (2 * Area);
+    //             aVector[1] = (x3[1] - x1[1]) / (2 * Area);
+    //             aVector[2] = (x1[1] - x2[1]) / (2 * Area);
+
+    //             bVector[0] = (x3[0] - x2[0]) / (2 * Area);
+    //             bVector[1] = (x1[0] - x3[0]) / (2 * Area);
+    //             bVector[2] = (x2[0] - x1[0]) / (2 * Area);
+
+
+    //             mACoefficients[elem_index] = aVector;
+    //             mBCoefficients[elem_index] = bVector;
+
+    //             /// ADAPT THE MEMBRNE CONSTANTS BASED ON THE NUMBER OF MUTANTS ON THE ELEMENT 
+
+                    
+            
+    //             if (NumberOfMutants==1 ) // 6 - NumberOfNeighbourinEcs = Basement matrix sites 
+    //             {
+
+    //                 mElasticShearModulusMap[elem_index] /=25;
+    //                 mAreaDilationModulusMap[elem_index] /=50;
+
+    //             } else if(NumberOfMutants== 2)
+    //             {
+    //                 mElasticShearModulusMap[elem_index] /=100;
+    //                 mAreaDilationModulusMap[elem_index] /=250;
+
+    //             } else if(NumberOfMutants== 3)
+    //             {
+    //                 mElasticShearModulusMap[elem_index] /=200;
+    //                 mAreaDilationModulusMap[elem_index] /=300;
+    //             }
+
+    //         }
+    //     }
 
 }
 
 // double MembraneShearForce::GetoriginalElementArea(unsigned elem_index)
-// {
-//     TRACE("Here I am ");
-//     double OriginalArea = mArea0[elem_index];
-//     return OriginalArea;
-// }
+    // {
+    //     TRACE("Here I am ");
+    //     double OriginalArea = mArea0[elem_index];
+    //     return OriginalArea;
+    // }
 
-// double MembraneShearForce::SetoriginalElementArea(unsigned elem_index, double ElementArea)
-// {
-//     double OriginalArea = mArea0[elem_index];
-//     return OriginalArea;
+    // double MembraneShearForce::SetoriginalElementArea(unsigned elem_index, double ElementArea)
+    // {
+    //     double OriginalArea = mArea0[elem_index];
+    //     return OriginalArea;
 
-// }
+    // }
 
-/*
- * Set up the inital configuration -> find the inital position vectors, the inital area, and the shape function 
- * 
- * The inital poisitions of all the nodes have been updated to be closer to the radius by a scalling factor (S) 
- * This reflects state where a vessel is deflated with no fluid flow to expand it, leaving only the compressive forces 
- * from the tissue, naturally pushing it inwards. 
-*/
+    /*
+    * Set up the inital configuration -> find the inital position vectors, the inital area, and the shape function 
+    * 
+    * The inital poisitions of all the nodes have been updated to be closer to the radius by a scalling factor (S) 
+    * This reflects state where a vessel is deflated with no fluid flow to expand it, leaving only the compressive forces 
+    * from the tissue, naturally pushing it inwards. 
+    */
 
 
 void MembraneShearForce::SetScallingShear(double Scalling)
@@ -401,7 +406,6 @@ void MembraneShearForce::SetScallingShear(double Scalling)
 
 void MembraneShearForce::SetupMembraneConfiguration(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
-
     MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
     std::vector<unsigned> LabledElements;
     double NumberOfNeighbouringECs;
@@ -410,40 +414,43 @@ void MembraneShearForce::SetupMembraneConfiguration(AbstractCellPopulation<2, 3>
    // Loop over all nodes and come up with a new inital position 
 
    
-    // for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
-    //      cell_iter != rCellPopulation.End();
-    //      ++cell_iter)
-    // {
-    //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter); //p_cell_population->GetLocationIndexUsingCell(*cell_iter);
-    //     Node<3>* p_node = rCellPopulation.GetNode(node_index);
+    for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
+         cell_iter != rCellPopulation.End();
+         ++cell_iter)
+    {
+        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter); //p_cell_population->GetLocationIndexUsingCell(*cell_iter);
+        Node<3>* p_node = rCellPopulation.GetNode(node_index);
           
-    //     c_vector<double, 3> NodeLocation =  p_node->rGetLocation();
+        c_vector<double, 3> NodeLocation =  p_node->rGetLocation();
 
-    //     c_vector<long double, 3> normal = zero_vector<long double>(3);
+        c_vector<long double, 3> normal = zero_vector<long double>(3);
 
-    //     std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
-    //     assert(containing_elements.size() > 0);
-    //     for (std::set<unsigned>::iterator iter = containing_elements.begin();
-    //             iter != containing_elements.end();
-    //             ++iter)
-    //     {
-    //         // Negative as normals point inwards for these surface meshes
+        std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
+        assert(containing_elements.size() > 0);
+        for (std::set<unsigned>::iterator iter = containing_elements.begin();
+                iter != containing_elements.end();
+                ++iter)
+        {
+            // Negative as normals point inwards for these surface meshes
 
-    //         c_vector<long double, 3> LocationNormal = - p_cell_population->rGetMesh().GetElement(*iter)->CalculateNormal();
-    //         // LocationNormal /=norm_2(LocationNormal );
-    //         normal +=  LocationNormal;
-    //     }
-    //     normal /= norm_2(normal);
-    //     PRINT_VECTOR(normal);
+            c_vector<long double, 3> LocationNormal = - p_cell_population->rGetMesh().GetElement(*iter)->CalculateNormal();
+            // LocationNormal /=norm_2(LocationNormal );
+            normal +=  LocationNormal;
+        }
+        normal /= norm_2(normal);
+        // PRINT_VECTOR(normal);
 
-    //   // Need to walk backward into the mesh by the scalling factor 
-    //     c_vector<double, 3> PositionVector = NodeLocation + mScalling * normal;
+      // Need to walk backward into the mesh by the scalling factor 
+        c_vector<double, 3> PositionVector = NodeLocation + mScalling * normal;
 
-    //     (cell_iter)->GetCellData()->SetItem("Initial_Location_X", PositionVector[0]);
-    //     (cell_iter)->GetCellData()->SetItem("Initial_Location_Y", PositionVector[1]);
-    //     (cell_iter)->GetCellData()->SetItem("Initial_Location_Z", PositionVector[2]);
+        // (cell_iter)->GetCellData()->SetItem("Initial_Location_X", PositionVector[0]);
+        // (cell_iter)->GetCellData()->SetItem("Initial_Location_Y", PositionVector[1]);
+        // (cell_iter)->GetCellData()->SetItem("Initial_Location_Z", PositionVector[2]);
 
-    // }
+        (cell_iter)->GetCellData()->SetItem("Initial_Location_X",  NodeLocation[0]);
+        (cell_iter)->GetCellData()->SetItem("Initial_Location_Y",  NodeLocation[1]);
+        (cell_iter)->GetCellData()->SetItem("Initial_Location_Z",  NodeLocation[2]);
+    }
 
     // Determine the inital element shape (shape function, internal angle, and area) for all elements
     for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
@@ -469,7 +476,6 @@ void MembraneShearForce::SetupMembraneConfiguration(AbstractCellPopulation<2, 3>
             PositionVector[i][0] = p_cell->GetCellData()->GetItem("Initial_Location_X");
             PositionVector[i][1] = p_cell->GetCellData()->GetItem("Initial_Location_Y");
             PositionVector[i][2] = p_cell->GetCellData()->GetItem("Initial_Location_Z");
-            PRINT_VECTOR(PositionVector);
         }
 
 

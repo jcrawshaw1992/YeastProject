@@ -178,7 +178,7 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::FindElementNeighbours()
     TRACE("Set up neighbouring element pairs");
     double j = 0;
     assert(SPACE_DIM == 3);
-
+    TRACE("Iterate over the elements");
     for (typename MutableMesh<2, SPACE_DIM>::ElementIterator elem_iter = mpDelaunayMesh->GetElementIteratorBegin();
          elem_iter != mpDelaunayMesh->GetElementIteratorEnd();
          ++elem_iter)
@@ -194,7 +194,7 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::FindElementNeighbours()
         // loop over the indices from this element and save them in the vector NodeIncides
         for (int i = 0; i < 3; i++)
         {
-
+            
             pNode = mpDelaunayMesh->GetNode(mpDelaunayMesh->GetElement(Element_index)->GetNodeGlobalIndex(i));
             NodeIncides.push_back(pNode->GetIndex());
         }
@@ -223,9 +223,11 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::FindElementNeighbours()
 
             if (IntersectionVector.size() == 2)
             {
-                //  TRACE("Share two nodes, so save this as neigbouring elements");
+                // TRACE("Share two nodes, so save this as neigbouring elements");
                 std::pair<unsigned, unsigned> ElementPair = std::make_pair(std::min(Neighbour_Element_index, Element_index), std::max(Neighbour_Element_index, Element_index));
 
+
+                // Check I dont already have this pair
                 if (IsPairInVector(mMeshElementPairs, ElementPair) == 0)
                 {
                     sort(IntersectionVector.begin(), IntersectionVector.end());
@@ -281,6 +283,7 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::FindElementNeighbours()
             EXCEPTION("Elements in element pairs are not the same as the elements contained at this node");
         }
     }
+     TRACE("Have neighbours");
 }
 
 template <unsigned SPACE_DIM>
@@ -390,6 +393,9 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::CalculateEdgeLenghts()
 template <unsigned SPACE_DIM>
 double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetSurfaceAreaOfElement(unsigned pottsElementIndex) // perimiter
 {
+
+    // For now just use the basic perimeter calculation
+
     /*  1) Have the CPM cell the lattice site belongs to
         2) Loop over the lattice sites in thi CPM cell and collect all of the associated mesh element pairs
            2a) -  remove anything that appears more than once 
@@ -400,12 +406,13 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetSurfaceAreaOfElement(unsigne
     PottsElement<SPACE_DIM>* p_potts_element = this->GetElement(pottsElementIndex);
     c_vector<double, SPACE_DIM> CenterOfCell = this->GetCentroidOfElement(pottsElementIndex);
     // PRINT_VECTOR(CenterOfCell);
-    std::map<unsigned, double> Relative_theta = GetRelativeLattiePositionsWithinCell(pottsElementIndex);
+    // std::map<unsigned, double> Relative_theta = GetRelativeLattiePositionsWithinCell(pottsElementIndex);
 
     double edgecounter = 0;
     double potts_element_surface = 0.0;
     std::vector<unsigned> ListOfEdges;
 
+    //  Loop over each of the lattice sites in the cell
     for (unsigned local_lattice_index = 0; local_lattice_index < p_potts_element->GetNumNodes(); ++local_lattice_index)
     {
 
@@ -429,132 +436,8 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetSurfaceAreaOfElement(unsigne
                 counter += 1;
                 //  } else if ( (Relative_theta[*neighbour_lattice_index] < -0.001 && Relative_theta[lattice_site_index]  > 0.001 )|| (Relative_theta[*neighbour_lattice_index] > 0.001 && Relative_theta[lattice_site_index]  < -0.001 )   )
             }
-
-            else if (DoNodesShareElement(lattice_site_index, *neighbour_lattice_index) == 1)
-            {
-                 TRACE("A");
-                if ((Relative_theta[*neighbour_lattice_index] != Relative_theta[lattice_site_index]) && Relative_theta[lattice_site_index]!=2 &&Relative_theta[*neighbour_lattice_index]!=2)
-                // if (Relative_theta[*neighbour_lattice_index] != Relative_theta[lattice_site_index])
-                {
-                     TRACE("B");
-                    // PRINT_2_VARIABLES(Relative_theta[*neighbour_lattice_index],Relative_theta[lattice_site_index]);
-                    // they share an element, but they are on different ends of the cell, meaning it has wrapped around
-                    edgecounter += 1;
-                }
-            }
-        }
-
-        if (counter > 0)
-        {
-      
-            ListOfEdges.push_back(lattice_site_index);
-      
         }
     }
-    // double CentroidRadialLoction;
-
-    // if (p_potts_element->GetNumNodes() != ListOfEdges.size())
-    // {
-    //     TRACE("c");
-    //     c_vector<double, 3> Centroid = GetCellCentre(ListOfEdges, pottsElementIndex);
-    //     TRACE("d");
-    //     // PRINT_VECTOR(Centroid);
-    //     CentroidRadialLoction = norm_2(Create_c_vector(Centroid[0], Centroid[1]));
-    //     TRACE("e");
-    // }
-    // else
-    // {
-    //     CentroidRadialLoction = 10;
-    // }
-    // if (CentroidRadialLoction < 0.0009)
-    // {
-    //     PRINT_2_VARIABLES(CentroidRadialLoction, pottsElementIndex);
-// }
-    // bool wrapped = TestRandomWalkAlongEdges(ListOfEdges, pottsElementIndex);
-
-    if (edgecounter > 0  ) 
-    {
-        TRACE("Wrapped accroding to tests");
-        PRINT_2_VARIABLES(pottsElementIndex, mQuaters );
-    }
-    // // else if ( edgecounter > 0 )
-    // // {
-    // //      TRACE("False Positive? ");
-    // //     PRINT_2_VARIABLES(CentroidRadialLoction, pottsElementIndex);
-
-    // // }
-    // if (  wrapped  ==1 )
-    // {
-    //      TRACE("Random walk shows wrapping ");
-    //     PRINT_VARIABLE( pottsElementIndex);
-
-    // }
-
-    
-
-    // bool wrapped = TestRandomWalk(pottsElementIndex);
-
-    // else if (wrapped )
-    // {
-    //     TRACE("False negative ");
-    // }else if (edgecounter > 0)
-    // {
-    //         TRACE("False positive");
-    // }
-    // else
-    // {
-    //     TRACE("Not Wrapped");
-    // }
-
-    // double Length = CellLength(pottsElementIndex);
-    //  double Diff1 = 2*M_PI - (2*M_PI/10);
-    //         // double Diff2 = 2*M_PI - (M_PI/10)- mAngleRange;
-    //         double Diff3 = 2*M_PI -  mAngleRange;
-    //         if (mAngleRange <= Diff1  &&  edgecounter > 0 )//Diff1 ==0 ||Diff2 ==0 || Diff3 ==0)
-    //         {
-    //             // PRINT_3_VARIABLES( mAngleRange, Diff1,  Diff3 );
-
-    //             // TRACE("----------  Both measures say wrapped");
-    //             bool wrapped = TestRandomWalk(pottsElementIndex);
-    //             if (wrapped ==1)
-    //             {
-    //                 TRACE("A & B - RIGHT ");
-    //             }
-    //             else {
-    //                 TRACE(" A & B - WRONG");
-    //             }
-
-    //         }else if  (mAngleRange <= Diff1 ) // Method B
-    //         {
-    //             // TRACE(" ///////   Only Angle range");
-    //              bool wrapped = TestRandomWalk(pottsElementIndex);
-    //             if (wrapped ==1)
-    //             {
-    //                 TRACE("B - RIGHT ");
-    //             }
-    //             else {
-    //                 TRACE("B - WRONG");
-    //             }
-    //         } else if ( edgecounter > 0 ) // Method A
-    //         {
-    //             // PRINT_3_VARIABLES( mAngleRange, Diff1,  Diff3 );
-    //             // TRACE(" ***********   only left-right examination");
-    //              bool wrapped = TestRandomWalk(pottsElementIndex);
-    //             if (wrapped ==1)
-    //             {
-    //                 TRACE("A - RIGHT ");
-    //             }
-    //             else {
-    //                 TRACE("A - WRONG");
-    //             }
-    //             //  PRINT_VARIABLE(pottsElementIndex);
-    //         }
-    //         else
-    //         {
-    //             TRACE(" Not wrapped ");
-    //         }
-
-    // / need someway to determine if the cell wraps right around
     return potts_element_surface;
 }
 
@@ -578,7 +461,7 @@ bool PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::TestRandomWalkAlongEdges(std::vec
     }
 
     // TRACE(" More then eddges");
- 
+
     unsigned lattice_site_index = ListOfEdges[0]; // this is a global index
 
     std::set<unsigned> NeighbourSet = this->mMooreNeighbouringNodeIndices[lattice_site_index];
@@ -589,7 +472,7 @@ bool PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::TestRandomWalkAlongEdges(std::vec
     // PRINT_VECTOR(Neighbours);
 
     if (AreVectorsSame(ListOfEdges, EdgeNeighbours) == 0)
-    { 
+    {
         TRACE(" Neighbour edgers and all edges are the same ");
         return 0; // all of the edges are within the neighborhood, therefore it cant wrap around.
     }
@@ -610,26 +493,23 @@ bool PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::TestRandomWalkAlongEdges(std::vec
 
             NeighbourSet = this->mMooreNeighbouringNodeIndices[*it];
             std::vector<unsigned> NextNeighbours(NeighbourSet.begin(), NeighbourSet.end());
-            
+
             EdgeNeighbours = Intersection(ListOfEdges, NextNeighbours);
-          
-            for (std::vector<unsigned>::iterator neighbour_lattice_index  = EdgeNeighbours.begin(); neighbour_lattice_index  != EdgeNeighbours.end(); ++neighbour_lattice_index )
+
+            for (std::vector<unsigned>::iterator neighbour_lattice_index = EdgeNeighbours.begin(); neighbour_lattice_index != EdgeNeighbours.end(); ++neighbour_lattice_index)
             {
-                c_vector<double, 3> direction = CellOnPlane[*neighbour_lattice_index] - CurrentPosition; 
+                c_vector<double, 3> direction = CellOnPlane[*neighbour_lattice_index] - CurrentPosition;
                 if (direction[0] > 0)
-                    {
-                        NewlistOfLeftNodes.push_back(*neighbour_lattice_index);
-                    }
-                    else if (CellOnPlane[*neighbour_lattice_index][0] < 0 && CurrentPosition[0] > 0)
-                    {
-                        NewlistOfLeftNodes.push_back(*neighbour_lattice_index);
-                        // Has looped around here
-                    }
-                
+                {
+                    NewlistOfLeftNodes.push_back(*neighbour_lattice_index);
+                }
+                else if (CellOnPlane[*neighbour_lattice_index][0] < 0 && CurrentPosition[0] > 0)
+                {
+                    NewlistOfLeftNodes.push_back(*neighbour_lattice_index);
+                    // Has looped around here
+                }
             }
 
-
-    
             // for (std::set<unsigned>::const_iterator neighbour_lattice_index = this->mMooreNeighbouringNodeIndices[*it].begin();
             //      neighbour_lattice_index != this->mMooreNeighbouringNodeIndices[*it].end();
             //      ++neighbour_lattice_index)
@@ -652,10 +532,10 @@ bool PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::TestRandomWalkAlongEdges(std::vec
             //     }
             // }
         }
-    
+
         if (NewlistOfLeftNodes.size() == 0)
         {
-          return 0;
+            return 0;
         }
 
         NewlistOfLeftNodes.erase(unique(NewlistOfLeftNodes.begin(), NewlistOfLeftNodes.end()), NewlistOfLeftNodes.end());
@@ -674,8 +554,7 @@ bool PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::TestRandomWalkAlongEdges(std::vec
         }
     }
 
-return wrapped;
-
+    return wrapped;
 }
 
 template <unsigned SPACE_DIM>
@@ -691,7 +570,7 @@ c_vector<double, SPACE_DIM> PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetCellCen
     for (std::vector<unsigned>::iterator it = Edges.begin(); it != Edges.end(); ++it)
     {
         // std::vector<double> LocationOfLatticeX = p_potts_element->GetNodeLocation(*it);
-       
+
         c_vector<double, SPACE_DIM> LocationOfLatticeX = p_potts_element->GetNodeLocation(*it);
         LocationOfLatticeX[2] = 0;
         if (IsVectorInVector(Locations, LocationOfLatticeX) == 0)
@@ -733,198 +612,176 @@ bool PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::IsVectorInVector(std::vector<c_ve
     return IsInVector;
 }
 
-/*  1) loop over the lattice sites of the Potts element
-        2) check if the lattice site neighbours are in the cell. 
-        3) For the neighbour not also in the cell, save it as a edge lattice
-
-   **** 4) I need to think of a way to label the lattice sites of two edges of the element that have wrapped around to connect
-    */
-
-//   if ( (Relative_theta[*neighbour_lattice_index] < -M_PI/8 && Relative_theta[lattice_site_index]  > M_PI/8 ))
-//                     {
-//                         // they share an element, but they are on different ends of the cell, meaning it has wrapped around
-//                         edgecounter +=1;
-//                     }else if (Relative_theta[*neighbour_lattice_index] > M_PI/8 && Relative_theta[lattice_site_index]  < -M_PI/8 )
-//                     {
-//                         edgecounter +=1;
-//                     }
-//                  }
-
-//  TestRandomWalkAlongEdges(ListOfEdges, pottsElementIndex);
-
-
 template <unsigned SPACE_DIM>
 std::map<unsigned, double> PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetRelativeLattiePositionsWithinCell(unsigned pottsElementIndex)
 {
-assert(SPACE_DIM == 3);
-     TRACE("C");
-     std::map<unsigned, double> D_theta;
+    assert(SPACE_DIM == 3);
+    TRACE("C");
+    std::map<unsigned, double> D_theta;
     std::map<unsigned, double> AbsoluteAngles;
 
     PottsElement<SPACE_DIM>* p_potts_element = this->GetElement(pottsElementIndex);
 
-if (p_potts_element->GetNumNodes() >10)
-{
-    
-    std::vector<double> Angles;
-
-    double Theta = 0;
-    // now loop over everything and determine its relative angle in the circumfrencial direction
-    for (unsigned node_index = 0; node_index < p_potts_element->GetNumNodes(); ++node_index)
+    if (p_potts_element->GetNumNodes() > 10)
     {
-        c_vector<double, 3> Location = p_potts_element->GetNodeLocation(node_index);
-        unsigned lattice_site_index = p_potts_element->GetNodeGlobalIndex(node_index); // the relative positions in the map are saved based on their global node index as I need to check they relative position between neighbours
-        double X_Pos = Location[0];
-        double Y_Pos = Location[1];
 
-        Theta = atan(Y_Pos / X_Pos);
+        std::vector<double> Angles;
 
-        if (X_Pos < 0 && Y_Pos > 0)
+        double Theta = 0;
+        // now loop over everything and determine its relative angle in the circumfrencial direction
+        for (unsigned node_index = 0; node_index < p_potts_element->GetNumNodes(); ++node_index)
         {
-            Theta = Theta + M_PI;
-        }
-        else if (X_Pos < 0 && Y_Pos < 0)
-        {
-            Theta = Theta - M_PI;
-        }
-        else if (Y_Pos == 0)
-        {
-            if (X_Pos > 0)
+            c_vector<double, 3> Location = p_potts_element->GetNodeLocation(node_index);
+            unsigned lattice_site_index = p_potts_element->GetNodeGlobalIndex(node_index); // the relative positions in the map are saved based on their global node index as I need to check they relative position between neighbours
+            double X_Pos = Location[0];
+            double Y_Pos = Location[1];
+
+            Theta = atan(Y_Pos / X_Pos);
+
+            if (X_Pos < 0 && Y_Pos > 0)
             {
-                Theta = 0;
+                Theta = Theta + M_PI;
             }
-            else if (X_Pos < 0)
+            else if (X_Pos < 0 && Y_Pos < 0)
             {
-                Theta = M_PI;
+                Theta = Theta - M_PI;
             }
+            else if (Y_Pos == 0)
+            {
+                if (X_Pos > 0)
+                {
+                    Theta = 0;
+                }
+                else if (X_Pos < 0)
+                {
+                    Theta = M_PI;
+                }
+            }
+            // // double C =  mRadius * Theta;
+            // D_theta[lattice_site_index] =  -Centroid_Theta + Theta;
+
+            AbsoluteAngles[lattice_site_index] = Theta;
+            Angles.push_back(Theta);
         }
-        // // double C =  mRadius * Theta;
-        // D_theta[lattice_site_index] =  -Centroid_Theta + Theta;
 
-        AbsoluteAngles[lattice_site_index] = Theta;
-        Angles.push_back(Theta);
-    }
+        // translate everything towards the orgin defined at
+        bool FirstQuater = 0;
+        bool SecondQuater = 0;
+        bool ThirdQuater = 0;
+        bool FourthQuater = 0;
 
-    
-// translate everything towards the orgin defined at
-    bool FirstQuater = 0 ;  bool SecondQuater = 0 ;  bool ThirdQuater = 0 ;   bool FourthQuater = 0 ;  
-    
-    for (std::vector<double>::iterator it  = Angles.begin(); it  != Angles.end(); ++it )
-            {
-                // PRINT_VARIABLE(*it);
-                TRACE("D");
-                if ( (0 <= *it) &&  ( *it<=M_PI/2) )// IN first quater
-                {   FirstQuater = 1;
-                 TRACE("E");
-                }
-                else if ( (M_PI/2 < *it ) && ( *it<=M_PI ) ) // IN second quater
-                { 
-                      SecondQuater = 1;
-                }
-                else if ( (-M_PI < *it) && ( *it < -M_PI/2 )) // IN thid quater
-                {   ThirdQuater = 1;
-                }
-                else if ( (-M_PI/2 <= *it)  && ( *it< 0) ) // IN foruth quater
-                {   FourthQuater = 1; 
-                } 
-                 TRACE("F");
-            }
-//   PRINT_4_VARIABLES(FirstQuater, SecondQuater, ThirdQuater, FourthQuater);
- TRACE("G");
-        if ( SecondQuater && ThirdQuater  && FirstQuater == 0    && FourthQuater == 0 )
+        for (std::vector<double>::iterator it = Angles.begin(); it != Angles.end(); ++it)
         {
-            for (std::vector<double>::iterator it  = Angles.begin(); it  != Angles.end(); ++it )
+            // PRINT_VARIABLE(*it);
+            TRACE("D");
+            if ((0 <= *it) && (*it <= M_PI / 2)) // IN first quater
+            {
+                FirstQuater = 1;
+                TRACE("E");
+            }
+            else if ((M_PI / 2 < *it) && (*it <= M_PI)) // IN second quater
+            {
+                SecondQuater = 1;
+            }
+            else if ((-M_PI < *it) && (*it < -M_PI / 2)) // IN thid quater
+            {
+                ThirdQuater = 1;
+            }
+            else if ((-M_PI / 2 <= *it) && (*it < 0)) // IN foruth quater
+            {
+                FourthQuater = 1;
+            }
+            TRACE("F");
+        }
+        //   PRINT_4_VARIABLES(FirstQuater, SecondQuater, ThirdQuater, FourthQuater);
+        TRACE("G");
+        if (SecondQuater && ThirdQuater && FirstQuater == 0 && FourthQuater == 0)
+        {
+            for (std::vector<double>::iterator it = Angles.begin(); it != Angles.end(); ++it)
             { //Everything needs rotating by -M_PI
-                *it = AddAngles( *it, -M_PI) ;
-                
+                *it = AddAngles(*it, -M_PI);
             }
             // TRACE("Added -M_PI");
-  
-           
-        }else if ( SecondQuater && ThirdQuater  && FirstQuater   && FourthQuater == 0 )
+        }
+        else if (SecondQuater && ThirdQuater && FirstQuater && FourthQuater == 0)
         {
-            for (std::vector<double>::iterator it  = Angles.begin(); it  != Angles.end(); ++it )
+            for (std::vector<double>::iterator it = Angles.begin(); it != Angles.end(); ++it)
             { //Everything needs rotating by -M_PI
-               *it = AddAngles( *it, -M_PI) ;
+                *it = AddAngles(*it, -M_PI);
             }
-        //    TRACE("Added -M_PI");
-        } else if ( SecondQuater && ThirdQuater  && FirstQuater  == 0  && FourthQuater )
+            //    TRACE("Added -M_PI");
+        }
+        else if (SecondQuater && ThirdQuater && FirstQuater == 0 && FourthQuater)
         {
-            for (std::vector<double>::iterator it  = Angles.begin(); it  != Angles.end(); ++it )
-            {//Everything needs rotating by M_PI
-                *it = AddAngles( *it, M_PI) ;
+            for (std::vector<double>::iterator it = Angles.begin(); it != Angles.end(); ++it)
+            { //Everything needs rotating by M_PI
+                *it = AddAngles(*it, M_PI);
             }
             // TRACE("Added M_PI");
-            
         }
-         TRACE("H");
-         PRINT_VARIABLE(Angles.size())
+        TRACE("H");
+        PRINT_VARIABLE(Angles.size())
 
-    // double average = accumulate(Angles.begin(),Angles.end(), 0)/ Angles.size();
-  
-    double max = Angles[0];   double min = Angles[0];
-    for (std::vector<double>::iterator it  = Angles.begin(); it  != Angles.end(); ++it )
-    {     
-        if (*it > max)
+        // double average = accumulate(Angles.begin(),Angles.end(), 0)/ Angles.size();
+
+        double max = Angles[0];
+        double min = Angles[0];
+        for (std::vector<double>::iterator it = Angles.begin(); it != Angles.end(); ++it)
         {
-            max = *it;
-        }  else if (*it < min)
+            if (*it > max)
+            {
+                max = *it;
+            }
+            else if (*it < min)
+            {
+                min = *it;
+            }
+        }
+        TRACE("I");
+        double MiddleAngle = (max - min) / 2;
+        // PRINT_3_VARIABLES(MiddleAngle, max ,min);
+        //   cout << "_ "  << endl;
+
+        TRACE("J");
+        double AverageDifference = (max - min) / Angles.size();
+        double counter = 0;
+
+        for (unsigned node_index = 0; node_index < p_potts_element->GetNumNodes(); ++node_index)
         {
-            min = *it;
-        } 
+            TRACE("K");
+            unsigned lattice_site_index = p_potts_element->GetNodeGlobalIndex(node_index); // the relative positions in the map are saved based on their global node index as I need to check they relative position between neighbours
+            // AbsoluteAngles[lattice_site_index] = AddAngles(AbsoluteAngles[lattice_site_index], - MiddleAngle);
+            Angles.push_back(Theta);
+            if (Angles[counter] > MiddleAngle + 2 * AverageDifference) // the AverageDifference is the buffer so im not picking up neighbours near theta == 0
+            {
+                D_theta[lattice_site_index] = 1;
+            }
+            else if (Angles[counter] <= MiddleAngle - 2 * AverageDifference)
+            {
+                TRACE("L");
+                D_theta[lattice_site_index] = 0;
+            }
+            else
+            {
+                D_theta[lattice_site_index] = 2;
+            }
+            counter += 1;
+            TRACE("M");
+        }
+        TRACE("N");
+        mQuaters = FirstQuater + SecondQuater + ThirdQuater + FourthQuater;
+        return D_theta;
     }
-     TRACE("I");
-    double MiddleAngle = (max - min)/2;
-    // PRINT_3_VARIABLES(MiddleAngle, max ,min);
-    //   cout << "_ "  << endl;
-
- TRACE("J");
-    double AverageDifference = (max- min) / Angles.size();
-    double counter =0;
-
-    for (unsigned node_index = 0; node_index < p_potts_element->GetNumNodes(); ++node_index)
+    else
     {
-         TRACE("K");
-        unsigned lattice_site_index = p_potts_element->GetNodeGlobalIndex(node_index); // the relative positions in the map are saved based on their global node index as I need to check they relative position between neighbours
-        // AbsoluteAngles[lattice_site_index] = AddAngles(AbsoluteAngles[lattice_site_index], - MiddleAngle);  
-        Angles.push_back(Theta);
-        if (Angles[counter] > MiddleAngle + 2*AverageDifference ) // the AverageDifference is the buffer so im not picking up neighbours near theta == 0
+        for (unsigned node_index = 0; node_index < p_potts_element->GetNumNodes(); ++node_index)
         {
-            D_theta[lattice_site_index] = 1;
-        }
-        else if (Angles[counter] <= MiddleAngle - 2* AverageDifference )
-        { 
-             TRACE("L");
-            D_theta[lattice_site_index] = 0;
-        }else 
-        { 
+            unsigned lattice_site_index = p_potts_element->GetNodeGlobalIndex(node_index);
             D_theta[lattice_site_index] = 2;
         }
-        counter += 1;
-         TRACE("M");
+        // there are size problems here with the number of lattices in the element
     }
- TRACE("N");
-    mQuaters = FirstQuater+ SecondQuater+ ThirdQuater+ FourthQuater;
-    return D_theta;
-    
-}else 
-{
-    for (unsigned node_index = 0; node_index < p_potts_element->GetNumNodes(); ++node_index)
-    {
-        unsigned lattice_site_index = p_potts_element->GetNodeGlobalIndex(node_index); 
-        D_theta[lattice_site_index]  = 2;
-    }
-    there are size problems here with the number of lattices in the element
-
 }
-    
-}
-
-
-
-
-
-
 
 template <unsigned SPACE_DIM>
 double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::AddAngles(double alpha, double beta)
@@ -932,11 +789,12 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::AddAngles(double alpha, double 
     double eta = alpha + beta;
 
     if (eta > M_PI)
-    {  // This anlge is now negative 
-        eta = eta -2*M_PI;
-    }else if(eta < -M_PI)
-     {  // This anlge is now positive
-        eta = eta + 2*M_PI;
+    { // This anlge is now negative
+        eta = eta - 2 * M_PI;
+    }
+    else if (eta < -M_PI)
+    { // This anlge is now positive
+        eta = eta + 2 * M_PI;
     }
     return eta;
 }
@@ -961,11 +819,10 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::AddAngles(double alpha, double 
 //            {   ThirdQuater = 1;
 //            }else if (-M_PI/2 <= *it < 0) // IN foruth quater
 //            {
-//                 FourthQuater = 1; 
+//                 FourthQuater = 1;
 //            }
-            
-//         }
 
+//         }
 
 //         if ( SecondQuater && ThirdQuater  && FirstQuater == 0    && FourthQuater == 0 )
 //         {
@@ -993,17 +850,17 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::AddAngles(double alpha, double 
 //     // double average = accumulate(Angles.begin(),Angles.end(), 0)/ Angles.size();
 //     // cout << "The average is " << average << endl;
 //     for (std::vector<double>::iterator it  = Angles.begin(); it  != Angles.end(); ++it )
-//     {     
+//     {
 //            if (*it > max)
 //             {
 //                 max = *it;
 //             }  else if (*it < min)
 //             {
 //                 min = *it;
-//             } 
+//             }
 //     }
 //     double Middle = (max - min)/2;
-    
+
 //     return Middle;
 // }
 
@@ -1011,16 +868,15 @@ template <unsigned SPACE_DIM>
 double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::PeriodicAngle(double eta)
 {
     if (eta > M_PI)
-    {  // This anlge is now negative 
-        eta = eta -2*M_PI;
-    }else if(eta < -M_PI)
-     {  // This anlge is now positive
-        eta = eta + 2*M_PI;
+    { // This anlge is now negative
+        eta = eta - 2 * M_PI;
+    }
+    else if (eta < -M_PI)
+    { // This anlge is now positive
+        eta = eta + 2 * M_PI;
     }
     return eta;
 }
-
-
 
 template <unsigned SPACE_DIM>
 std::map<unsigned, c_vector<double, 2> > PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::MapCellTo2DPlane(unsigned pottsElementIndex)
@@ -1104,7 +960,7 @@ bool PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::TestRandomWalk(unsigned pottsElem
             counter += 1;
 
             std::vector<unsigned> NewlistOfLeftNodes;
-            double LeftNeighbours = 0 ;
+            double LeftNeighbours = 0;
             for (std::vector<unsigned>::iterator it = listOfLeftNodes.begin() + x; it != listOfLeftNodes.end(); ++it)
             {
                 c_vector<double, 3> CurrentPosition = CellOnPlane[*it];
@@ -1243,9 +1099,6 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::CellLength(unsigned pottsElemen
 
     return length;
 }
-
-
-
 
 template <unsigned SPACE_DIM>
 Node<SPACE_DIM>* PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetPottsLatticeSite(unsigned latticeSiteIndex)
@@ -1899,13 +1752,19 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::UpdatePottsNodeLocationFromDelaun
         potts_node_iter->rGetModifiableLocation() = node_iter->rGetLocation();
     }
 
+TRACE("First");
     FindElementNeighbours();
+
     mAngleRange = 0;
-    MapCylinderToPlane();
+    // MapCylinderToPlane();
+    TRACE("Second");
     CalculateEdgeLenghts();
+    TRACE("Third");
     CalculateLatticeVolumes();
-    CalculateCurvature();
-    CalculateTraction();
+    TRACE("done");
+    // CalculateCurvature();
+    // TRACE("Fifth");
+    // CalculateTraction();
 }
 
 template <unsigned SPACE_DIM>
@@ -2204,7 +2063,7 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::min_value(std::vector<double> V
             min = *it;
         } //else if (min + *it < -M_PI)//AddAngles(*it,min)
         // {
-        //  // Have crossed the periodic boundary 
+        //  // Have crossed the periodic boundary
         //     min = *it;
         // }
     }
@@ -2482,5 +2341,206 @@ template class PottsArbitrarySurfaceIn3DMesh<3>;
 
 //     // PRINT_2_VARIABLES(potts_element_surface2 , potts_element_surface2);
 //     return potts_element_surface2;
+
+// }
+
+// template <unsigned SPACE_DIM>
+// double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetSurfaceAreaOfElement(unsigned pottsElementIndex) // perimiter
+// {
+
+//     // For now just use the basic perimeter calculation
+
+//     /*  1) Have the CPM cell the lattice site belongs to
+//         2) Loop over the lattice sites in thi CPM cell and collect all of the associated mesh element pairs
+//            2a) -  remove anything that appears more than once
+//         3) Loop over all of the associated mesh element pairs and add the perimeter contribution from each.
+
+//         */
+//     //
+//     PottsElement<SPACE_DIM>* p_potts_element = this->GetElement(pottsElementIndex);
+//     c_vector<double, SPACE_DIM> CenterOfCell = this->GetCentroidOfElement(pottsElementIndex);
+//     // PRINT_VECTOR(CenterOfCell);
+//     // std::map<unsigned, double> Relative_theta = GetRelativeLattiePositionsWithinCell(pottsElementIndex);
+
+//     double edgecounter = 0;
+//     double potts_element_surface = 0.0;
+//     std::vector<unsigned> ListOfEdges;
+
+//     //  Loop over each of the lattice sites in the cell
+//     for (unsigned local_lattice_index = 0; local_lattice_index < p_potts_element->GetNumNodes(); ++local_lattice_index)
+//     {
+
+//         unsigned lattice_site_index = p_potts_element->GetNodeGlobalIndex(local_lattice_index);
+
+//         // potts_element_surface += mLatticePerimeters[lattice_site_index];
+
+//         // Removing the internal elements
+//         double counter = 0;
+//         // iterate over all neighbours for this element to check if they are in the same element
+
+//         for (std::set<unsigned>::const_iterator neighbour_lattice_index = this->mMooreNeighbouringNodeIndices[lattice_site_index].begin();
+//              neighbour_lattice_index != this->mMooreNeighbouringNodeIndices[lattice_site_index].end();
+//              ++neighbour_lattice_index)
+//         {
+
+//             if (DoNodesShareElement(lattice_site_index, *neighbour_lattice_index) == 0)
+//             {
+
+//                 potts_element_surface += mDistanceBetweenElements[mMapNodesPairsToElementPairs[Create_pair(lattice_site_index, *neighbour_lattice_index)]];
+//                 counter += 1;
+//                 //  } else if ( (Relative_theta[*neighbour_lattice_index] < -0.001 && Relative_theta[lattice_site_index]  > 0.001 )|| (Relative_theta[*neighbour_lattice_index] > 0.001 && Relative_theta[lattice_site_index]  < -0.001 )   )
+//             }
+//         }
+
+//     }
+//     return potts_element_surface;
+
+//     // for (unsigned local_lattice_index = 0; local_lattice_index < p_potts_element->GetNumNodes(); ++local_lattice_index)
+//     // {
+
+//     //     unsigned lattice_site_index = p_potts_element->GetNodeGlobalIndex(local_lattice_index);
+
+//     //     // potts_element_surface += mLatticePerimeters[lattice_site_index];
+
+//     //     // Removing the internal elements
+//     //     double counter = 0;
+//     //     // iterate over all neighbours for this element to check if they are in the same element
+
+//     //     for (std::set<unsigned>::const_iterator neighbour_lattice_index = this->mMooreNeighbouringNodeIndices[lattice_site_index].begin();
+//     //          neighbour_lattice_index != this->mMooreNeighbouringNodeIndices[lattice_site_index].end();
+//     //          ++neighbour_lattice_index)
+//     //     {
+
+//     //         if (DoNodesShareElement(lattice_site_index, *neighbour_lattice_index) == 0)
+//     //         {
+
+//     //             potts_element_surface += mDistanceBetweenElements[mMapNodesPairsToElementPairs[Create_pair(lattice_site_index, *neighbour_lattice_index)]];
+//     //             counter += 1;
+//     //             //  } else if ( (Relative_theta[*neighbour_lattice_index] < -0.001 && Relative_theta[lattice_site_index]  > 0.001 )|| (Relative_theta[*neighbour_lattice_index] > 0.001 && Relative_theta[lattice_site_index]  < -0.001 )   )
+//     //         }
+
+//     //         else if (DoNodesShareElement(lattice_site_index, *neighbour_lattice_index) == 1)
+//     //         {
+//     //              TRACE("A");
+//     //             if ((Relative_theta[*neighbour_lattice_index] != Relative_theta[lattice_site_index]) && Relative_theta[lattice_site_index]!=2 &&Relative_theta[*neighbour_lattice_index]!=2)
+//     //             // if (Relative_theta[*neighbour_lattice_index] != Relative_theta[lattice_site_index])
+//     //             {
+//     //                  TRACE("B");
+//     //                 // PRINT_2_VARIABLES(Relative_theta[*neighbour_lattice_index],Relative_theta[lattice_site_index]);
+//     //                 // they share an element, but they are on different ends of the cell, meaning it has wrapped around
+//     //                 edgecounter += 1;
+//     //             }
+//     //         }
+//     //     }
+
+//     //     // if (counter > 0)
+//     //     // {
+
+//     //     //     ListOfEdges.push_back(lattice_site_index);
+
+//     //     // }
+//     // }
+//     // double CentroidRadialLoction;
+
+//     // if (p_potts_element->GetNumNodes() != ListOfEdges.size())
+//     // {
+//     //     TRACE("c");
+//     //     c_vector<double, 3> Centroid = GetCellCentre(ListOfEdges, pottsElementIndex);
+//     //     TRACE("d");
+//     //     // PRINT_VECTOR(Centroid);
+//     //     CentroidRadialLoction = norm_2(Create_c_vector(Centroid[0], Centroid[1]));
+//     //     TRACE("e");
+//     // }
+//     // else
+//     // {
+//     //     CentroidRadialLoction = 10;
+//     // }
+//     // if (CentroidRadialLoction < 0.0009)
+//     // {
+//     //     PRINT_2_VARIABLES(CentroidRadialLoction, pottsElementIndex);
+// // }
+//     // bool wrapped = TestRandomWalkAlongEdges(ListOfEdges, pottsElementIndex);
+
+//     // if (edgecounter > 0  )
+//     // {
+//     //     TRACE("Wrapped accroding to tests");
+//     //     PRINT_2_VARIABLES(pottsElementIndex, mQuaters );
+//     // }
+//     // // // else if ( edgecounter > 0 )
+//     // // {
+//     // //      TRACE("False Positive? ");
+//     // //     PRINT_2_VARIABLES(CentroidRadialLoction, pottsElementIndex);
+
+//     // // }
+//     // if (  wrapped  ==1 )
+//     // {
+//     //      TRACE("Random walk shows wrapping ");
+//     //     PRINT_VARIABLE( pottsElementIndex);
+
+//     // }
+
+//     // bool wrapped = TestRandomWalk(pottsElementIndex);
+
+//     // else if (wrapped )
+//     // {
+//     //     TRACE("False negative ");
+//     // }else if (edgecounter > 0)
+//     // {
+//     //         TRACE("False positive");
+//     // }
+//     // else
+//     // {
+//     //     TRACE("Not Wrapped");
+//     // }
+
+//     // double Length = CellLength(pottsElementIndex);
+//     //  double Diff1 = 2*M_PI - (2*M_PI/10);
+//     //         // double Diff2 = 2*M_PI - (M_PI/10)- mAngleRange;
+//     //         double Diff3 = 2*M_PI -  mAngleRange;
+//     //         if (mAngleRange <= Diff1  &&  edgecounter > 0 )//Diff1 ==0 ||Diff2 ==0 || Diff3 ==0)
+//     //         {
+//     //             // PRINT_3_VARIABLES( mAngleRange, Diff1,  Diff3 );
+
+//     //             // TRACE("----------  Both measures say wrapped");
+//     //             bool wrapped = TestRandomWalk(pottsElementIndex);
+//     //             if (wrapped ==1)
+//     //             {
+//     //                 TRACE("A & B - RIGHT ");
+//     //             }
+//     //             else {
+//     //                 TRACE(" A & B - WRONG");
+//     //             }
+
+//     //         }else if  (mAngleRange <= Diff1 ) // Method B
+//     //         {
+//     //             // TRACE(" ///////   Only Angle range");
+//     //              bool wrapped = TestRandomWalk(pottsElementIndex);
+//     //             if (wrapped ==1)
+//     //             {
+//     //                 TRACE("B - RIGHT ");
+//     //             }
+//     //             else {
+//     //                 TRACE("B - WRONG");
+//     //             }
+//     //         } else if ( edgecounter > 0 ) // Method A
+//     //         {
+//     //             // PRINT_3_VARIABLES( mAngleRange, Diff1,  Diff3 );
+//     //             // TRACE(" ***********   only left-right examination");
+//     //              bool wrapped = TestRandomWalk(pottsElementIndex);
+//     //             if (wrapped ==1)
+//     //             {
+//     //                 TRACE("A - RIGHT ");
+//     //             }
+//     //             else {
+//     //                 TRACE("A - WRONG");
+//     //             }
+//     //             //  PRINT_VARIABLE(pottsElementIndex);
+//     //         }
+//     //         else
+//     //         {
+//     //             TRACE(" Not wrapped ");
+//     //         }
+
+//     // / need someway to determine if the cell wraps right around
 
 // }

@@ -35,8 +35,8 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef DAMAGEDCELLMUTATIONSTATE_HPP_
 #define DAMAGEDCELLMUTATIONSTATE_HPP_
-
-#include "AbstractCellMutationState.hpp"
+#include "Users/jcrawshaw/Documents/Chaste/cell_based/src/cell/properties/mutations/AbstractCellMutationState.hpp"
+// #include "AbstractCellMutationState.hpp"
 #include "ChasteSerialization.hpp"
 #include <boost/serialization/base_object.hpp>
 
