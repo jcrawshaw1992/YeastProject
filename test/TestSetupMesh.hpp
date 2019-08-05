@@ -58,12 +58,12 @@ public:
 
 // I want a regular mesh 
 
-        int N_D = 80;
+        int N_D = 100;
         int N_Z = 1.5 * N_D;
         double mesh_scale = 1e-3;
-        Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z,1.5e-3, 12e-3);
+        Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z,5e-6, 20e-6);
         MutableMesh<2,3>* p_mesh = generator.GetMesh();
-        p_mesh->Translate(-6.0e-3*unit_vector<double>(3,2));
+        p_mesh->Translate(-10.0e-6*unit_vector<double>(3,2));
         // std::string output_dir = "/";
          std::string output_dir = "CylindricalMesh/";
         // TRACE(output_dir);

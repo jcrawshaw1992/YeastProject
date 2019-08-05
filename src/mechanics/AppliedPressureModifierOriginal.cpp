@@ -34,7 +34,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-#include "AppliedPressureModifier.hpp"
+#include "AppliedPressureModifierOriginal.hpp"
 #include "MeshBasedCellPopulation.hpp"
 #include "UblasCustomFunctions.hpp"
 

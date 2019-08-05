@@ -25,8 +25,6 @@ Iterations=100
 chaste_setup_exe = '/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/build/optimised/TestSetupFlowInInitallyCollapsedPipeRunner'
 chaste_run_exe = '/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/build/optimised/TestRunFlowInInitallyCollapsedPipeRunner'
 
-
-
 hemelb_setup_exe = 'env PYTHONPATH=/Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/setuptool:$PYTHONPATH /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/setuptool/scripts/hemelb-setup-nogui'
 
 radii_over_time = [] # empty array
@@ -257,7 +255,7 @@ def WriteReadme(ElasticShearModulus, AreaDilationModulus, membrane_constant, Are
 
 
 if __name__=="__main__":
-    working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/FlowFolder/' 
+    working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/Tester/' 
     data_path =working_directory + 'SetUpData/'
     
     shutil.copy(data_path +'config.stl' , working_directory +'config.stl' )

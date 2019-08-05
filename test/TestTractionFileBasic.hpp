@@ -68,14 +68,15 @@ public:
     {
         unsigned N_D = 100;
         unsigned N_Z = N_D*0.5;
-        double Length = 3e-3;//12e-3; //12e-3;
-        double trans = -1.5e-3;
+        double scale = 1e3;
+        double Length = 60e-6 * scale;//12e-3; //12e-3;
+        double trans = -Length/2;
         double MaxZ = Length + trans;
         double MinZ = trans;
 
-        // MutableMesh<2, 3>* p_mesh = p_mesh_base;
+        double Radius =  5e-6 * scale
+
         Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, 1e-3, Length);
-        // Honeycomb3DCylinderMeshGenerator generator(N_D[N_D_index], N_Z, 1.5e-3, Length);
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
         p_mesh->Translate(trans * unit_vector<double>(3, 2));
 
@@ -87,9 +88,6 @@ public:
         MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
         MAKE_PTR(BetaCateninOneHitCellMutationState, p_state); //Mutation to mark nodes
 
-        // MAKE_PTR(WildTypeCellMutationState, p_WildTypeState); //Mutation to mark nodes
-
-    //(0.023 +0.0225)/133.3223874 average pressure
         std::vector<CellPtr> cells;
         CellsGenerator<FixedG1GenerationalCellCycleModel, 2> cells_generator;
         cells_generator.GenerateBasicRandom(cells, p_mesh->GetNumNodes(), p_differentiated_type);
@@ -99,13 +97,6 @@ public:
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
 
-        // MAKE_PTR(HasEndothelialCell, p_mutation_state);
-        // for (AbstractCellPopulation<2, 3>::Iterator cell_iter = cell_population.Begin();
-        //         cell_iter != cell_population.End();
-        //         ++cell_iter)
-        // {
-        //         cell_iter->SetMutationState(p_mutation_state);
-        // }
         c_vector<long double, 3> Node_location;
         for (AbstractCellPopulation<2, 3>::Iterator cell_iter = cell_population.Begin();
                  cell_iter != cell_population.End();
@@ -151,7 +142,7 @@ public:
         
         // p_force_modifier->SetMembraneConstants(ElasticShearModulus , AreaDilationModulus, Area_constant, membrane_constant );
         
-            double pressure = 0.00002;//1.0666e4; // to match 80mmhg
+            double pressure = (-133.322 * 16 + 144/2)*1e-12 * scale^2   ;// 0.00002;//1.0666e4; // to match 80mmhg
             MAKE_PTR_ARGS(CompressiveTissueForce, p_CompressiveTissueForce, (pressure));
             simulator.AddForce(p_CompressiveTissueForce);
 
@@ -162,15 +153,12 @@ public:
 //         ----------------------------
 //         */
 
-     double ElasticShearModulus = 4.4e-05;
-      double  AreaDilationModulus = 0.9e-4; 
-      double  membrane_constant =0.75e-13 ; 
-      double Area_constant = 0.9e-4;
+        double ElasticShearModulus = 4.4e-05;
+        double  AreaDilationModulus = 0.9e-4; 
+        double  membrane_constant =0.75e-13 ; 
+        double Area_constant = 0.9e-4;
 
-        // double ElasticShearModulus = 0 ;//4.6e-07; //0.5 * 1e-4; // n/m 0.5 * 1e-7;
-        // double AreaDilationModulus = 0 ;//1e-10;//1e-9;
         double Scalling =1; 
-        // bool HetroMembrane = 1;
         
 
         boost::shared_ptr<MembraneShearForce> p_shear_force(new MembraneShearForce());
@@ -229,11 +217,13 @@ public:
 // //         ----------------------------
 //         */
 
+
+
         //Create a plane boundary to represent the inlet and pass them to the simulation
-        c_vector<long double, 3> Boundary1 = Create_c_vector(0, 0, -0.0058);
+        c_vector<long double, 3> Boundary1 = Create_c_vector(0, 0, -30e-6 * scale);
         c_vector<long double, 3> Normal1 = Create_c_vector(0, 0, 1);
 
-        c_vector<long double, 3> Boundary2 = Create_c_vector(0, 0, 0.0059);
+        c_vector<long double, 3> Boundary2 = Create_c_vector(0, 0, 30e-6 * scale);
         c_vector<long double, 3> Normal2 = Create_c_vector(0, 0, -1);
         
         boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition_1(new FixedRegionBoundaryCondition<2, 3>(&cell_population, Boundary1, Normal1, 10));

@@ -204,16 +204,16 @@ void AppliedForceOffLatticeSimulation<ELEMENT_DIM,SPACE_DIM>::UpdateAtEndOfTimeS
 
     	if ( (height_c<=0) ||(height_b<=0))
     	{
-    		    	PRINT_3_VARIABLES(node_zero->GetPoint().rGetLocation(),node_one->GetPoint().rGetLocation(),node_two->GetPoint().rGetLocation());
-    		    	PRINT_3_VARIABLES(tangent_vector,normal_in_plane,element_normal);
+    		    	// PRINT_3_VARIABLES(node_zero->GetPoint().rGetLocation(),node_one->GetPoint().rGetLocation(),node_two->GetPoint().rGetLocation());
+    		    	// PRINT_3_VARIABLES(tangent_vector,normal_in_plane,element_normal);
     		    	PRINT_VARIABLE(most_parallel_edge);
-    		    	PRINT_3_VARIABLES(edge_zero,edge_one,edge_two);
-    		    	PRINT_3_VARIABLES(t_dot_zero,t_dot_one,t_dot_two)
-    		    	PRINT_3_VARIABLES(vertex_a_location,vertex_b_location,vertex_c_location);
+    		    	// PRINT_3_VARIABLES(edge_zero,edge_one,edge_two);
+    		    	// PRINT_3_VARIABLES(t_dot_zero,t_dot_one,t_dot_two)
+    		    	// PRINT_3_VARIABLES(vertex_a_location,vertex_b_location,vertex_c_location);
 //    		    	PRINT_4_VARIABLES(vertex_a_location,vertex_b_location,vertex_c_location,vertex_c_new_location);
 
-    		    	PRINT_3_VARIABLES(edge_a,edge_b,edge_c);
-    		    	PRINT_2_VARIABLES(height_b,height_c);
+    		    	// PRINT_3_VARIABLES(edge_a,edge_b,edge_c);
+    		    	// PRINT_2_VARIABLES(height_b,height_c);
     		    	//PRINT_3_VARIABLES(edge_a_reduction_ratio,edge_b_reduction_ratio,edge_c_reduction_ratio)
 
     	}
