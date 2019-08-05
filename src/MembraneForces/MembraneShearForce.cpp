@@ -20,7 +20,7 @@ void MembraneShearForce::SetAreaDilationModulus(double AreaDilationModulus)
 
 void MembraneShearForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
-    TRACE("Add Shear Force");
+    // TRACE("Add Shear Force");
     MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
 
     for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
@@ -37,7 +37,7 @@ void MembraneShearForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCel
         c_vector<long double, 3> Vector1 = pNode1->rGetLocation();
         c_vector<long double, 3> Vector2 = pNode2->rGetLocation();
         c_vector<long double, 3> Vector0 = pNode0->rGetLocation();
-        PRINT_VECTOR(Vector0 );
+        // PRINT_VECTOR(Vector0 );
 
         c_vector<long double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
         c_vector<long double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 33);
@@ -138,7 +138,7 @@ void MembraneShearForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCel
             node_index = elem_iter->GetNodeGlobalIndex(i);
             CellArea = rCellPopulation.GetVolumeOfCell(rCellPopulation.GetCellUsingLocationIndex(node_index));
             ForceOnNode[i] /= CellArea;
-            PRINT_VARIABLE(CellArea);
+            // PRINT_VARIABLE(CellArea);
         }
 
 
@@ -148,7 +148,7 @@ void MembraneShearForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCel
         pNode2->AddAppliedForceContribution(ForceOnNode[2]);
     }
 
-TRACE("DONE");
+// TRACE("DONE");
     // for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
     //      cell_iter != rCellPopulation.End();
     //      ++cell_iter)

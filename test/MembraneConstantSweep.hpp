@@ -194,18 +194,18 @@ public:
           Bending Force
          ----------------------------
 //        */
-        // // double membrane_constant = 0 ;//1e-11;
-        // boost::shared_ptr<MembraneStiffnessForce> p_membrane_force(new MembraneStiffnessForce());
-        //  p_membrane_force->SetScallingBending(Scalling);
+        // double membrane_constant = 0 ;//1e-11;
+        boost::shared_ptr<MembraneStiffnessForce> p_membrane_force(new MembraneStiffnessForce());
+         p_membrane_force->SetScallingBending(Scalling);
 
-        // p_membrane_force->SetMembraneStiffness(membrane_constant);
-        // p_membrane_force->SetupInitialMembrane(*p_mesh, cell_population);
+        p_membrane_force->SetMembraneStiffness(membrane_constant);
+        p_membrane_force->SetupInitialMembrane(*p_mesh, cell_population);
        
-        // simulator.AddForce(p_membrane_force);
+        simulator.AddForce(p_membrane_force);
 
-        // boost::shared_ptr<EdgeCorrectionForce> p_EdgeCorrectionForce(new EdgeCorrectionForce());
-        // p_EdgeCorrectionForce->SetMeshType(1, N_D, N_Z );
-        // simulator.AddForce(p_EdgeCorrectionForce);
+        boost::shared_ptr<EdgeCorrectionForce> p_EdgeCorrectionForce(new EdgeCorrectionForce());
+        p_EdgeCorrectionForce->SetMeshType(1, N_D, N_Z );
+        simulator.AddForce(p_EdgeCorrectionForce);
 
         
 
