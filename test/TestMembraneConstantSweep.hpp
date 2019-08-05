@@ -72,7 +72,7 @@ public:
                 for (int ks = -100; ks < 1; ks++)
                 {
 
-                    unsigned N_D = 100;
+                    unsigned N_D = 10;
                     unsigned N_Z = N_D * 1.5;
                     double scale = 1e3;
                     double Length = 60e-6 * scale; 
@@ -105,9 +105,9 @@ public:
                     // Set up cell-based simulation
                     OffLatticeSimulation<2, 3> simulator(cell_population);
                     simulator.SetOutputDirectory(output_directory);
-                    simulator.SetEndTime(20); //(M_TIME_FOR_SIMULATION);
+                    simulator.SetEndTime(100); //(M_TIME_FOR_SIMULATION);
                     simulator.SetDt(0.0001);
-                    simulator.SetSamplingTimestepMultiple(100000);
+                    simulator.SetSamplingTimestepMultiple(20000);
                     simulator.SetUpdateCellPopulationRule(false); // No remeshing.
 
                     double pressure = (133.322 * 16 + 144 / 2) * 1e-12 * scale * scale; // 0.00002;//1.0666e4; // to match 80mmhg
