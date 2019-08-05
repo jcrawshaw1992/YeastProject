@@ -34,8 +34,8 @@
 #include "MembraneSurfaceForce.hpp"
 #include "projects/VascularRemodelling/src/MembraneForces/MembraneStiffnessForce.hpp"
 
-#include "AppliedForce.hpp"
-#include "AppliedForceModifier.hpp"
+// #include "AppliedForce.hpp"
+// #include "AppliedForceModifier.hpp"
 #include "ConstantPressure.hpp"
 
 static const double M_TIME_FOR_SIMULATION = 0.002; //40; //50
