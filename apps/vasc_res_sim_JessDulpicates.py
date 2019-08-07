@@ -18,7 +18,7 @@ import math
 
 
 
-Iterations=100
+Iterations=1
 
 
 
@@ -143,20 +143,20 @@ def update_xml_file(iter_num, num_iters):
     # ElementTree.SubElement(surface, 'geometry', type='surface')
     # ElementTree.SubElement(surface, 'field', type='tangentialprojectiontraction')
 
-    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-traction.xtr'})
+    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(100), 'file': 'surface-traction.xtr'}) # ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-traction.xtr'})
     ElementTree.SubElement(surface, 'geometry', type='surface')
     ElementTree.SubElement(surface, 'field', type='traction')
 
-    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-tractions.xtr'})
+    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(100), 'file': 'surface-tractions.xtr'}) # surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-tractions.xtr'})
     ElementTree.SubElement(surface, 'geometry', type='surface')
     ElementTree.SubElement(surface, 'field', type='traction')
     ElementTree.SubElement(surface, 'field', type='tangentialprojectiontraction')    
 
-    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-pressure.xtr'})
+    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(100), 'file': 'surface-pressure.xtr'}) # surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-pressure.xtr'})
     ElementTree.SubElement(surface, 'geometry', type='surface')
     ElementTree.SubElement(surface, 'field', type='pressure')
 
-    wholegeometry = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'wholegeometry-velocity.xtr'})
+    wholegeometry = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(100), 'file': 'wholegeometry-velocity.xtr'}) #wholegeometry = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'wholegeometry-velocity.xtr'})
     ElementTree.SubElement(wholegeometry, 'geometry', type='whole')
     ElementTree.SubElement(wholegeometry, 'field', type='velocity')
 
@@ -319,10 +319,10 @@ if __name__=="__main__":
 
     print ' ------- Setting up Chaste simulation ------- '
 
-    ElasticShearModulus = ' -ElasticShearModulus '+   str(4.4e-07) #  +   str(4.6e-07) # str(5e-8) #str(6e-8) #  1e-4 Dont change this, stops werid stuff happening 
-    AreaDilationModulus = ' -AreaDilationModulus ' + str(0.9e-11) # str(8 * 1e-12) # str(5e-9) this one controls the dilation of the cylinder, so can be played with 
-    membrane_constant = ' -membrane_constant ' + str( 100 ) # str(3 * 1e-14)
-    Area_constant = ' -Area_constant ' +  str(0.9e-15) # str(8e-11) # str(8 * 1e-17) # str(5 * 1e-6)
+    ElasticShearModulus = ' -ElasticShearModulus '+   str(5.0119e-05) #  +   str(4.4e-07) # str(5e-8) #str(6e-8) #  1e-4 Dont change this, stops werid stuff happening 
+    AreaDilationModulus = ' -AreaDilationModulus ' + str(1e-05) # str(0.9e-11) # str(5e-9) this one controls the dilation of the cylinder, so can be played with 
+    membrane_constant = ' -membrane_constant ' + str( 0) # str(100)
+    Area_constant = ' -Area_constant ' +  str(1e-05) # str(0.9e-15) # str(8 * 1e-17) # str(5 * 1e-6)
     Time_step = ' -dt ' + str(dt)
     Sampling = ' -SamplingTimestepMultiple ' + str(SamplingTimestepMultiple)
     duration_of_iteration = " -Duration " + str(duration)
@@ -366,52 +366,53 @@ if __name__=="__main__":
             # Step 2a: Update xml
     
             update_xml_file(iter, args.num_iterations)
+            pause()
         
             print "Run HemeLB"
             # Step 3: HemeLB simulation
             run_hemelb2() 
             print'\n HemeLB simulation complete \n'
-        pause()
+        # pause()
   
         # # Step 4: Run Chaste with the tractions previously computed
         traction_filename = working_directory + 'results/Extracted/surface-tractions.xtr'
         # traction_filename = "/Users/jcrawshaw/Documents/ChasteWorkingDirectory/DeformingCylindricalBasicHetroWallTesting/results/Extracted/surface-tractions.xtr"
         
-        command = chaste_run_exe + ' -start_time ' + str(start_time) + ' -duration ' + str(duration) + ' -traction_file ' +  traction_filename + ' -mesh_scale ' +  str(args.mesh_scale)
-        print 'Chaste step'
-        subprocess.call(command, shell=True)
+        # command = chaste_run_exe + ' -start_time ' + str(start_time) + ' -duration ' + str(duration) + ' -traction_file ' +  traction_filename + ' -mesh_scale ' +  str(args.mesh_scale)
+        # print 'Chaste step'
+        # subprocess.call(command, shell=True)
 
         
-        # Step 6: Collect Chaste Mesh outputs 
+        # # Step 6: Collect Chaste Mesh outputs 
 
-        if start_time == int(start_time):
-            start_time = int(start_time)
-            print start_time
+        # if start_time == int(start_time):
+        #     start_time = int(start_time)
+        #     print start_time
           
-        # pdb.set_trace()
-        OldFilePath = working_directory +'results_from_time_' + str(start_time) + '/'
-        shutil.move(OldFilePath +'results.viznodes' , newpath+'results.viznodes')
+        # # pdb.set_trace()
+        # OldFilePath = working_directory +'results_from_time_' + str(start_time) + '/'
+        # shutil.move(OldFilePath +'results.viznodes' , newpath+'results.viznodes')
 
-        for j in list:
-            shutil.move(OldFilePath  + 'mesh_'+ str(j) +'.vtu' ,newpath + 'mesh_'+ str(MeshCounter) +'.vtu')
-            MeshCounter+=1
-            shutil.move(OldFilePath  + 'results_'+ str(j) +'.vtu' ,newpath + 'results_'+ str(ResultsCounter) +'.vtu')
-            ResultsCounter+=1
-        start_time += duration 
+        # for j in list:
+        #     shutil.move(OldFilePath  + 'mesh_'+ str(j) +'.vtu' ,newpath + 'mesh_'+ str(MeshCounter) +'.vtu')
+        #     MeshCounter+=1
+        #     shutil.move(OldFilePath  + 'results_'+ str(j) +'.vtu' ,newpath + 'results_'+ str(ResultsCounter) +'.vtu')
+        #     ResultsCounter+=1
+        # start_time += duration 
 
         # Update the radius of the tube*, this can then be used to update the pr2 file to enable the flow to be correctly calculated 
         # Step 5: Convert Chaste output (vtu file) into the input of the next iteration (stl file required by hemelb setup tool)
         if FluidSimulation ==1:
-            vtu2stl(iter)
+            # vtu2stl(iter)
 
         # Step 5a: compute radii
-            vmtk_compute_stl_radii(iter)
-            Radius_New = radii_over_time[iter][-1]  # LengthOfArray = len(radii_over_time[iter])    
+            # vmtk_compute_stl_radii(iter)
+            # Radius_New = radii_over_time[iter][-1]  # LengthOfArray = len(radii_over_time[iter])    
         # pdb.set_trace()
         # print Radius_New
-            update_pr2_file(Radius_New) 
+            # update_pr2_file(Radius_New) 
             generate_flow_vtus(3)
-
+            pause()
         # shutil.rmtree(OldFilePath)   
         #  Get the two fluid outputs you need  
             directory = working_directory +'results/Extracted/'

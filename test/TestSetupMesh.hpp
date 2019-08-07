@@ -57,18 +57,21 @@ public:
 
 
 // I want a regular mesh 
-
-        int N_D = 100;
+// This is in mm 
+        int N_D = 80;
         int N_Z = 1.5 * N_D;
         double mesh_scale = 1e-3;
-        Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z,5e-6, 20e-6);
+        double scale = 1e3;
+        double Radius = 5e-6 * scale;
+        double Length = 60e-6 * scale;
+        Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z,Radius, Length);
         MutableMesh<2,3>* p_mesh = generator.GetMesh();
-        p_mesh->Translate(-10.0e-6*unit_vector<double>(3,2));
+        p_mesh->Translate(-30.0e-3*unit_vector<double>(3,2));
         // std::string output_dir = "/";
          std::string output_dir = "CylindricalMesh/";
         // TRACE(output_dir);
         VtkMeshWriter<2,3> mesh_writer(output_dir, "config", false);
-        p_mesh->Scale(1.0/mesh_scale,1.0/mesh_scale,1.0/mesh_scale); // so distances are back in original scale
+        // p_mesh->Scale(1.0/mesh_scale,1.0/mesh_scale,1.0/mesh_scale); // so distances are back in original scale
         mesh_writer.WriteFilesUsingMesh(*p_mesh);
     
     }
