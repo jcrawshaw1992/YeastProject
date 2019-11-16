@@ -15,7 +15,7 @@ EdgeCorrectionForce::EdgeCorrectionForce()
 
 void EdgeCorrectionForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
-    TRACE("Add Edge correction Force");
+    // TRACE("Add Edge correction Force");
     double counter = 0;
     MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
 
@@ -25,19 +25,12 @@ void EdgeCorrectionForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCe
     {
     
         unsigned ReferenceNode = 0;
-        cell_iter->GetCellData()->SetItem("Boundary", 0);
 
-    if ( mRegularCylinder == true) // Need to write a code the handles not regular meshes
-    {
-
-        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-        Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
-        bool is_boundary_node = pNode->IsBoundaryNode();
-        // if (is_boundary_node && (cell_iter)->GetMutationState()->IsType<BetaCateninOneHitCellMutationState>())// | (is_boundary_node &&  node_index > (mNc *mNz)- mNc))
-        // { 
         if ((cell_iter)->GetMutationState()->IsType<BetaCateninOneHitCellMutationState>())// | (is_boundary_node &&  node_index > (mNc *mNz)- mNc))
         {      
-               counter +=1;
+            unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+        Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
+
             // PRINT_2_VARIABLES(counter, node_index);
             if (node_index < mNc + 1) // if on lower edge
             {
@@ -52,9 +45,6 @@ void EdgeCorrectionForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCe
             // TRACE("clear the force");
             pNode->ClearAppliedForce(); // remove the already present force at this node
             pNode->AddAppliedForceContribution(pReferenceNode->rGetAppliedForce()); // Add the new force
-            cell_iter->GetCellData()->SetItem("Boundary", 1);
-        }
-
 
     }
 

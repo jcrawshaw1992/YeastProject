@@ -39,6 +39,7 @@
 #include "ConstantPressure.hpp"
 
 
+
 static const double M_TIME_FOR_SIMULATION = 0.01;//40; //50
 static const double M_SAMPLING_TIME_STEP = 100; //50
 static const double M_TIME_STEP = 0.002;
@@ -80,9 +81,12 @@ public:
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
         p_mesh->Translate(trans * unit_vector<double>(3, 2));
 
+
+        
+
         std::stringstream out;
 
-        std::string output_directory = "Collapse";//Shrinking"; // + Parameters + "/";
+        std::string output_directory = "Mutations";//Shrinking"; // + Parameters + "/";
 
         // Create cells
         MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
@@ -137,7 +141,7 @@ public:
         // boost::shared_ptr<AppliedForceModifier<2, 3> > p_force_modifier(new AppliedForceModifier<2, 3>());
 
         // p_force_modifier->SetResetTractionsOnCells(true, traction_file);
-		// p_force_modifier->SetupVessel(cell_population, output_directory);
+		// p_force_modifier-s>SetupVessel(cell_population, output_directory);
         // simulator.AddSimulationModifier(p_force_modifier);
         
         // p_force_modifier->SetMembraneConstants(ElasticShearModulus , AreaDilationModulus, Area_constant, membrane_constant );

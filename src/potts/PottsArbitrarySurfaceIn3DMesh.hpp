@@ -6,7 +6,7 @@
 #include "PottsMesh.hpp"
 #include "MutableMesh.hpp"
 #include "RandomNumberGenerator.hpp"
-// #include "PottsBasedCellPopulation.hpp"
+ #include "WrappedPottsBasedCellPopulation.hpp"
 
 #include "AbstractPottsUpdateRule.hpp"
 
@@ -15,7 +15,6 @@
 
 #include "Debug.hpp"
 #include <utility>
-
 #include <math.h>
 
 
@@ -38,6 +37,7 @@
 
 #include <boost/shared_ptr.hpp>
 
+#include <iterator>
 
 
 template<unsigned SPACE_DIM>
@@ -71,6 +71,13 @@ public:
      */
 
 
+
+    void SetBoundaries(std::vector<unsigned > BoundaryVector );
+
+    std::vector<unsigned > mBoundaryVector ;
+    std::map< std::pair<unsigned,unsigned>  ,unsigned > mIsEdgeBoundaryMap;
+
+
     /*
      * Map of the edge lattice sites for each element 
      */
@@ -85,6 +92,7 @@ public:
      * c) mMeshElementPairs; 
      */
     void FindElementNeighbours();
+    void GetEdges();
 
 
     /*
@@ -97,11 +105,12 @@ public:
      * Needs to be ran at the start of each PottsLoop of the coupled model 
      */
     void CalculateEdgeLenghts();
+    void EdgeLenghts();
 
 
 
-    // Calculate the curviture between each pair of lattice neigbours ( in vorinno region)
-    void CalculateCurvature();
+    // // Calculate the curviture between each pair of lattice neigbours ( in vorinno region)
+    // void CalculateCurvature();
 
 
     // Calculate the traction at each lattice site
@@ -110,16 +119,29 @@ public:
     // Get the traction data from the files
     void TractionDataLoader(const std::string& tractionFilename);
 
+    // Set a constant wall shear stress -- used to test and validate the Shear stress migration on a 2D lattice 
+    void SetConstantWallShearStress(double WallShearStress);
+
     /*
      * Returns the average traction on a CPM element (has been multipled by the area )
      */
     c_vector<double,3> GetTractionOnElement(unsigned pottsElementIndex);
 
 
+     /*
+     * Returns the sum shear stress mag acting on a Potts element
+     */
+     double GetSumShearStressOnElement(unsigned pottsElementIndex);
+
+    
     /*
      * Returns the traction on a CPM lattice site  (has been multipled by the area )
      */
     c_vector<double,3> GetTractionOnLattice(unsigned latticeSiteIndex);
+
+    
+
+    
 
 
 
@@ -128,15 +150,22 @@ public:
      * Loops over the enternal edges and sums the lenght to give the perimeter of the element
      */
 
-    double GetSurfaceAreaOfElement(unsigned pottsElementIndex);
+    double GetPerimeterOfElement(unsigned pottsElementIndex);
 
+    double GetPerimeterOfCoupledElements(unsigned pottsElementIndex, unsigned pottsSisterElementIndex, double Center);
+
+    bool IsNodeNearCenter(unsigned LatticeIndex, double Center );
 
     void CalculateLatticeVolumes();
 
  
     double GetVolumeOfElement(unsigned pottsElementIndex);
+    double GetNumberOfLatticesInElement(unsigned pottsElementIndex);
 
     double GetVolumeOfLatticeSite(unsigned NodeIndex);
+    bool IsLatticeInElement(unsigned Latticeindex, unsigned pottsElementIndex);
+
+
 
 
     /*
@@ -163,6 +192,9 @@ public:
     double mMaxC;
     double mMinC;
     double mLength;
+    double mPeriodic;
+    double mLatticeSpaceing ;
+    
     
 
 
@@ -174,19 +206,20 @@ public:
     c_vector<double, SPACE_DIM> GetCellCentre(std::vector<unsigned> Edges ,unsigned pottsElementIndex);
 
 
-    std::map< unsigned , double > GetRelativeLattiePositionsWithinCell(unsigned pottsElementIndex);
 
-   double min_value(std::vector<double> Vector);
-   double max_value(std::vector<double> Vector);
+//    double min_value(std::vector<double> Vector);
+//    double max_value(std::vector<double> Vector);
 
 
-bool TestRandomWalk(unsigned pottsElementIndex);
-bool TestRandomWalkAlongEdges(std::vector<unsigned> ListOfEdges, unsigned pottsElementIndex);
+// bool TestRandomWalk(unsigned pottsElementIndex);
 
    double mAngleRange;
 
 
 
+
+ // Returns the number of lattice sites in a Potts element 
+unsigned GetSizeOfElement(unsigned pottsElementIndex);
 
 
     
@@ -243,15 +276,6 @@ bool TestRandomWalkAlongEdges(std::vector<unsigned> ListOfEdges, unsigned pottsE
 
 
 
-
-
-
-
-    
-
-
-
-
     // /*
     //  * ------   MEMBER VARIABLES
     //  * 
@@ -296,6 +320,15 @@ bool TestRandomWalkAlongEdges(std::vector<unsigned> ListOfEdges, unsigned pottsE
      */ 
       
     std::map< std::pair <unsigned,unsigned> , std::vector<unsigned>  > mMapElementPairsToNodes; 
+    std::map< unsigned , std::pair <unsigned,unsigned> > mEdges; 
+    std::map< unsigned ,  std::vector<unsigned> > mGetElementsFromEdge;
+    std::map< unsigned , double > mIsEdgeBoundary;
+
+    // Will return if a pair of nodes (making an edge) is on the boundary or not
+    std::map< std::pair <unsigned,unsigned> , bool  >mGetNodePairOnBoundary;
+
+
+        double mBoundaryEdgeUnitLength;// the length between two nodes along the top and bottom boundary in a regular mesh 
 
 
     /* 
@@ -306,11 +339,15 @@ bool TestRandomWalkAlongEdges(std::vector<unsigned> ListOfEdges, unsigned pottsE
 
     std::map< std::vector<unsigned> , double > mPerimeterBetweenLatticeSites;
 
+/// THe lattice edge is basically perpendicular to the mesh edge, so this is the length between the center of the two elements bisecting the mesh edges
+    std::map< std::pair <unsigned,unsigned> , double > mLengthOfLatticeEdge;
+
 
      /* 
      * Maps two neighbouring Nodes (pair) to the two associated elements (pair). 
      */ 
     std::map< std::pair <unsigned,unsigned> , std::pair <unsigned,unsigned>  >  mMapNodesPairsToElementPairs;
+    std::map< std::pair <unsigned,unsigned> , std::vector<unsigned>  >  mMapNodesPairsToElementVec;
 
 
      /* 
@@ -370,10 +407,18 @@ bool TestRandomWalkAlongEdges(std::vector<unsigned> ListOfEdges, unsigned pottsE
      * Adds angles together -- periodic 
      */ 
 
-    double AddAngles(double alpha, double beta);
-    double PeriodicAngle(double eta);
+    // double AddAngles(double alpha, double beta);
+   
     double MiddleAngle(std::vector<double> Vector);
+
     double mQuaters;
+
+// Average edge length;
+    double mAverageEdgeLength;
+
+    // Average area of the elements
+    double mAverageArea;
+
 
 
 
@@ -382,39 +427,39 @@ bool TestRandomWalkAlongEdges(std::vector<unsigned> ListOfEdges, unsigned pottsE
 
     // Ensure that the unit normal is outwards pointing 
 
-    double MaintainOutwardsPointingNormal( c_vector<double, 3> Normal,  c_vector<double, 3> x1);
+    // double MaintainOutwardsPointingNormal( c_vector<double, 3> Normal,  c_vector<double, 3> x1);
 
      /* 
      * Create a pair, Order is important, so orders the smallest first 
      */ 
 
-    std::pair <unsigned,unsigned> Create_pair(unsigned x, unsigned y );
-    std::pair <double,double> Create_pair(double x, double y );
+    // std::pair <unsigned,unsigned> Create_pair(unsigned x, unsigned y );
+    // std::pair <double,double> Create_pair(double x, double y );
 
 
     // Axciallary functions 
 
-    void PRINT_PAIR(std::pair<unsigned, unsigned> Pair);
+    // void PRINT_PAIR(std::pair<unsigned, unsigned> Pair);
 
 
          /* 
      * Returns a vector with the common elements from each vector 
      */ 
      
-    std::vector<unsigned> Intersection(std::vector<unsigned> Vector1, std::vector<unsigned> Vector2);
+    // std::vector<unsigned> Intersection(std::vector<unsigned> Vector1, std::vector<unsigned> Vector2);
 
     /* 
      * Checks if a pair is already in the vector  
      */ 
     
-    bool IsPairInVector(std::vector<std::pair<unsigned, unsigned >> Vector, std::pair<unsigned, unsigned > Pair);
+    // bool IsPairInVector(std::vector<std::pair<unsigned, unsigned >> Vector, std::pair<unsigned, unsigned > Pair);
 
     /* 
      * Checks is an unsigned or double is already in the vector 
      */ 
      
-    bool IsNumberInVector(std::vector< unsigned > Vector, unsigned number);
-    bool IsNumberInVector(std::vector< double > Vector, double number);
+    // bool IsNumberInVector(std::vector< unsigned > Vector, unsigned number);
+    // bool IsNumberInVector(std::vector< double > Vector, double number);
     bool IsVectorInVector(std::vector< c_vector<double,SPACE_DIM>  > Vector, c_vector<double,SPACE_DIM> Locaiton );
 
     /* 
@@ -427,8 +472,8 @@ bool TestRandomWalkAlongEdges(std::vector<unsigned> ListOfEdges, unsigned pottsE
     /* 
      * Removes the number from the vector  
      */ 
-    std::vector<double> RemoveElement(std::vector<double> Vector1, double number);
-    std::vector<unsigned> RemoveElement(std::vector<unsigned> Vector1, unsigned number);
+    // std::vector<double> RemoveElement(std::vector<double> Vector1, double number);
+    // std::vector<unsigned> RemoveElement(std::vector<unsigned> Vector1, unsigned number);
 
 
 
@@ -436,12 +481,6 @@ bool TestRandomWalkAlongEdges(std::vector<unsigned> ListOfEdges, unsigned pottsE
      * Function to remove the interal edges of a cell, leaving only the external edges to then iterate over and calulate the perimeter 
      */ 
      std::vector<std::pair<unsigned, unsigned> > RemoveInternalEdges(std::vector<std::pair<unsigned, unsigned> > ElementPairsAssociatedWithPottsCell);
-
-    /* 
-     * A function testing the RemoveInternalEdges function. Will throw an error if RemoveInternalEdges dosnt give the expected result 
-     */ 
-    void TestRemoveInternalEdgesFunction();
-
 
     /**
      * Compute the contact area (or edge in 2D) between 2 lattice sites.
@@ -456,6 +495,21 @@ bool TestRandomWalkAlongEdges(std::vector<unsigned> ListOfEdges, unsigned pottsE
      * Update the location of the Potts nodes when the underlying Delaunay mesh changes
      */
     void UpdatePottsNodeLocationFromDelaunay();
+
+    /**
+     * Unwrap a cylinder so i have a 2D rectangle easily 
+     */
+    void UnwrapCylinder(double radius);
+
+
+
+    /**
+     * This corrects the volume and edge length of the mesh elements near the edges of the mesh for the lazy unwrapped cylinder version of a periodic rectangle
+     */
+    void CorrectedPeriodicEdges();
+
+
+
 
     /**
      * Get the original triangular mesh used to define the object
@@ -496,15 +550,37 @@ private:
     void serialize(Archive & archive, const unsigned int version)
     {
         archive & boost::serialization::base_object<PottsMesh<SPACE_DIM> >(*this);
-        // archive & mOriginalAngles;
+        archive & mAngleRange;
+        archive & mRadius;
+        archive & mMaxC;
+        archive & mMinC;
+        archive & mLength;
+        archive & mMappedLocation;
+        archive & mMajorAxis;
+        archive & mMeshElementMidPoints;
+        archive & mLatticePerimeters;
+        archive & mMeshElementPairs; 
+        archive & mMapElementPairsToNodes; 
+        archive & mDistanceBetweenElements;
+        archive & mPerimeterBetweenLatticeSites;
+        archive &  mMapNodesPairsToElementPairs; 
+        archive & mAngleBetweenNodes;
+        archive & mMeanCurvature;
+        archive & mLatticeVolume;
+        archive & mLatticeNormal;
+        archive & mMapNodesToAssociateElementPairs; 
+        archive & mEdgeLatticeSitesList; 
+        archive & mpDelaunayMesh;
+        archive & mLatticeSpaceing;
+        archive & mEdges;
     }
-
 
 };
 
-//#include "SerializationExportWrapper.hpp"
-//EXPORT_TEMPLATE_CLASS1(PottsArbitrarySurfaceIn3DMesh, 2)
-//EXPORT_TEMPLATE_CLASS1(PottsArbitrarySurfaceIn3DMesh, 3)
+
+// #include "SerializationExportWrapper.hpp"
+// EXPORT_TEMPLATE_CLASS1(PottsArbitrarySurfaceIn3DMesh, 2)
+// EXPORT_TEMPLATE_CLASS1(PottsArbitrarySurfaceIn3DMesh, 3)
 
 #endif /* POTTSARBITRARYSURFACEIN3DMESH_HPP_ */
 
@@ -512,6 +588,11 @@ private:
 
 
 
+
+// Functions that I have removed 
+
+// TestRandomWalkAlongEdges
+// 
 
 
 // template<unsigned SPACE_DIM>

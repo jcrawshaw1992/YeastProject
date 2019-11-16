@@ -25,11 +25,11 @@ hemelb_setup_exe1 = 'env PYTHONPATH=/Users/jcrawshaw/Documents/HemeLB/hemelb/Too
 
 
 
-working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/DeformingCylindricalMembraneWithFluidFlow/'
+working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/BifurcationScalled/SetUpData/'
 print "  Convert vtu to stl    "
     # Read the VTU file from disk
 vtu_reader = vtk.vtkXMLUnstructuredGridReader()
-vtu_reader.SetFileName(working_directory + 'config.vtu')
+vtu_reader.SetFileName(working_directory + 'configChaste.vtu')
 
 extract_surface_filter = vtk.vtkDataSetSurfaceFilter()
 extract_surface_filter.AddInputConnection(vtu_reader.GetOutputPort())
@@ -37,8 +37,9 @@ extract_surface_filter.AddInputConnection(vtu_reader.GetOutputPort())
 # Write out the data in unstructured grid format
 stl_writer = vtk.vtkSTLWriter()
 stl_writer.SetInputConnection(extract_surface_filter.GetOutputPort())
-stl_writer.SetFileName(working_directory + 'config.stl')
+stl_writer.SetFileName(working_directory + 'configChaste.stl')
 stl_writer.Write()
+print "  Doneies    "
 
 
 

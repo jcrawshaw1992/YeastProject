@@ -78,15 +78,17 @@ void FixedRegionBoundaryCondition<ELEMENT_DIM,SPACE_DIM>::ImposeBoundaryConditio
 
                     // Uncomment this code if you want iolets labelled in Paraview for viz purposes
                     
-                    // Remove any CellLabels as can only have one label
+                    // // Remove any CellLabels as can only have one label
                     CellPtr p_cell = this->mpCellPopulation->GetCellUsingLocationIndex(node_index);
-                    p_cell->RemoveCellProperty<CellLabel>();
+                    p_cell->GetCellData()->SetItem("Boundary", 1);
+                    // p_cell->RemoveCellProperty<CellLabel>();
+                    // // TRACE("Stuffremoved here")
     
     
-                    // Add label to cell so can see them in Visualizer
-                    boost::shared_ptr<AbstractCellProperty> p_label(CellPropertyRegistry::Instance()->Get<CellLabel>());
-                    this->mpCellPopulation->GetCellUsingLocationIndex(node_index)->AddCellProperty(p_label);
-                }
+                    // // Add label to cell so can see them in Visualizer
+                    // boost::shared_ptr<AbstractCellProperty> p_label(CellPropertyRegistry::Instance()->Get<CellLabel>());
+                    // this->mpCellPopulation->GetCellUsingLocationIndex(node_index)->AddCellProperty(p_label);
+                 }
             }
 		}
     }

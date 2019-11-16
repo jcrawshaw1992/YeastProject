@@ -32,18 +32,18 @@ template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void AppliedForceModifier<ELEMENT_DIM,SPACE_DIM>::SetupSolve(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation, std::string outputDirectory)
 {
 
-	TRACE("didnt do anything here");
+	TRACE("In the set up solve");
 	// This is an empty function because the mutatant elements need to be identified external to the simulation so that the membrane properties 
 	// can then also be updated before the simulation. 
 	/*
 	 * We must update CellData in SetupSolve(), otherwise it will not have been
 	 * fully initialised by the time we enter the main time loop.
 	 */
-	// if(mResetTractionsOnCells && mTractionFile !="")
-	// {
-	// 	LoadTractionFromFile();
-	// 	UpdateCellData(rCellPopulation);
-	// }
+	if(mResetTractionsOnCells && mTractionFile !="")
+	{
+		LoadTractionFromFile();
+		UpdateCellData(rCellPopulation);
+	}
 }
 
 
@@ -410,7 +410,7 @@ void AppliedForceModifier<ELEMENT_DIM,SPACE_DIM>::LoadTractionFromFile()
 			traction[1] += traction_offset;
 			reader.readFloat(traction[2]);
 			traction[2] += traction_offset;
-			// PRINT_VECTOR(traction);
+			PRINT_VECTOR(traction);
 
 			assert(fabs(traction[0])<1e10);
 			assert(fabs(traction[1])<1e10);

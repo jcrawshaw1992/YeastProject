@@ -79,7 +79,7 @@ PottsMeshFromMutableMeshGeneratorJess<SPACE_DIM>::PottsMeshFromMutableMeshGenera
 
 
         std::vector<PottsElement<SPACE_DIM>*> elements;
-        TRACE("Construct the new Potts Mesh");
+        // TRACE("Construct the new Potts Mesh");
         mpMesh = new PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>(nodes, elements, node_neighbours, node_neighbours, &rMesh);          
  }
 
@@ -98,11 +98,9 @@ PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>* PottsMeshFromMutableMeshGeneratorJess<
 // template class PottsMeshFromMutableMeshGeneratorJess<2>;
 template class PottsMeshFromMutableMeshGeneratorJess<3>;
 
-//#include "SerializationExportWrapperForCpp.hpp"
-//EXPORT_TEMPLATE_CLASS1(PottsMeshFromMutableMeshGeneratorJess, 2)
-//EXPORT_TEMPLATE_CLASS1(PottsMeshFromMutableMeshGeneratorJess, 3)
-
-
+// #include "SerializationExportWrapperForCpp.hpp"
+// EXPORT_TEMPLATE_CLASS1(PottsMeshFromMutableMeshGeneratorJess, 3);
+// EXPORT_TEMPLATE_CLASS1(PottsMeshFromMutableMeshGeneratorJess, 2);
 
     // for (typename MutableMesh<ELEMENT_DIM,SPACE_DIM>::NodeIterator node_iter = rMesh.GetNodeIteratorBegin();
     //             node_iter != rMesh.GetNodeIteratorEnd();

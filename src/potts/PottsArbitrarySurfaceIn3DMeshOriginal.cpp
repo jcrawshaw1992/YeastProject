@@ -429,6 +429,9 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetContactAreaBetweenLatticeSit
 template<unsigned SPACE_DIM>
 void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::UpdatePottsNodeLocationFromDelaunay()
 {
+    TRACE("Should not be here");
+
+    error
 
     // mMyMember = 7;
     // This code was edited by Jess. 

@@ -59,7 +59,8 @@ void MembraneSurfaceForce::AddForceContribution(AbstractCellPopulation<2, 3>& rC
         // Force on Node 1
         c_vector<double, 3> vector_20 = pNode0->rGetLocation() - pNode2->rGetLocation();
         ForceOnNode[1] = -0.5 * mMembraneSurfaceMaps[elem_index] * AreaDiff * VectorProduct(UnitNormal, vector_20);
-
+//  double A = log10(mMembraneSurfaceMaps[elem_index] );
+//  PRINT_VARIABLE(A);
         // Force on Node 2
         c_vector<double, 3> vector_01 = pNode1->rGetLocation() - pNode0->rGetLocation();
         ForceOnNode[2] = -0.5 * mMembraneSurfaceMaps[elem_index] * AreaDiff * VectorProduct(UnitNormal, vector_01);
@@ -132,7 +133,7 @@ void MembraneSurfaceForce::SetupInitialAreas(AbstractCellPopulation<2, 3>& rCell
         normal /= norm_2(normal);
 
         // Need to walk backward into the mesh by the scalling factor 
-        c_vector<double, 3> PositionVector = NodeLocation - mScalling * normal;
+        c_vector<double, 3> PositionVector = NodeLocation ;//- mScalling * normal;
 
 
         (cell_iter)->GetCellData()->SetItem("Initial_Location_X", NodeLocation[0]);

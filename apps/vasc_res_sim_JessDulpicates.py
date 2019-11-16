@@ -143,20 +143,20 @@ def update_xml_file(iter_num, num_iters):
     # ElementTree.SubElement(surface, 'geometry', type='surface')
     # ElementTree.SubElement(surface, 'field', type='tangentialprojectiontraction')
 
-    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(100), 'file': 'surface-traction.xtr'}) # ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-traction.xtr'})
+    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(900), 'file': 'surface-traction.xtr'}) # ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-traction.xtr'})
     ElementTree.SubElement(surface, 'geometry', type='surface')
     ElementTree.SubElement(surface, 'field', type='traction')
 
-    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(100), 'file': 'surface-tractions.xtr'}) # surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-tractions.xtr'})
+    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(900), 'file': 'surface-tractions.xtr'}) # surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-tractions.xtr'})
     ElementTree.SubElement(surface, 'geometry', type='surface')
     ElementTree.SubElement(surface, 'field', type='traction')
     ElementTree.SubElement(surface, 'field', type='tangentialprojectiontraction')    
 
-    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(100), 'file': 'surface-pressure.xtr'}) # surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-pressure.xtr'})
+    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(900), 'file': 'surface-pressure.xtr'}) # surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-pressure.xtr'})
     ElementTree.SubElement(surface, 'geometry', type='surface')
     ElementTree.SubElement(surface, 'field', type='pressure')
 
-    wholegeometry = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(100), 'file': 'wholegeometry-velocity.xtr'}) #wholegeometry = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'wholegeometry-velocity.xtr'})
+    wholegeometry = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(90), 'file': 'wholegeometry-velocity.xtr'}) #wholegeometry = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'wholegeometry-velocity.xtr'})
     ElementTree.SubElement(wholegeometry, 'geometry', type='whole')
     ElementTree.SubElement(wholegeometry, 'field', type='velocity')
 
@@ -255,7 +255,7 @@ def WriteReadme(ElasticShearModulus, AreaDilationModulus, membrane_constant, Are
 
 
 if __name__=="__main__":
-    working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/Tester/' 
+    working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/BifurcationScalled/' 
     data_path =working_directory + 'SetUpData/'
     
     shutil.copy(data_path +'config.stl' , working_directory +'config.stl' )
@@ -372,7 +372,8 @@ if __name__=="__main__":
             # Step 3: HemeLB simulation
             run_hemelb2() 
             print'\n HemeLB simulation complete \n'
-        # pause()
+            generate_flow_vtus(3)
+        pause()
   
         # # Step 4: Run Chaste with the tractions previously computed
         traction_filename = working_directory + 'results/Extracted/surface-tractions.xtr'

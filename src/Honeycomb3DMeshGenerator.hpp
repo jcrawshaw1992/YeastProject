@@ -41,6 +41,10 @@ public:
     {
     }
 
+    std::vector<unsigned > mBoundaryVector;
+
+    std::vector<unsigned > GetBoundaryVector();
+
     /**
      * Destructor - deletes the mesh object and pointer
      */

@@ -82,7 +82,7 @@ TractionDataLoader::TractionDataLoader(const std::string& tractionFilename)
 			traction[1] += traction_offset;
 			reader.readFloat(traction[2]);
 			traction[2] += traction_offset;
-
+			// PRINT_VECTOR(traction);
 			assert(fabs(traction[0])<1e10);
 			assert(fabs(traction[1])<1e10);
 			assert(fabs(traction[2])<1e10);

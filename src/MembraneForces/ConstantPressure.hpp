@@ -1,6 +1,6 @@
 
-// #ifndef ConstantPressure_HPP_
-// #define ConstantPressure_HPP_
+#ifndef ConstantPressure_HPP_
+#define ConstantPressure_HPP_
 
 #include <cxxtest/TestSuite.h>
 
@@ -92,7 +92,7 @@ public:
     }
 };
 
-
+#endif /*TESTCYLINDRICALGROWTHDEFORMABLEMEMBRANE_HPP_*/
 
 #include "SerializationExportWrapper.hpp"
 CHASTE_CLASS_EXPORT(ConstantPressure)

@@ -53,9 +53,12 @@ public:
      */
     MembraneStiffnessForce();
 
-    void SetMembraneStiffness(double membraneStiffnes);
+    void SetMembraneStiffness(double membraneStiffness, double Nc, double Nz);
     void UpdateMembraneStiffnessProperties(AbstractCellPopulation<2, 3>& rCellPopulation);
     double mScalling;
+    double mNc;
+    double mNz;
+
 
     // double GetMembraneStiffness() const;
 
@@ -63,6 +66,7 @@ public:
 
     double SetOriginalAngle(std::pair<Node<3>*, Node<3>*> edge, double angle);
 
+    void SetupInitialMembrane(MutableMesh<2,3>& rMesh);
     void SetupInitialMembrane(MutableMesh<2,3>& rMesh, AbstractCellPopulation<2, 3>& rCellPopulation);
     void SetScallingBending(double Scalling);
 

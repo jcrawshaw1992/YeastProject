@@ -27,7 +27,7 @@ void MembraneShearForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCel
          elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
          ++elem_iter)
     {
-
+        
         unsigned elem_index = elem_iter->GetIndex();
 
         Node<3>* pNode0 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(0));
@@ -91,6 +91,10 @@ void MembraneShearForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCel
         c_vector<long double, 3> OrientatedMag;
         long double dedvX;
         long double dedvY;
+
+// double S = log10(mElasticShearModulusMap[elem_index] );
+// double Alpha = log10(mAreaDilationModulusMap[elem_index] );
+// PRINT_2_VARIABLES(S, Alpha);
 
         for (int i = 0; i < 3; i++)
         {
@@ -441,7 +445,7 @@ void MembraneShearForce::SetupMembraneConfiguration(AbstractCellPopulation<2, 3>
         // PRINT_VECTOR(normal);
 
       // Need to walk backward into the mesh by the scalling factor 
-        c_vector<double, 3> PositionVector = NodeLocation + mScalling * normal;
+        // c_vector<double, 3> PositionVector = NodeLocation ;// + mScalling * normal;
 
         // (cell_iter)->GetCellData()->SetItem("Initial_Location_X", PositionVector[0]);
         // (cell_iter)->GetCellData()->SetItem("Initial_Location_Y", PositionVector[1]);

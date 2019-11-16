@@ -7,15 +7,10 @@
 #include <cmath>
 #include <cstdio>
 #include <ctime>
-
-
 // Must be included before other cell_based headers
 #include "CellBasedSimulationArchiver.hpp"
-
 #include "CellsGenerator.hpp"
-
 #include "OnLatticeSimulation.hpp"
-
 #include "OffLatticeSimulation.hpp"
 #include "FixedG1GenerationalCellCycleModel.hpp"
 
@@ -23,13 +18,8 @@
 #include "CellIdWriter.hpp"
 #include "CellAspectRatioWriter.hpp"
 #include "CellMajorAxisAngleWriter.hpp"
-
-
 #include "PottsBasedCellPopulation.hpp"
-
-
 #include "MeshBasedCellPopulation.hpp"
-
 #include "ArbitraryAdhesionPottsUpdateRule.hpp"
 #include "VolumeConstraintPottsUpdateRule.hpp"
 // New rule to make the cells wrap
@@ -290,8 +280,8 @@ double scale = 1e-4;
 		 */
 		
         // PottsMeshFromMutableMeshGeneratorJess<3> potts_generator(mutable_mesh);
-        PottsMeshFromMutableMeshGeneratorJess<2> potts_generator(* mutable_mesh);
-		PottsArbitrarySurfaceIn3DMesh<2>* p_potts_mesh = potts_generator.GetMesh();
+        // PottsMeshFromMutableMeshGeneratorJess<2> potts_generator(* mutable_mesh);
+		// PottsArbitrarySurfaceIn3DMesh<2>* p_potts_mesh = potts_generator.GetMesh();
 	
 		
 

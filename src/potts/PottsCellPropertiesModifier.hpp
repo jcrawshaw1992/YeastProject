@@ -5,6 +5,18 @@
 #include <boost/serialization/base_object.hpp>
 
 #include "AbstractCellBasedSimulationModifier.hpp"
+#include "WrappedPottsBasedCellPopulation.hpp"
+#include "PottsMesh.hpp"
+
+
+#include "FixedG1GenerationalCellCycleModel.hpp"
+#include "WildTypeCellMutationState.hpp"
+
+
+#include "AbstractOnLatticeCellPopulation.hpp"
+#include <boost/serialization/vector.hpp>
+
+
 
 /**
  * A modifier class which at each simulation time step calculates the properties of each cell
@@ -13,6 +25,7 @@
 template<unsigned DIM>
 class PottsCellPropertiesModifier : public AbstractCellBasedSimulationModifier<DIM,DIM>
 {
+    // friend class WrappedPottsBasedCellPopulation<DIM>;
     /** Needed for serialization. */
     friend class boost::serialization::access;
     /**
@@ -30,6 +43,7 @@ class PottsCellPropertiesModifier : public AbstractCellBasedSimulationModifier<D
 
 public:
 
+    
     /**
      * Default constructor.
      */
@@ -59,6 +73,21 @@ public:
      */
     virtual void SetupSolve(AbstractCellPopulation<DIM,DIM>& rCellPopulation, std::string outputDirectory);
 
+
+     /**
+     * Vector recording vector pairs
+     */
+
+     std::vector<std::pair <unsigned,unsigned> > SetElementPairing(std::vector<std::pair <unsigned,unsigned> > ElementPairing);
+
+     std::vector<std::pair <unsigned,unsigned> >  mElementPairing;
+
+    void SetMeshDimensions(double N_D, double N_Z , double  Width, double Length);
+    double mN_D; double mN_Z; double  mWidth; double mLength;
+
+
+    // void DivideCells(AbstractCellPopulation<DIM,DIM>& rCellPopulation);
+
     /**
      * Helper method to compute the volume of each cell in the population and store these in the CellData.
      *
@@ -73,6 +102,7 @@ public:
      * @param rParamsFile the file stream to which the parameters are output
      */
     void OutputSimulationModifierParameters(out_stream& rParamsFile);
+    
 };
 
 #include "SerializationExportWrapper.hpp"

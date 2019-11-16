@@ -58,6 +58,23 @@
         "tuple": "cpp",
         "type_traits": "cpp",
         "typeinfo": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "strstream": "cpp",
+        "*.tcc": "cpp",
+        "clocale": "cpp",
+        "complex": "cpp",
+        "deque": "cpp",
+        "fstream": "cpp",
+        "iomanip": "cpp",
+        "sstream": "cpp",
+        "array": "cpp",
+        "cfenv": "cpp",
+        "cinttypes": "cpp",
+        "random": "cpp",
+        "memory_resource": "cpp",
+        "numeric": "cpp",
+        "optional": "cpp",
+        "set": "cpp",
+        "typeindex": "cpp"
     }
 }
