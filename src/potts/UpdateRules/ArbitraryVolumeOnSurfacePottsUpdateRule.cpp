@@ -111,21 +111,21 @@ template<unsigned DIM>
 double ArbitraryVolumeOnSurfacePottsUpdateRule<DIM>::GetDeformationEnergyParameter()
 {
     return mDeformationEnergyParameter;
-    TRACE("GetDeformationEnergyParameter");
+    // TRACE("GetDeformationEnergyParameter");
 }
 
 template<unsigned DIM>
 void ArbitraryVolumeOnSurfacePottsUpdateRule<DIM>::SetDeformationEnergyParameter(double deformationEnergyParameter)
 {
     mDeformationEnergyParameter = deformationEnergyParameter;
-    TRACE("SetDeformationEnergyParameter");
+    // TRACE("SetDeformationEnergyParameter");
 }
 
 template<unsigned DIM>
 double ArbitraryVolumeOnSurfacePottsUpdateRule<DIM>::GetMatureCellTargetVolume() const
 {
     return mMatureCellTargetVolume;
-    TRACE("GetMatureCellTargetVolume");
+    // TRACE("GetMatureCellTargetVolume");
 }
 
 template<unsigned DIM>
@@ -133,7 +133,7 @@ void ArbitraryVolumeOnSurfacePottsUpdateRule<DIM>::SetMatureCellTargetVolume(dou
 {
     assert(matureCellTargetVolume >= 0.0);
     mMatureCellTargetVolume = matureCellTargetVolume;
-    TRACE("SetMatureCellTargetVolume");
+    // TRACE("SetMatureCellTargetVolume");
 }
 
 template<unsigned DIM>

@@ -265,7 +265,7 @@ public:
                         std::vector<Node<3>*> element_nodes1;
                         element_nodes1.push_back(p_potts_mesh->GetNode(num_node));
                         p_potts_mesh->AddElement(new PottsElement<3>(i, element_nodes1));
-                        std::cout << "Seeded at " << num_node << std::endl;
+                        // std::cout << "Seeded at " << num_node << std::endl;
                     }
 
                     std::vector<CellPtr> potts_cells;
@@ -273,7 +273,7 @@ public:
                     CellsGenerator<FixedG1GenerationalCellCycleModel, 3> potts_cells_generator; // Set the cell cylce for the seeds
                     potts_cells_generator.GenerateBasicRandom(potts_cells, p_potts_mesh->GetNumElements(), p_diff_type); // Assigning the cell type and the cell cycle
 
-                    TRACE("Generate Potts cell population");
+                    // TRACE("Generate Potts cell population");
                     // Create cell population linking potts mesh and cells
                     // WrappedPottsBasedCellPopulation<3> potts_population(*p_potts_mesh, potts_cells, ElementPairing);
                     WrappedPottsBasedCellPopulation<3> potts_population(*p_potts_mesh, potts_cells, BoundaryVector);
@@ -299,8 +299,7 @@ public:
 
                     double AxisRatio = pow(LongAxis - ShortAxis, 2) / pow(LongAxis + ShortAxis, 2); //
                     double CellPerimeter = M_PI * (LongAxis + ShortAxis) * (3 * AxisRatio * 1 / (sqrt(-3 * AxisRatio + 4) + 10) + 1); // M_PI*( LongAxis  + ShortAxis );//
-                    PRINT_2_VARIABLES(M_PI * (LongAxis + ShortAxis) * (3 * AxisRatio * 1 / (sqrt(-3 * AxisRatio + 4) + 10) + 1), M_PI * (LongAxis + ShortAxis))
-
+               
                     MAKE_PTR(ArbitraryPerimeterOnSurfacePottsUpdateRule<3>, p_area_constraint_update_rule);
                     p_area_constraint_update_rule->SetSurfaceAreaEnergyParameter(pow(10,j/10) );//0.1);
                     p_area_constraint_update_rule->SetTargetSurfaceArea(CellPerimeter);
@@ -321,9 +320,6 @@ public:
                     p_modifier->SetMeshDimensions(N_D, N_Z, Width, Length);
                     potts_simulator.AddSimulationModifier(p_modifier);
 
-                    /////////////////////////////
-
-                    potts_simulator.SetOutputDirectory("PottsMetrics/AreaAndPerimeter/WithStandardParameteres");
                     potts_simulator.SetSamplingTimestepMultiple(10);
                     potts_simulator.SetEndTime(11);
 
@@ -337,7 +333,6 @@ public:
 
                     potts_simulator.SetOutputDirectory("PottsMetrics/AreaAndPerimeter/"+Parameters+"/Trial"+Iteration );
                     potts_simulator.Solve();
-                    TRACE("Simulation Complete")
                     SimulationTime::Instance()->Destroy();
                     SimulationTime::Instance()->SetStartTime(0.0);
                 }
