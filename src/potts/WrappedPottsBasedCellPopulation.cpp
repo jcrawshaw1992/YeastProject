@@ -424,8 +424,8 @@ void WrappedPottsBasedCellPopulation<DIM>::AddUpdateRule(boost::shared_ptr<Abstr
 // }
 
 // Explicit instantiation
-template class WrappedPottsBasedCellPopulation<1>;
-template class WrappedPottsBasedCellPopulation<2>;
+// template class WrappedPottsBasedCellPopulation<1>;
+// template class WrappedPottsBasedCellPopulation<2>;
 template class WrappedPottsBasedCellPopulation<3>;
 
 // Serialization for Boost >= 1.36
