@@ -585,6 +585,7 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::FindElementNeighbours()
 template <unsigned SPACE_DIM>
 double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetPerimeterOfElement(unsigned pottsElementIndex) // perimiter
 {
+    assert(SPACE_DIM == 3); 
     /*  1) Loop over the lattice sites and see which ones have neighbours that are in the Sister element 
         2) Should only be counted if they are around the center.  --- only one seam     
     */
