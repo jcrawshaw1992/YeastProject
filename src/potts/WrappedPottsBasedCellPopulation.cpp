@@ -31,6 +31,7 @@ WrappedPottsBasedCellPopulation<DIM>::WrappedPottsBasedCellPopulation(PottsMesh<
         : PottsBasedCellPopulation<DIM>(rMesh, rCells, deleteMesh, validate, locationIndices),
           mElementPairing(ElementPairing)
 {
+    assert(DIM == 3); 
     int counter = 0;
     double PairingNumber = 1;
     mIsPeriodic = 1;
@@ -117,6 +118,7 @@ WrappedPottsBasedCellPopulation<DIM>::WrappedPottsBasedCellPopulation(PottsMesh<
         mBoundaryVector(BoundaryVector)
 {
      mIsPeriodic = 0;
+     assert(DIM == 3); 
     //      for (std::vector<unsigned>::iterator i = mBoundaryVector.begin(); i != mBoundaryVector.end(); ++i)
     // {
     //     PRINT_VARIABLE(*i)
@@ -255,6 +257,7 @@ void WrappedPottsBasedCellPopulation<DIM>::SetNumSweepsPerTimestep(double numSwe
 template <unsigned DIM>
 void WrappedPottsBasedCellPopulation<DIM>::UpdateCellLocations(double dt)
 {
+    assert(DIM == 3); 
     /*
      * This method implements a Monte Carlo method to update the cell population.
      * We sample randomly from all nodes in the mesh. Once we have selected a target
