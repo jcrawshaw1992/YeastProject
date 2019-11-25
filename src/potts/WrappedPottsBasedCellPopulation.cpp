@@ -413,15 +413,15 @@ void WrappedPottsBasedCellPopulation<DIM>::AddUpdateRule(boost::shared_ptr<Abstr
     this->mUpdateRuleCollection.push_back(pUpdateRule);
 }
 
-// template <unsigned DIM>
-// void WrappedPottsBasedCellPopulation<DIM>::OutputCellPopulationParameters(out_stream& rParamsFile)
-// {
-//     // *rParamsFile << "\t\t<Temperature>" << mTemperature << "</Temperature>\n";
-//      *rParamsFile << "\t\t<NumSweepsPerTimestep>" << mNumSweepsPerTimestep << "</NumSweepsPerTimestep>\n";
+template <unsigned DIM>
+void WrappedPottsBasedCellPopulation<DIM>::OutputCellPopulationParameters(out_stream& rParamsFile)
+{
+    // *rParamsFile << "\t\t<Temperature>" << mTemperature << "</Temperature>\n";
+    //  *rParamsFile << "\t\t<NumSweepsPerTimestep>" << mNumSweepsPerTimestep << "</NumSweepsPerTimestep>\n";
 
-//     // Call method on direct parent class
-//     PottsBasedCellPopulation<DIM>::OutputCellPopulationParameters(rParamsFile);
-// }
+    // Call method on direct parent class
+    PottsBasedCellPopulation<DIM>::OutputCellPopulationParameters(rParamsFile);
+}
 
 // Explicit instantiation
 // template class WrappedPottsBasedCellPopulation<1>;

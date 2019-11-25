@@ -8,7 +8,7 @@ Jess's WrappedWrappedPottsBasedCellPopulation
 #define WRAPPEDPOTTSBASEDCELLPOPULATION_HPP_
 
 #include "AbstractOnLatticeCellPopulation.hpp"
-// #include "PottsMesh.hpp"
+#include "PottsMesh.hpp"
 #include "VertexMesh.hpp"
 #include "AbstractUpdateRule.hpp"
 // #include "AbstractWrappedPottsUpdateRule.hpp"
@@ -72,7 +72,7 @@ private:
          * In its current form the code does not allow the direct serialization
          * of the PottsMesh class, so instead we delete mpVoronoiTessellation.
          */
-        // delete mpElementTessellation;
+        //delete mpElementTessellation;
         // mpElementTessellation = nullptr;
         // archive & mTemperature;
          archive & mElementPairing;
@@ -188,7 +188,7 @@ public:
      *
      * @param rParamsFile the file stream to which the parameters are output
      */
-    // void OutputCellPopulationParameters(out_stream& rParamsFile);
+    void OutputCellPopulationParameters(out_stream& rParamsFile);
 };
 
 #include "SerializationExportWrapper.hpp"
