@@ -34,6 +34,8 @@
 #include "LostEndothelialCell.hpp"
 #include "OutwardsPressure.hpp"
 
+#include "projects/VascularRemodelling/src/MembraneForces/MembraneStiffnessForce.hpp"
+
 static const double M_TIME_FOR_SIMULATION = 100; //40; //50
 static const double M_SAMPLING_TIME_STEP = 100; //50
 static const double M_TIME_STEP = 0.002;
@@ -77,7 +79,7 @@ public:
 
         p_mesh->Translate(trans * unit_vector<double>(3, 2));
 
-        std::string output_directory = "DevelopingCollapsingCylinderLongRough/SetUpArchiving/";
+        std::string output_directory = "DevelopingCollapsingCylinder/SetUpArchiving/";
 
         // Create cells
         MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
@@ -96,9 +98,9 @@ public:
         // Set up cell-based simulation
         OffLatticeSimulation<2, 3> simulator(cell_population);
         simulator.SetOutputDirectory(output_directory);
-        simulator.SetEndTime(100);
-        simulator.SetDt(0.01); // 0.005
-        simulator.SetSamplingTimestepMultiple(100);
+        simulator.SetEndTime(20);
+        simulator.SetDt(0.02); // 0.005
+        simulator.SetSamplingTimestepMultiple(500);
         simulator.SetUpdateCellPopulationRule(false); // No remeshing.
 
         /*
@@ -125,6 +127,7 @@ public:
         double BendingConst = 0.001;
         std::map<double, c_vector<long double, 4> > GrowthMaps; // From matlab sweep results
                 //         KA,          Kalpha           Ks                                 Kb
+                
             GrowthMaps[10] = Create_c_vector(pow(10, -6.9), pow(10, -8.2459), pow(10, -9), 0);
             GrowthMaps[8] = Create_c_vector(pow(10, -6.9), pow(10, -8.0160), pow(10, -9), BendingConst);
             GrowthMaps[6] = Create_c_vector(pow(10, -6.9), pow(10, -7.7300), pow(10, -9), BendingConst);
@@ -136,7 +139,7 @@ public:
 
 
         boost::shared_ptr<MembranePropertiesModifier<2, 3> > p_Membrane_modifier(new MembranePropertiesModifier<2, 3>());
-        p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 10, 0,1e-10); 
+        p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 5, 0,10); 
         p_Membrane_modifier->SetupSolve(cell_population, output_directory);
 
         // /*
@@ -169,6 +172,7 @@ public:
 
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+        
 
     }
 };

@@ -159,8 +159,8 @@ public:
     {
         double scale = 1e3;
         // Plexus
-        std::string mesh_file = "projects/VascularRemodelling/test/data/embryo_plexus/config.vtu";
-
+        // std::string mesh_file = "projects/VascularRemodelling/test/data/embryo_plexus/config.vtu";
+        std::string mesh_file = "~/docker-polnet-master/GeneratingShrunkMesh/OpenPlexus.vtu";
         // This data file is in mm??
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> p_mesh;
@@ -168,7 +168,7 @@ public:
         scale = 1e-3; // so distances are in m
         p_mesh.Scale(1.0 * scale, 1.0 * scale, 1.0 * scale); // so distances are back in original scal
 
-        std::string output_directory = "CapillaryPlexusDeformation/LowPressure/Homo/";
+        std::string output_directory = "CapillaryPlexusDeformation/ShrunkMesh/";
 
         // Create cells
         MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
@@ -187,8 +187,8 @@ public:
         OffLatticeSimulation<2, 3> simulator(cell_population);
         simulator.SetOutputDirectory(output_directory);
         simulator.SetEndTime(100);
-        simulator.SetDt(0.01); // 0.005
-        simulator.SetSamplingTimestepMultiple(100);
+        simulator.SetDt(0.0001); //(0.01); // 0.005
+        simulator.SetSamplingTimestepMultiple(1);
         simulator.SetUpdateCellPopulationRule(false); // No remeshing.
 
  

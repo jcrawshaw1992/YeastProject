@@ -160,7 +160,7 @@ public:
         WrappedPottsBasedCellPopulation<3> potts_population(*p_potts_mesh, potts_cells, ElementPairing);
         
         // // Add in all the cell writers
-        potts_population.AddCellWriter<CellIdWriter>();
+        // potts_population.AddCellWriter<CellIdWriter>();
         potts_population.SetNumSweepsPerTimestep(1);
         OnLatticeSimulation<3> potts_simulator(potts_population);
 

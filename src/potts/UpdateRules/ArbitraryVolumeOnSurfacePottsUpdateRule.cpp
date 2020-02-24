@@ -75,6 +75,7 @@ double ArbitraryVolumeOnSurfacePottsUpdateRule<DIM>::EvaluateHamiltonianContribu
         {
             unsigned Sister = rCellPopulation.GetSister(current_element);
             current_volume = p_static_cast_potts_mesh->GetVolumeOfElement(current_element) +p_static_cast_potts_mesh->GetVolumeOfElement(Sister); //getareaofelement -> basically the sum of all the enclosed lattice sites.
+            // PRINT_2_VARIABLES( p_static_cast_potts_mesh->GetVolumeOfElement(current_element),p_static_cast_potts_mesh->GetVolumeOfElement(Sister) )
         }else
         {
             current_volume = p_static_cast_potts_mesh->GetVolumeOfElement(current_element) ; //getareaofelement -> basically the sum of all the enclosed lattice sites.    

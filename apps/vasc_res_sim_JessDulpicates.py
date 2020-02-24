@@ -73,7 +73,7 @@ def generate_flow_vtus(timestep):
    
     subprocess.call(command, shell=True)
 
-    print "generate_flow_vtus DONE    "
+    print "generate_flow_vtus DONE"
 
 
     # ---------------------------------
@@ -255,7 +255,7 @@ def WriteReadme(ElasticShearModulus, AreaDilationModulus, membrane_constant, Are
 
 
 if __name__=="__main__":
-    working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/BifurcationScalled/' 
+    working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/CollapsedPlexues/' 
     data_path =working_directory + 'SetUpData/'
     
     shutil.copy(data_path +'config.stl' , working_directory +'config.stl' )
@@ -366,40 +366,40 @@ if __name__=="__main__":
             # Step 2a: Update xml
     
             update_xml_file(iter, args.num_iterations)
-            pause()
+
         
             print "Run HemeLB"
             # Step 3: HemeLB simulation
             run_hemelb2() 
             print'\n HemeLB simulation complete \n'
             generate_flow_vtus(3)
-        pause()
+  
   
         # # Step 4: Run Chaste with the tractions previously computed
         traction_filename = working_directory + 'results/Extracted/surface-tractions.xtr'
         # traction_filename = "/Users/jcrawshaw/Documents/ChasteWorkingDirectory/DeformingCylindricalBasicHetroWallTesting/results/Extracted/surface-tractions.xtr"
         
-        # command = chaste_run_exe + ' -start_time ' + str(start_time) + ' -duration ' + str(duration) + ' -traction_file ' +  traction_filename + ' -mesh_scale ' +  str(args.mesh_scale)
-        # print 'Chaste step'
-        # subprocess.call(command, shell=True)
+        command = chaste_run_exe + ' -start_time ' + str(start_time) + ' -duration ' + str(duration) + ' -traction_file ' +  traction_filename + ' -mesh_scale ' +  str(args.mesh_scale)
+        print 'Chaste step'
+        subprocess.call(command, shell=True)
 
         
         # # Step 6: Collect Chaste Mesh outputs 
 
-        # if start_time == int(start_time):
-        #     start_time = int(start_time)
-        #     print start_time
+        if start_time == int(start_time):
+            start_time = int(start_time)
+            print start_time
           
-        # # pdb.set_trace()
-        # OldFilePath = working_directory +'results_from_time_' + str(start_time) + '/'
-        # shutil.move(OldFilePath +'results.viznodes' , newpath+'results.viznodes')
+        pdb.set_trace()
+        OldFilePath = working_directory +'results_from_time_' + str(start_time) + '/'
+        shutil.move(OldFilePath +'results.viznodes' , newpath+'results.viznodes')
 
-        # for j in list:
-        #     shutil.move(OldFilePath  + 'mesh_'+ str(j) +'.vtu' ,newpath + 'mesh_'+ str(MeshCounter) +'.vtu')
-        #     MeshCounter+=1
-        #     shutil.move(OldFilePath  + 'results_'+ str(j) +'.vtu' ,newpath + 'results_'+ str(ResultsCounter) +'.vtu')
-        #     ResultsCounter+=1
-        # start_time += duration 
+        for j in list:
+            shutil.move(OldFilePath  + 'mesh_'+ str(j) +'.vtu' ,newpath + 'mesh_'+ str(MeshCounter) +'.vtu')
+            MeshCounter+=1
+            shutil.move(OldFilePath  + 'results_'+ str(j) +'.vtu' ,newpath + 'results_'+ str(ResultsCounter) +'.vtu')
+            ResultsCounter+=1
+        start_time += duration 
 
         # Update the radius of the tube*, this can then be used to update the pr2 file to enable the flow to be correctly calculated 
         # Step 5: Convert Chaste output (vtu file) into the input of the next iteration (stl file required by hemelb setup tool)

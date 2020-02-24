@@ -186,9 +186,10 @@ public:
     void TestAreaFroceDragCorrectedEqui() throw(Exception)
     {
 
-        double mesh_scale = 1e-3;
-
-        std::string mesh_file = "/Users/jcrawshaw/Documents/ChasteWorkingDirectory/Bifurcation/SetUpData/config.vtu";
+        double mesh_scale = 1;//1e-3;
+    ''
+        // std::string mesh_file = "/Users/jcrawshaw/Documents/ChasteWorkingDirectory/Bifurcation/SetUpData/config.vtu";
+        std::string mesh_file = "/Users/jcrawshaw/docker-polnet-master/ScalledMesh/Plexus.vtu";
 
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;

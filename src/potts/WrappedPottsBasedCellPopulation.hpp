@@ -102,6 +102,7 @@ public:
     WrappedPottsBasedCellPopulation(PottsMesh<DIM>& rMesh,
                              std::vector<CellPtr>& rCells,
                              std::map< unsigned, unsigned > ElementPairing,
+                             std::vector<unsigned> BoundaryVector,
                              bool deleteMesh=false,
                              bool validate=true,
                              const std::vector<unsigned> locationIndices=std::vector<unsigned>());
@@ -188,7 +189,7 @@ public:
      *
      * @param rParamsFile the file stream to which the parameters are output
      */
-    void OutputCellPopulationParameters(out_stream& rParamsFile);
+    // void OutputCellPopulationParameters(out_stream& rParamsFile);
 };
 
 #include "SerializationExportWrapper.hpp"

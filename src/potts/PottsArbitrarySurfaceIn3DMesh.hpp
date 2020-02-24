@@ -175,10 +175,25 @@ public:
 
 
     /*
-     * Check the AspectRatio
+     * Check the AspectRatio -- For periodic mesh  - needs element and sister
+     */
+
+    double GetAspectRatio(unsigned pottsElementIndex, unsigned pottsSisterIndex);
+
+      /*
+     * Check the AspectRatio -- For non-periodic mesh - needs element and sister
      */
 
     double GetAspectRatio(unsigned pottsElementIndex);
+
+     /*
+     * Returns the major axis of the cell, this is a vector which is calculated in the GetAspectRatio function (above). 
+     * Its is expected  GetAspectRatio will be called first 
+     * 
+     */
+
+    c_vector<double, 2> GetMajorAxisVector(unsigned pottsElementIndex);
+
 
 
      /*
@@ -191,12 +206,14 @@ public:
     double mRadius;
     double mMaxC;
     double mMinC;
-    double mLength;
+    // double mLength;
     double mPeriodic;
     double mLatticeSpaceing ;
-    
-    
 
+
+    double mN_C =10; double mN_D=10; double  mWidth=10; double mLength=10;
+    
+    void SetMeshSize(double N_C, double N_D, double width, double length);
 
     std::map< unsigned , c_vector<double,2> > MapCellTo2DPlane(unsigned pottsElementIndex);
     double CellLength(unsigned pottsElementIndex);

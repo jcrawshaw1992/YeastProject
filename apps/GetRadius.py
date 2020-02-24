@@ -32,8 +32,8 @@ radii_over_time = [] # empty array
 
 
 
-# def pause():
-#     programPause = raw_input("Press the <ENTER> key to continue...")
+def pause():
+    programPause = raw_input("Press the <ENTER> key to continue...")
 
     # ---------------------------------
   
@@ -56,6 +56,20 @@ def GetRadius(CenterLines_filename, NewOutput):
     point_data = reader.GetOutput().GetPointData()
     assert point_data.GetArrayName(0) == 'Radius', "VTP file doesn't contain array Radius"
     radii = point_data.GetArray(0)
+
+    self = vtk.vtkProgrammableFilter()
+
+    ids = [10,11,12,13]
+    pdi = self.GetPolyDataInput()
+    pdo = self.GetPolyDataOutput()
+    pdo.DeepCopy(pdi)
+    for id in ids:
+        pause()
+        radiusArray = pdo.GetPointData().GetArray("MaximumInscribedSphereRadius")
+        radius = radiusArray.GetValue(id)
+        radiusArray.SetValue(id,radius+0.2)
+        pause()
+
     # radii_over_time.append(np.array([radii.GetValue(i) for i in range(radii.GetSize())]))
     #  pause():
     print "    vmtk_compute_stl_radii DONE   "
@@ -65,8 +79,10 @@ def GetRadius(CenterLines_filename, NewOutput):
 if __name__=="__main__":
     parser = ArgumentParser(description='Get the radius file ')
     parser.add_argument('--Geometryfile', type=str, help='Need to supply a config.stl file (directory)')
-    parser.add_argument('--ifile', type=str, help='Need to supply a centerlines.vtp file (directory)')
-    parser.add_argument('--ofile', default='~/Documents/ChasteWorkingDirectory/Radius.vtp', type=str, help='Need to supply an output directory for the new radius file(directory)')
+    # parser.add_argument('--ifile', type=str, help='Need to supply a centerlines.vtp file (directory)')
+    parser.add_argument('--ifile', default='/Users/jcrawshaw/docker-polnet-master/GeneratingShrunkMesh/PlexusInversed.vtp', type=str, help='Need to supply a input folder')
+   
+    parser.add_argument('--ofile', default='/Users/jcrawshaw/docker-polnet-master/GeneratingShrunkMesh/Radius.vtp', type=str, help='Need to supply an output directory for the new radius file(directory)')
     args = parser.parse_args()
     # print ' ------- Setting up args ------- '
     # print args.ifile
@@ -77,17 +93,58 @@ if __name__=="__main__":
     reader.SetFileName(CenterLines_filename)
     writer.SetFileName(CenterLines_filename)
 
+
+    # writer.SetRadius(radii_over_time[0])
+
     reader.Update()
+    # pdb.set_trace()
     point_data = reader.GetOutput().GetPointData()
     assert point_data.GetArrayName(0) == 'Radius', "VTP file doesn't contain array Radius"
+    # print point_data 
+    # print(type(point_data )) 
+    
     radii = point_data.GetArray(0)
+    print radii 
+    pause()
     # print radii
     Scalling =10
     radii_over_time = []
     radii_over_time.append([radii.GetValue(i)/Scalling for i in range(radii.GetSize())])
     # print radii_over_time[0]
     print len(radii_over_time[0])
-    writer.SetRadius(radii_over_time[0])
+
+    for i in range(radii.GetSize()):
+    #  print radii.GetValue(i)
+     print point_data.GetArray(0).GetValue(i)
+     radius = radii.GetValue(i)/Scalling
+     point_data.GetArray(0).SetValue(i,radius)
+     radii.SetValue(i,radius)
+     print point_data.GetArray(0).GetValue(i)
+
+    # transF = vtk.vtkTransformPolyDataFilter()
+    # self = vtk.vtkProgrammableFilter()
+    # self.SetInputConnection(transF.GetOutputPort())
+    # pdi = self.GetPolyDataInput()
+    # pdo = self.GetPolyDataOutput()
+
+    # pdo.DeepCopy(pdi)
+    # radii2 = pdi.GetPointData().GetArray("Radius")
+    # print radii2
+    # print pdo
+    # print self
+    # pause
+    # for id in range(radii.GetSize()):
+        
+    #     radiusArray = pdo.GetPointData().GetArray("Radius")
+    #     print radiusArray
+    #     pause()
+    #     radius = radiusArray.GetValue(id)
+    #     radiusArray.SetValue(id,radius+0.2)
+    #     # pause()
+
+
+
+    # writer.SetRadius(radii_over_time[0])
 
 
     

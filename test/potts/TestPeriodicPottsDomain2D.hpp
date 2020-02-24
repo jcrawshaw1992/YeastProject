@@ -99,14 +99,14 @@ double ComputeMeshTotalArea(TetrahedralMesh<2,3>& mutable_mesh)
 	{
 
             // Regular square --hexagonal lattie
-            double scale = 1e-3; 
-             double N_D = 35;
-             double N_Z = 50;
-			 double Width = 35; //5e-3
-			 double Length = 50; //30e-3
-
+            double N_D = 30;
+			double N_Z = 30;
+			double Width = 15;
+			double Length = 15;
             Honeycomb3DMeshGenerator generator(N_D, N_Z,Width , Length);
             MutableMesh<2, 3>* mutable_mesh = generator.GetMesh();
+			std::vector<unsigned> BoundaryVector = generator.GetBoundaryVector();
+
 
         
         /*
@@ -138,10 +138,8 @@ double ComputeMeshTotalArea(TetrahedralMesh<2,3>& mutable_mesh)
 		// for (unsigned i=0; i<num_cells_seeded; i++) 
 		{
 			
-			unsigned num_node = RandomNumberGenerator::Instance()->randMod(p_potts_mesh->GetNumNodes()-20);  // Selects a random node 
+			unsigned num_node = RandomNumberGenerator::Instance()->randMod(p_potts_mesh->GetNumNodes());  // Selects a random node 
 			
-
-
 			std::vector<Node<3>*> element_nodes;
 			std::vector<Node<3>*> element_nodes2;
 			element_nodes.push_back(p_potts_mesh->GetNode(num_node));
@@ -166,7 +164,7 @@ double ComputeMeshTotalArea(TetrahedralMesh<2,3>& mutable_mesh)
         TRACE("Generate Potts cell population");
 		// Create cell population linking potts mesh and cells
 		WrappedPottsBasedCellPopulation<3> potts_population(*p_potts_mesh, potts_cells, ElementPairing);
-
+TRACE("Done");
 		// // Add in all the cell writers 
 		potts_population.AddCellWriter<CellIdWriter>();
         potts_population.SetNumSweepsPerTimestep(1);
@@ -177,7 +175,7 @@ double ComputeMeshTotalArea(TetrahedralMesh<2,3>& mutable_mesh)
 		potts_simulator.SetSamplingTimestepMultiple(1);
 		
         // // // Reduce temperature to avoid randomly removing cells before they grow (parameters will need proper fitting)
-		potts_population.SetTemperature(1e-9);
+		potts_population.SetTemperature(0.1);
 
 		// potts_population.DividePopulation();
 		// potts_population.Update(1);
@@ -198,34 +196,31 @@ double ComputeMeshTotalArea(TetrahedralMesh<2,3>& mutable_mesh)
 		potts_simulator.AddUpdateRule(p_volume_constraint_update_rule);
 		
 
-		MAKE_PTR(ArbitraryWrappedAdhesionPottsUpdateRule<3>, p_adhesion_update_rule);
-		p_adhesion_update_rule->SetCellCellAdhesionEnergyParameter(0.02/1000);
-		p_adhesion_update_rule->SetCellBoundaryAdhesionEnergyParameter(0.16/1000);
-		potts_simulator.AddUpdateRule(p_adhesion_update_rule);
+		// MAKE_PTR(ArbitraryWrappedAdhesionPottsUpdateRule<3>, p_adhesion_update_rule);
+		// p_adhesion_update_rule->SetCellCellAdhesionEnergyParameter(0.02/1000);
+		// p_adhesion_update_rule->SetCellBoundaryAdhesionEnergyParameter(0.16/1000);
+		// potts_simulator.AddUpdateRule(p_adhesion_update_rule);
 
 		MAKE_PTR(ArbitraryPerimeterOnSurfacePottsUpdateRule<3>, p_area_constraint_update_rule);
         p_area_constraint_update_rule->SetSurfaceAreaEnergyParameter(0.03e4);
 		p_area_constraint_update_rule->SetTargetSurfaceArea(CellPerimeter); 
 		potts_simulator.AddUpdateRule(p_area_constraint_update_rule);
 
-		// MAKE_PTR(ArbitrarySurfaceAreaConstraintPottsUpdateRule<3>, p_area_constraint_update_rule);
-        // p_area_constraint_update_rule->SetSurfaceAreaEnergyParameter(0.03e4);
-		// p_area_constraint_update_rule->SetTargetSurfaceArea(CellPerimeter); 
-		// potts_simulator.AddUpdateRule(p_area_constraint_update_rule);
-
 		p_potts_mesh->UpdatePottsNodeLocationFromDelaunay();
 
         // Modifier outputs the stuff I want to save 
 
         MAKE_PTR(PottsCellPropertiesModifier<3>, p_modifier);
-        potts_simulator.AddSimulationModifier(p_modifier);
+		p_modifier->SetMeshDimensions(N_D, N_Z, Width, Length);
+		potts_simulator.AddSimulationModifier(p_modifier);
+
 
         // // potts_simulator.SetStartTime(Confluence_time)
         potts_simulator.SetOutputDirectory("TestingPeriodicDomian/1");
         potts_simulator.SetEndTime(0.110);
 
         potts_simulator.Solve();
-		TRACE("Freaking Stupid")
+		// TRACE("Freaking Stupid")
 
 
 

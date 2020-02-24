@@ -30,6 +30,15 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::SetBoundaries(std::vector<unsigne
 }
 
 template <unsigned SPACE_DIM>
+void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::SetMeshSize(double N_C, double N_D, double width, double length)
+{
+    mN_C = N_C;
+    mN_D = N_D;
+    mWidth = width;
+    mLength = length;
+}
+
+template <unsigned SPACE_DIM>
 void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::UpdatePottsNodeLocationFromDelaunay()
 {
 
@@ -52,11 +61,9 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::UpdatePottsNodeLocationFromDelaun
     GetEdges();
     EdgeLenghts();
 
-
     mAngleRange = 0;
     // MapCylinderToPlane();
     // TRACE("Second");
-
 
     // TRACE("Third");
     CalculateLatticeVolumes();
@@ -94,6 +101,7 @@ bool PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::DoNodesShareElement(unsigned inde
     else
     {
         // PRINT_2_VARIABLES(node_a_elements.size(), node_b_elements.size());
+
         assert(node_a_elements.size() == 1);
         assert(node_b_elements.size() == 1);
 
@@ -253,19 +261,18 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetEdges()
                     mIsEdgeBoundary[counter] = 1000;
                     mIsEdgeBoundaryMap[NodePair] = 1000;
 
-
-                    // 0 means its in the centeral region and everything is easy 
+                    // 0 means its in the centeral region and everything is easy
                     // 1 means its on one of the zipping edges
                     // 2 means its on the top or bottom edge
                     // 3 means the edge is at one of the corners and will be a pain
-                    
+
                     if (Boundary1 == 1 && Boundary2 == 1 && VectorOfContainingElements.size() == 2) // THis should be along the edge
                     {
                         // This is a wrapping edge
                         mIsEdgeBoundary[counter] = 1;
                         mIsEdgeBoundaryMap[NodePair] = 1;
                     }
-                    else if ( Boundary1 == 0 || Boundary2 == 0) // THis should be in the central region
+                    else if (Boundary1 == 0 || Boundary2 == 0) // THis should be in the central region
                     {
                         TS_ASSERT(VectorOfContainingElements.size() == 2);
                         mIsEdgeBoundary[counter] = 0;
@@ -275,34 +282,35 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetEdges()
                     {
                         // TS_ASSERT(VectorOfContainingElements.size() == 1);
                         mIsEdgeBoundary[counter] = 2;
-                        mIsEdgeBoundaryMap[NodePair] = 2 ;
+                        mIsEdgeBoundaryMap[NodePair] = 2;
                     }
-                     else if ((Boundary1 == 2 && Boundary2 == 3 ) ||  (Boundary1 == 3 && Boundary2 == 2 ) ) // this edge is along the top or bottom, should have  VectorOfContainingElements.size() == 1
+                    else if ((Boundary1 == 2 && Boundary2 == 3) || (Boundary1 == 3 && Boundary2 == 2)) // this edge is along the top or bottom, should have  VectorOfContainingElements.size() == 1
                     {
                         // TS_ASSERT(VectorOfContainingElements.size() == 1);
                         mIsEdgeBoundary[counter] = 2;
-                        mIsEdgeBoundaryMap[NodePair] = 2 ;
-                    } else if ((Boundary1 == 1 && Boundary2 == 3 ) ||  (Boundary1 == 3 && Boundary2 == 1 ) )  // One is on the top bottom edge, and the other is along the zip edge
+                        mIsEdgeBoundaryMap[NodePair] = 2;
+                    }
+                    else if ((Boundary1 == 1 && Boundary2 == 3) || (Boundary1 == 3 && Boundary2 == 1)) // One is on the top bottom edge, and the other is along the zip edge
                     {
                         mIsEdgeBoundary[counter] = 4;
                         mIsEdgeBoundaryMap[NodePair] = 4;
-                    } else if  ((Boundary1 == 1 && Boundary2 == 2 && VectorOfContainingElements.size() == 2) ||  (Boundary1 == 2 && Boundary2 == 1  && VectorOfContainingElements.size() == 2) ) // THis is for the other two nodes on the elements at the edge, this edge has two elements associated with it, so its fine to count as a zero edge 
+                    }
+                    else if ((Boundary1 == 1 && Boundary2 == 2 && VectorOfContainingElements.size() == 2) || (Boundary1 == 2 && Boundary2 == 1 && VectorOfContainingElements.size() == 2)) // THis is for the other two nodes on the elements at the edge, this edge has two elements associated with it, so its fine to count as a zero edge
                     {
                         mIsEdgeBoundary[counter] = 0;
                         mIsEdgeBoundaryMap[NodePair] = 0;
                     }
-                    else if  ((Boundary1 == 1 && Boundary2 == 2 && VectorOfContainingElements.size() == 1) ||  (Boundary1 == 2 && Boundary2 == 1  && VectorOfContainingElements.size() == 1) ) // THis is for the other two nodes on the elements at the edge, this edge has two elements associated with it, so its fine to count as a zero edge 
+                    else if ((Boundary1 == 1 && Boundary2 == 2 && VectorOfContainingElements.size() == 1) || (Boundary1 == 2 && Boundary2 == 1 && VectorOfContainingElements.size() == 1)) // THis is for the other two nodes on the elements at the edge, this edge has two elements associated with it, so its fine to count as a zero edge
                     {
                         mIsEdgeBoundary[counter] = 3;
                         mIsEdgeBoundaryMap[NodePair] = 3;
                     }
-                     else if  (Boundary1 == 3 && Boundary2 == 3 ) // THis is for the other two nodes on the elements at the edge, this edge has two elements associated with it, so its fine to count as a zero edge 
+                    else if (Boundary1 == 3 && Boundary2 == 3) // THis is for the other two nodes on the elements at the edge, this edge has two elements associated with it, so its fine to count as a zero edge
                     {
-                        TRACE(" DO i get here")
                         mIsEdgeBoundary[counter] = 5;
                         mIsEdgeBoundaryMap[NodePair] = 5;
                     }
-                       
+
                     // PRINT_3_VARIABLES(node_index, *iter, mIsEdgeBoundary[counter] );
                     if (VectorOfContainingElements.size() == 1)
                     {
@@ -347,7 +355,7 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::EdgeLenghts()
     {
         if (mIsEdgeBoundary[i] == 0)
         {
-            TS_ASSERT(mGetElementsFromEdge[i].size() == 2 );
+            TS_ASSERT(mGetElementsFromEdge[i].size() == 2);
             Node<SPACE_DIM>* pNode0 = mpDelaunayMesh->GetNode(mEdges[i].first);
             Node<SPACE_DIM>* pNode1 = mpDelaunayMesh->GetNode(mEdges[i].second);
 
@@ -372,7 +380,7 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::EdgeLenghts()
                 storedEdgeShortEdge = norm_2(b1) + norm_2(b2);
             }
         }
-        else if (mIsEdgeBoundary[i] == 2) // THis both of the nodes  are on the top or bottom??? 
+        else if (mIsEdgeBoundary[i] == 2) // THis both of the nodes  are on the top or bottom???
         {
             // PRINT_VARIABLE(mGetElementsFromEdge[i].size() ); // This need to be 2? so the top or the bottom
             // TS_ASSERT(mGetElementsFromEdge[i].size() == 1);
@@ -388,7 +396,6 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::EdgeLenghts()
             c_vector<double, 3> MidPoint1 = mMeshElementMidPoints[Element1] - pNode0->rGetLocation();
             c_vector<double, 3> b1 = inner_prod(PositionVector, MidPoint1) / inner_prod(PositionVector, PositionVector) * PositionVector - MidPoint1;
             mLengthOfLatticeEdge[mEdges[i]] = norm_2(b1) + 0.5 * norm_2(PositionVector);
-           
         }
     }
     for (unsigned i = 0; i < NumberOfEdge; i++)
@@ -413,17 +420,19 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::EdgeLenghts()
         {
             // TS_ASSERT(mGetElementsFromEdge[i].size() == 1); // Pretty sure these ones should only have 1 element associated
             // mLengthOfLatticeEdge[mEdges[i]] = storedEdgeLongXEdge / 2 + 0.5 * mBoundaryEdgeUnitLength;
-            mLengthOfLatticeEdge[mEdges[i]] = storedEdgeShortEdge/ 2 + 0.5 * mBoundaryEdgeUnitLength;
+            mLengthOfLatticeEdge[mEdges[i]] = storedEdgeShortEdge / 2 + 0.5 * mBoundaryEdgeUnitLength;
             //  PRINT_VARIABLE(storedEdgeShortEdge / 2 + 0.5 * mBoundaryEdgeUnitLength);
             // PRINT_VARIABLE(storedEdgeLongXEdge / 2 + 0.5 * mBoundaryEdgeUnitLength);
-        }else if(mIsEdgeBoundary[i] == 4)
-        {
-             mLengthOfLatticeEdge[mEdges[i]] = storedEdgeShortEdge;
         }
-        else if(mIsEdgeBoundary[i] == 5)
+        else if (mIsEdgeBoundary[i] == 4)
         {
-             mLengthOfLatticeEdge[mEdges[i]] = storedEdgeLongXEdge/ 2 + 0.5 * mBoundaryEdgeUnitLength;
+            mLengthOfLatticeEdge[mEdges[i]] = storedEdgeShortEdge;
         }
+        else if (mIsEdgeBoundary[i] == 5)
+        {
+            mLengthOfLatticeEdge[mEdges[i]] = storedEdgeLongXEdge / 2 + 0.5 * mBoundaryEdgeUnitLength;
+        }
+        // PRINT_VARIABLE(mLengthOfLatticeEdge[mEdges[i]] )
     }
 
     //   for (unsigned i = 0; i <NumberOfEdge; i++)
@@ -585,7 +594,7 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::FindElementNeighbours()
 template <unsigned SPACE_DIM>
 double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetPerimeterOfElement(unsigned pottsElementIndex) // perimiter
 {
-    assert(SPACE_DIM == 3); 
+    assert(SPACE_DIM == 3);
     /*  1) Loop over the lattice sites and see which ones have neighbours that are in the Sister element 
         2) Should only be counted if they are around the center.  --- only one seam     
     */
@@ -593,7 +602,6 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetPerimeterOfElement(unsigned 
     PottsElement<SPACE_DIM>* p_potts_element = this->GetElement(pottsElementIndex);
     double potts_element_surface = 0.0;
 
-    
     //  Loop over each of the lattice sites in the cell
 
     for (unsigned local_lattice_index = 0; local_lattice_index < p_potts_element->GetNumNodes(); ++local_lattice_index)
@@ -613,45 +621,36 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetPerimeterOfElement(unsigned 
             }
             else if (mIsEdgeBoundaryMap[NodePair] == 2)
             {
-                // Node pair is on top or bottom and needs to be counted and edges 
+                // Node pair is on top or bottom and needs to be counted and edges
                 potts_element_surface += mBoundaryEdgeUnitLength / 2; // Divide by two because each length is going to get counted twice in iterating around each lattice's neighbourhood
                 double BoundL = mBoundaryEdgeUnitLength / 2;
-            
             }
         }
     }
-  
-  return potts_element_surface;
+
+    return potts_element_surface;
 }
-
-
-
-
-
-
-
 
 template <unsigned SPACE_DIM>
 double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetPerimeterOfCoupledElements(unsigned pottsElementIndex, unsigned pottsSisterElementIndex, double Center) // perimiter
 {
 
-    /*  1) Loop over the lattice sites and see which ones have neighbours that are in the Sister element 
+    /*  
+        1) Loop over the lattice sites and see which ones have neighbours that are in the Sister element 
         2) Should only be counted if they are around the center.  --- only one seam     
     */
-  
+
     PottsElement<SPACE_DIM>* p_potts_element = this->GetElement(pottsElementIndex);
-    
     PottsElement<SPACE_DIM>* p_potts_Sister_element = this->GetElement(pottsSisterElementIndex);
 
     double potts_element_surface = 0.0;
 
     unsigned EdgesAddedA = 0;
-unsigned EdgesAddedB = 0;
-
+    unsigned EdgesAddedB = 0;
 
     MathsFunctions M;
     //  Loop over each of the lattice sites in the cell
-    std::vector<unsigned> EdgeLattices;
+    std::vector<std::pair<unsigned, unsigned> > EdgeLattices;
     for (unsigned local_lattice_index = 0; local_lattice_index < p_potts_element->GetNumNodes(); ++local_lattice_index)
     {
         unsigned lattice_site_index = p_potts_element->GetNodeGlobalIndex(local_lattice_index);
@@ -665,38 +664,24 @@ unsigned EdgesAddedB = 0;
             if (DoNodesShareElement(lattice_site_index, *neighbour_lattice_index) == 0)
             {
                 potts_element_surface += mLengthOfLatticeEdge[NodePair];
-
-                if (mLengthOfLatticeEdge[NodePair] < 0.6)
-                {
-                    EdgesAddedA += 1;
-                }else{
-                    EdgesAddedB += 1;
-                }
-
                 if (DoNodesShareElement(p_potts_Sister_element->GetNodeGlobalIndex(0), *neighbour_lattice_index) == 1)
                 {
-            
                     // If the neighbour is in the sister elememt, then I want to save it in this Edge lattice vector -- then I can Loop through this vector, and take the edges of the
                     // ones I dont needs
-        
-                    EdgeLattices.push_back(local_lattice_index);
+                    EdgeLattices.push_back(NodePair);
                 }
-    
+
                 TS_ASSERT(mLengthOfLatticeEdge[NodePair] != 0)
             }
             else if (mIsEdgeBoundaryMap[NodePair] == 2)
             {
-                
                 // Node pair is on top or bottom and needs to be counted
                 potts_element_surface += mBoundaryEdgeUnitLength / 2; // Divide by two because each length is going to get counted twice in iterating around each lattice's neighbourhood
                 double BoundL = mBoundaryEdgeUnitLength / 2;
-              
-                // EdgesAdded += 1;
             }
         }
     }
-    EdgeLattices.erase(unique(EdgeLattices.begin(), EdgeLattices.end()), EdgeLattices.end());
-
+    // EdgeLattices.erase(unique(EdgeLattices.begin(), EdgeLattices.end()), EdgeLattices.end());
     // Now do the same for the sister
 
     for (unsigned local_sister_lattice_index = 0; local_sister_lattice_index < p_potts_Sister_element->GetNumNodes(); ++local_sister_lattice_index)
@@ -713,16 +698,6 @@ unsigned EdgesAddedB = 0;
             if (DoNodesShareElement(lattice_site_index, *neighbour_lattice_index) == 0)
             {
                 potts_element_surface += mLengthOfLatticeEdge[NodePair];
-                 
-                     if (mLengthOfLatticeEdge[NodePair] < 0.6)
-                {
-                    EdgesAddedA += 1;
-                }else{
-                    EdgesAddedB += 1;
-                }
-                // EdgesAdded += 1;
-                // double EdgeL = mLengthOfLatticeEdge[NodePair];
-                // PRINT_VARIABLE(EdgeL );
                 TS_ASSERT(mLengthOfLatticeEdge[NodePair] != 0)
             }
             else if (mIsEdgeBoundaryMap[NodePair] == 2)
@@ -730,67 +705,52 @@ unsigned EdgesAddedB = 0;
                 // Node pair is on top or bottom and needs to be counted
                 potts_element_surface += mBoundaryEdgeUnitLength / 2; // Divide by two because each length is going to get counted twice in iterating around each lattice's neighbourhood
                 double BoundL = mBoundaryEdgeUnitLength / 2;
-             
-             
-                // EdgesAdded += 1;
-                
+
             }
         }
     }
-
 
     /*
-            Now I need to lop over everything and get the central region out.  How to do this --- I have the central part. I should loop over this and look for the lattices in Element 1 within 
-            Within a region close to the centeral element will be defined as  UnitStep = Width/(N_D-1);
-        */
+        Now I need to lop over everything and get the central region out.  How to do this --- I have the central part. I should loop over this and look for the lattices in Element 1 within 
+        Within a region close to the centeral element will be defined as  UnitStep = Width/(N_D-1);
+    */
 
-    double Width = 10;
-    double N_D = 10;
-    double UnitStep = 1;
-    for (std::vector<unsigned>::iterator node_index = EdgeLattices.begin(); node_index != EdgeLattices.end(); ++node_index)
+    double UnitStep = mWidth / (2*mN_C - 2);
+    for (std::vector<std::pair<unsigned, unsigned> >::iterator NodePair = EdgeLattices.begin(); NodePair != EdgeLattices.end(); ++NodePair)
     {
-        c_vector<double, SPACE_DIM> LatticeLocation = p_potts_element->GetNodeLocation(*node_index);
-        unsigned lattice_site_index = p_potts_element->GetNodeGlobalIndex(*node_index);
-        // TRACE("Ready to remove??")
+        
+        Node<SPACE_DIM>* p_node1 = mpDelaunayMesh->GetNode(NodePair->first);
+        Node<SPACE_DIM>* p_node2 = mpDelaunayMesh->GetNode(NodePair->second);
+        c_vector<double, SPACE_DIM> LatticeLocation = p_node1->rGetLocation();
+        c_vector<double, SPACE_DIM> NeighbourLocation = p_node2->rGetLocation();
 
-        // need to loop over neighbours and check if any of the neighbours are in the sister cell
-        // iterate over all neighbours for this element to check if they are in the same element
-        for (std::set<unsigned>::const_iterator neighbour_lattice_index = this->mMooreNeighbouringNodeIndices[lattice_site_index].begin();
-             neighbour_lattice_index != this->mMooreNeighbouringNodeIndices[lattice_site_index].end();
-             ++neighbour_lattice_index)
-        {
+        
+        // double Distance1 =abs(LatticeLocation[0] - Center);
+        // double Distance2 =abs(NeighbourLocation[0] - Center);
 
-            // if check if neighbour lattice is in sister and Get element of neighbour_lattice_index
-            std::set<unsigned> Neighbour_Lattice_Element = this->GetNode(*neighbour_lattice_index)->rGetContainingElementIndices();
-            if (*Neighbour_Lattice_Element.begin() == pottsSisterElementIndex)
+        if (abs(LatticeLocation[0] - Center) < 5*UnitStep || abs(NeighbourLocation[0] - Center) <  5*UnitStep) // We also need to consider the zip edge here!!!!!
+        {   //Might want to put this back to 2* UnitStep 
+
+            potts_element_surface -= (2 * mLengthOfLatticeEdge[*NodePair]);
+
+            // TRACE("At midline - Must remove from perimeter")
+            // M.PRINT_PAIR(*NodePair);
+            // PRINT_3_VARIABLES(Distance1, Distance2, UnitStep)
+            // TRACE("...")
+            if (mIsEdgeBoundaryMap[*NodePair] == 2 || mIsEdgeBoundaryMap[*NodePair] == 5) // Is on top or bottom?
             {
-                std::pair<unsigned, unsigned> NodePair = M.Create_pair(std::min(lattice_site_index, *neighbour_lattice_index), std::max(lattice_site_index, *neighbour_lattice_index) );  
-   
-
-                   // I also want to check the location of the neighbour --- it might be next to the center line 
-                   Node<SPACE_DIM>* p_node = mpDelaunayMesh->GetNode(*neighbour_lattice_index);
-                   c_vector<double, SPACE_DIM> NeighbourLocation = p_node->rGetLocation();
-                // PRINT_2_VARIABLES(abs(LatticeLocation[0] - Center) , abs(NeighbourLocation[0] - Center) )
-
-                // PRINT_3_VARIABLES( LatticeLocation[0]   ,  NeighbourLocation[0], Center);
-                if (abs(LatticeLocation[0] - Center) < 2 * UnitStep || abs(NeighbourLocation[0] - Center) < 2 * UnitStep ) // We also need to consider the zip edge here!!!!!
-                {
-
-                    potts_element_surface -= 2 * mLengthOfLatticeEdge[NodePair];
-                  
-                    // PRINT_VARIABLE(2 * mLengthOfLatticeEdge[NodePair])
-                    // EdgesAdded -= 2;
-                    if (mIsEdgeBoundaryMap[NodePair] == 2 || mIsEdgeBoundaryMap[NodePair] == 5) // Is on top or bottom?
-                    {
-                        // This pair is on the edge, i need to take out the perimeter dividing them, but leave the edge length along the top or bottom of the mesh
-                        potts_element_surface += mBoundaryEdgeUnitLength; // Divide by two because each length is going to get counted twice in iterating around each lattice's neighbourhood
-                      
-                    }
-                }
+                // This pair is on the edge, i need to take out the perimeter dividing them, but leave the edge length along the top or bottom of the mesh
+                potts_element_surface += mBoundaryEdgeUnitLength; // Divide by two because each length is going to get counted twice in iterating around each lattice's neighbourhood
             }
         }
+        // else
+        // {
+        //     TRACE("At Zip")
+        //     M.PRINT_PAIR(*NodePair);
+        //     PRINT_3_VARIABLES(Distance1, Distance2, UnitStep)
+        //     TRACE("...")
+        // }
     }
-    
     return potts_element_surface;
 }
 
@@ -1014,55 +974,139 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::CalculateLatticeVolumes()
          node_iter != mpDelaunayMesh->GetNodeIteratorEnd();
          ++node_iter)
     {
-        // Set up the area and normal to add to;
-        double LatticeArea = 0;
-        c_vector<double, 3> Normal = Create_c_vector(0, 0, 0);
-
         unsigned node_index = node_iter->GetIndex();
         std::set<unsigned>& containing_elements = node_iter->rGetContainingElementIndices();
         assert(containing_elements.size() > 0);
 
-        // Loop over the elements for this node, to find the perimiter of the lines connecting to the midpoint
-        for (std::set<unsigned>::iterator iter = containing_elements.begin();
-             iter != containing_elements.end();
-             ++iter)
-        {
-            unsigned elem_index = *iter;
-            c_vector<c_vector<double, 3>, 2> Vectors;
-            std::vector<unsigned> LocalNodes;
-            double j = 0;
+        std::vector<unsigned>::iterator Bound_iter = mBoundaryVector.begin();
+        std::advance(Bound_iter, node_index);
 
-            // Loops over the nodes in the element to get the two position vectors describing the element form the inital node
-            for (int i = 0; i < 3; i++)
+        double LatticeArea = 0;
+        c_vector<double, 3> Normal = Create_c_vector(0, 0, 0);
+        if (*Bound_iter == 1)
+        {
+            std::vector<unsigned> containing_elements_Vector(containing_elements.size());
+            std::copy(containing_elements.begin(), containing_elements.end(), containing_elements_Vector.begin());
+
+            std::vector<unsigned> SideA;
+            std::vector<unsigned> SideB;
+            // I have all the neigbours, need one that is on the same side of the mesh, to do this, I only need to find the ones with a boundary condition of 0
+            std::set<unsigned> neighbour_lattice_index = this->mMooreNeighbouringNodeIndices[node_index];
+            // std::vector<unsigned> NodesAssociatedWith_node_iter;
+            for (std::set<unsigned>::iterator iter = neighbour_lattice_index.begin(); iter != neighbour_lattice_index.end(); ++iter)
             {
-                Node<SPACE_DIM>* pNode = mpDelaunayMesh->GetNode(mpDelaunayMesh->GetElement(*iter)->GetNodeGlobalIndex(i));
-                unsigned node_index_i = pNode->GetIndex();
-                if (node_index_i != node_index)
+                // Find the element that is common to both
+                Node<SPACE_DIM>* pNeighbourNode = mpDelaunayMesh->GetNode(*iter);
+                std::set<unsigned>& NeighbourELements = pNeighbourNode->rGetContainingElementIndices();
+
+                std::vector<unsigned> NeighbourELementsVector(NeighbourELements.size());
+                std::copy(NeighbourELements.begin(), NeighbourELements.end(), NeighbourELementsVector.begin());
+
+                c_vector<double, 3> Direction = pNeighbourNode->rGetLocation() - node_iter->rGetLocation();
+
+                if (norm_2(Direction) < 4.5)
                 {
-                    LocalNodes.push_back(node_index_i);
-                    Vectors[j] = pNode->rGetLocation() - node_iter->rGetLocation();
-                    j += 1;
+                    // We found a neighbour on this side of the mesh iterate over the common elements
+                    std::set_intersection(containing_elements_Vector.begin(), containing_elements_Vector.end(),
+                                          NeighbourELementsVector.begin(), NeighbourELementsVector.end(),
+                                          back_inserter(SideA));
+                }
+                else
+                {
+                    std::set_intersection(containing_elements_Vector.begin(), containing_elements_Vector.end(),
+                                          NeighbourELementsVector.begin(), NeighbourELementsVector.end(),
+                                          back_inserter(SideB));
+                }
+            }
+            sort(SideB.begin(), SideB.end());
+            SideB.erase(unique(SideB.begin(), SideB.end()), SideB.end());
+            sort(SideA.begin(), SideA.end());
+            SideA.erase(unique(SideA.begin(), SideA.end()), SideA.end());
+
+            SideA.erase(std::set_difference(SideA.begin(), SideA.end(), SideB.begin(), SideB.end(), SideA.begin()), SideA.end());
+
+            double counter = 0;
+            for (std::vector<unsigned>::iterator iter = SideA.begin(); iter != SideA.end(); ++iter)
+            {
+                counter += 1;
+                unsigned elem_index = *iter;
+                // PottsElement<SPACE_DIM>* p_potts_element = this->GetElement(elem_index);
+
+                c_vector<c_vector<double, 3>, 2> Vectors;
+                std::vector<unsigned> LocalNodes;
+                double j = 0;
+
+                // Loops over the nodes in the element to get the two position vectors describing the element form the inital node
+                for (int i = 0; i < 3; i++)
+                {
+                    Node<SPACE_DIM>* pNode = mpDelaunayMesh->GetNode(mpDelaunayMesh->GetElement(*iter)->GetNodeGlobalIndex(i));
+                    unsigned node_index_i = pNode->GetIndex();
+                    if (node_index_i != node_index)
+                    {
+                        LocalNodes.push_back(node_index_i);
+                        Vectors[j] = pNode->rGetLocation() - node_iter->rGetLocation();
+                        j += 1;
+                    }
+                }
+                LatticeArea += 0.5 * norm_2(VectorProduct(Vectors[0], Vectors[1]));
+                Normal += VectorProduct(Vectors[0], Vectors[1]);
+                if (counter == 2)
+                {
+                    break;
                 }
             }
 
-            c_vector<double, 3> MidPoint = mMeshElementMidPoints[elem_index] - node_iter->rGetLocation();
-
-            c_vector<double, 3> a1 = inner_prod(Vectors[0], MidPoint) / inner_prod(Vectors[0], Vectors[0]) * Vectors[0];
-            c_vector<double, 3> a2 = inner_prod(Vectors[1], MidPoint) / inner_prod(Vectors[1], Vectors[1]) * Vectors[1];
-
-            double Area1 = 0.5 * norm_2(VectorProduct(a1, MidPoint));
-            double Area2 = 0.5 * norm_2(VectorProduct(a2, MidPoint));
-            LatticeArea += Area1 + Area2;
-
-            c_vector<double, 3> MiniElementNormal = VectorProduct(a1, a2);
-            MiniElementNormal *= M.MaintainOutwardsPointingNormal(MiniElementNormal, node_iter->rGetLocation());
-            MiniElementNormal /= norm_2(MiniElementNormal);
-            Normal += MiniElementNormal;
+            Normal /= norm_2(Normal);
         }
+        else if (*Bound_iter == 3)
+        {
+            LatticeArea = (mWidth / mN_C * mLength / mN_D) / 2; //0.5;
+        }
+        else
+        {
+            // Loop over the elements for this node, to find the perimiter of the lines connecting to the midpoint
+            for (std::set<unsigned>::iterator iter = containing_elements.begin();
+                 iter != containing_elements.end();
+                 ++iter)
+            {
+                unsigned elem_index = *iter;
+                c_vector<c_vector<double, 3>, 2> Vectors;
+                std::vector<unsigned> LocalNodes;
+                double j = 0;
 
-        Normal /= norm_2(Normal);
+                // Loops over the nodes in the element to get the two position vectors describing the element form the inital node
+                for (int i = 0; i < 3; i++)
+                {
+                    Node<SPACE_DIM>* pNode = mpDelaunayMesh->GetNode(mpDelaunayMesh->GetElement(*iter)->GetNodeGlobalIndex(i));
+                    unsigned node_index_i = pNode->GetIndex();
+                    if (node_index_i != node_index)
+                    {
+                        LocalNodes.push_back(node_index_i);
+                        Vectors[j] = pNode->rGetLocation() - node_iter->rGetLocation();
+                        j += 1;
+                    }
+                }
+
+                c_vector<double, 3> MidPoint = mMeshElementMidPoints[elem_index] - node_iter->rGetLocation();
+
+                c_vector<double, 3> a1 = inner_prod(Vectors[0], MidPoint) / inner_prod(Vectors[0], Vectors[0]) * Vectors[0];
+                c_vector<double, 3> a2 = inner_prod(Vectors[1], MidPoint) / inner_prod(Vectors[1], Vectors[1]) * Vectors[1];
+
+                double Area1 = 0.5 * norm_2(VectorProduct(a1, MidPoint));
+                double Area2 = 0.5 * norm_2(VectorProduct(a2, MidPoint));
+                LatticeArea += Area1 + Area2;
+
+                c_vector<double, 3> MiniElementNormal = VectorProduct(a1, a2);
+                MiniElementNormal *= M.MaintainOutwardsPointingNormal(MiniElementNormal, node_iter->rGetLocation());
+                MiniElementNormal /= norm_2(MiniElementNormal);
+                Normal += MiniElementNormal;
+            }
+
+            Normal /= norm_2(Normal);
+        }
         mLatticeVolume[node_index] = LatticeArea;
         AverageArea += LatticeArea;
+        // PRINT_VARIABLE(LatticeArea);
         mLatticeNormal[node_index] = Normal;
     }
     mAverageArea = AverageArea / mpDelaunayMesh->GetNumNodes();
@@ -1161,6 +1205,7 @@ c_vector<double, SPACE_DIM> PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetCellCen
     return Mean_Location;
 }
 
+// Gives aspect ratio of cell on non-periodic mesh
 template <unsigned SPACE_DIM>
 double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetAspectRatio(unsigned pottsElementIndex)
 {
@@ -1170,7 +1215,6 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetAspectRatio(unsigned pottsEl
 
     if (p_potts_element->GetNumNodes() <= 2)
     {
-
         return 1.0;
     }
 
@@ -1190,14 +1234,15 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetAspectRatio(unsigned pottsEl
         unsigned node_index = pNode->GetIndex();
         // c_vector<double, 2> MappedPosition =  mMappedLocation[node_index];
 
-        double X_Pos = mMappedLocation[node_index][0]; //  p_potts_element->GetNode(i)->rGetLocation()[0];
-        double Y_Pos = mMappedLocation[node_index][1]; //   p_potts_element->GetNode(i)->rGetLocation()[1];
+        double X_Pos = p_potts_element->GetNode(i)->rGetLocation()[0]; // mMappedLocation[node_index][0]; // ;
+        double Y_Pos = p_potts_element->GetNode(i)->rGetLocation()[1]; // mMappedLocation[node_index][1]; //
 
         mean_x += X_Pos;
         mean_y += Y_Pos;
     }
-    mean_x /= p_potts_element->GetNumNodes();
-    mean_y /= p_potts_element->GetNumNodes();
+
+    mean_x /= (p_potts_element->GetNumNodes());
+    mean_y /= (p_potts_element->GetNumNodes());
 
     double variance_x = 0;
     double variance_y = 0;
@@ -1209,16 +1254,17 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetAspectRatio(unsigned pottsEl
         unsigned node_index = pNode->GetIndex();
         // c_vector<double, 2> MappedPosition =  mMappedLocation[node_index];
 
-        double X_Pos = mMappedLocation[node_index][0]; //  p_potts_element->GetNode(i)->rGetLocation()[0];
-        double Y_Pos = mMappedLocation[node_index][1]; //   p_potts_element->GetNode(i)->rGetLocation()[1];
+        double X_Pos = p_potts_element->GetNode(i)->rGetLocation()[0]; // mMappedLocation[node_index][0]; //
+        double Y_Pos = p_potts_element->GetNode(i)->rGetLocation()[1]; //mMappedLocation[node_index][1]; //
 
         variance_x += pow((X_Pos - mean_x), 2);
         variance_y += pow((Y_Pos - mean_y), 2);
         covariance_xy += (X_Pos - mean_x) * (Y_Pos - mean_y);
     }
-    variance_x /= p_potts_element->GetNumNodes();
-    variance_y /= p_potts_element->GetNumNodes();
-    covariance_xy /= p_potts_element->GetNumNodes();
+
+    variance_x /= (p_potts_element->GetNumNodes());
+    variance_y /= (p_potts_element->GetNumNodes());
+    covariance_xy /= (p_potts_element->GetNumNodes());
 
     // Calculate max/min eigenvalues
     double trace = variance_x + variance_y;
@@ -1236,11 +1282,177 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetAspectRatio(unsigned pottsEl
 
     // TO get the major axis will be the eigenvector corresponding to to the major eigenvaule eig_max -- basic eigenvector calcuations
 
-    double MajorAxisX = (variance_x - eig_max) * (variance_y - eig_max) / (covariance_xy * covariance_xy);
-    double MajorAxisY = -(variance_x - eig_max) * (variance_x - eig_max) * (variance_y - eig_max) / (covariance_xy * covariance_xy * covariance_xy);
+    // double MajorAxisX = (variance_x - eig_max) * (variance_y - eig_max) / (covariance_xy * covariance_xy);
+    // double MajorAxisY = -(variance_x - eig_max) * (variance_x - eig_max) * (variance_y - eig_max) / (covariance_xy * covariance_xy * covariance_xy);
 
-    mMajorAxis[pottsElementIndex] = Create_c_vector(MajorAxisX, MajorAxisY);
+    c_vector<double, 2> MajorAxis = Create_c_vector((eig_max - variance_y) / covariance_xy, 1);
+
+    MajorAxis /= norm_2(MajorAxis);
+    if (covariance_xy == 0)
+    {
+        MajorAxis = Create_c_vector(0, 0);
+    }
+    mMajorAxis[pottsElementIndex] = MajorAxis; //Create_c_vector(MajorAxisX, MajorAxisY);
+    // TS_ASSERT(!isnan(mMajorAxis[0]));
     return eig_max / eig_min;
+}
+
+// Gives aspect ratio of cell on wrapped mesh
+template <unsigned SPACE_DIM>
+double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetAspectRatio(unsigned pottsElementIndex, unsigned pottsSisterIndex)
+{
+
+    PottsElement<SPACE_DIM>* p_potts_element = this->GetElement(pottsElementIndex);
+    PottsElement<SPACE_DIM>* p_potts_sister = this->GetElement(pottsSisterIndex);
+    assert(p_potts_element->GetNumNodes() != 0);
+    assert(p_potts_sister->GetNumNodes() != 0);
+
+    if (p_potts_element->GetNumNodes() + p_potts_sister->GetNumNodes() <= 2)
+    {
+        return 1.0;
+    }
+
+    double eig_max;
+    double eig_min;
+
+    // See http://stackoverflow.com/questions/7059841/estimating-aspect-ratio-of-a-convex-hull for how to do it.
+
+    // Calculate entries of covariance matrix (var_x,cov_xy;cov_xy,var_y)
+    double mean_x = 0;
+    double mean_y = 0;
+
+    for (unsigned i = 0; i < p_potts_element->GetNumNodes(); i++)
+    {
+
+        Node<SPACE_DIM>* pNode = p_potts_element->GetNode(i);
+        unsigned node_index = pNode->GetIndex();
+        // c_vector<double, 2> MappedPosition =  mMappedLocation[node_index];
+
+        double X_Pos = p_potts_element->GetNode(i)->rGetLocation()[0]; // mMappedLocation[node_index][0]; // ;
+        double Y_Pos = p_potts_element->GetNode(i)->rGetLocation()[1]; // mMappedLocation[node_index][1]; //
+
+        mean_x += X_Pos;
+        mean_y += Y_Pos;
+    }
+
+    for (unsigned i = 0; i < p_potts_sister->GetNumNodes(); i++)
+    {
+
+        Node<SPACE_DIM>* pNode = p_potts_sister->GetNode(i);
+        unsigned node_index = pNode->GetIndex();
+        // c_vector<double, 2> MappedPosition =  mMappedLocation[node_index];
+
+        double X_Pos = p_potts_sister->GetNode(i)->rGetLocation()[0]; // mMappedLocation[node_index][0]; // ;
+        double Y_Pos = p_potts_sister->GetNode(i)->rGetLocation()[1]; // mMappedLocation[node_index][1]; //
+
+        mean_x += X_Pos;
+        mean_y += Y_Pos;
+    }
+
+    mean_x /= (p_potts_element->GetNumNodes() + p_potts_sister->GetNumNodes());
+    mean_y /= (p_potts_element->GetNumNodes() + p_potts_sister->GetNumNodes());
+
+    double variance_x = 0;
+    double variance_y = 0;
+    double covariance_xy = 0;
+
+    for (unsigned i = 0; i < p_potts_element->GetNumNodes(); i++)
+    {
+        Node<SPACE_DIM>* pNode = p_potts_element->GetNode(i);
+        unsigned node_index = pNode->GetIndex();
+        // c_vector<double, 2> MappedPosition =  mMappedLocation[node_index];
+
+        double X_Pos = p_potts_element->GetNode(i)->rGetLocation()[0]; // mMappedLocation[node_index][0]; //
+        double Y_Pos = p_potts_element->GetNode(i)->rGetLocation()[1]; //mMappedLocation[node_index][1]; //
+
+        variance_x += pow((X_Pos - mean_x), 2);
+        variance_y += pow((Y_Pos - mean_y), 2);
+        covariance_xy += (X_Pos - mean_x) * (Y_Pos - mean_y);
+    }
+
+    for (unsigned i = 0; i < p_potts_sister->GetNumNodes(); i++)
+    {
+        Node<SPACE_DIM>* pNode = p_potts_sister->GetNode(i);
+        unsigned node_index = pNode->GetIndex();
+        // c_vector<double, 2> MappedPosition =  mMappedLocation[node_index];
+
+        double X_Pos = p_potts_sister->GetNode(i)->rGetLocation()[0]; // mMappedLocation[node_index][0]; //
+        double Y_Pos = p_potts_sister->GetNode(i)->rGetLocation()[1]; //mMappedLocation[node_index][1]; //
+
+        variance_x += pow((X_Pos - mean_x), 2);
+        variance_y += pow((Y_Pos - mean_y), 2);
+        covariance_xy += (X_Pos - mean_x) * (Y_Pos - mean_y);
+    }
+    // PRINT_VARIABLE(covariance_xy)
+
+    variance_x /= (p_potts_element->GetNumNodes() + p_potts_sister->GetNumNodes());
+    variance_y /= (p_potts_element->GetNumNodes() + p_potts_sister->GetNumNodes());
+    covariance_xy /= (p_potts_element->GetNumNodes() + p_potts_sister->GetNumNodes());
+
+    // Calculate max/min eigenvalues
+    double trace = variance_x + variance_y;
+    double det = variance_x * variance_y - covariance_xy * covariance_xy;
+
+    eig_max = 0.5 * (trace + sqrt(trace * trace - 4 * det));
+    eig_min = 0.5 * (trace - sqrt(trace * trace - 4 * det));
+
+    if (eig_min == 0)
+    {
+        // TRACE("All nodes in an element lie in the same line/plane (2D/3D) so aspect ratio is infinite. This interferes with calculation of the Hamiltonian.");
+        return -1;
+        // EXCEPTION("All nodes in an element lie in the same line/plane (2D/3D) so aspect ratio is infinite. This interferes with calculation of the Hamiltonian.");
+    }
+    // double MajorAxis_1 = sqrt( (variance_y+ eig_max)*(variance_y+ eig_max) / (covariance_xy*covariance_xy + (variance_y+ eig_max)*(variance_y+ eig_max)));
+    // double MajorAxis_2 = sqrt( 1- MajorAxis_1 * MajorAxis_1 );
+    c_vector<double, 2> MajorAxis = Create_c_vector((eig_max - variance_y) / covariance_xy, 1);
+    // c_vector<double, 2> MajorAxis = Create_c_vector(MajorAxis_1, MajorAxis_2);
+    // PRINT_VECTOR(MajorAxis)
+    if (covariance_xy == 0)
+    {
+        // The major axis lies on the  or y axis  https://cookierobotics.com/007/
+        // Can check which one
+        if (variance_x >= variance_y)
+        {
+            //    theta =0;
+            MajorAxis = Create_c_vector(1, 0);
+        }
+        else if (variance_x <= variance_y)
+        {
+            //    theta = M_PI/2;
+            MajorAxis = Create_c_vector(0, 1);
+        }
+    }
+    MajorAxis /= norm_2(MajorAxis);
+
+    // doubletheta= asin( ( (variance_y+ eig_max)*(variance_y+ eig_max) / (covariance_xy*covariance_xy + (variance_y+ eig_max)*(variance_y+ eig_max)))/ (1- MajorAxis_1 * MajorAxis_1));
+
+    double Theta = atan(MajorAxis[0] / MajorAxis[1]);
+    double Theta_check = atan((eig_max - variance_x) / covariance_xy);
+
+    double Theta_check5 = Theta_check;
+    if (!(abs(abs(Theta) - abs(Theta_check)) < 0.15 || abs(abs(Theta) - abs(Theta_check - M_PI / 2)) < 0.15 || abs(abs(Theta) - abs(Theta_check - M_PI)) < 0.15 || abs(abs(Theta) - abs(Theta_check + M_PI / 2)) < 0.15 || abs(abs(Theta) - abs(Theta_check + M_PI)) < 0.15 || covariance_xy == 0))
+    {
+        // TRACE("Did not Passed")
+        PRINT_2_VARIABLES(Theta, Theta_check)
+        TRACE("Angle between major axis is incorrect  -- Should be the same both ways of caluclating it")
+        //
+        // EXCEPTION("Angle between major axis is incorrect");
+    }
+    assert(!isnan(norm_2(MajorAxis)));
+
+    mMajorAxis[pottsElementIndex] = MajorAxis;
+    mMajorAxis[pottsSisterIndex] = MajorAxis;
+
+    return eig_max / eig_min;
+}
+
+template <unsigned SPACE_DIM>
+c_vector<double, 2> PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetMajorAxisVector(unsigned pottsElementIndex)
+{
+    // PRINT_VECTOR(mMajorAxis[pottsElementIndex]);
+    // TS_ASS  RT(!isnan(mMajorAxis[pottsElementIndex][0]));
+    // assert(!isnan(mMajorAxis[pottsElementIndex][0]));
+    return mMajorAxis[pottsElementIndex];
 }
 
 template <unsigned SPACE_DIM>
@@ -1300,13 +1512,12 @@ void PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::SetConstantWallShearStress(double
         c_vector<double, 3> location = iter->rGetLocation();
         // PRINT_2_VARIABLES(location[1], location[1] * 1/49+1);
         mForceOnLattice[node_index] = Create_c_vector(0, 0, 1);
-        mTractionOnLattice[node_index] = Create_c_vector(0, location[1] *WallShearStress +20, 0);
+        mTractionOnLattice[node_index] = Create_c_vector(0, location[1] * WallShearStress + 20, 0);
 
         // Need to get cell iter
         // cell_iter->GetCellData()->SetItem("WallShearMag", norm_2(mTractionOnLattice[node_index]) );
     }
-    // CellPtr cell_iter = p_static_cast_cell_population->GetCellUsingLocationIndex(node_index1);
-    TRACE("Finished Addting the Constant Wall shear stress")
+
 }
 
 template <unsigned SPACE_DIM>

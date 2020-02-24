@@ -50,6 +50,18 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
             c_vector<double, 3> Normal = zero_vector<double>(3);
             double Area = 0;
             std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
+            // PRINT_2_VARIABLES(node_index,containing_elements.size())
+            cell_iter->GetCellData()->SetItem("Node", node_index);
+           
+            // if (containing_elements.size() <1)
+            // {
+            //      delete p_node;
+            //      continue;
+            // }
+       
+
+        // TRACE("do we get here")
+
             assert(containing_elements.size() > 0);
             for (std::set<unsigned>::iterator iter = containing_elements.begin();
                  iter != containing_elements.end();
@@ -64,12 +76,18 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
 
                 c_vector<double, 3> normalVector = VectorProduct(vector_12, vector_13);
                 
-                // Area+= norm_2(normalVector)/6;
+                Area+= norm_2(normalVector)/6;
                 Normal += normalVector;///norm_2(normalVector);
 
             }
             Normal /=norm_2(Normal);
-             c_vector<double, 3> force = mStrength *Normal; // / norm_2(cell_location);
+             c_vector<double, 3> force = mStrength *Normal*  Area; // / norm_2(cell_location);
+             cell_iter->GetCellData()->SetItem("Pressure",mStrength );
+
+            //   if( cell_iter->GetCellData()->GetItem("Mut") ==1)
+            //   {
+            //       force*=-1;
+            //   }
             rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(force);
         }
 

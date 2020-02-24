@@ -1,6 +1,6 @@
 
-#ifndef TestPottsShearMigration2D_HPP_
-#define TestPottsShearMigration2D_HPP_
+#ifndef TESTPOTTSNONPERIODICVALIDATION_HPP_
+#define TESTPOTTSNONPERIODICVALIDATION_HPP_
 
 #include <cxxtest/TestSuite.h>
 
@@ -33,7 +33,7 @@
 #include "SmartPointers.hpp"
 #include "Warnings.hpp"
 
-#include "AspectRatioConstraintPottsUpdateRule.hpp"
+// #include "AspectRatioConstraintPottsUpdateRule.hpp"
 #include "PottsMeshFromMutableMeshGenerator.hpp"
 
 #include "VtkMeshReader.hpp"
@@ -74,215 +74,73 @@
 #include "CellCenterWriter.hpp"
 #include "CellPerimeterWriter.hpp"
 
-class TestShearMigration : public AbstractCellBasedTestSuite
+class TestNonPeriodicPottsParameters : public AbstractCellBasedTestSuite
 {
 public:
-    void TestNonperiodicPottsWithStandardParameteres()
+
+ void TestNonperiodicPottsSweep()
     {
-        MathsFunctions M;
+
+        // Regular hexagonal lattie
+
+        double N_D = 30*2;
+        double N_Z = 30*2;
+        double Width = 15*2;
+        double Length = 15*2;
+        Honeycomb3DMeshGenerator generator(N_D, N_Z, Width, Length);
+        MutableMesh<2, 3>* mutable_mesh = generator.GetMesh();
+        std::vector<unsigned> BoundaryVector = generator.GetBoundaryVector();
         
-
-        // Regular hexagonal lattie
-
-        double N_D = 20;
-        double N_Z = 30;
-        double Width = 20;
-        double Length = 30;
-
-        Honeycomb3DMeshGenerator generator(N_D, N_Z, Width, Length);
-        MutableMesh<2, 3>* mutable_mesh = generator.GetMesh();
-        std::vector<unsigned> BoundaryVector = generator.GetBoundaryVector();
-
-        for(int i =0; i<100;i++)
+       for (double k = 0; k > -1; k--)
         {
-
-        /*
-		 * Setup Potts simulation
-		*/
-
-        PottsMeshFromMutableMeshGeneratorJess<3> potts_generator(*mutable_mesh);
-        PottsArbitrarySurfaceIn3DMesh<3>* p_potts_mesh = potts_generator.GetMesh();
-        p_potts_mesh->SetBoundaries(BoundaryVector);
-
-        std::map<unsigned, unsigned> ElementPairing;
-
-        // Randomly select three nodes.
-
-        double num_cells_seeded = 1;
-        unsigned num_node;
-        std::vector<unsigned> NodesAllocated;
-        // PRINT_VARIABLE(p_potts_mesh->GetNode(num_node)->IsBoundaryNode());
-        bool OnEdge = 1;
-        double yPos = Length;
-        for (unsigned i = 0; i < num_cells_seeded; ++i) // i+=2)
-        {
-            OnEdge = 1;
-            while (OnEdge)
-            {
-                num_node = RandomNumberGenerator::Instance()->ranf() * (p_potts_mesh->GetNumNodes() - 60); // Selects a random node
-                yPos = mutable_mesh->GetNode(num_node)->rGetLocation()[1];
-                //
-                if (yPos < Length / 4 && p_potts_mesh->GetNode(num_node)->IsBoundaryNode() == 0 && p_potts_mesh->GetNode(num_node + 1)->IsBoundaryNode() == 0 && M.IsNumberInVector(NodesAllocated, num_node) == 0 && M.IsNumberInVector(NodesAllocated, num_node + 1) == 0)
+            for (double j = 0; j > -1; j--)
+            { 
+    
+                PRINT_2_VARIABLES(k,j)
+                for (int i = 250; i <251; i++)
                 {
-                    OnEdge = 0;
-                }
-            }
-
-            NodesAllocated.push_back(num_node);
-            NodesAllocated.push_back(-10);
-            std::vector<Node<3>*> element_nodes1;
-            element_nodes1.push_back(p_potts_mesh->GetNode(num_node));
-            p_potts_mesh->AddElement(new PottsElement<3>(i, element_nodes1));
-            // std::cout << "Seeded at " << num_node << std::endl;
-        }
-
-        std::vector<CellPtr> potts_cells;
-        MAKE_PTR(DifferentiatedCellProliferativeType, p_diff_type); // Set the cell type for the seeds
-        CellsGenerator<FixedG1GenerationalCellCycleModel, 3> potts_cells_generator; // Set the cell cylce for the seeds
-        potts_cells_generator.GenerateBasicRandom(potts_cells, p_potts_mesh->GetNumElements(), p_diff_type); // Assigning the cell type and the cell cycle
-
-        // TRACE("Generate Potts cell population");
-        // Create cell population linking potts mesh and cells
-        // WrappedPottsBasedCellPopulation<3> potts_population(*p_potts_mesh, potts_cells, ElementPairing);
-        WrappedPottsBasedCellPopulation<3> potts_population(*p_potts_mesh, potts_cells, BoundaryVector);
-
-        // // Add in all the cell writers
-        potts_population.AddCellWriter<CellAreaWriter>();
-        potts_population.AddCellWriter<CellIdWriter>();
-        potts_population.AddCellWriter<CellCenterWriter>();
-
-        potts_population.AddCellWriter<CellPerimeterWriter>();
-
-        potts_population.SetNumSweepsPerTimestep(1);
-        OnLatticeSimulation<3> potts_simulator(potts_population);
-
-        double LongAxis = 10 / 2;
-        double ShortAxis = 5.0 / 2.0;
-        double CellArea = M_PI * LongAxis * ShortAxis;
-
-        MAKE_PTR(ArbitraryVolumeOnSurfacePottsUpdateRule<3>, p_volume_constraint_update_rule);
-        p_volume_constraint_update_rule->SetMatureCellTargetVolume(CellArea);
-        p_volume_constraint_update_rule->SetDeformationEnergyParameter(0.1);
-        potts_simulator.AddUpdateRule(p_volume_constraint_update_rule);
-
-        double AxisRatio = pow(LongAxis - ShortAxis, 2) / pow(LongAxis + ShortAxis, 2); //
-        double CellPerimeter = M_PI * (LongAxis + ShortAxis) * (3 * AxisRatio * 1 / (sqrt(-3 * AxisRatio + 4) + 10) + 1); // M_PI*( LongAxis  + ShortAxis );//
-        // PRINT_2_VARIABLES(M_PI * (LongAxis + ShortAxis) * (3 * AxisRatio * 1 / (sqrt(-3 * AxisRatio + 4) + 10) + 1), M_PI * (LongAxis + ShortAxis))
-
-        MAKE_PTR(ArbitraryPerimeterOnSurfacePottsUpdateRule<3>, p_area_constraint_update_rule);
-        p_area_constraint_update_rule->SetSurfaceAreaEnergyParameter(0.1);
-        p_area_constraint_update_rule->SetTargetSurfaceArea(CellPerimeter);
-        potts_simulator.AddUpdateRule(p_area_constraint_update_rule);
-
-        MAKE_PTR(ArbitraryWrappedAdhesionPottsUpdateRule<3>, p_adhesion_update_rule);
-        p_adhesion_update_rule->SetCellCellAdhesionEnergyParameter(0.02 / 1000);
-        p_adhesion_update_rule->SetCellBoundaryAdhesionEnergyParameter(0.16 / 1000);
-        potts_simulator.AddUpdateRule(p_adhesion_update_rule);
-
-        // Set up Potts simulation
-
-        p_potts_mesh->UpdatePottsNodeLocationFromDelaunay();
-        potts_population.SetTemperature(0.1);
- 
-
-        MAKE_PTR(PottsCellPropertiesModifier<3>, p_modifier);
-        p_modifier->SetMeshDimensions(N_D, N_Z, Width, Length);
-        potts_simulator.AddSimulationModifier(p_modifier);
-
-        /////////////////////////////
-           std::stringstream out;
-            out << "_" << i ;
-            std::string Iteration = out.str();
-
-        potts_simulator.SetOutputDirectory("PottsMetrics/AreaAndPerimeter/WithStandardParameteres/Trial"+Iteration );
-        potts_simulator.SetSamplingTimestepMultiple(1);
-        potts_simulator.SetEndTime(30);
-
-        potts_simulator.Solve();
-        TRACE("Simulation Complete")
-        SimulationTime::Instance()->Destroy();
-        SimulationTime::Instance()->SetStartTime(0.0);
-        }
-      
-                    
-    }
-
-
-
-
-     void TestNonperiodicPottsSweep()
-    {
-        MathsFunctions M;
-        ;
-
-        // Regular hexagonal lattie
-
-        double N_D = 20;
-        double N_Z = 20;
-        double Width = 20;
-        double Length = 20;
-
-        Honeycomb3DMeshGenerator generator(N_D, N_Z, Width, Length);
-        MutableMesh<2, 3>* mutable_mesh = generator.GetMesh();
-        std::vector<unsigned> BoundaryVector = generator.GetBoundaryVector();
-
-        /*
-		 * Setup Potts simulation
-		*/
-
-        for (double k =-100; k<2.3; k++)
-        {
-          for (double j =-100; j<2.3; j++)
-          {
-             for(int i =0; i<100; i++)
-             {
+    
                     PottsMeshFromMutableMeshGeneratorJess<3> potts_generator(*mutable_mesh);
                     PottsArbitrarySurfaceIn3DMesh<3>* p_potts_mesh = potts_generator.GetMesh();
                     p_potts_mesh->SetBoundaries(BoundaryVector);
-
-                    std::map<unsigned, unsigned> ElementPairing;
-
+                    p_potts_mesh->SetMeshSize( N_D,  N_Z,  Width,  Length);
                     // Randomly select three nodes.
 
                     double num_cells_seeded = 1;
                     unsigned num_node;
-                    // PRINT_VARIABLE(p_potts_mesh->GetNode(num_node)->IsBoundaryNode());
                     bool OnEdge = 1;
                     // double yPos = Length;
                     for (unsigned i = 0; i < num_cells_seeded; ++i) // i+=2)
                     {
                         OnEdge = 1;
-                        while (OnEdge)
+                        double Y = 0;
+                        double X = 0;
+                        while (OnEdge|| X >25 || X < 5 || Y >25 || Y < 5)
                         {
-                            num_node = RandomNumberGenerator::Instance()->ranf() * (p_potts_mesh->GetNumNodes() - 60); // Selects a random node
-                            // yPos = mutable_mesh->GetNode(num_node)->rGetLocation()[1];
-                            //yPos < Length / 4 &&
-                            if ( p_potts_mesh->GetNode(num_node)->IsBoundaryNode() == 0)
+                            num_node = RandomNumberGenerator::Instance()->ranf() * (p_potts_mesh->GetNumNodes()); // Selects a random node
+
+                            if (p_potts_mesh->GetNode(num_node)->IsBoundaryNode() == 0)
                             {
                                 OnEdge = 0;
                             }
+                            Y =  mutable_mesh->GetNode(num_node)->rGetLocation()[1];
+                            X =  mutable_mesh->GetNode(num_node)->rGetLocation()[0];
                         }
                         std::vector<Node<3>*> element_nodes1;
                         element_nodes1.push_back(p_potts_mesh->GetNode(num_node));
                         p_potts_mesh->AddElement(new PottsElement<3>(i, element_nodes1));
-                        // std::cout << "Seeded at " << num_node << std::endl;
                     }
 
                     std::vector<CellPtr> potts_cells;
                     MAKE_PTR(DifferentiatedCellProliferativeType, p_diff_type); // Set the cell type for the seeds
                     CellsGenerator<FixedG1GenerationalCellCycleModel, 3> potts_cells_generator; // Set the cell cylce for the seeds
                     potts_cells_generator.GenerateBasicRandom(potts_cells, p_potts_mesh->GetNumElements(), p_diff_type); // Assigning the cell type and the cell cycle
-
-                    // TRACE("Generate Potts cell population");
-                    // Create cell population linking potts mesh and cells
-                    // WrappedPottsBasedCellPopulation<3> potts_population(*p_potts_mesh, potts_cells, ElementPairing);
                     WrappedPottsBasedCellPopulation<3> potts_population(*p_potts_mesh, potts_cells, BoundaryVector);
 
                     // // Add in all the cell writers
                     potts_population.AddCellWriter<CellAreaWriter>();
                     potts_population.AddCellWriter<CellIdWriter>();
                     potts_population.AddCellWriter<CellCenterWriter>();
-
                     potts_population.AddCellWriter<CellPerimeterWriter>();
 
                     potts_population.SetNumSweepsPerTimestep(1);
@@ -294,14 +152,16 @@ public:
 
                     MAKE_PTR(ArbitraryVolumeOnSurfacePottsUpdateRule<3>, p_volume_constraint_update_rule);
                     p_volume_constraint_update_rule->SetMatureCellTargetVolume(CellArea);
-                    p_volume_constraint_update_rule->SetDeformationEnergyParameter(pow(10,i/10) );//0.1);
+                    p_volume_constraint_update_rule->SetDeformationEnergyParameter(pow(10, k)); //0.1);
                     potts_simulator.AddUpdateRule(p_volume_constraint_update_rule);
 
                     double AxisRatio = pow(LongAxis - ShortAxis, 2) / pow(LongAxis + ShortAxis, 2); //
-                    double CellPerimeter = M_PI * (LongAxis + ShortAxis) * (3 * AxisRatio * 1 / (sqrt(-3 * AxisRatio + 4) + 10) + 1); // M_PI*( LongAxis  + ShortAxis );//
-               
+                    double CellPerimeter = M_PI * (LongAxis + ShortAxis) * (3 * AxisRatio * 1 / (sqrt(-3 * AxisRatio + 4) + 10) + 1);
+                    
+                    // M_PI*( LongAxis  + ShortAxis );//
+
                     MAKE_PTR(ArbitraryPerimeterOnSurfacePottsUpdateRule<3>, p_area_constraint_update_rule);
-                    p_area_constraint_update_rule->SetSurfaceAreaEnergyParameter(pow(10,j/10) );//0.1);
+                    p_area_constraint_update_rule->SetSurfaceAreaEnergyParameter(pow(10,j)); //0.1);
                     p_area_constraint_update_rule->SetTargetSurfaceArea(CellPerimeter);
                     potts_simulator.AddUpdateRule(p_area_constraint_update_rule);
 
@@ -314,24 +174,23 @@ public:
 
                     p_potts_mesh->UpdatePottsNodeLocationFromDelaunay();
                     potts_population.SetTemperature(0.1);
-            
 
                     MAKE_PTR(PottsCellPropertiesModifier<3>, p_modifier);
                     p_modifier->SetMeshDimensions(N_D, N_Z, Width, Length);
                     potts_simulator.AddSimulationModifier(p_modifier);
 
-                    potts_simulator.SetSamplingTimestepMultiple(10);
-                    potts_simulator.SetEndTime(11);
+                    potts_simulator.SetSamplingTimestepMultiple(80);//100);
+                    potts_simulator.SetEndTime(8);
 
                     std::stringstream out;
-                    out << "_" << i ;
+                    out << "_" << i;
                     std::string Iteration = out.str();
 
                     std::stringstream out2;
-                    out2 << "Area_" << j << "Perimeter_" <<k;
+                    out2 << "Area_" <<k << "Perimeter_" << j;
                     std::string Parameters = out2.str();
-
-                    potts_simulator.SetOutputDirectory("PottsMetrics/AreaAndPerimeter/"+Parameters+"/Trial"+Iteration );
+   
+                    potts_simulator.SetOutputDirectory("PottsMetrics/Comparision/NonPERIODIC/" + Parameters + "/Trial" + Iteration);
                     potts_simulator.Solve();
                     SimulationTime::Instance()->Destroy();
                     SimulationTime::Instance()->SetStartTime(0.0);
@@ -339,6 +198,7 @@ public:
             }
         }
     }
+    
 
 };
 

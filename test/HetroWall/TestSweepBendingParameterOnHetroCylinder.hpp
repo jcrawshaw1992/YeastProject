@@ -43,9 +43,9 @@ static const double M_SAMPLING_TIME_STEP = 100; //50
 static const double M_TIME_STEP = 0.002;
 // static const double Sampeling;
 
-static const double start_time = 60;
-static const std::string load_dir = "DevelopingCollapsingModifier/SetUpArchiving/";
-
+// static const double start_time = 60;
+// static const std::string load_dir = "DevelopingCollapsingCylinder/SetUpArchiving";
+                                    
 
 class SurfaceAreaForceOnCylinder : public AbstractCellBasedTestSuite
 {
@@ -67,35 +67,37 @@ private:
     }
 
 public:
-    void TestCollapseCode1() throw(Exception)
+    void TestCollapseCode1() 
     {
-
-
         // for (int kB = -170; kB < 129; --kB)
-        for (int kB = -140; kB <171; kB-=5)
-            {
+        // for (int kB = -140; kB <171; kB-=5)
+        //     {
                
                 double Dt = 2e-4;
                 double Step = 1e-11;
                 double duration = 100;
-                std::stringstream out;
-                out << "KB_" << kB ;
-                std::string Parameters = out.str();
+                // std::stringstream out;
+                // out << "KB_" << kB ;
+                // std::string Parameters = out.str();
 
-                std::string output_directory = "SweepingBendingForce4thGo/"+ Parameters;
 
+                double start_time = 60;
+                std::string load_dir = "DevelopingCollapsingCylinder/SetUpArchiving/";
+  
+
+                // std::string output_directory = "SweepingBending/"+ Parameters;
+                    // CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
                 OffLatticeSimulation<2,3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2,3>, 3 >::Load(load_dir , start_time);
+               
+
                 p_simulator->SetEndTime(start_time + duration);
                 p_simulator->SetOutputDirectory(output_directory);
                 p_simulator->SetDt(Dt); // 0.005
-                p_simulator->SetSamplingTimestepMultiple(1000);
+                p_simulator->SetSamplingTimestepMultiple(500);
 
-                double BendingConst =0;
                 std::map<double, c_vector<long double, 4> > GrowthMaps; // From matlab sweep results
                 GrowthMaps[10] = Create_c_vector(pow(10, -6.9), pow(10, -8.2459), pow(10, -9), 0);// KA, Kalpha  Ks  Kb
-                GrowthMaps[1.2] = Create_c_vector(pow(10, -6.2), pow(10, -5.8360), pow(10, -7), BendingConst);
-
-
+                GrowthMaps[1.2] = Create_c_vector(pow(10, -6.2), pow(10, -5.8360), pow(10, -7), 0);
 
                 /*
                 -----------------------------
@@ -105,7 +107,6 @@ public:
                 boost::shared_ptr<MembranePropertiesModifier<2,3> > p_Membrane_modifier(new MembranePropertiesModifier<2,3>());
                 p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 10, 1, Step);
                 p_simulator->AddSimulationModifier(p_Membrane_modifier);
-          
 
                 /*
                 -----------------------------
@@ -114,12 +115,13 @@ public:
                 */
 
                 double scale = 1e3;
-                unsigned N_D = 60;
-                unsigned N_Z = N_D * 2;
-                double CollapseFactor =10;
+                unsigned N_D = 30;
+                unsigned N_Z = N_D * 3;
+                double CollapseFactor = 10;
 
-                double Length = 120e-6 * scale; //12e-3; //12e-3
-                double Radius = 5e-6 * scale/CollapseFactor;
+
+                double Length = 50e-6 * scale; //12e-3; //12e-3
+                double Radius = 5e-6 * scale / CollapseFactor;
                 double trans = -Length / 2;
 
                 Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, Radius, Length);
@@ -140,16 +142,9 @@ public:
 
                 SimulationTime::Instance()->Destroy();
                 SimulationTime::Instance()->SetStartTime(60.0);
-            }
+          
 
     }
-
-
-
-
-
-
-
 
 };
 

@@ -75,6 +75,7 @@
         "numeric": "cpp",
         "optional": "cpp",
         "set": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "condition_variable": "cpp"
     }
 }

@@ -54,8 +54,7 @@ void MembranePropertiesModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCell
 {
     TRACE("In the SetUpSolve");
     // PRINT_2_VARIABLES(ELEMENT_DIM, SPACE_DIM);
-    assert(SPACE_DIM == 3);
-    assert(ELEMENT_DIM == 2);
+    assert(SPACE_DIM == 3); assert(ELEMENT_DIM == 2);
     MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
     MAKE_PTR(EmptyBasementMatrix, p_Basement); //Mutation to mark nodes one basement
     MAKE_PTR(HasEndothelialCell, p_EC); //Mutation to mark nodes with ECs
@@ -63,14 +62,11 @@ void MembranePropertiesModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCell
     c_vector<long double, 3> Node_location;
     double MinZ = 1e-3;
     
-    std::set<unsigned> MutantNodeIndices;
-    std::set<unsigned> EdgeMutantNodeIndices;
+    std::set<unsigned> MutantNodeIndices; std::set<unsigned> EdgeMutantNodeIndices;
     for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
          cell_iter != rCellPopulation.End();
          ++cell_iter)
     {
-    
-
         unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
         Node_location = rCellPopulation.GetNode(node_index)->rGetLocation();
         if (abs(Node_location[2]) < MinZ) // These are the nodes along the lower edge and need to be marked as mutated
@@ -78,8 +74,6 @@ void MembranePropertiesModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCell
             cell_iter->SetMutationState(p_Basement);
             MutantNodeIndices.insert(node_index);
             mSamplebasementNode = node_index;
-
-            // Save all the cells that are mutants so I can access them in the next step
         }
         else
         {
@@ -97,14 +91,11 @@ void MembranePropertiesModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCell
     // PRINT_2_VARIABLES( mMaxBasementZ, mHetro);
     if (mHetro)
     {
-    
         // Loop over the mutants and get the nodes along the boundary
         for (std::set<unsigned>::iterator iter = MutantNodeIndices.begin();
              iter != MutantNodeIndices.end();
              ++iter)
         {
-
-
             // Need to check if any of the neighbours are an EC, if so
             // Save the EC as a mutant on the boundary cell_iter->SetMutationState(p_NextToBasement);
             mBasementNodes.push_back(*iter);
@@ -114,7 +105,6 @@ void MembranePropertiesModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCell
                  N_iter != neighbouring_node_indices.end();
                  ++N_iter)
             {
-
                 CellPtr N_cell = rCellPopulation.GetCellUsingLocationIndex(*N_iter);
                 if (N_cell->GetMutationState()->template IsType<HasEndothelialCell>())
                 {
@@ -158,7 +148,6 @@ void MembranePropertiesModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCell
                  N_iter != neighbouring_node_indices.end();
                  ++N_iter)
             {
-
                 CellPtr N_cell = rCellPopulation.GetCellUsingLocationIndex(*N_iter);
                 if (N_cell->GetMutationState()->template IsType<HasEndothelialCell>())
                 {
@@ -358,25 +347,30 @@ void MembranePropertiesModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCell
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void MembranePropertiesModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOfTimeStep(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
+    
 
-    assert(SPACE_DIM == 3);
-
-    // See if any edges are too long and if so divide them
-    double num_cells = rCellPopulation.GetNumRealCells();
-
-    // MeshBasedCellPopulation<ELEMENT_DIM,SPACE_DIM>* p_rCellPopulation = dynamic_cast<MeshBasedCellPopulation<ELEMENT_DIM,SPACE_DIM>*>(&(rCellPopulation));
-    if (mOn == 1 )
+    if (mHetro)
     {
-        if (mCounter ==mThreshold)
+        PRINT_VARIABLE(mHetro)
+        assert(SPACE_DIM == 3);
+        // See if any edges are too long and if so divide them
+        double num_cells = rCellPopulation.GetNumRealCells();
+
+        // MeshBasedCellPopulation<ELEMENT_DIM,SPACE_DIM>* p_rCellPopulation = dynamic_cast<MeshBasedCellPopulation<ELEMENT_DIM,SPACE_DIM>*>(&(rCellPopulation));
+        if (mOn == 1 )
         {
-            UpdateCellData(rCellPopulation);
-            mCounter =0;
-        }
-        else
-        {
-            mCounter +=1;
+            if (mCounter ==mThreshold)
+            {
+                UpdateCellData(rCellPopulation);
+                mCounter =0;
+            }
+            else
+            {
+                mCounter +=1;
+            }
         }
     }
+    
     
 }
 
@@ -406,10 +400,10 @@ void MembranePropertiesModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(Abstract
     double KbA = std::min((double)Step_KbA, (double)mGrowthMaps[1.2](0));
     // double Kbb = std::min((double)Step_Kb, (double)mGrowthMaps[1.2](3));
     // PRINT_4_VARIABLES(Kbs, Kba, KbA, Kbb)
-    double Ks = mGrowthMaps[10](2);
-    double Ka = mGrowthMaps[10](1);
-    double KA = mGrowthMaps[10](0);
-    // double KB = mGrowthMaps[10](3);
+    double Ks = mGrowthMaps[mStrength](2);
+    double Ka = mGrowthMaps[mStrength](1);
+    double KA = mGrowthMaps[mStrength](0);
+    // double KB = mGrowthMaps[mStrength](3);
 
     // Quadradtic --  Fit a quadratic curve to smooth the membrane parameters between the basement and the ECs
     // K = a(Z-b)^2 +c

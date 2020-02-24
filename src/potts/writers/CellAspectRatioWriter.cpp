@@ -30,7 +30,6 @@ void CellAspectRatioWriter<ELEMENT_DIM, SPACE_DIM>::VisitCell(CellPtr pCell, Abs
     
 
     double ApsectRatio  =  pCell->GetCellData()->GetItem("AspectRatio");
-    // double MajorAxisAngle = pCell->GetCellData()->GetItem("MajorAxisAngle");
     *this->mpOutStream << " " << cell_id << " " << ApsectRatio;
 }
 

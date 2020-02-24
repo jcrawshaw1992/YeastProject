@@ -118,7 +118,7 @@ double ArbitraryPerimeterOnSurfacePottsUpdateRule<DIM>::EvaluateHamiltonianContr
         double current_surface_area = 0;
   
         CellPtr p_cell = rCellPopulation.GetCellUsingLocationIndex(current_element);
-
+        
           if(rCellPopulation.IsPottsSimulationPeriodic())
             {
                 double Center = p_cell->GetCellData()->GetItem("Center");

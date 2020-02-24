@@ -85,10 +85,10 @@ public:
 
         // Regular hexagonal lattie
 
-        double N_D = 20;
-        double N_Z = 20;
-        double Width = 20;
-        double Length = 20;
+        double N_D = 30;
+        double N_Z = 30;
+        double Width = 10;
+        double Length = 10;
 
         Honeycomb3DMeshGenerator generator(N_D, N_Z, Width, Length);
         MutableMesh<2, 3>* mutable_mesh = generator.GetMesh();
@@ -98,9 +98,9 @@ public:
 		 * Setup Potts simulation
 		*/
 
-        for (double k =-10; k<3; k++)
+        for (double k =-8; k<5; k++)
         {
-          for (double j =-10; j<3; j++)
+          for (double j =-8; j<5; j++)
           {
              for(int i =0; i<100; i++)
              {
@@ -159,7 +159,7 @@ public:
 
                     MAKE_PTR(ArbitraryVolumeOnSurfacePottsUpdateRule<3>, p_volume_constraint_update_rule);
                     p_volume_constraint_update_rule->SetMatureCellTargetVolume(CellArea);
-                    p_volume_constraint_update_rule->SetDeformationEnergyParameter(pow(10,i) );//0.1);
+                    p_volume_constraint_update_rule->SetDeformationEnergyParameter(pow(10,k) );//0.1);
                     potts_simulator.AddUpdateRule(p_volume_constraint_update_rule);
 
                     double AxisRatio = pow(LongAxis - ShortAxis, 2) / pow(LongAxis + ShortAxis, 2); //
@@ -184,9 +184,9 @@ public:
                     MAKE_PTR(PottsCellPropertiesModifier<3>, p_modifier);
                     p_modifier->SetMeshDimensions(N_D, N_Z, Width, Length);
                     potts_simulator.AddSimulationModifier(p_modifier);
-
-                    potts_simulator.SetSamplingTimestepMultiple(10);
-                    potts_simulator.SetEndTime(11);
+                    // potts_simulator.SetSamplingTimestepMultiple(2);
+                    potts_simulator.SetSamplingTimestepMultiple(150);
+                    potts_simulator.SetEndTime(15);
 
                     std::stringstream out;
                     out << "_" << i ;
@@ -196,7 +196,7 @@ public:
                     out2 << "Area_" << j << "Perimeter_" <<k;
                     std::string Parameters = out2.str();
 
-                    potts_simulator.SetOutputDirectory("PottsMetrics/AreaAndPerimeterCourse/"+Parameters+"/Trial"+Iteration );
+                    potts_simulator.SetOutputDirectory("PottsMetrics/AreaAndPerimeterMeshRefined/"+Parameters+"/Trial"+Iteration );
                     potts_simulator.Solve();
                     SimulationTime::Instance()->Destroy();
                     SimulationTime::Instance()->SetStartTime(0.0);

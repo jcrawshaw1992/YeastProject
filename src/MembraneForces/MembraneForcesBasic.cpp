@@ -2,6 +2,7 @@
 
 #include "UblasCustomFunctions.hpp"
 #include "MathsFunctions.hpp"
+#include "BoundariesModifier.hpp"
 
 
 // #include "MathsFunctions.hpp"
@@ -11,29 +12,23 @@ MembraneForcesBasic::MembraneForcesBasic()
 {
 }
 
-// void MembraneForcesBasic::SetElasticShearModulus(double ElasticShearModulus)
-// {
-//     mElasticShearModulus = ElasticShearModulus;
-// }
-
-// void MembraneForcesBasic::SetAreaDilationModulus(double AreaDilationModulus)
-// {
-//     mAreaDilationModulus = AreaDilationModulus;
-// }
-
-// void SetMembraneStiffness(double AreaConstant);
-
-// void MembraneForcesBasic::SetMembraneStiffness(double MembraneSurface)
-// {
-//     mMembraneSurface = MembraneSurface;
-// }
-
-
-
 void MembraneForcesBasic::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
-    // TRACE("Add Shear Force");
-    MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
+   MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
+
+     std::map<unsigned, c_vector<double, 3> > MembraneForceMap;
+
+    for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
+            cell_iter != rCellPopulation.End();
+            ++cell_iter)
+        {
+            
+            unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+           
+            MembraneForceMap[node_index] = Create_c_vector(0,0,0);
+        }
+
+
 
     for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
          elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
@@ -179,8 +174,7 @@ void MembraneForcesBasic::AddForceContribution(AbstractCellPopulation<2, 3>& rCe
         // Force on Node 1
         c_vector<double, 3> vector_20 = pNode0->rGetLocation() - pNode2->rGetLocation();
         ForceOnNode[1] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, vector_20);
-//  double A = log10(KA );
-//  PRINT_VARIABLE(A);
+
         // Force on Node 2
         c_vector<double, 3> vector_01 = pNode1->rGetLocation() - pNode0->rGetLocation();
         ForceOnNode[2] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, vector_01);
@@ -191,6 +185,7 @@ void MembraneForcesBasic::AddForceContribution(AbstractCellPopulation<2, 3>& rCe
             node_index = elem_iter->GetNodeGlobalIndex(i);
             CellArea= rCellPopulation.GetVolumeOfCell(rCellPopulation.GetCellUsingLocationIndex(node_index));
             ForceOnNode[i] /= CellArea;
+            // MembraneForceMap[node_index] += ForceOnNode[i];  
             // ForceMap[node_index] += ForceOnNode[i];      
         }
        
@@ -198,18 +193,85 @@ void MembraneForcesBasic::AddForceContribution(AbstractCellPopulation<2, 3>& rCe
         pNode0->AddAppliedForceContribution(ForceOnNode[0]);
         pNode1->AddAppliedForceContribution(ForceOnNode[1]);
         pNode2->AddAppliedForceContribution(ForceOnNode[2]);
-
-
-
+       
     }
+
+    // for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
+    //         cell_iter != rCellPopulation.End();
+    //         ++cell_iter)
+    // {
+    //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+    //     Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
+
+    //     if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
+    //     {
+    //         c_vector<double, 3> AverageForce = Create_c_vector(0,0,0);
+    //         c_vector<unsigned, 5> NearestNodes = mNearestNodesMap[node_index];
+    //         std::set<unsigned> neighbouring_node_indices = rCellPopulation.GetNeighbouringNodeIndices(node_index);
+    //         for ( int i = 0; i <5; i++)
+    //         {  
+    //             AverageForce += MembraneForceMap[ NearestNodes[i]];
+    //             // PRINT_VECTOR(MembraneForceMap[ NearestNodes[i]])
+    //         }
+    //         AverageForce/=5;
+    //         double AppliedPressure = norm_2(AverageForce);        
+    //         // Loop over neighbouring elements to get normal 
+
+    //         c_vector<long double, 3> Normal = zero_vector<long double>(3);
+    //         std::set<unsigned>& containing_elements = pNode->rGetContainingElementIndices();
+    //         for (std::set<unsigned>::iterator iter = containing_elements.begin();
+    //             iter != containing_elements.end();
+    //             ++iter)
+    //         {
+    //             Node<3>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
+    //             Node<3>* pNode1= p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
+    //             Node<3>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
+
+    //             c_vector<long double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
+    //             c_vector<long double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
+
+    //             Normal += VectorProduct(vector_12, vector_13);
+    //         }
+    //         Normal/=norm_2(Normal);
+            
+
+    //         c_vector<double, 3> AppliedForce = AppliedPressure * Normal; //
+          
+    //         pNode->AddAppliedForceContribution(AppliedForce); // Add the new force
+    //         cell_iter->GetCellData()->SetItem("MembraneForce", norm_2(AppliedForce));
+    //         // MembraneForceMap[node_index]=AppliedForce ;
+    //     }
+    //     else
+    //     {
+    //         pNode->AddAppliedForceContribution(MembraneForceMap[node_index] ); // Add the new force
+    //         cell_iter->GetCellData()->SetItem("MembraneForce", norm_2(MembraneForceMap[node_index] ));
+    //     }
+    // }
+        
 }
-    /*
-    * Set up the inital configuration -> find the inital position vectors, the inital area, and the shape function 
-    * 
-    * The inital poisitions of all the nodes have been updated to be closer to the radius by a scalling factor (S) 
-    * This reflects state where a vessel is deflated with no fluid flow to expand it, leaving only the compressive forces 
-    * from the tissue, naturally pushing it inwards. 
-    */
+
+
+/*
+* Save a map of the closest nodes for the boudary nodes
+*/
+
+
+void MembraneForcesBasic::SetNearestNodesForBoundaryNodes(std::map<unsigned, c_vector<unsigned, 5> > NearestNodesMap)
+{
+
+    mNearestNodesMap = NearestNodesMap;
+     
+}
+
+
+
+/*
+* Set up the inital configuration -> find the inital position vectors, the inital area, and the shape function 
+* 
+* The inital poisitions of all the nodes have been updated to be closer to the radius by a scalling factor (S) 
+* This reflects state where a vessel is deflated with no fluid flow to expand it, leaving only the compressive forces 
+* from the tissue, naturally pushing it inwards. 
+*/
 
 
 void MembraneForcesBasic::SetupMembraneConfiguration(AbstractCellPopulation<2, 3>& rCellPopulation)
@@ -299,6 +361,98 @@ void MembraneForcesBasic::SetupMembraneConfiguration(AbstractCellPopulation<2, 3
         mBCoefficients[elem_index] = bVector;
     }
 }
+
+
+
+void MembraneForcesBasic::SetupMembraneConfiguration(AbstractCellPopulation<2, 3>& rCellPopulation, AbstractCellPopulation<2, 3>& rCellPopulation_Target)
+{
+
+    // The mesh and the cells are not married here, because the mesh is the target configuration, and not the current one, however I am homing the nodes will be the same
+    MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
+   // Loop over all nodes and come up with a new inital position 
+
+    for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
+         cell_iter != rCellPopulation.End();
+         ++cell_iter)
+    {
+        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter); //p_cell_population->GetLocationIndexUsingCell(*cell_iter);
+        Node<3>* p_node_intial = rCellPopulation.GetNode(node_index);
+        Node<3>* p_node_Target = rCellPopulation_Target.GetNode(node_index);
+        
+        
+        c_vector<double, 3> NodeLocationInital =  p_node_intial->rGetLocation();
+        c_vector<double, 3> NodeLocationTarget =  p_node_Target->rGetLocation();
+        // PRINT_VECTOR(NodeLocationTarget )
+        // PRINT_VECTOR(NodeLocationInital)
+        (cell_iter)->GetCellData()->SetItem("Initial_Location_X",  NodeLocationTarget[0]);
+        (cell_iter)->GetCellData()->SetItem("Initial_Location_Y",  NodeLocationTarget[1]);
+        (cell_iter)->GetCellData()->SetItem("Initial_Location_Z",  NodeLocationTarget[2]);          
+    }
+
+    // Determine the inital element shape (shape function, internal angle, and area) for all elements
+    for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
+         elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
+         ++elem_iter)
+    {
+        // TRACE("Inital set up ");
+        // define the necessary objects to be used in the loop 
+        c_vector<c_vector<double, 3>, 3> PositionVector;
+        unsigned elem_index = elem_iter->GetIndex();
+        c_vector<double, 3> aVector;
+        c_vector<double, 3> bVector;
+
+        unsigned node_index;
+        CellPtr p_cell;
+
+        for (int i = 0; i < 3; i++) // Loop over the three cells and get their intial vessel locations
+        {
+            node_index = elem_iter->GetNodeGlobalIndex(i);
+            p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
+        
+            // Get the inital locations for node i
+            PositionVector[i][0] = p_cell->GetCellData()->GetItem("Initial_Location_X");
+            PositionVector[i][1] = p_cell->GetCellData()->GetItem("Initial_Location_Y");
+            PositionVector[i][2] = p_cell->GetCellData()->GetItem("Initial_Location_Z");
+        }
+        // Vectors connecting the nodes 
+        c_vector<double, 3> vector_12 = PositionVector[1] - PositionVector[0]; // Vector 1 to 2
+        c_vector<double, 3> vector_13 = PositionVector[2] - PositionVector[0]; // Vector 1 to 3
+
+        // Find the intial area, A0 = 0.5*norm(normal)
+        c_vector<double, 3> normalVector = VectorProduct(vector_12, vector_13);
+        // PRINT_VECTOR(normalVector);
+        double Area = 0.5 * norm_2(normalVector);
+
+        // Save intial area in a map with the element as the key
+        mArea0[elem_index] = Area;
+        double a = norm_2(vector_12); // Lenght a -> edge connecting P1 and P2
+        double b = norm_2(vector_13); // Lenght b -> edge connecting P1 and P3
+
+        double alpha = acos(inner_prod(vector_12, vector_13) / (a * b));
+
+        c_vector<double, 2> x1 = Create_c_vector(0, 0);
+        c_vector<double, 2> x2 = Create_c_vector(a, 0);
+        c_vector<double, 2> x3 = Create_c_vector(b * cos(alpha), b * sin(alpha));
+
+        //Save the intial position vectors
+        mInitalVectors[elem_index][0] = x1;
+        mInitalVectors[elem_index][1] = x2;
+        mInitalVectors[elem_index][2] = x3;
+
+        // FInd the 6 shape function constants
+        aVector[0] = (x2[1] - x3[1]) / (2 * Area);
+        aVector[1] = (x3[1] - x1[1]) / (2 * Area);
+        aVector[2] = (x1[1] - x2[1]) / (2 * Area);
+
+        bVector[0] = (x3[0] - x2[0]) / (2 * Area);
+        bVector[1] = (x1[0] - x3[0]) / (2 * Area);
+        bVector[2] = (x2[0] - x1[0]) / (2 * Area);
+
+        mACoefficients[elem_index] = aVector;
+        mBCoefficients[elem_index] = bVector;
+    }
+}
+
 
 
 void MembraneForcesBasic::FindNeighbours(AbstractCellPopulation<2, 3>& rCellPopulation)

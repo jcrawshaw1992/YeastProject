@@ -33,6 +33,7 @@ private:
         archive & mOriginalAngles;
         archive & mMembraneStiffnessMap;
         archive & mScalling;
+        archive & mNearestNodesMap;
     }
 
 protected:
@@ -40,6 +41,7 @@ protected:
     double mMembraneStiffness;
     std::map<std::pair<unsigned, unsigned>, double> mOriginalAngles;
     std::map<std::pair<Node<3>*, Node<3>*>, double> mMembraneStiffnessMap;
+    std::map<unsigned, c_vector<unsigned, 5> > mNearestNodesMap;
 
 
     bool CalculateElementNormals(MutableMesh<2, 3>& rMesh, std::pair<Node<3>*, Node<3>*> edge,
@@ -69,6 +71,9 @@ public:
     void SetupInitialMembrane(MutableMesh<2,3>& rMesh);
     void SetupInitialMembrane(MutableMesh<2,3>& rMesh, AbstractCellPopulation<2, 3>& rCellPopulation);
     void SetScallingBending(double Scalling);
+
+    void SetNearestNodesForBoundaryNodesBending(std::map<unsigned, c_vector<unsigned, 5> > NearestNodesMap);
+
 
 
     /**

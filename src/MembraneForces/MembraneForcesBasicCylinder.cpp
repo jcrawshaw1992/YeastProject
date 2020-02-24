@@ -125,9 +125,15 @@ void MembraneForcesBasicCylinder::AddForceContribution(AbstractCellPopulation<2,
         if (p_cell1->GetMutationState()->template IsType<HasEndothelialCell>() && p_cell2->GetMutationState()->template IsType<HasEndothelialCell>() && p_cell3->GetMutationState()->template IsType<HasEndothelialCell>() )
         {
                     
-            Kalpha =  pow(10, -8.2459);    
-            KA = pow(10, -6.9) ;
-            KS = pow(10, -9) ;
+            // Kalpha =  pow(10, -8.2459);    
+            // KA = pow(10, -6.9) ;
+            // KS = pow(10, -9) ;
+
+            p_cell = p_cell_population->GetCellUsingLocationIndex(0);
+            Kalpha =p_cell->GetCellData()->GetItem("AreaDilationModulus");
+            KA =p_cell->GetCellData()->GetItem("AreaConstant");
+            KS =p_cell->GetCellData()->GetItem("ShearModulus");
+
 
         }
         else 

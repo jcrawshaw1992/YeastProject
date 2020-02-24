@@ -17,21 +17,20 @@ unsigned Sister = rCellPopulation.GetSister(current_element)
 // Needed to convert mesh in order to write nodes to VTK (visualize as glyphs)
 #include "VtkMeshWriter.hpp"
 
-
-
-
-// Constructor for the periodic mesh 
+// Constructor for the periodic mesh
 template <unsigned DIM>
 WrappedPottsBasedCellPopulation<DIM>::WrappedPottsBasedCellPopulation(PottsMesh<DIM>& rMesh,
                                                                       std::vector<CellPtr>& rCells,
                                                                       std::map<unsigned, unsigned> ElementPairing,
+                                                                      std::vector<unsigned> BoundaryVector,
                                                                       bool deleteMesh,
                                                                       bool validate,
                                                                       const std::vector<unsigned> locationIndices)
         : PottsBasedCellPopulation<DIM>(rMesh, rCells, deleteMesh, validate, locationIndices),
-          mElementPairing(ElementPairing)
+          mElementPairing(ElementPairing),
+          mBoundaryVector(BoundaryVector)
 {
-    assert(DIM == 3); 
+    assert(DIM == 3);
     int counter = 0;
     double PairingNumber = 1;
     mIsPeriodic = 1;
@@ -100,13 +99,7 @@ WrappedPottsBasedCellPopulation<DIM>::WrappedPottsBasedCellPopulation(PottsMesh<
     }
 }
 
-
-
-
-
-
-
-// Constructor for the non periodic mesh 
+// Constructor for the non periodic mesh
 template <unsigned DIM>
 WrappedPottsBasedCellPopulation<DIM>::WrappedPottsBasedCellPopulation(PottsMesh<DIM>& rMesh,
                                                                       std::vector<CellPtr>& rCells,
@@ -115,16 +108,15 @@ WrappedPottsBasedCellPopulation<DIM>::WrappedPottsBasedCellPopulation(PottsMesh<
                                                                       bool validate,
                                                                       const std::vector<unsigned> locationIndices)
         : PottsBasedCellPopulation<DIM>(rMesh, rCells, deleteMesh, validate, locationIndices),
-        mBoundaryVector(BoundaryVector)
+          mBoundaryVector(BoundaryVector)
 {
-     mIsPeriodic = 0;
-     assert(DIM == 3); 
+    mIsPeriodic = 0;
+    assert(DIM == 3);
     //      for (std::vector<unsigned>::iterator i = mBoundaryVector.begin(); i != mBoundaryVector.end(); ++i)
     // {
     //     PRINT_VARIABLE(*i)
     // }
 }
-
 
 template <unsigned DIM>
 bool WrappedPottsBasedCellPopulation<DIM>::IsPottsSimulationPeriodic()
@@ -205,7 +197,6 @@ CellPtr WrappedPottsBasedCellPopulation<DIM>::DivideCell(CellPtr pNewCell, CellP
     pNewCell->GetCellData()->SetItem("DivisionStatus", 2);
     pParentCell->GetCellData()->SetItem("DivisionStatus", 1);
 
-    TRACE("A success")
     return p_created_cell;
 }
 
@@ -252,12 +243,11 @@ void WrappedPottsBasedCellPopulation<DIM>::SetNumSweepsPerTimestep(double numSwe
     mNumSweepsPerTimestep = numSweepsPerTimestep;
 }
 
-
-
 template <unsigned DIM>
 void WrappedPottsBasedCellPopulation<DIM>::UpdateCellLocations(double dt)
 {
-    assert(DIM == 3); 
+    assert(DIM == 3);
+
     /*
      * This method implements a Monte Carlo method to update the cell population.
      * We sample randomly from all nodes in the mesh. Once we have selected a target
@@ -272,11 +262,9 @@ void WrappedPottsBasedCellPopulation<DIM>::UpdateCellLocations(double dt)
      * If I need to find this class again here is a bookmark to find 
      * Potts Core
      */
-    // TRACE("A")
     RandomNumberGenerator* p_gen = RandomNumberGenerator::Instance();
     unsigned num_nodes = this->mrMesh.GetNumNodes();
     unsigned num_elems = this->GetNumElements();
-//  TRACE("B")
     // Randomly permute mUpdateRuleCollection if specified
     if (this->mIterateRandomlyOverUpdateRuleCollection)
     {
@@ -289,120 +277,122 @@ void WrappedPottsBasedCellPopulation<DIM>::UpdateCellLocations(double dt)
         // unsigned NodesInElement =0;
         unsigned node_index = p_gen->randMod(num_nodes);
         Node<DIM>* p_node = this->mrMesh.GetNode(node_index);
-        
 
         std::vector<unsigned>::iterator Current_iter = mBoundaryVector.begin();
-        std::advance(Current_iter , node_index);
+        // for (std::vector<unsigned>::iterator i = mBoundaryVector.begin(); i != mBoundaryVector.end(); ++i)
+        // {
+        //     PRINT_VARIABLE(*i)
+        // }
       
-        if(*Current_iter==0)
-        {
-        // Each node in the mesh must be in at most one element
-        assert(p_node->GetNumContainingElements() <= 1);
-        
-        // Find a random available neighbouring node to overwrite current site
-        std::set<unsigned> neighbouring_node_indices = this->rGetMesh().GetMooreNeighbouringNodeIndices(node_index);
-        
-        unsigned neighbour_location_index;
-        std::set<unsigned> containing_elements = p_node->rGetContainingElementIndices();
-
-        //  NumberOfNodesInElement = this->GetElement(*containing_elements.begin())->GetNumNodes(); // If there is only one node in the element, I dont want to try and eat it up into the neighbour
-
-        if ((!containing_elements.empty() && this->GetElement(*containing_elements.begin())->GetNumNodes() > 1) || containing_elements.empty() == 1)
-        { // if not empty and has more than one lattice site OR is empty
-
-            unsigned num_neighbours = neighbouring_node_indices.size();
-            unsigned chosen_neighbour = p_gen->randMod(num_neighbours);
-
-            std::set<unsigned>::iterator neighbour_iter = neighbouring_node_indices.begin();
-
-            std::advance(neighbour_iter, chosen_neighbour);
-
-            neighbour_location_index = *neighbour_iter;
-            
-            std::set<unsigned> neighbour_containing_elements = this->GetNode(*neighbour_iter)->rGetContainingElementIndices();
-
-            unsigned Current_Sister = NAN; 
-             if(!containing_elements.empty() && mIsPeriodic)
-            {
-                Current_Sister = this->GetSister(*containing_elements.begin());
-            }
-
-            // Only calculate Hamiltonian and update elements if the nodes are from different elements, or one is from the medium
-            if ((!containing_elements.empty() && neighbour_containing_elements.empty())
-                || (containing_elements.empty() && !neighbour_containing_elements.empty())
-                || (!containing_elements.empty() && !neighbour_containing_elements.empty() && *containing_elements.begin() != *neighbour_containing_elements.begin() && Current_Sister != *neighbour_containing_elements.begin()))
-            {
-                //=====
-                unsigned current_Target_element = *(neighbour_containing_elements.begin());
-            
-              
-                
-                bool RunPeriodicTrialSwitch =1;
-                bool NotOnBoundary =1;
-                if ( mIsPeriodic ==1)
-                {   
-                    unsigned Sister_Element = this->GetSister(current_Target_element);
-                    PottsElement<DIM>* pSisterElement = this->GetElement(Sister_Element);
-                    PRINT_VARIABLE(Sister_Element);
-                    if ( *(containing_elements.begin()) == Sister_Element && pSisterElement->GetNumNodes() < 2 )
-                    {
-                        RunPeriodicTrialSwitch =0;
-                    }
-                    
-                }if ( mIsPeriodic ==0)
-                {
-                    std::vector<unsigned>::iterator Current_iter = mBoundaryVector.begin();
-                    std::advance(Current_iter , node_index);   
-                    NotOnBoundary =*Current_iter;
-                }
-
+        std::advance(Current_iter, node_index);
        
+        
+        if (*Current_iter == 0 || *Current_iter == 1) // Not a boundary 
+        {
+      
+            // Each node in the mesh must be in at most one element
+            assert(p_node->GetNumContainingElements() <= 1);
+   
 
-                 //                 This prevents me hitting a boundary in the non periodic mesh -- there seems to be an issure at the boundaries and the cells have a lot of random switches... I think it is due to the area
-                if ( (mIsPeriodic ==0 && NotOnBoundary ==0)|| (mIsPeriodic ==1 && RunPeriodicTrialSwitch ==1) )
+            // Find a random available neighbouring node to overwrite current site
+            std::set<unsigned> neighbouring_node_indices = this->rGetMesh().GetMooreNeighbouringNodeIndices(node_index);
+
+            unsigned neighbour_location_index;
+            std::set<unsigned> containing_elements = p_node->rGetContainingElementIndices();
+      
+            if ((!containing_elements.empty() && this->GetElement(*containing_elements.begin())->GetNumNodes() > 1) || containing_elements.empty())
+            { // if not empty and has more than one lattice site OR is empty
+
+                unsigned num_neighbours = neighbouring_node_indices.size();
+                unsigned chosen_neighbour = p_gen->randMod(num_neighbours);
+           
+                std::set<unsigned>::iterator neighbour_iter = neighbouring_node_indices.begin();
+
+                std::advance(neighbour_iter, chosen_neighbour);
+
+                neighbour_location_index = *neighbour_iter;
+
+                std::set<unsigned> neighbour_containing_elements = this->GetNode(*neighbour_iter)->rGetContainingElementIndices();
+               
+                unsigned Current_Sister = NAN;
+                if (!containing_elements.empty() && mIsPeriodic)
                 {
-                    // PRINT_VARIABLE(NotOnBoundary)
-                    // This will prevent cell being taken over by the sister if there is only one element in the sister or something
-                    //   neighbour_location_index.Sister ~= p_node->GetIndex() when SisterSize <2
+                    Current_Sister = this->GetSister(*containing_elements.begin());
+                }
+                // Only calculate Hamiltonian and update elements if the nodes are from different elements, or one is from the medium
+                if ((!containing_elements.empty() && neighbour_containing_elements.empty())
+                    || (containing_elements.empty() && !neighbour_containing_elements.empty())
+                    || (!containing_elements.empty() && !neighbour_containing_elements.empty() && *containing_elements.begin() != *neighbour_containing_elements.begin() && Current_Sister != *neighbour_containing_elements.begin()))
+                {
+                    //=====
+                    unsigned current_Target_element = *(neighbour_containing_elements.begin());
+                   
 
-                    double delta_H = 0.0; // This is H_1-H_0.
-
-                    // Now add contributions to the Hamiltonian from each AbstractPottsUpdateRule
-                    for (typename std::vector<boost::shared_ptr<AbstractUpdateRule<DIM> > >::iterator iter = this->mUpdateRuleCollection.begin();
-                         iter != this->mUpdateRuleCollection.end();
-                         ++iter)
+                    bool RunPeriodicTrialSwitch = 1;
+                    bool NotOnBoundary = 1;
+                    if (mIsPeriodic == 1)
                     {
-                        // This static cast is fine, since we assert the update rule must be a Potts update rule in AddUpdateRule()
-                        double dH = (boost::static_pointer_cast<AbstractWrappedPottsUpdateRule<DIM> >(*iter))->EvaluateHamiltonianContribution(neighbour_location_index, p_node->GetIndex(), *this);
-                        delta_H += dH;
+                      
+                        unsigned Sister_Element = this->GetSister(current_Target_element);
+                        PottsElement<DIM>* pSisterElement = this->GetElement(Sister_Element);
+                        if (*(containing_elements.begin()) == Sister_Element && pSisterElement->GetNumNodes() < 2)
+                        {
+                            RunPeriodicTrialSwitch = 0;
+                        }
+                   
+                    }
+                    if (mIsPeriodic == 0)
+                    {
+                        std::vector<unsigned>::iterator Current_iter = mBoundaryVector.begin();
+                        std::advance(Current_iter, node_index);
+                        NotOnBoundary = *Current_iter;
                     }
 
-                    // Generate a uniform random number to do the random motion
-                    double random_number = p_gen->ranf();
-
-                    double p = exp(-delta_H / this->GetTemperature());
-                    if (delta_H <= 0 || random_number < p)
+                    //                 This prevents me hitting a boundary in the non periodic mesh -- there seems to be an issure at the boundaries and the cells have a lot of random switches... I think it is due to the area
+                    if ((mIsPeriodic == 0 && NotOnBoundary == 0) || (mIsPeriodic == 1 && RunPeriodicTrialSwitch == 1))
                     {
-                        // Do swap
-                        for (std::set<unsigned>::iterator iter = containing_elements.begin();
-                             iter != containing_elements.end();
+                        // PRINT_VARIABLE(NotOnBoundary)
+                        // This will prevent cell being taken over by the sister if there is only one element in the sister or something
+                        //   neighbour_location_index.Sister ~= p_node->GetIndex() when SisterSize <2
+
+                        double delta_H = 0.0; // This is H_1-H_0.
+
+                        // Now add contributions to the Hamiltonian from each AbstractPottsUpdateRule
+                        for (typename std::vector<boost::shared_ptr<AbstractUpdateRule<DIM> > >::iterator iter = this->mUpdateRuleCollection.begin();
+                             iter != this->mUpdateRuleCollection.end();
                              ++iter)
                         {
-                          
-                            // Remove lattice from the old element
-                            this->GetElement(*iter)->DeleteNode(this->GetElement(*iter)->GetNodeLocalIndex(node_index));
+                            // This static cast is fine, since we assert the update rule must be a Potts update rule in AddUpdateRule()
+                            double dH = (boost::static_pointer_cast<AbstractWrappedPottsUpdateRule<DIM> >(*iter))->EvaluateHamiltonianContribution(neighbour_location_index, p_node->GetIndex(), *this);
+                            delta_H += dH;
                         }
-                        if(!neighbour_containing_elements.empty())
-                        {
-                       
-                            this->GetElement(*neighbour_containing_elements.begin())->AddNode(this->mrMesh.GetNode(node_index));
-                        }   
-                    }      
-                    }
-                } 
-            }
 
+                        // Generate a uniform random number to do the random motion
+                        double random_number = p_gen->ranf();
+
+                        double p = exp(-delta_H / this->GetTemperature());
+                        if (delta_H <= 0 || random_number < p)
+                        {
+                            // Do swap
+                            for (std::set<unsigned>::iterator iter = containing_elements.begin();
+                                 iter != containing_elements.end();
+                                 ++iter)
+                            {
+
+                                // Remove lattice from the old element
+                                this->GetElement(*iter)->DeleteNode(this->GetElement(*iter)->GetNodeLocalIndex(node_index));
+                            }
+                            if (!neighbour_containing_elements.empty())
+                            {
+
+                                this->GetElement(*neighbour_containing_elements.begin())->AddNode(this->mrMesh.GetNode(node_index));
+                            }
+                        }
+                    }
+                }
+            }
         }
+        
     }
 }
 
@@ -413,15 +403,15 @@ void WrappedPottsBasedCellPopulation<DIM>::AddUpdateRule(boost::shared_ptr<Abstr
     this->mUpdateRuleCollection.push_back(pUpdateRule);
 }
 
-template <unsigned DIM>
-void WrappedPottsBasedCellPopulation<DIM>::OutputCellPopulationParameters(out_stream& rParamsFile)
-{
-    // *rParamsFile << "\t\t<Temperature>" << mTemperature << "</Temperature>\n";
-    //  *rParamsFile << "\t\t<NumSweepsPerTimestep>" << mNumSweepsPerTimestep << "</NumSweepsPerTimestep>\n";
+// template <unsigned DIM>
+// void WrappedPottsBasedCellPopulation<DIM>::OutputCellPopulationParameters(out_stream& rParamsFile)
+// {
+//     // *rParamsFile << "\t\t<Temperature>" << mTemperature << "</Temperature>\n";
+//     //  *rParamsFile << "\t\t<NumSweepsPerTimestep>" << mNumSweepsPerTimestep << "</NumSweepsPerTimestep>\n";
 
-    // Call method on direct parent class
-    PottsBasedCellPopulation<DIM>::OutputCellPopulationParameters(rParamsFile);
-}
+//     // Call method on direct parent class
+//     PottsBasedCellPopulation<DIM>::OutputCellPopulationParameters(rParamsFile);
+// }
 
 // Explicit instantiation
 // template class WrappedPottsBasedCellPopulation<1>;
@@ -502,7 +492,6 @@ EXPORT_TEMPLATE_CLASS_SAME_DIMS(WrappedPottsBasedCellPopulation)
 //     //     pNewCell->GetCellData()->SetItem("DivisionStatus", 2);
 //     //     (*cell_iter)->GetCellData()->SetItem("DivisionStatus", 1);
 
-//     //     TRACE("hih");
 //     // }
 
 // }

@@ -17,7 +17,7 @@ import math
 
 
 
-working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/SmallCylinder' 
+working_directory = '/Users/jcrawshaw/docker-polnet-master/NewMesh' 
 
 def pause():
     programPause = raw_input("Press the <ENTER> key to continue...")
@@ -29,7 +29,7 @@ def vtu2stl(iter):
     print "  Convert vtu to stl    "
     # Read the VTU file from disk
     vtu_reader = vtk.vtkXMLUnstructuredGridReader()
-    vtu_reader.SetFileName(working_directory + '/config.vtu')
+    vtu_reader.SetFileName(working_directory + '/config.vtk')
 
     extract_surface_filter = vtk.vtkDataSetSurfaceFilter()
     extract_surface_filter.AddInputConnection(vtu_reader.GetOutputPort())

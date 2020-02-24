@@ -1,36 +1,9 @@
 /*
 
-Copyright (c) 2005-2013, University of Oxford.
-All rights reserved.
 
-University of Oxford means the Chancellor, Masters and Scholars of the
-University of Oxford, having an administrative office at Wellington
-Square, Oxford OX1 2JD, UK.
+    Wrapped Aspect ratio code 
 
-This file is part of Chaste.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
- * Neither the name of the University of Oxford nor the names of its
-   contributors may be used to endorse or promote products derived from this
-   software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+    There needs to be some relationship between the cell elongation and the flow -- no flow no elongation, high flow, high elongation 
 */
 
 #ifndef ASPECTRATIOCONSTRAINTUPDATERULE_HPP_
@@ -39,8 +12,8 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ChasteSerialization.hpp"
 #include <boost/serialization/base_object.hpp>
 
-#include "AbstractPottsUpdateRule.hpp"
-#include "PottsBasedCellPopulation.hpp"
+#include "AbstractWrappedPottsUpdateRule.hpp"
+#include "WrappedPottsBasedCellPopulation.hpp"
 
 // Needed here to avoid serialization errors (on Boost<1.37)
 #include "CellLabel.hpp"
@@ -52,7 +25,7 @@ OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * for each cell over time.
  */
 template<unsigned DIM>
-class AspectRatioConstraintPottsUpdateRule : public AbstractPottsUpdateRule<DIM>
+class AspectRatioConstraintPottsUpdateRule : public AbstractWrappedPottsUpdateRule<DIM>
 {
 friend class TestPottsUpdateRules;
 
@@ -64,6 +37,7 @@ private:
      * \todo provide units
      */
     double mAspectRatioEnergyParameter;
+    double mOrientationParameter;
 
     /**
      * Non-dimensional target aspect ratio of a mature (fully-grown) cell,
@@ -83,8 +57,9 @@ private:
     template<class Archive>
     void serialize(Archive & archive, const unsigned int version)
     {
-        archive & boost::serialization::base_object<AbstractPottsUpdateRule<DIM> >(*this);
+        archive & boost::serialization::base_object<AbstractWrappedPottsUpdateRule<DIM> >(*this);
         archive & mAspectRatioEnergyParameter;
+        archive & mOrientationParameter;
         archive & mTargetAspectRatio;
     }
 
@@ -114,7 +89,7 @@ public:
      */
     double EvaluateHamiltonianContribution(unsigned currentNodeIndex,
                                            unsigned targetNodeIndex,
-                                           PottsBasedCellPopulation<DIM>& rCellPopulation);
+                                           WrappedPottsBasedCellPopulation<DIM>& rCellPopulation);
 
     /**
      * @return mAspectRatioEnergyParameter
@@ -127,6 +102,13 @@ public:
      * @param aspectRatioEnergyParameter the new value of mAspectRatioEnergyParameter
      */
     void SetAspectRatioEnergyParameter(double aspectRatioEnergyParameter);
+
+
+    double GetOrientationParameter();
+    void SetOrientationParameter(double OrientationParameter);
+
+
+
 
     /**
      * @return mTargetAspectRatio

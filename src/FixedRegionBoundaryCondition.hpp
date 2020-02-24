@@ -33,6 +33,12 @@ private:
      */
     double mRadius;
     
+     /**
+     * Only want to define boundaries cell data at the first time step 
+     */
+
+    double mIntialTime =1;
+    
     /** Needed for serialization. */
     friend class boost::serialization::access;
     /**
@@ -45,6 +51,7 @@ private:
     void serialize(Archive & archive, const unsigned int version)
     {
         archive & boost::serialization::base_object<AbstractCellPopulationBoundaryCondition<ELEMENT_DIM,SPACE_DIM> >(*this);
+        // archive mIntialTime;
     }
 
 public:
@@ -76,6 +83,8 @@ public:
      * @return mRadius.
      */
     const double& rGetRadius() const;
+
+    
     
     /**
      * Overridden ImposeBoundaryCondition() method.

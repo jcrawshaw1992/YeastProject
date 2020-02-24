@@ -48,6 +48,7 @@ private:
         archive & mACoefficients;
         archive & mBCoefficients;
         archive & mArea0;
+        archive & mNearestNodesMap;
     }
 
 protected:
@@ -71,6 +72,7 @@ protected:
     // Map of node1 Iital locations
     //std::map<unsigned,  c_vector<double, 3> > mNode0_IC;
     std::map<unsigned, c_vector<c_vector<double, 2>, 3> > mInitalVectors;
+    std::map<unsigned, c_vector<unsigned, 5> > mNearestNodesMap;
     
 
 
@@ -86,12 +88,15 @@ public:
     void SetElasticShearModulus(double ElasticShearModulus);
     void SetMembraneStiffness(double MembraneSurface);
 
+    
+
 /*
  * Loop over all elements and save the inital membrane confuguration as map, element index as the key, to a vector of vector
  * between each of the nodes 
 */
 
     void SetupMembraneConfiguration(AbstractCellPopulation<2, 3>& rCellPopulation);
+    void SetupMembraneConfiguration( AbstractCellPopulation<2, 3>& rCellPopulation, AbstractCellPopulation<2, 3>& rCellPopulation_Target);
 
     c_vector<c_vector<double, 3>, 3> Inverse(c_vector<c_vector<double, 3>, 3> Matrix);
     c_vector<c_vector<double, 3>, 3> Inverse(c_vector<c_vector<double, 3>, 3> Matrix, double elem);
@@ -118,6 +123,12 @@ public:
  * Function that saves a Map of all of the neighbours for all of the nodes 
 */
     void FindNeighbours(AbstractCellPopulation<2, 3>& rCellPopulation);
+
+/*
+ * Function that saves a Map of all of the neighbours for all of the nodes at the boundaries 
+*/
+
+    void SetNearestNodesForBoundaryNodes(std::map<unsigned, c_vector<unsigned, 5> > NearestNodesMap);
 
 
 
