@@ -161,7 +161,7 @@ public:
             {
                 if (i%2==0)
                 {
-                    double Pertebation = 0.03*(0.1*RandomNumberGenerator::Instance()->randMod(50)-2.5);
+                    double Pertebation = 0.05*(0.1*RandomNumberGenerator::Instance()->randMod(50)-2.5);
                     cell_population.GetNode(i)->rGetModifiableLocation()[0] += Pertebation; 
                     cell_population.GetNode(i)->rGetModifiableLocation()[1] += Pertebation; 
                 }
