@@ -159,37 +159,14 @@ public:
         // After the inital conditions are set, distort the z component of each node          
         for (int i=0; i<mesh->GetNumNodes(); i++)
             {
-                
-                c_vector<double,3> InitalLocation =  cell_population.GetNode(i)->rGetLocation();
-
-                double R = sqrt(InitalLocation[0]*InitalLocation[0]  + InitalLocation[1]*InitalLocation[1] );
-                double Angle;
-                if (InitalLocation[0] >= 0)
+                if (i%2==0)
                 {
-                    Angle = atan(InitalLocation[1]/ InitalLocation[0]);
+                    double Pertebation = 0.01*(0.1*RandomNumberGenerator::Instance()->randMod(50)-2.5);
+                    cell_population.GetNode(i)->rGetModifiableLocation()[0] += Pertebation; 
+                    cell_population.GetNode(i)->rGetModifiableLocation()[1] += Pertebation; 
                 }
-                 else if (InitalLocation[0] < 0 && InitalLocation[1] <= 0)
-                {
-                  Angle = M_PI +atan( InitalLocation[1]/ InitalLocation[0]);
-                }
-                else if (InitalLocation[0] < 0 && InitalLocation[1] >= 0)
-                {
-                     Angle = -M_PI +atan( InitalLocation[1]/ InitalLocation[0]);
-                }
-                double Pertebation = 0.05*(0.1*RandomNumberGenerator::Instance()->randMod(50)-2.5);
-                double X = R  * cos(Angle) + Pertebation ;//+ InitalLocation[2]-1;
-                double Y = R * sin(Angle)+Pertebation ;
-        
-                c_vector<double,3>  DeformedLocation =Create_c_vector(X,Y, InitalLocation[2]);
-
-                cell_population.GetNode(i)->rGetModifiableLocation() = DeformedLocation;        
+                       
             }
-
-
-
-
-
-
 
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
