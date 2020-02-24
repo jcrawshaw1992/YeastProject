@@ -145,14 +145,14 @@ public:
 
 
 
-            /*
-            -----------------------------
-            SMembrane forces
-            ----------------------------
-            */
-            boost::shared_ptr<MembraneForcesBasic> p_shear_force(new MembraneForcesBasic());
-            p_shear_force->SetupMembraneConfiguration(cell_population);
-            simulator.AddForce(p_shear_force);
+            // /*
+            // -----------------------------
+            // SMembrane forces
+            // ----------------------------
+            // */
+            // boost::shared_ptr<MembraneForcesBasic> p_shear_force(new MembraneForcesBasic());
+            // p_shear_force->SetupMembraneConfiguration(cell_population);
+            // simulator.AddForce(p_shear_force);
 
 
             /*
