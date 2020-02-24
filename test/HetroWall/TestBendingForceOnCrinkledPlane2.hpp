@@ -28,7 +28,7 @@
 #include "VtkMeshReader.hpp"
 
 #include "projects/VascularRemodelling/src/MembraneForces/MembraneStiffnessForce.hpp"
-#include "/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/src/Honeycomb3DMeshGenerator.hpp"
+// #include "/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/src/Honeycomb3DMeshGenerator.hpp"
 
 #include "FixedRegionBoundaryCondition.hpp"
 #include "Honeycomb3DCylinderMeshGenerator.hpp"
@@ -156,9 +156,6 @@ public:
         simulator.AddCellPopulationBoundaryCondition(p_condition_2);
 
         
-
-
-
         // After the inital conditions are set, distort the z component of each node          
         for (int i=0; i<mesh->GetNumNodes(); i++)
             {
