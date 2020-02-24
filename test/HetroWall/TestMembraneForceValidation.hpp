@@ -103,7 +103,7 @@ public:
             // Set up cell-based simulation
             OffLatticeSimulation<2, 3> simulator(cell_population);
             simulator.SetOutputDirectory(output_directory);
-            simulator.SetEndTime(1000);
+            simulator.SetEndTime(2000);
             simulator.SetDt(0.02); // 0.005
             simulator.SetSamplingTimestepMultiple(1000);
             simulator.SetUpdateCellPopulationRule(false); // No remeshing.
@@ -119,7 +119,7 @@ public:
             double TransmuralPressure =  P_blood - P_tissue;
 
             boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-            p_ForceOut->SetPressure(TransmuralPressure*1e1);
+            p_ForceOut->SetPressure(TransmuralPressure*1e3);
             simulator.AddForce(p_ForceOut);
 
             /*
@@ -150,9 +150,9 @@ public:
             // SMembrane forces
             // ----------------------------
             // */
-            // boost::shared_ptr<MembraneForcesBasic> p_shear_force(new MembraneForcesBasic());
-            // p_shear_force->SetupMembraneConfiguration(cell_population);
-            // simulator.AddForce(p_shear_force);
+            boost::shared_ptr<MembraneForcesBasic> p_shear_force(new MembraneForcesBasic());
+            p_shear_force->SetupMembraneConfiguration(cell_population);
+            simulator.AddForce(p_shear_force);
 
 
             /*
