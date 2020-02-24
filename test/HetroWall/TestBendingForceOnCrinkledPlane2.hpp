@@ -28,7 +28,7 @@
 #include "VtkMeshReader.hpp"
 
 #include "projects/VascularRemodelling/src/MembraneForces/MembraneStiffnessForce.hpp"
-// #include "/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/src/Honeycomb3DMeshGenerator.hpp"
+#include "/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/src/Honeycomb3DMeshGenerator.hpp"
 
 #include "FixedRegionBoundaryCondition.hpp"
 #include "Honeycomb3DCylinderMeshGenerator.hpp"
