@@ -22,8 +22,7 @@
 #include "MutableMesh.hpp"
 #include "UblasCustomFunctions.hpp"
 #include "PetscSetupAndFinalize.hpp"
-
-#include "MembraneForcesBasicCylinder.hpp"
+#include "MembraneForcesBasic.hpp"
 #include "MembranePropertiesModifier.hpp"
 
 // #include "RadialForce.hpp"
