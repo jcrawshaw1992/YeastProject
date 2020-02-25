@@ -76,18 +76,15 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
 
                 c_vector<double, 3> normalVector = VectorProduct(vector_12, vector_13);
                 
-                Area+= norm_2(normalVector)/6;
+                // Area+= norm_2(normalVector)/6;
                 Normal += normalVector;///norm_2(normalVector);
 
             }
             Normal /=norm_2(Normal);
-             c_vector<double, 3> force = mStrength *Normal*  Area; // / norm_2(cell_location);
+             c_vector<double, 3> force = mStrength *Normal; // / norm_2(cell_location);
              cell_iter->GetCellData()->SetItem("Pressure",mStrength );
 
-            //   if( cell_iter->GetCellData()->GetItem("Mut") ==1)
-            //   {
-            //       force*=-1;
-            //   }
+    
             rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(force);
         }
 

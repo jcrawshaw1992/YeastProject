@@ -69,15 +69,15 @@ public:
 
      void TestForcesOnCylinder_Stretched() throw(Exception)
     {
-        unsigned Refinment[4] = {20,40,60,80};//,160};
+        unsigned Refinment[4] = {20,40,60,80};
     
         for (unsigned N_D_index = 0; N_D_index <4; N_D_index++)
         {
             unsigned N_D = Refinment[N_D_index];
             unsigned N_Z = Refinment[N_D_index]*0.75;//
 
-            double Length = 20*1e-3;
-            double Radius = 5*1e-3;
+            double Length = 40*1e-3;
+            double Radius = 4*1e-3;
 
             Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, Radius, Length);
             MutableMesh<2, 3>* mesh = generator.GetMesh();
@@ -103,9 +103,9 @@ public:
             // Set up cell-based simulation
             OffLatticeSimulation<2, 3> simulator(cell_population);
             simulator.SetOutputDirectory(output_directory);
-            simulator.SetEndTime(2000);
+            simulator.SetEndTime(400);
             simulator.SetDt(0.02); // 0.005
-            simulator.SetSamplingTimestepMultiple(1000);
+            simulator.SetSamplingTimestepMultiple(500);
             simulator.SetUpdateCellPopulationRule(false); // No remeshing.
 
             /*
@@ -119,7 +119,7 @@ public:
             double TransmuralPressure =  P_blood - P_tissue;
 
             boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-            p_ForceOut->SetPressure(TransmuralPressure*1e4);
+            p_ForceOut->SetPressure(TransmuralPressure*1e-1);
             simulator.AddForce(p_ForceOut);
 
             /*
@@ -128,14 +128,22 @@ public:
             ----------------------------
             */
 
-            double BendingConst = 1e-11;
-            std::map<double, c_vector<long double, 4> > GrowthMaps; // From matlab sweep results
-                    //         KA,          Kalpha           Ks                                 Kb
-            GrowthMaps[10] = Create_c_vector(pow(10, -6.9)*1e-3, pow(10, -8.2459)*1e-3, pow(10, -9)*1e-3, 0);
+
+        double BendingConst = 0.00;
+        std::map<double, c_vector<long double, 4> > GrowthMaps; // From matlab sweep results
+                //         KA,          Kalpha           Ks                                 Kb
+        GrowthMaps[10] = Create_c_vector(pow(10, -6.9), pow(10, -8.2459), pow(10, -9), 0);
+        GrowthMaps[8] = Create_c_vector(pow(10, -6.9), pow(10, -8.0160), pow(10, -9), BendingConst);
+        GrowthMaps[6] = Create_c_vector(pow(10, -6.9), pow(10, -7.7300), pow(10, -9), BendingConst);
+        GrowthMaps[5] = Create_c_vector(pow(10, -6.9341), pow(10, -7.7), pow(10, -8), BendingConst);
+        GrowthMaps[4] = Create_c_vector(pow(10, -6.9), pow(10, -7.4224), pow(10, 8), BendingConst);
+        GrowthMaps[2] = Create_c_vector(pow(10, -6.8), pow(10, -6.8124), pow(10, -7), BendingConst);
+        GrowthMaps[1.5] = Create_c_vector(pow(10, -6.5), pow(10, -6.3491), pow(10, -7), BendingConst);
+        GrowthMaps[1.2] = Create_c_vector(pow(10, -6.2)*1e3, pow(10, -5.8360)*1e2, pow(10, -7)*1e2, BendingConst*1e1);
 
 
             boost::shared_ptr<MembranePropertiesSecModifier<2, 3> > p_Membrane_modifier(new MembranePropertiesSecModifier<2, 3>());
-            p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 0,10, 1); 
+            p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 0,1.5, 1); 
             p_Membrane_modifier->SetupSolve(cell_population,output_directory);
 
             /*
@@ -175,20 +183,18 @@ public:
                 SimulationTime::Instance()->SetStartTime(0.0);
             }
     }
-        
 
-
-     void TestForcesOnCylinder_Equi() throw(Exception)
+       void TestForcesOnCylinder_Equi() throw(Exception)
     {
-        unsigned Refinment[4] = {20,40,60,80};//,160};
+        unsigned Refinment[4] = {20,40,60,80};
     
         for (unsigned N_D_index = 0; N_D_index <4; N_D_index++)
         {
             unsigned N_D = Refinment[N_D_index];
             unsigned N_Z = Refinment[N_D_index]*1.5;//
 
-            double Length = 20*1e-3;
-            double Radius = 5*1e-3;
+            double Length = 40*1e-3;
+            double Radius = 4*1e-3;
 
             Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, Radius, Length);
             MutableMesh<2, 3>* mesh = generator.GetMesh();
@@ -214,12 +220,11 @@ public:
             // Set up cell-based simulation
             OffLatticeSimulation<2, 3> simulator(cell_population);
             simulator.SetOutputDirectory(output_directory);
-            simulator.SetEndTime(2000);
+            simulator.SetEndTime(400);
             simulator.SetDt(0.02); // 0.005
-            simulator.SetSamplingTimestepMultiple(1000);
+            simulator.SetSamplingTimestepMultiple(500);
             simulator.SetUpdateCellPopulationRule(false); // No remeshing.
 
-            
             /*
             -----------------------------
             Constant Pressure ballance 
@@ -231,7 +236,7 @@ public:
             double TransmuralPressure =  P_blood - P_tissue;
 
             boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-            p_ForceOut->SetPressure(TransmuralPressure*1e4);
+            p_ForceOut->SetPressure(TransmuralPressure*1e-1);
             simulator.AddForce(p_ForceOut);
 
             /*
@@ -240,14 +245,22 @@ public:
             ----------------------------
             */
 
-            double BendingConst = 1e-11;
-            std::map<double, c_vector<long double, 4> > GrowthMaps; // From matlab sweep results
-                    //         KA,          Kalpha           Ks                                 Kb
-            GrowthMaps[10] = Create_c_vector(pow(10, -6.9)*1e-3, pow(10, -8.2459)*1e-3, pow(10, -9)*1e-3, 0);
+
+        double BendingConst = 0.00;
+        std::map<double, c_vector<long double, 4> > GrowthMaps; // From matlab sweep results
+                //         KA,          Kalpha           Ks                                 Kb
+        GrowthMaps[10] = Create_c_vector(pow(10, -6.9), pow(10, -8.2459), pow(10, -9), 0);
+        GrowthMaps[8] = Create_c_vector(pow(10, -6.9), pow(10, -8.0160), pow(10, -9), BendingConst);
+        GrowthMaps[6] = Create_c_vector(pow(10, -6.9), pow(10, -7.7300), pow(10, -9), BendingConst);
+        GrowthMaps[5] = Create_c_vector(pow(10, -6.9341), pow(10, -7.7), pow(10, -8), BendingConst);
+        GrowthMaps[4] = Create_c_vector(pow(10, -6.9), pow(10, -7.4224), pow(10, 8), BendingConst);
+        GrowthMaps[2] = Create_c_vector(pow(10, -6.8), pow(10, -6.8124), pow(10, -7), BendingConst);
+        GrowthMaps[1.5] = Create_c_vector(pow(10, -6.5), pow(10, -6.3491), pow(10, -7), BendingConst);
+        GrowthMaps[1.2] = Create_c_vector(pow(10, -6.2)*1e3, pow(10, -5.8360)*1e2, pow(10, -7)*1e2, BendingConst*1e1);
 
 
             boost::shared_ptr<MembranePropertiesSecModifier<2, 3> > p_Membrane_modifier(new MembranePropertiesSecModifier<2, 3>());
-            p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 0,10, 1); 
+            p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 0,1.5, 1); 
             p_Membrane_modifier->SetupSolve(cell_population,output_directory);
 
             /*
@@ -287,19 +300,18 @@ public:
                 SimulationTime::Instance()->SetStartTime(0.0);
             }
     }
-     
- 
-     void TestForcesOnCylinder_Squashed() throw(Exception)
+
+       void TestForcesOnCylinder_Squashed() throw(Exception)
     {
-        unsigned Refinment[4] = {20,40,60,80};//,160};
+        unsigned Refinment[4] = {20,40,60,80};
     
         for (unsigned N_D_index = 0; N_D_index <4; N_D_index++)
         {
             unsigned N_D = Refinment[N_D_index];
             unsigned N_Z = Refinment[N_D_index]*3;//
 
-            double Length = 20*1e-3;
-            double Radius = 5*1e-3;
+            double Length = 40*1e-3;
+            double Radius = 4*1e-3;
 
             Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, Radius, Length);
             MutableMesh<2, 3>* mesh = generator.GetMesh();
@@ -325,12 +337,11 @@ public:
             // Set up cell-based simulation
             OffLatticeSimulation<2, 3> simulator(cell_population);
             simulator.SetOutputDirectory(output_directory);
-            simulator.SetEndTime(2000);
+            simulator.SetEndTime(400);
             simulator.SetDt(0.02); // 0.005
-            simulator.SetSamplingTimestepMultiple(1000);
+            simulator.SetSamplingTimestepMultiple(500);
             simulator.SetUpdateCellPopulationRule(false); // No remeshing.
 
-            
             /*
             -----------------------------
             Constant Pressure ballance 
@@ -342,7 +353,7 @@ public:
             double TransmuralPressure =  P_blood - P_tissue;
 
             boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-            p_ForceOut->SetPressure(TransmuralPressure*1e3);
+            p_ForceOut->SetPressure(TransmuralPressure*1e-1);
             simulator.AddForce(p_ForceOut);
 
             /*
@@ -351,14 +362,22 @@ public:
             ----------------------------
             */
 
-            double BendingConst = 1e-11;
-            std::map<double, c_vector<long double, 4> > GrowthMaps; // From matlab sweep results
-                    //         KA,          Kalpha           Ks                                 Kb
-            GrowthMaps[10] = Create_c_vector(pow(10, -6.9)*1e-3, pow(10, -8.2459)*1e-3, pow(10, -9)*1e-3, 0);
+
+        double BendingConst = 0.00;
+        std::map<double, c_vector<long double, 4> > GrowthMaps; // From matlab sweep results
+                //         KA,          Kalpha           Ks                                 Kb
+        GrowthMaps[10] = Create_c_vector(pow(10, -6.9), pow(10, -8.2459), pow(10, -9), 0);
+        GrowthMaps[8] = Create_c_vector(pow(10, -6.9), pow(10, -8.0160), pow(10, -9), BendingConst);
+        GrowthMaps[6] = Create_c_vector(pow(10, -6.9), pow(10, -7.7300), pow(10, -9), BendingConst);
+        GrowthMaps[5] = Create_c_vector(pow(10, -6.9341), pow(10, -7.7), pow(10, -8), BendingConst);
+        GrowthMaps[4] = Create_c_vector(pow(10, -6.9), pow(10, -7.4224), pow(10, 8), BendingConst);
+        GrowthMaps[2] = Create_c_vector(pow(10, -6.8), pow(10, -6.8124), pow(10, -7), BendingConst);
+        GrowthMaps[1.5] = Create_c_vector(pow(10, -6.5), pow(10, -6.3491), pow(10, -7), BendingConst);
+        GrowthMaps[1.2] = Create_c_vector(pow(10, -6.2)*1e3, pow(10, -5.8360)*1e2, pow(10, -7)*1e2, BendingConst*1e1);
 
 
             boost::shared_ptr<MembranePropertiesSecModifier<2, 3> > p_Membrane_modifier(new MembranePropertiesSecModifier<2, 3>());
-            p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 0,10, 1); 
+            p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 0,1.5, 1); 
             p_Membrane_modifier->SetupSolve(cell_population,output_directory);
 
             /*
@@ -398,6 +417,10 @@ public:
                 SimulationTime::Instance()->SetStartTime(0.0);
             }
     }
+
+
+        
+
      
 };
 
