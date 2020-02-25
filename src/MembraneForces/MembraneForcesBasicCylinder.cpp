@@ -121,13 +121,6 @@ void MembraneForcesBasicCylinder::AddForceContribution(AbstractCellPopulation<2,
      CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(elem_iter->GetNodeGlobalIndex(1));
      CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex(elem_iter->GetNodeGlobalIndex(1));
 
-     
-        if (p_cell1->GetMutationState()->template IsType<HasEndothelialCell>() && p_cell2->GetMutationState()->template IsType<HasEndothelialCell>() && p_cell3->GetMutationState()->template IsType<HasEndothelialCell>() )
-        {
-                    
-            // Kalpha =  pow(10, -8.2459);    
-            // KA = pow(10, -6.9) ;
-            // KS = pow(10, -9) ;
 
             p_cell = p_cell_population->GetCellUsingLocationIndex(0);
             Kalpha =p_cell->GetCellData()->GetItem("AreaDilationModulus");
@@ -135,88 +128,6 @@ void MembraneForcesBasicCylinder::AddForceContribution(AbstractCellPopulation<2,
             KS =p_cell->GetCellData()->GetItem("ShearModulus");
 
 
-        }
-        else 
-        {   
-            // Just take the smallest modulus
-            // Kalpha = std::min(std::min(p_cell1->GetCellData()->GetItem("AreaDilationModulus"), p_cell2->GetCellData()->GetItem("AreaDilationModulus")),p_cell3->GetCellData()->GetItem("AreaDilationModulus"));
-            // KA = std::min(std::min(p_cell1->GetCellData()->GetItem("AreaConstant"), p_cell2->GetCellData()->GetItem("AreaConstant")),p_cell3->GetCellData()->GetItem("AreaConstant"));
-            // KS = std::min(std::min(p_cell1->GetCellData()->GetItem("ShearModulus"), p_cell2->GetCellData()->GetItem("ShearModulus")),p_cell3->GetCellData()->GetItem("ShearModulus"));
-
-            if (Node0[2] < 0 )
-            { // is on left, we want the max z value 
-                if ( Z0 == Z1)
-                {
-                    if ( Z0 > Z2)
-                    {
-                        node_index = elem_iter->GetNodeGlobalIndex(0);
-                    }
-                    else
-                    {
-                        node_index = elem_iter->GetNodeGlobalIndex(2);
-                    }
-                } else if ( Z0 == Z2)
-                {
-                    if ( Z0 > Z1)
-                    {
-                        node_index = elem_iter->GetNodeGlobalIndex(0);
-                    }
-                    else
-                    {
-                        node_index = elem_iter->GetNodeGlobalIndex(1);
-                    }
-                }else if ( Z1 == Z2)
-                {
-                    if ( Z0 > Z1)
-                    {
-                        node_index = elem_iter->GetNodeGlobalIndex(0);
-                    }
-                    else
-                    {
-                        node_index = elem_iter->GetNodeGlobalIndex(1);
-                    }
-                }
-            }else if (Node0[2] >= 0 )
-            {// is on righ, we want the min z value 
-                if ( Z0 == Z1)
-                {
-                    if ( Z0 < Z2)
-                    {
-                        node_index = elem_iter->GetNodeGlobalIndex(0);
-                    }
-                    else
-                    {
-                        node_index = elem_iter->GetNodeGlobalIndex(2);
-                    }
-                } else if ( Z0 == Z2)
-                {
-                    if ( Z0 < Z1)
-                    {
-                        node_index = elem_iter->GetNodeGlobalIndex(0);
-                    }
-                    else
-                    {
-                        node_index = elem_iter->GetNodeGlobalIndex(1);
-                    }
-                }else if ( Z1 == Z2)
-                {
-                    if ( Z0 < Z1)
-                    {
-                        node_index = elem_iter->GetNodeGlobalIndex(0);
-                    }
-                    else
-                    {
-                        node_index = elem_iter->GetNodeGlobalIndex(1);
-                    }
-                }
-            }
-            p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
-            Kalpha =p_cell->GetCellData()->GetItem("AreaDilationModulus");
-            KA =p_cell->GetCellData()->GetItem("AreaConstant");
-            KS =p_cell->GetCellData()->GetItem("ShearModulus");
-
-        } 
-     
 
 
         for (int i = 0; i < 3; i++)

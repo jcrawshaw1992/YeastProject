@@ -310,7 +310,7 @@ bool MembraneStiffnessForce::CalculateElementNormals(MutableMesh<2, 3>& rMesh, s
 
     c_vector<double, 3> normal_2 = VectorProduct(vector_A, vector_B);
     double Area1 = 0.5 * norm_2(normal_1);
-    double Area2 = 0.5 * norm_2(normal_2);
+    // double Area2 = 0.5 * norm_2(normal_2);
 
     nonUnitNormals = std::pair<c_vector<double, 3>, c_vector<double, 3> >(normal_1, normal_2);
     otherNodes = std::pair<Node<3>*, Node<3>*>(pNode2, pNode4);
@@ -346,8 +346,8 @@ void MembraneStiffnessForce::AddForceContribution(AbstractCellPopulation<2, 3>& 
          ++spring_iterator)
     {
 
-        unsigned nodeA_global_index = spring_iterator.GetNodeA()->GetIndex();
-        unsigned nodeB_global_index = spring_iterator.GetNodeB()->GetIndex();
+        // unsigned nodeA_global_index = spring_iterator.GetNodeA()->GetIndex();
+        // unsigned nodeB_global_index = spring_iterator.GetNodeB()->GetIndex();
         Node<3>* pNode1 = spring_iterator.GetNodeA();
         Node<3>* pNode3 = spring_iterator.GetNodeB();
 
@@ -448,8 +448,8 @@ void MembraneStiffnessForce::AddForceContribution(AbstractCellPopulation<2, 3>& 
         // PRINT_3_VARIABLES(angle,GetOriginalAngle(edge), (angle - GetOriginalAngle(edge)))
         // correct for the area of each cell, can do this for each element contribution to the cell here rather than later as
 
-        double AngleDiff = angle - GetOriginalAngle(edge);
-        double denominator = sqrt(1 - inner_prod(normal_1, normal_2) * inner_prod(normal_1, normal_2));
+        // double AngleDiff = angle - GetOriginalAngle(edge);
+        // double denominator = sqrt(1 - inner_prod(normal_1, normal_2) * inner_prod(normal_1, normal_2));
         node1_contribution *= (force_coefficient / rCellPopulation.GetVolumeOfCell(p_cell1));
         node2_contribution *= (force_coefficient / rCellPopulation.GetVolumeOfCell(p_cell2));
         node3_contribution *= (force_coefficient / rCellPopulation.GetVolumeOfCell(p_cell3));
