@@ -78,7 +78,6 @@ void MembranePropertiesSecModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractC
         MAKE_PTR(EmptyBasementMatrix, p_Basement);
         MAKE_PTR(HasEndothelialCell, p_EC);
         c_vector<long double, 3> Node_location;
-        double MinZ = 0;
         // double EdgeWidth = 6e-3;
 
         for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
@@ -97,7 +96,7 @@ void MembranePropertiesSecModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractC
             // std::vector<std::vector<  c_vector<double, 3> > > mBoundaries;
             // PRINT_VARIABLE(mBoundaries.size())
 
-            for (int i = 0; i<mBoundaries.size(); i++)
+            for (unsigned i = 0; i<mBoundaries.size(); i++)
             {
 
                 std::vector<  c_vector<double, 3> > BasementRegion =  mBoundaries[i];
@@ -111,7 +110,7 @@ void MembranePropertiesSecModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractC
                 c_vector<double, 3> NodeToUpperPlane = Node_location - UpperPoint;
                 c_vector<double, 3> NodeToLowerPlane = Node_location - LowerPoint;
 
-                double DotToUpperPlane = inner_prod(NodeToUpperPlane,UpperPlane );
+                // double DotToUpperPlane = inner_prod(NodeToUpperPlane,UpperPlane );
                 
                 double DotToLowerPlane = inner_prod(NodeToLowerPlane,LowerPlane );
 
@@ -164,7 +163,7 @@ void MembranePropertiesSecModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOfTimeSte
     {
         assert(SPACE_DIM == 3);
         // See if any edges are too long and if so divide them
-        double num_cells = rCellPopulation.GetNumRealCells();
+        // double num_cells = rCellPopulation.GetNumRealCells();
 
         if (mOn == 1)
         {
@@ -275,7 +274,7 @@ void MembranePropertiesSecModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(Abstr
     double ShearMod;
     double AlphaMod;
     double AreaMod;
-    double BendingMod;
+    // double BendingMod;
 
     if (mAchievedTargetK == 0)
     {
