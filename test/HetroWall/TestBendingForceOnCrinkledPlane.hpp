@@ -332,130 +332,130 @@ public:
 
 
 
-    void offTestBendingPlane() throw(Exception)
-    {
-         double N_Z = 40;
-         double N_D = 40;
-        std::stringstream out;
-        out << N_D<< "_" << N_Z;
-        std::string mesh_size = out.str();
-        std::string output_directory = "TestBendingForce/" + mesh_size;
+    // void offTestBendingPlane() throw(Exception)
+    // {
+    //      double N_Z = 40;
+    //      double N_D = 40;
+    //     std::stringstream out;
+    //     out << N_D<< "_" << N_Z;
+    //     std::string mesh_size = out.str();
+    //     std::string output_directory = "TestBendingForce/" + mesh_size;
 
-        Honeycomb3DMeshGenerator generator( N_D, N_Z, 20,20);
-        MutableMesh<2, 3>* mesh = generator.GetMesh(); 
+    //     Honeycomb3DMeshGenerator generator( N_D, N_Z, 20,20);
+    //     MutableMesh<2, 3>* mesh = generator.GetMesh(); 
             
 
-        // Create cells
-        MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
+    //     // Create cells
+    //     MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
 
-        std::vector<CellPtr> cells;
-        CellsGenerator<FixedG1GenerationalCellCycleModel, 2> cells_generator;
-        cells_generator.GenerateBasicRandom(cells,mesh->GetNumNodes(), p_differentiated_type);
+    //     std::vector<CellPtr> cells;
+    //     CellsGenerator<FixedG1GenerationalCellCycleModel, 2> cells_generator;
+    //     cells_generator.GenerateBasicRandom(cells,mesh->GetNumNodes(), p_differentiated_type);
 
-        // Create a cell population
-        MeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
-        cell_population.SetWriteVtkAsPoints(true);
-        cell_population.SetOutputMeshInVtk(true);
-        // cell_population.AddCellWriter<CellMutationStatesWriter>();
+    //     // Create a cell population
+    //     MeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
+    //     cell_population.SetWriteVtkAsPoints(true);
+    //     cell_population.SetOutputMeshInVtk(true);
+    //     // cell_population.AddCellWriter<CellMutationStatesWriter>();
 
-        // Set up cell-based simulation
-        OffLatticeSimulation<2, 3> simulator(cell_population);
-        simulator.SetOutputDirectory(output_directory);
-        simulator.SetEndTime(100);
-        simulator.SetDt(0.02); // 0.005
-        simulator.SetSamplingTimestepMultiple(400);
-        simulator.SetUpdateCellPopulationRule(false); // No remeshing.
-
-
-        /*
-        -----------------------------
-        MembraneProperties Modifier
-        ----------------------------
-        */
-
-        double BendingConst = 1e-6;
-        std::map<double, c_vector<long double, 4> > GrowthMaps; // From matlab sweep results
-                //         KA,          Kalpha           Ks                                 Kb
-        GrowthMaps[10] = Create_c_vector(pow(10, -6.9), 0, 0, BendingConst);
-        GrowthMaps[5] = Create_c_vector(pow(10, -6.9341), pow(10, -7.7), pow(10, -8), BendingConst);
-        GrowthMaps[1.5] = Create_c_vector(pow(10, -6.5), pow(10, -6.3491), pow(10, -7), BendingConst);
-        GrowthMaps[1.2] = Create_c_vector(pow(10, -6.2)*1e3, pow(10, -5.8360)*1e2, pow(10, -7)*1e2, BendingConst*1e1);
-        GrowthMaps[2] = Create_c_vector(pow(10, -6.8), pow(10, -6.8124), pow(10, -7), BendingConst);
+    //     // Set up cell-based simulation
+    //     OffLatticeSimulation<2, 3> simulator(cell_population);
+    //     simulator.SetOutputDirectory(output_directory);
+    //     simulator.SetEndTime(100);
+    //     simulator.SetDt(0.02); // 0.005
+    //     simulator.SetSamplingTimestepMultiple(400);
+    //     simulator.SetUpdateCellPopulationRule(false); // No remeshing.
 
 
-        boost::shared_ptr<MembranePropertiesSecModifier<2, 3> > p_Membrane_modifier(new MembranePropertiesSecModifier<2, 3>());
-        // p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 1,1e-10, 1); 
-        p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 0,10, 1); 
+    //     /*
+    //     -----------------------------
+    //     MembraneProperties Modifier
+    //     ----------------------------
+    //     */
 
-        c_vector<double, 3> UpperPlaneNormal = Create_c_vector(-0.8,-0.5,0.2);
-        c_vector<double, 3> UpperPlanePoint = Create_c_vector(0,0,0);
+    //     double BendingConst = 1e-6;
+    //     std::map<double, c_vector<long double, 4> > GrowthMaps; // From matlab sweep results
+    //             //         KA,          Kalpha           Ks                                 Kb
+    //     GrowthMaps[10] = Create_c_vector(pow(10, -6.9), 0, 0, BendingConst);
+    //     GrowthMaps[5] = Create_c_vector(pow(10, -6.9341), pow(10, -7.7), pow(10, -8), BendingConst);
+    //     GrowthMaps[1.5] = Create_c_vector(pow(10, -6.5), pow(10, -6.3491), pow(10, -7), BendingConst);
+    //     GrowthMaps[1.2] = Create_c_vector(pow(10, -6.2)*1e3, pow(10, -5.8360)*1e2, pow(10, -7)*1e2, BendingConst*1e1);
+    //     GrowthMaps[2] = Create_c_vector(pow(10, -6.8), pow(10, -6.8124), pow(10, -7), BendingConst);
 
-        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.14,0.192,0);
-        c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0.8,-0.5,0.1);
+
+    //     boost::shared_ptr<MembranePropertiesSecModifier<2, 3> > p_Membrane_modifier(new MembranePropertiesSecModifier<2, 3>());
+    //     // p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 1,1e-10, 1); 
+    //     p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 0,10, 1); 
+
+    //     c_vector<double, 3> UpperPlaneNormal = Create_c_vector(-0.8,-0.5,0.2);
+    //     c_vector<double, 3> UpperPlanePoint = Create_c_vector(0,0,0);
+
+    //     c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.14,0.192,0);
+    //     c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0.8,-0.5,0.1);
 
         
-        p_Membrane_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-        p_Membrane_modifier->SetBendingForce(cell_population, BendingConst);
-        simulator.AddSimulationModifier(p_Membrane_modifier);
+    //     p_Membrane_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
+    //     p_Membrane_modifier->SetBendingForce(cell_population, BendingConst);
+    //     simulator.AddSimulationModifier(p_Membrane_modifier);
 
 
-        /*
-        -----------------------------
-        Bending forces
-        ----------------------------
-        */
+    //     /*
+    //     -----------------------------
+    //     Bending forces
+    //     ----------------------------
+    //     */
 
-        boost::shared_ptr<MembraneStiffnessForce> p_membrane_force(new MembraneStiffnessForce());
-        p_membrane_force->SetupInitialMembrane(*mesh, simulator.rGetCellPopulation());
-        // p_membrane_force->SetNearestNodesForBoundaryNodesBending(NearestNodesMap);
-        p_membrane_force->SetMembraneStiffness(BendingConst,30,30 );
-        simulator.AddForce(p_membrane_force);
+    //     boost::shared_ptr<MembraneStiffnessForce> p_membrane_force(new MembraneStiffnessForce());
+    //     p_membrane_force->SetupInitialMembrane(*mesh, simulator.rGetCellPopulation());
+    //     // p_membrane_force->SetNearestNodesForBoundaryNodesBending(NearestNodesMap);
+    //     p_membrane_force->SetMembraneStiffness(BendingConst,30,30 );
+    //     simulator.AddForce(p_membrane_force);
 
 
 
-          for (int i=0; i< mesh->GetNumNodes(); i++)
-            {
+    //       for (int i=0; i< mesh->GetNumNodes(); i++)
+    //         {
                 
-                if (std::fmod(i,3)==0)
-                 {
+    //             if (std::fmod(i,3)==0)
+    //              {
 
-                    double Pertebation = 0.09*(0.1*RandomNumberGenerator::Instance()->randMod(50)-2.5);
-                    c_vector<double,3> InitalLocation =  cell_population.GetNode(i)->rGetLocation();
+    //                 double Pertebation = 0.09*(0.1*RandomNumberGenerator::Instance()->randMod(50)-2.5);
+    //                 c_vector<double,3> InitalLocation =  cell_population.GetNode(i)->rGetLocation();
 
-                    double R = sqrt(InitalLocation[0]*InitalLocation[0]  + InitalLocation[1]*InitalLocation[1] );
-                    double Angle;
-                    if (InitalLocation[0] >= 0)
-                    {
-                        Angle = atan(InitalLocation[1]/ InitalLocation[0]);
+    //                 double R = sqrt(InitalLocation[0]*InitalLocation[0]  + InitalLocation[1]*InitalLocation[1] );
+    //                 double Angle;
+    //                 if (InitalLocation[0] >= 0)
+    //                 {
+    //                     Angle = atan(InitalLocation[1]/ InitalLocation[0]);
                         
-                    }
-                    else if (InitalLocation[0] < 0 && InitalLocation[1] <= 0)
-                    {
+    //                 }
+    //                 else if (InitalLocation[0] < 0 && InitalLocation[1] <= 0)
+    //                 {
                 
-                    Angle = M_PI +atan( InitalLocation[1]/ InitalLocation[0]);
-                    }
-                    else if (InitalLocation[0] < 0 && InitalLocation[1] >= 0)
-                    {
+    //                 Angle = M_PI +atan( InitalLocation[1]/ InitalLocation[0]);
+    //                 }
+    //                 else if (InitalLocation[0] < 0 && InitalLocation[1] >= 0)
+    //                 {
                     
-                        Angle = -M_PI +atan( InitalLocation[1]/ InitalLocation[0]);
-                    }
+    //                     Angle = -M_PI +atan( InitalLocation[1]/ InitalLocation[0]);
+    //                 }
                     
-                    double X = (R+Pertebation)   * cos(Angle);//+ InitalLocation[2]-1;
-                    double Y = (R+Pertebation)  * sin(Angle);
+    //                 double X = (R+Pertebation)   * cos(Angle);//+ InitalLocation[2]-1;
+    //                 double Y = (R+Pertebation)  * sin(Angle);
             
-                    c_vector<double,3>  DeformedLocation =Create_c_vector(X,Y, InitalLocation[2]);
+    //                 c_vector<double,3>  DeformedLocation =Create_c_vector(X,Y, InitalLocation[2]);
 
-                    cell_population.GetNode(i)->rGetModifiableLocation() = DeformedLocation;  
+    //                 cell_population.GetNode(i)->rGetModifiableLocation() = DeformedLocation;  
                  
-                 }      
-            }
+    //              }      
+    //         }
 
 
 
-        simulator.Solve();
-        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+    //     simulator.Solve();
+    //     CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
 
-    }
+    // }
 
 
  
