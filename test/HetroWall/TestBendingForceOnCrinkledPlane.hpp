@@ -100,19 +100,17 @@ public:
         // Set up cell-based simulation
         OffLatticeSimulation<2, 3> simulator(cell_population);
         simulator.SetOutputDirectory(output_directory);
-        simulator.SetEndTime(5000);
+        simulator.SetEndTime(1000);
         simulator.SetDt(0.01); // 0.005
         simulator.SetSamplingTimestepMultiple(1000);
         simulator.SetUpdateCellPopulationRule(false); // No remeshing.
-
 
         /*
         -----------------------------
         MembraneProperties Modifier
         ----------------------------
         */
-
-        double BendingConst = 3e-7;
+        double BendingConst = 3e-6;
         std::map<double, c_vector<long double, 4> > GrowthMaps; // From matlab sweep results
                 //         KA,          Kalpha           Ks                                 Kb
         GrowthMaps[10] = Create_c_vector(pow(10, -6.9), 0, 0, BendingConst);
@@ -155,18 +153,44 @@ public:
         boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition_2(new FixedRegionBoundaryCondition<2, 3>(&cell_population, Boundary2, Normal2, 2));
         simulator.AddCellPopulationBoundaryCondition(p_condition_2);
 
-        
-        // After the inital conditions are set, distort the z component of each node          
-        for (int i=0; i<mesh->GetNumNodes(); i++)
+            for (int i=0; i< mesh->GetNumNodes(); i++)
             {
-                if (i%2==0)
-                {
-                    double Pertebation = 0.04*(0.1*RandomNumberGenerator::Instance()->randMod(50)-2.5);
-                    cell_population.GetNode(i)->rGetModifiableLocation()[0] += Pertebation; 
-                    cell_population.GetNode(i)->rGetModifiableLocation()[1] += Pertebation; 
-                }
-                       
+                
+                if (std::fmod(i,3)==0)
+                 {
+
+                    double Pertebation = 0.09*(0.1*RandomNumberGenerator::Instance()->randMod(50)-2.5);
+                    c_vector<double,3> InitalLocation =  cell_population.GetNode(i)->rGetLocation();
+
+                    double R = sqrt(InitalLocation[0]*InitalLocation[0]  + InitalLocation[1]*InitalLocation[1] );
+                    double Angle;
+                    if (InitalLocation[0] >= 0)
+                    {
+                        Angle = atan(InitalLocation[1]/ InitalLocation[0]);
+                        
+                    }
+                    else if (InitalLocation[0] < 0 && InitalLocation[1] <= 0)
+                    {
+                
+                    Angle = M_PI +atan( InitalLocation[1]/ InitalLocation[0]);
+                    }
+                    else if (InitalLocation[0] < 0 && InitalLocation[1] >= 0)
+                    {
+                    
+                        Angle = -M_PI +atan( InitalLocation[1]/ InitalLocation[0]);
+                    }
+                    
+                    double X = (R+Pertebation)   * cos(Angle);//+ InitalLocation[2]-1;
+                    double Y = (R+Pertebation)  * sin(Angle);
+            
+                    c_vector<double,3>  DeformedLocation =Create_c_vector(X,Y, InitalLocation[2]);
+
+                    cell_population.GetNode(i)->rGetModifiableLocation() = DeformedLocation;  
+                 
+                 }      
             }
+
+
 
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
@@ -225,7 +249,7 @@ public:
         ----------------------------
         */
 
-        double BendingConst = 0.000000001;
+        double BendingConst = 1e-6;
         std::map<double, c_vector<long double, 4> > GrowthMaps; // From matlab sweep results
                 //         KA,          Kalpha           Ks                                 Kb
         GrowthMaps[10] = Create_c_vector(pow(10, -6.9), 0, 0, BendingConst);
@@ -238,16 +262,6 @@ public:
         boost::shared_ptr<MembranePropertiesSecModifier<2, 3> > p_Membrane_modifier(new MembranePropertiesSecModifier<2, 3>());
         p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 0,10, 1); 
 
-
-        // /*
-        // -----------------------------
-        // SMembrane forces
-        // ----------------------------
-        // */
-        // boost::shared_ptr<MembraneForcesBasic> p_shear_force(new MembraneForcesBasic());
-        // p_shear_force->SetupMembraneConfiguration(cell_population);
-        // p_shear_force->SetNearestNodesForBoundaryNodes(NearestNodesMap);
-        // simulator.AddForce(p_shear_force);
 
         /*
         -----------------------------
@@ -263,17 +277,44 @@ public:
 
        
 
-            for (int i=0; i<mesh->GetNumNodes(); i++)
+    for (int i=0; i< mesh->GetNumNodes(); i++)
             {
                 
-                c_vector<double,3> InitalLocation =  cell_population.GetNode(i)->rGetLocation();
-                    
-                double X = InitalLocation[0]+ 0.4*InitalLocation[2]*InitalLocation[2] ;//+ InitalLocation[2]-1;
-        
-                c_vector<double,3>  DeformedLocation =Create_c_vector(X,InitalLocation[1], InitalLocation[2]);
+                 if (std::fmod(i,3)==0)
+                 {
 
-                cell_population.GetNode(i)->rGetModifiableLocation() = DeformedLocation;        
+                    double Pertebation = 0.09*(0.1*RandomNumberGenerator::Instance()->randMod(50)-2.5);
+                   c_vector<double,3> InitalLocation =  cell_population.GetNode(i)->rGetLocation();
+
+                    double R = sqrt(InitalLocation[0]*InitalLocation[0]  + InitalLocation[1]*InitalLocation[1] );
+                    double Angle;
+                    if (InitalLocation[0] >= 0)
+                    {
+                        Angle = atan(InitalLocation[1]/ InitalLocation[0]);
+                        
+                    }
+                    else if (InitalLocation[0] < 0 && InitalLocation[1] <= 0)
+                    {
+                
+                    Angle = M_PI +atan( InitalLocation[1]/ InitalLocation[0]);
+                    }
+                    else if (InitalLocation[0] < 0 && InitalLocation[1] >= 0)
+                    {
+                    
+                        Angle = -M_PI +atan( InitalLocation[1]/ InitalLocation[0]);
+                    }
+                    
+                    double X = (R+Pertebation)   * cos(Angle);//+ InitalLocation[2]-1;
+                    double Y = (R+Pertebation)  * sin(Angle);
+            
+                    c_vector<double,3>  DeformedLocation =Create_c_vector(X,Y, InitalLocation[2]);
+
+                    cell_population.GetNode(i)->rGetModifiableLocation() = DeformedLocation;  
+                 
+                 }      
             }
+
+
             simulator.Solve();
 
             SimulationTime::Instance()->Destroy();
@@ -332,7 +373,7 @@ public:
         ----------------------------
         */
 
-        double BendingConst = 0.001;
+        double BendingConst = 1e-6;
         std::map<double, c_vector<long double, 4> > GrowthMaps; // From matlab sweep results
                 //         KA,          Kalpha           Ks                                 Kb
         GrowthMaps[10] = Create_c_vector(pow(10, -6.9), 0, 0, BendingConst);
@@ -358,16 +399,6 @@ public:
         simulator.AddSimulationModifier(p_Membrane_modifier);
 
 
-        // /*
-        // -----------------------------
-        // SMembrane forces
-        // ----------------------------
-        // */
-        // boost::shared_ptr<MembraneForcesBasic> p_shear_force(new MembraneForcesBasic());
-        // p_shear_force->SetupMembraneConfiguration(cell_population);
-        // p_shear_force->SetNearestNodesForBoundaryNodes(NearestNodesMap);
-        // simulator.AddForce(p_shear_force);
-
         /*
         -----------------------------
         Bending forces
@@ -382,26 +413,43 @@ public:
 
 
 
-        // After the inital conditions are set, distort the z component of each node          
-
-        for (int i=0; i< mesh->GetNumNodes(); i++)
-        { 
-            c_vector<double,3> InitalLocation =  cell_population.GetNode(i)->rGetLocation();
-            double Pertebation = 0.1*RandomNumberGenerator::Instance()->randMod(30)-1.5;
-
-            if (std::fmod(InitalLocation[0], 4.0) == 0 || std::fmod(InitalLocation[1], 4.0 )== 0)
+          for (int i=0; i< mesh->GetNumNodes(); i++)
             {
-                std::set<unsigned> NeighbouringNodeIndices = cell_population.GetNeighbouringNodeIndices(i);
-                for (std::set<unsigned>::iterator iter = NeighbouringNodeIndices.begin();
-                    iter != NeighbouringNodeIndices.end();
-                    ++iter)
-                {           
-                        cell_population.GetNode(*iter)->rGetModifiableLocation()[2] = 3*Pertebation/4;      
-                }
-                cell_population.GetNode(i)->rGetModifiableLocation()[2] = Pertebation;       
+                
+                if (std::fmod(i,3)==0)
+                 {
 
+                    double Pertebation = 0.09*(0.1*RandomNumberGenerator::Instance()->randMod(50)-2.5);
+                    c_vector<double,3> InitalLocation =  cell_population.GetNode(i)->rGetLocation();
+
+                    double R = sqrt(InitalLocation[0]*InitalLocation[0]  + InitalLocation[1]*InitalLocation[1] );
+                    double Angle;
+                    if (InitalLocation[0] >= 0)
+                    {
+                        Angle = atan(InitalLocation[1]/ InitalLocation[0]);
+                        
+                    }
+                    else if (InitalLocation[0] < 0 && InitalLocation[1] <= 0)
+                    {
+                
+                    Angle = M_PI +atan( InitalLocation[1]/ InitalLocation[0]);
+                    }
+                    else if (InitalLocation[0] < 0 && InitalLocation[1] >= 0)
+                    {
+                    
+                        Angle = -M_PI +atan( InitalLocation[1]/ InitalLocation[0]);
+                    }
+                    
+                    double X = (R+Pertebation)   * cos(Angle);//+ InitalLocation[2]-1;
+                    double Y = (R+Pertebation)  * sin(Angle);
+            
+                    c_vector<double,3>  DeformedLocation =Create_c_vector(X,Y, InitalLocation[2]);
+
+                    cell_population.GetNode(i)->rGetModifiableLocation() = DeformedLocation;  
+                 
+                 }      
             }
-        }
+
 
 
         simulator.Solve();
