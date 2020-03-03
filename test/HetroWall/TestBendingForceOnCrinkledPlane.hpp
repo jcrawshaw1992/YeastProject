@@ -30,6 +30,7 @@
 #include "projects/VascularRemodelling/src/MembraneForces/MembraneStiffnessForce.hpp"
 #include "Honeycomb3DMeshGenerator.hpp"
 
+
 #include "FixedRegionBoundaryCondition.hpp"
 #include "Honeycomb3DCylinderMeshGenerator.hpp"
 
@@ -63,14 +64,14 @@ public:
     {
 
 
-    unsigned Refinment[4] = {20,40,60,80};//,160};
+    double Kb[1] = {1e-5};//,160};
     
-    for (unsigned N_D_index = 0; N_D_index <4; N_D_index++)
+    for (unsigned N_D_index = 0; N_D_index <1; N_D_index++)
     {
      
 
-        unsigned N_D = Refinment[N_D_index];
-        unsigned N_Z = Refinment[N_D_index]*0.75;//
+        unsigned N_D = 20;
+        unsigned N_Z = 20*0.5;//
 
         double Length = 1.5;
         double Radius = 0.5;
@@ -100,8 +101,8 @@ public:
         // Set up cell-based simulation
         OffLatticeSimulation<2, 3> simulator(cell_population);
         simulator.SetOutputDirectory(output_directory);
-        simulator.SetEndTime(1000);
-        simulator.SetDt(0.01); // 0.005
+        simulator.SetEndTime(1500);
+        simulator.SetDt(0.02); // 0.005
         simulator.SetSamplingTimestepMultiple(1000);
         simulator.SetUpdateCellPopulationRule(false); // No remeshing.
 
@@ -110,7 +111,7 @@ public:
         MembraneProperties Modifier
         ----------------------------
         */
-        double BendingConst = 3e-6;
+        double BendingConst = Kb[N_D_index];
         std::map<double, c_vector<long double, 4> > GrowthMaps; // From matlab sweep results
                 //         KA,          Kalpha           Ks                                 Kb
         GrowthMaps[10] = Create_c_vector(pow(10, -6.9), 0, 0, BendingConst);
@@ -121,7 +122,8 @@ public:
 
 
         boost::shared_ptr<MembranePropertiesSecModifier<2, 3> > p_Membrane_modifier(new MembranePropertiesSecModifier<2, 3>());
-        p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 0,10, 1); 
+        p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 1.2, 0,5, 1); 
+        p_Membrane_modifier->SetupSolve(cell_population,output_directory);
 
         /*
         -----------------------------
@@ -133,6 +135,17 @@ public:
         p_membrane_force->SetupInitialMembrane(*mesh, simulator.rGetCellPopulation());
         p_membrane_force->SetMembraneStiffness(BendingConst,30,30 );
         simulator.AddForce(p_membrane_force);
+
+
+         /*
+        -----------------------------
+        SMembrane forces
+        ----------------------------
+        */
+        boost::shared_ptr<MembraneForcesBasic> p_shear_force(new MembraneForcesBasic());
+        p_shear_force->SetupMembraneConfiguration(cell_population);
+        // p_shear_force->SetNearestNodesForBoundaryNodes(NearestNodesMap);
+        simulator.AddForce(p_shear_force);
 
           // /*
         // -----------------------------
@@ -152,15 +165,15 @@ public:
 
         boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition_2(new FixedRegionBoundaryCondition<2, 3>(&cell_population, Boundary2, Normal2, 2));
         simulator.AddCellPopulationBoundaryCondition(p_condition_2);
-
+        double Numb = 2*N_D/20;
             for (unsigned i=0; i<mesh->GetNumNodes(); i++)
                {
                   
                 
-                if (i%3==0)
+                if (std::fmod(i,Numb)==0)
                  {
 
-                    double Pertebation = 0.09*(0.1*RandomNumberGenerator::Instance()->randMod(50)-2.5);
+                    double Pertebation = 0.04*(0.1*RandomNumberGenerator::Instance()->randMod(50)-2.5);
                     c_vector<double,3> InitalLocation =  cell_population.GetNode(i)->rGetLocation();
 
                     double R = sqrt(InitalLocation[0]*InitalLocation[0]  + InitalLocation[1]*InitalLocation[1] );
@@ -212,11 +225,11 @@ public:
     //     {
      
     //     std::stringstream out;
-    //     out << Refinment[N_D_index];
+    //     out << 20;
     //     std::string mesh_size = out.str();
         
-    //     unsigned N_D = Refinment[N_D_index];
-    //     unsigned N_Z = Refinment[N_D_index]/1.2;
+    //     unsigned N_D = 20;
+    //     unsigned N_Z = 20/1.2;
 
     //     double Length = 1.5;
     //     double Radius = 0.4;

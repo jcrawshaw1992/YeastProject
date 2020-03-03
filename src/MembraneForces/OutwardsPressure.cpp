@@ -4,8 +4,6 @@
 #include "MathsFunctions.hpp"
 
 
-// #include "MathsFunctions.hpp"
-
 OutwardsPressure::OutwardsPressure()
         : AbstractForce<2, 3>()
 {
@@ -23,18 +21,6 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
 {
    MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
      
-
-       // Calculate midpoint
-        // c_vector<double, 3> centroid = zero_vector<double>(3);
-        // for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
-        //      cell_iter != rCellPopulation.End();
-        //      ++cell_iter)
-        // {
-        //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-        //     centroid += rCellPopulation.GetNode(node_index)->rGetLocation();
-        //    // Area += rCellPopulation.GetVolumeOfCell(*cell_iter);
-        // }
-        // centroid /= rCellPopulation.GetNumRealCells();
         
         for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
              cell_iter != rCellPopulation.End();
@@ -43,22 +29,12 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
 
             unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
             Node<3>* p_node = rCellPopulation.GetNode(node_index);
-            // c_vector<double, 3> cell_location = p_node->rGetLocation() - centroid;
-            // cell_location(2) = 0.0;
-            // cell_location /= norm_2(cell_location);
 
             c_vector<double, 3> Normal = zero_vector<double>(3);
-            double Area = 0;
+ 
             std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
             // PRINT_2_VARIABLES(node_index,containing_elements.size())
             cell_iter->GetCellData()->SetItem("Node", node_index);
-           
-            // if (containing_elements.size() <1)
-            // {
-            //      delete p_node;
-            //      continue;
-            // }
-       
 
         // TRACE("do we get here")
 
@@ -76,7 +52,6 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
 
                 c_vector<double, 3> normalVector = VectorProduct(vector_12, vector_13);
                 
-                // Area+= norm_2(normalVector)/6;
                 Normal += normalVector;///norm_2(normalVector);
 
             }

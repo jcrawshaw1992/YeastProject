@@ -102,21 +102,21 @@ void AppliedForceModifier<ELEMENT_DIM,SPACE_DIM>::UpdateCellData(AbstractCellPop
 	
 	std::map<unsigned, c_vector<unsigned, 2>  > LatticeToNodeMap;
 
-	std::map<unsigned, c_vector<double, 3>  > ForceMap;
+	// std::map<unsigned, c_vector<double, 3>  > ForceMap;
 	
 	
 	MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
 
-	c_vector<double, SPACE_DIM> centroid = zero_vector<double>(3);
-	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
-			cell_iter != rCellPopulation.End();
-			++cell_iter)
-	{
-		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-		centroid += rCellPopulation.GetNode(node_index)->rGetLocation();
-		// Area += rCellPopulation.GetVolumeOfCell(*cell_iter);
-	}
-	centroid /= rCellPopulation.GetNumRealCells();
+	// c_vector<double, SPACE_DIM> centroid = zero_vector<double>(3);
+	// for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+	// 		cell_iter != rCellPopulation.End();
+	// 		++cell_iter)
+	// {
+	// 	unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+	// 	centroid += rCellPopulation.GetNode(node_index)->rGetLocation();
+	// 	// Area += rCellPopulation.GetVolumeOfCell(*cell_iter);
+	// }
+	// centroid /= rCellPopulation.GetNumRealCells();
 
 
 	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
@@ -140,8 +140,6 @@ void AppliedForceModifier<ELEMENT_DIM,SPACE_DIM>::UpdateCellData(AbstractCellPop
 				nearest_fluid_site = fluid_site_index;
 			}
 		}
-
-
 		// PRINT_VARIABLE(distance_to_fluid_site);
 		// assert(distance_to_fluid_site<1e-3);
 		LatticeToNodeMap[node_index] = Create_c_vector(nearest_fluid_site, 0 );
@@ -206,16 +204,16 @@ void AppliedForceModifier<ELEMENT_DIM,SPACE_DIM>::UpdateCellData(AbstractCellPop
 		// Vector and making sure the normal and the force vector are goin in the same direcvtion 
 		// DO this by checking the angle betweem these two vectors is below a certain value -- basic dot proudct thing
 
-		c_vector<long double,3> forceDirection = force / Pressure;
+		// c_vector<long double,3> forceDirection = force / Pressure;
 
-		double Angle = abs(acos(inner_prod(forceDirection, NormalVector) )) ;
+		// double Angle = abs(acos(inner_prod(forceDirection, NormalVector) )) ;
 
-		if (Angle > M_PI/2)
-		{
-			// TRACE(" Normal was the wrong way");
-			NormalVector = -NormalVector;
+		// if (Angle > M_PI/2)
+		// {
+		// 	// TRACE(" Normal was the wrong way");
+		// 	NormalVector = -NormalVector;
 
-		}
+		// }
 
 
 
@@ -224,14 +222,14 @@ void AppliedForceModifier<ELEMENT_DIM,SPACE_DIM>::UpdateCellData(AbstractCellPop
 		// Calculate the approximate area of the voronoi region around the cell by including a third of the area
 		// of all surrounding triangles. Useful for turning stresses into forces.
 		double voronoi_cell_area = rCellPopulation.GetVolumeOfCell(*cell_iter);
+		
 
 		// PRINT_VARIABLE(Pressure);
 		// // XXXX  -Replaced the direction of the force with the normal -- did this because the force acts normal to the lattice site it was selected from, which is not the identical position to the node, but is slightly off
-		location = location - centroid;
-		location /= norm_2(location);
+		// location = location - centroid;
+		// location /= norm_2(location);
 		
 		c_vector<long double,3> Force = Pressure * NormalVector; 
-		// PRINT_VARIABLE(Pressure);
 
 		c_vector<double,3> shear_stress = mAppliedTangentTractions[nearest_fluid_site];
 
@@ -260,38 +258,10 @@ void AppliedForceModifier<ELEMENT_DIM,SPACE_DIM>::UpdateCellData(AbstractCellPop
 		cell_iter->GetCellData()->SetItem("applied_shear_stress_y", shear_stress[1]);
 		cell_iter->GetCellData()->SetItem("applied_shear_stress_z", shear_stress[2]);
 		cell_iter->GetCellData()->SetItem("applied_shear_stress_mag", norm_2(shear_stress));
-
-    	bool HetroBool =1;
-
-		// If has cell 
-
-		//  if ((*cell_iter)->GetMutationState()->template IsType<HasEndothelialCell>()) // This cell has a EC attached 
-		// 	{
-		// 	// If this area with a cell is in the middel 
-		// 	double WeakRegion = 2e-3;
-		// 	if (location[2] > -WeakRegion && location[2] < WeakRegion && HetroBool) // Shearing condition 
-		// 		{
-		// 			// cell_iter->SetMutationState(p_state); // Need to find out how to unset!
-					
-		// 			(*cell_iter)->SetMutationState(rCellPopulation.GetCellPropertyRegistry()->template Get<LostEndothelialCell>());
-		// 			// TRACE("Mutation Cell");
-
-		// 		}
-		// 	} else if ((*cell_iter)->GetMutationState()->template IsType<LostEndothelialCell>()) // This cell has a EC attached 
-		// 	{
-		// 		// To prevent the continuous decreasing of membreane properties take the LostEndothelialCell cells of the previous iteraction and 
-		// 		// lable them as EmptyBasementMatrix
-		// 		(*cell_iter)->SetMutationState(rCellPopulation.GetCellPropertyRegistry()->template Get<EmptyBasementMatrix>());
-		// 	}
-	
-
 	}
 
 
 }
-
-
-
 
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -410,7 +380,7 @@ void AppliedForceModifier<ELEMENT_DIM,SPACE_DIM>::LoadTractionFromFile()
 			traction[1] += traction_offset;
 			reader.readFloat(traction[2]);
 			traction[2] += traction_offset;
-			PRINT_VECTOR(traction);
+			// PRINT_VECTOR(traction);
 
 			assert(fabs(traction[0])<1e10);
 			assert(fabs(traction[1])<1e10);

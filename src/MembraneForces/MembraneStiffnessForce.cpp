@@ -321,17 +321,18 @@ bool MembraneStiffnessForce::CalculateElementNormals(MutableMesh<2, 3>& rMesh, s
 // ---------------------------
 void MembraneStiffnessForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
-    // std::map<unsigned, c_vector<double, 3> > BendingForceMap;
+     std::map<unsigned, c_vector<double, 3> > BendingForceMap;
      MeshBasedCellPopulation<2, 3>* p_static_cast_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
 
-    // for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
-    //      cell_iter != rCellPopulation.End();
-    //      ++cell_iter)
-    // {
+    for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
+         cell_iter != rCellPopulation.End();
+         ++cell_iter)
+    {
 
-    //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-    //     BendingForceMap[node_index] = Create_c_vector(0, 0, 0);
-    // }
+        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+        BendingForceMap[node_index] = Create_c_vector(0, 0, 0);
+        cell_iter->GetCellData()->SetItem("BendingForce", 0);
+    }
 
     // Throw an exception message if not using a subclass of MeshBasedCellPopulation
     if (dynamic_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation) == NULL)
@@ -472,14 +473,43 @@ void MembraneStiffnessForce::AddForceContribution(AbstractCellPopulation<2, 3>& 
         {
             node4_contribution = Create_c_vector(0, 0, 0);
         }
+
+        if (p_cell1->GetCellData()->GetItem("Boundary") == 0)
+        {
+            pNode1->AddAppliedForceContribution(node1_contribution ); // Add the new force
+            double BendingForce = p_cell1->GetCellData()->GetItem("BendingForce");
+            p_cell1->GetCellData()->SetItem("BendingForce", norm_2(node1_contribution) + BendingForce);
+        }
+          
+        if (p_cell2->GetCellData()->GetItem("Boundary") == 0)
+        {
+             pNode2->AddAppliedForceContribution(node2_contribution ); // Add the new force
+             double BendingForce = p_cell2->GetCellData()->GetItem("BendingForce");
+             p_cell2->GetCellData()->SetItem("BendingForce", norm_2(node2_contribution) + BendingForce);
+
+        }if (p_cell3->GetCellData()->GetItem("Boundary") == 0)
+        {
+             pNode3->AddAppliedForceContribution(node3_contribution ); // Add the new force
+             double BendingForce = p_cell3->GetCellData()->GetItem("BendingForce");
+             p_cell3->GetCellData()->SetItem("BendingForce", norm_2(node3_contribution) + BendingForce);
+
+        }
+        if (p_cell4->GetCellData()->GetItem("Boundary") == 0)
+        {
+             pNode4->AddAppliedForceContribution(node4_contribution ); // Add the new force
+             double BendingForce = p_cell4->GetCellData()->GetItem("BendingForce");
+             p_cell4->GetCellData()->SetItem("BendingForce", norm_2(node4_contribution) + BendingForce);
+        }
+         
+
         // BendingForceMap[node_index1] += node1_contribution;
         // BendingForceMap[node_index2] += node2_contribution;
         // BendingForceMap[node_index3] += node3_contribution;
         // BendingForceMap[node_index4] += node4_contribution;
-        pNode1->AddAppliedForceContribution(node1_contribution ); // Add the new force
-        pNode2->AddAppliedForceContribution(node2_contribution ); // Add the new force
-        pNode3->AddAppliedForceContribution(node3_contribution ); // Add the new force
-        pNode4->AddAppliedForceContribution(node4_contribution ); // Add the new force
+        // pNode1->AddAppliedForceContribution(node1_contribution ); // Add the new force
+        // pNode2->AddAppliedForceContribution(node2_contribution ); // Add the new force
+        // pNode3->AddAppliedForceContribution(node3_contribution ); // Add the new force
+        // pNode4->AddAppliedForceContribution(node4_contribution ); // Add the new force
     //         
 
         

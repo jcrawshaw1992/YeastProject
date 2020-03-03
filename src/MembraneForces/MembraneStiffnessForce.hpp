@@ -38,12 +38,6 @@ private:
 
 protected:
 
-    double mMembraneStiffness;
-    std::map<std::pair<unsigned, unsigned>, double> mOriginalAngles;
-    std::map<std::pair<Node<3>*, Node<3>*>, double> mMembraneStiffnessMap;
-    std::map<unsigned, c_vector<unsigned, 5> > mNearestNodesMap;
-
-
     bool CalculateElementNormals(MutableMesh<2, 3>& rMesh, std::pair<Node<3>*, Node<3>*> edge,
                                  std::pair<c_vector<double, 3>, c_vector<double, 3> >& nonUnitNormals,
                                  std::pair<Node<3>*,  Node<3>*>& otherNodes);
@@ -60,6 +54,13 @@ public:
     double mScalling;
     double mNc;
     double mNz;
+
+    double mMembraneStiffness;
+    std::map<std::pair<unsigned, unsigned>, double> mOriginalAngles;
+    std::map<std::pair<Node<3>*, Node<3>*>, double> mMembraneStiffnessMap;
+    std::map<unsigned, c_vector<unsigned, 5> > mNearestNodesMap;
+
+
 
 
     // double GetMembraneStiffness() const;

@@ -19,6 +19,8 @@ After this, the membrane constants will be dependent on the number of cells in t
 #include "MeshBasedCellPopulation.hpp"
 #include "SmartPointers.hpp"
 
+#include "OutsideFLuidSimulationMutation.hpp"
+
 #include <math.h>
 #include "Debug.hpp"
 
@@ -37,44 +39,86 @@ BoundariesModifier<ELEMENT_DIM, SPACE_DIM>::~BoundariesModifier()
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void BoundariesModifier<ELEMENT_DIM, SPACE_DIM>::CreateBoundaryNodes(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, std::vector<c_vector<double, 3> > boundary_plane_normals, std::vector<c_vector<double, 3> > boundary_plane_points)
 {
+      MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+      MAKE_PTR(OutsideFLuidSimulationMutation, p_Mutation); //Mutation to mark nodes outside fluid domain
+      
+    std::map<unsigned, double> AreaOfElements;
+    double NumberOfElements = 0;
+    double AverageElementArea = 0;
+// Here I want to get the average area of the elements  -- if there is a node associated with a smaller element, then mark as boundary 
+    
+    // for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
+    //      elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
+    //      ++elem_iter)
+    // {
+    //     unsigned elem_index = elem_iter->GetIndex();
 
-    // std::vector<c_vector<double,3> > boundary_plane_normals, std::vector<c_vector<double,3> > boundary_plane_points
-    double Counter = 0;
-    for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
-         cell_iter != rCellPopulation.End();
-         ++cell_iter)
-    {
-        
-        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-        Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
-        c_vector<double, SPACE_DIM> node_location = pNode->rGetLocation();
-        std::vector<c_vector<double, 3> >::iterator Normal_iter = boundary_plane_normals.begin();
-        std::vector<c_vector<double, 3> >::iterator Point_iter = boundary_plane_points.begin();
-        for (int i = 0; i < boundary_plane_normals.size(); i++)
+    //     Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(0));
+    //     Node<SPACE_DIM>* pNode1 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(1));
+    //     Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(2));
+
+    //     c_vector<long double, SPACE_DIM> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
+    //     c_vector<long double, SPACE_DIM> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 33);
+    //     c_vector<double, SPACE_DIM> normalVector = VectorProduct(vector_12, vector_13);
+    //     AreaOfElements[elem_index] =  0.5*norm_2(normalVector);
+    //     AverageElementArea +=AreaOfElements[elem_index];
+    //     NumberOfElements +=1;
+    // }
+    // AverageElementArea/=NumberOfElements;
+
+    for ( typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+                cell_iter != rCellPopulation.End();
+                ++cell_iter)
         {
-            double signed_distance = inner_prod(node_location - *Point_iter, *Normal_iter);
-            if (signed_distance > 0.0)
+
+            unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+            Node<SPACE_DIM>* p_node = rCellPopulation.GetNode(node_index);
+            cell_iter->GetCellData()->SetItem("Boundary", 0);
+            // cell_iter->GetCellData()->SetItem("BoundarySet", 0);
+
+            std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
+            // double counter =0;
+            // assert(containing_elements.size() > 0);
+            // for (std::set<unsigned>::iterator iter = containing_elements.begin();
+            //         iter != containing_elements.end();
+            //         ++iter)
+            // {
+            //     if (AreaOfElements[*iter] < 0.3*AverageElementArea)
+            //     {
+            //         cell_iter->GetCellData()->SetItem("Boundary", 1);
+            //         continue;
+            //     }
+            // }
+            if(containing_elements.size() < 5)
             {
                 cell_iter->GetCellData()->SetItem("Boundary", 1);
-                break;
             }
-            else
-            {
-                cell_iter->GetCellData()->SetItem("Boundary", 0);
-            }
-            advance(Normal_iter, 1);
-            advance(Point_iter, 1);
-        }
-    }
 
-    TRACE("Finished assigning boundaries")
+            c_vector<double, SPACE_DIM> node_location = p_node->rGetLocation();
+            std::vector<c_vector<double, 3> >::iterator Normal_iter = boundary_plane_normals.begin();
+            std::vector<c_vector<double, 3> >::iterator Point_iter = boundary_plane_points.begin();
+            for (int i = 0; i < boundary_plane_normals.size(); i++)
+            {
+                double signed_distance = inner_prod(node_location - *Point_iter, *Normal_iter);
+                if (signed_distance < 0.0)
+                {
+                    cell_iter->SetMutationState(p_Mutation);
+                    break;
+                }
+                advance(Normal_iter, 1);
+                advance(Point_iter, 1);
+            }
+
+
+
+        }
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void BoundariesModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, std::string outputDirectory)
 {
 
-    TRACE("SET UpSolve")
+    TRACE("In the set up solve for the boundaries")
     assert(ELEMENT_DIM == 2);
     assert(SPACE_DIM == 3);
     // std::map<unsigned, c_vector<unsigned, 5> > mNearestNodesMap;
@@ -83,17 +127,7 @@ void BoundariesModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopulati
          cell_iter != rCellPopulation.End();
          ++cell_iter)
     {
-        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-        Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
-        c_vector<long double, SPACE_DIM> CellLocation = pNode->rGetLocation();
-
-        c_vector<unsigned, 5> NearestNodes;
-        double Distance5 = 5.44; // Upper bound
-        double Distance4 = 5.44;
-        double Distance3 = 5.44;
-        double Distance2 = 5.44;
-        double Distance1 = 5.44;
-
+      
         //find the distance to the nearest neighbour
         // std::set<unsigned> Neighbours  = rCellPopulation.GetNeighbouringNodeIndices(node_index);
       
@@ -105,13 +139,27 @@ void BoundariesModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopulati
 
         // PRINT_VECTOR(CellLocation)
 
+
+        // Should I jus looop over neighbours iterativly? THis is super slow
         if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
         {
-            // 
+
+            unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+            Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
+            c_vector<long double, SPACE_DIM> CellLocation = pNode->rGetLocation();
+
+            c_vector<unsigned, 5> NearestNodes;
+            double Distance5 = 50.44; // Upper bound
+            double Distance4 = 50.44;
+            double Distance3 = 50.44;
+            double Distance2 = 50.44;
+            double Distance1 = 50.44;
+
             for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter_Search = rCellPopulation.Begin();
                  cell_iter_Search != rCellPopulation.End();
                  ++cell_iter_Search)
             {
+                
                 unsigned node_index_Search = rCellPopulation.GetLocationIndexUsingCell(*cell_iter_Search);
 
                 if (cell_iter_Search->GetCellData()->GetItem("Boundary") == 0 && node_index_Search != node_index)
@@ -124,9 +172,7 @@ void BoundariesModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopulati
                     //  PRINT_VECTOR(LocationOfNode)
 
                     double Distance = norm_2(LocationOfNode - CellLocation);
-                    // if (Distance > MinimimNeighbourDistance) 
-                    // {
-                        //   PRINT_VARIABLE(Distance)
+        
                         if (Distance <= Distance1)
                         {
                             NearestNodes[0] = node_index_Search;
@@ -156,24 +202,12 @@ void BoundariesModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopulati
                         {
                             NearestNodes[4] = node_index_Search;
                             Distance5 = Distance;
-                            // TRACE("D5")
                         }
-                    // }
                 }
             }
             mNearestNodesMap[node_index] = NearestNodes;
         }
-        else{
-            NearestNodes[0] = 50;
-            NearestNodes[1] = 50;
-            NearestNodes[2] = 50;
-            NearestNodes[3] = 50;
-            NearestNodes[4] = 50;
-            mNearestNodesMap[node_index] = NearestNodes;
-        }
     }
-
-    TRACE("done SetUpSolve");
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -186,7 +220,7 @@ c_vector<unsigned, 5> BoundariesModifier<ELEMENT_DIM, SPACE_DIM>::GetNeighbourin
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 std::map<unsigned, c_vector<unsigned, 5> > BoundariesModifier<ELEMENT_DIM, SPACE_DIM>::GetNeighbouringNodesMap()
 {
-    PRINT_4_VARIABLES(mNearestNodesMap[171][0], mNearestNodesMap[171][1], mNearestNodesMap[171][2], mNearestNodesMap[171][3])
+    // PRINT_4_VARIABLES(mNearestNodesMap[171][0], mNearestNodesMap[171][1], mNearestNodesMap[171][2], mNearestNodesMap[171][3])
     return mNearestNodesMap;
 }
 
@@ -243,3 +277,67 @@ template class BoundariesModifier<3, 3>;
 
 #include "SerializationExportWrapperForCpp.hpp"
 EXPORT_TEMPLATE_CLASS_ALL_DIMS(BoundariesModifier)
+
+
+
+// Old ways to get boundaries 
+
+    // Want to see what happens if i identify the boundaries by the size of the local elements 
+
+//     std::map<unsigned, double> AreaOfCells;
+//     double AverageCellArea = 0;
+//     double NumberOfCells = 0;
+//     MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+//     for ( typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+//             cell_iter != rCellPopulation.End();
+//             ++cell_iter)
+//     {
+
+//         unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+//         Node<SPACE_DIM>* p_node = rCellPopulation.GetNode(node_index);
+
+//         std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
+
+//         double Area =0;
+//         assert(containing_elements.size() > 0);
+//         for (std::set<unsigned>::iterator iter = containing_elements.begin();
+//                 iter != containing_elements.end();
+//                 ++iter)
+//         {
+//             Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
+//             Node<SPACE_DIM>* pNode1= p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
+//             Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
+
+//             c_vector<double, SPACE_DIM> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
+//             c_vector<double, SPACE_DIM> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
+
+//             c_vector<double, SPACE_DIM> normalVector = VectorProduct(vector_12, vector_13);
+//             Area+= 0.5*norm_2(normalVector)/3;
+//         }
+//         NumberOfCells +=1;
+//         AreaOfCells[node_index] = Area;
+//         AverageCellArea +=Area;
+//     }
+
+//     AverageCellArea/= NumberOfCells;
+
+//    for ( typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+//             cell_iter != rCellPopulation.End();
+//             ++cell_iter)
+//         {
+            
+            
+//             unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+//             if (AreaOfCells[node_index] < 1e-1*AverageCellArea)
+//             {
+//                 TRACE("Trip")
+//                 cell_iter->GetCellData()->SetItem("SecondBoundary", 1);
+
+//             }
+//             else{
+//                 cell_iter->GetCellData()->SetItem("SecondBoundary", 0);
+
+//             }
+
+//         }
+    

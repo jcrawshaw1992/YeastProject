@@ -15,7 +15,7 @@ import pdb
 import string
 import math
 from FileConverter import vtuTostl
-import FSI_Fun
+
 
 
 
@@ -78,6 +78,34 @@ def generate_flow_vtus(timestep):
 
     print "generate_flow_vtus DONE    "
 
+
+    # ---------------------------------
+  
+    
+
+def vtu2stl(iter):
+
+    print "  Convert vtu to stl    "
+    # Read the VTU file from disk
+    # vtu_reader = vtk.vtkXMLUnstructuredGridReader()  
+    # vtu_reader.SetFileName(working_directory + 'config.vtu')
+
+    # extract_surface_filter = vtk.vtkDataSetSurfaceFilter()
+    # extract_surface_filter.AddInputConnection(vtu_reader.GetOutputPort())
+
+    # # Write out the data in unstructured grid format
+    # stl_writer = vtk.vtkSTLWriter()
+    # print " 5    "
+    
+    # stl_writer.SetInputConnection(extract_surface_filter.GetOutputPort())
+    # print " 6    "
+    # stl_writer.SetFileName(working_directory + 'config.stl')
+    # print " 7   "
+    # stl_writer.Write()
+    # print " 8   "
+    vtuTostl(working_directory + 'config.vtu', working_directory + 'config.stl')
+
+    print "  stl created     "
 
    # ---------------------------------
  
@@ -306,8 +334,7 @@ if __name__=="__main__":
     subprocess.call(chaste_setup_call, shell=True)
     print ' ------- Chaste is set up ------- '
    
-    
-    vtuTostl(working_directory + 'config.vtu', working_directory + 'config.stl')
+    vtu2stl(0)
 
     start_time = 0.0
     FluidSimulation = 1
@@ -332,7 +359,7 @@ if __name__=="__main__":
 
         # Step 2a: Update xml
 
-        update_xml_file(iter,start_time)
+        update_xml_file(iter, args.num_iterations)
     
         print "Run HemeLB"
         # Step 3: HemeLB simulation
@@ -369,15 +396,14 @@ if __name__=="__main__":
 
         # Update the radius of the tube*, this can then be used to update the pr2 file to enable the flow to be correctly calculated 
         # Step 5: Convert Chaste output (vtu file) into the input of the next iteration (stl file required by hemelb setup tool)
-        # 
-        vtuTostl(working_directory + 'config.vtu', working_directory + 'config.stl')
+        # vtu2stl(iter+40)
 
         # Step 5a: compute radii
         vmtk_compute_stl_radii(iter+40)
         Radius_New = radii_over_time[iter][-1]  # LengthOfArray = len(radii_over_time[iter])    
         # pdb.set_trace()
         # print Radius_New
-        update_pr2_file( Radius_New) 
+        update_pr2_file(Radius_New) 
         generate_flow_vtus(3)
 
         # shutil.rmtree(OldFilePath)   

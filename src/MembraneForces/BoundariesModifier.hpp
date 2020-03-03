@@ -58,7 +58,8 @@ private:
     void serialize(Archive& archive, const unsigned int version)
     {
         archive& boost::serialization::base_object<AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM> >(*this);
-        // archive & mSetupSolve;
+        archive & mNearestNodesMap;
+
     }
 
 public:

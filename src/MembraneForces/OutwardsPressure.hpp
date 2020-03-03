@@ -17,9 +17,9 @@
 // #include "EdgeNodeMutationState.hpp"
 #include "UblasCustomFunctions.hpp"
 
-#include "projects/VascularRemodelling/src/MutationStates/EmptyBasementMatrix.hpp"
-#include "projects/VascularRemodelling/src/MutationStates/LostEndothelialCell.hpp"
-#include "projects/VascularRemodelling/src/MutationStates/HasEndothelialCell.hpp"
+// #include "projects/VascularRemodelling/src/MutationStates/EmptyBasementMatrix.hpp"
+// #include "projects/VascularRemodelling/src/MutationStates/LostEndothelialCell.hpp"
+// #include "projects/VascularRemodelling/src/MutationStates/HasEndothelialCell.hpp"
 
 
 /**
@@ -40,6 +40,7 @@ private:
      * @param archive the archive
      * @param version the current version of this class
      */
+
     template <class Archive>
     void serialize(Archive& archive, const unsigned int version)
     {
@@ -47,13 +48,12 @@ private:
         archive & mStrength;
     }
 
-protected:
 
-
-     double mStrength;
        
 
 public:
+
+    double mStrength;
     /**
      * Constructor.
      */
@@ -77,4 +77,4 @@ public:
 #include "SerializationExportWrapper.hpp"
 CHASTE_CLASS_EXPORT(OutwardsPressure)
 
-#endif /*OutwardsPressure_HPP_*/
+#endif  /*OutwardsPressure_HPP_*/

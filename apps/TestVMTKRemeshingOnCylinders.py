@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 #
+
 import subprocess
 import vtk
 # import shutil
@@ -28,37 +29,29 @@ from FileConverter import vtuTostl
     # ---------------------------------
   
 def pause():
-    programPause = raw_input("Press the <ENTER> key to continue...")
+    programPause = raw_input('Press the <ENTER> key to continue...')
 
 
-if __name__=="__main__":
+if __name__=='__main__':
    
-
+    print("hI")
     OriginalGeometry = "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/BunchOfCylinder/40/Deformed/results_from_time_0/mesh_0.vtu"# "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/TestRemeshDeformingCylinder/InitialMesh/results_from_time_0/mesh_0.vtu"
-    RemeshedGeometry =  "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/BunchOfCylinder/40/Deformed/Remeshed.stl"# "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/TestRemeshDeformingCylinder/InitialMesh/Remeshed.stl"
+    # RemeshedGeometry = "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/BunchOfCylinder/40/Deformed/Remeshed.stl"# "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/TestRemeshDeformingCylinder/InitialMesh/Remeshed.stl"
     OriginalInSTLFormat = "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/BunchOfCylinder/40/Deformed/Deformed.stl"# "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/TestRemeshDeformingCylinder/InitialMesh/Deformed.stl"
-   
-    RemeshedGeometry_0 =  "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/TestRemeshDeformingCylinder/InitialMesh/Remeshed_0.5.stl"
-    RemeshedGeometry_1 =  "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/TestRemeshDeformingCylinder/InitialMesh/Remeshed_0.05.stl"
-    RemeshedGeometry_2 =  "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/TestRemeshDeformingCylinder/InitialMesh/Remeshed_0.005.stl"
-    RemeshedGeometry_3 =  "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/TestRemeshDeformingCylinder/InitialMesh/Remeshed_0.1.stl"
+    # RemeshedGeometry_0 = "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/TestRemeshDeformingCylinder/InitialMesh/Remeshed_0.5.stl"
+    # RemeshedGeometry_1 = "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/TestRemeshDeformingCylinder/InitialMesh/Remeshed_0.05.stl"
+    # RemeshedGeometry_2 = "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/TestRemeshDeformingCylinder/InitialMesh/Remeshed_0.005.stl"
+    RemeshedGeometry_3 = "/Users/jcrawshaw/Documents/testoutput/CylinderCollection/TestRemeshDeformingCylinder/InitialMesh/Remeshed_0.1.stl"
     
-    ifile = vtuTostl(OriginalGeometry, OriginalInSTLFormat)
 
-    command = 'vmtksurfaceremeshing -ifile '+OriginalInSTLFormat +' -iterations 50 -area 0.5 -ofile ' +RemeshedGeometry
-    subprocess.call(command, shell=True)
-
-
-    print "-------------------------------------"
-    print "------ Remeshing Complete  ----------"
-    print "-------------------------------------"
-    print "-------------  Finito  --------------"
-    print "-------------------------------------"
+    ifile = vtuTostl("/Users/jcrawshaw/Documents/ChasteWorkingDirectory/ShrunkPlexusWithLongInlets/SetUpData/mesh_0.vtu","/Users/jcrawshaw/Documents/ChasteWorkingDirectory/ShrunkPlexusWithLongInlets/SetUpData/config.stl")
+    # command = 'vmtksurfaceremeshing -ifile '+OriginalInSTLFormat +' -iterations 50 -area 0.5 -ofile ' +RemeshedGeometry
+    # subprocess.call(command, shell=True)
 
 
+    # print "-------------------------------------"
+    # print "------ Remeshing Complete ----------"
+    # print "-------------------------------------"
+    # print "------------- Finito --------------"
+    # print "-------------------------------------"
 
-
-
-
-  
-  

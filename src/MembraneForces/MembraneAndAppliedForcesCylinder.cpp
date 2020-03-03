@@ -113,20 +113,19 @@ void MembraneForcesBasicCylinder::AddForceContribution(AbstractCellPopulation<2,
         // double Z0 = Node0[2];
         // double Z1 = pNode1 ->rGetLocation()[2];
         // double Z2 = pNode2 ->rGetLocation()[2];
-    
+            
 
-    // //  double MinZ = 1e-3;
-    //  CellPtr p_cell1 = p_cell_population->GetCellUsingLocationIndex(elem_iter->GetNodeGlobalIndex(1));
-    //  CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(elem_iter->GetNodeGlobalIndex(1));
-    //  CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex(elem_iter->GetNodeGlobalIndex(1));
+            // //  double MinZ = 1e-3;
+            //  CellPtr p_cell1 = p_cell_population->GetCellUsingLocationIndex(elem_iter->GetNodeGlobalIndex(1));
+            //  CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(elem_iter->GetNodeGlobalIndex(1));
+            //  CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex(elem_iter->GetNodeGlobalIndex(1));
 
 
-    //         p_cell = p_cell_population->GetCellUsingLocationIndex(0);
-    //         mAreaDilationModulus =p_cell->GetCellData()->GetItem("AreaDilationModulus");
-    //         mMembraneSurface =p_cell->GetCellData()->GetItem("AreaConstant");
-    //         KS =p_cell->GetCellData()->GetItem("ShearModulus");
+            //         p_cell = p_cell_population->GetCellUsingLocationIndex(0);
+            //         mAreaDilationModulus =p_cell->GetCellData()->GetItem("AreaDilationModulus");
+            //         mMembraneSurface =p_cell->GetCellData()->GetItem("AreaConstant");
+            //         KS =p_cell->GetCellData()->GetItem("ShearModulus");
 
-    mMembraneSurface
 
         for (int i = 0; i < 3; i++)
         {
@@ -193,15 +192,65 @@ void MembraneForcesBasicCylinder::AddForceContribution(AbstractCellPopulation<2,
             ForceOnNode[i] /= CellArea;
             // ForceMap[node_index] += ForceOnNode[i];      
         }
-       
-
+    
         pNode0->AddAppliedForceContribution(ForceOnNode[0]);
         pNode1->AddAppliedForceContribution(ForceOnNode[1]);
         pNode2->AddAppliedForceContribution(ForceOnNode[2]);
 
-
+       
 
     }
+
+
+        // Now do the pressure force 
+
+         for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
+             cell_iter != rCellPopulation.End();
+             ++cell_iter)
+        {
+
+            unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+            Node<3>* p_node = rCellPopulation.GetNode(node_index);
+           
+            c_vector<double, 3> Normal = zero_vector<double>(3);
+            double Area = 0;
+            std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
+    
+            assert(containing_elements.size() > 0);
+            for (std::set<unsigned>::iterator iter = containing_elements.begin();
+                 iter != containing_elements.end();
+                 ++iter)
+            {
+                Node<3>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
+                Node<3>* pNode1= p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
+                Node<3>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
+
+                c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
+                c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
+
+                c_vector<double, 3> normalVector = VectorProduct(vector_12, vector_13);
+                
+                Area+= norm_2(normalVector)/6;
+                Normal += normalVector;///norm_2(normalVector);
+
+            }
+            Normal /=norm_2(Normal);
+             c_vector<double, 3> force = mStrength *Normal*  Area; // / norm_2(cell_location);
+             cell_iter->GetCellData()->SetItem("Pressure",mStrength );
+
+            //   if( cell_iter->GetCellData()->GetItem("Mut") ==1)
+            //   {
+            //       force*=-1;
+            //   }
+            rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(force);
+        }
+
+
+
+
+
+
+
 }
     /*
     * Set up the inital configuration -> find the inital position vectors, the inital area, and the shape function 

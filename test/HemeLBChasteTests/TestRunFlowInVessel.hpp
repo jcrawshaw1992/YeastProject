@@ -13,7 +13,7 @@
 #include "CellIdWriter.hpp"
 #include "CellMutationStatesWriter.hpp"
 #include "CellProliferativeTypesWriter.hpp"
-// #include "MembraneStiffnessForce.hpp"
+
 
 #include "OffLatticeSimulation.hpp"
 #include "AppliedForceModifier.hpp"
@@ -50,10 +50,17 @@
 #include "MembraneHetroModifier.hpp"
 
 // #include "ConstantPressure.hpp"
-#include "EmptyBasementMatrix.hpp"
-#include "HasEndothelialCell.hpp"
-#include "LostEndothelialCell.hpp"
+// #include "EmptyBasementMatrix.hpp"
+// #include "HasEndothelialCell.hpp"
+// #include "LostEndothelialCell.hpp"
 #include "CellMutationStatesWriter.hpp"
+
+#include "MembranePropertiesSecModifier.hpp"
+#include "projects/VascularRemodelling/src/MembraneForces/MembraneStiffnessForce.hpp"
+// #include "MembraneStiffnessForce.hpp"
+#include "OutwardsPressure.hpp"
+#include "BoundariesModifier.hpp"
+#include "OutsideFLuidSimulationMutation.hpp"
 
 
 // //  #include "HemodynamicPressure.hpp"
@@ -94,9 +101,6 @@ public:
         TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-mesh_scale"));
         double mesh_scale = atof(CommandLineArguments::Instance()->GetStringCorrespondingToOption("-mesh_scale").c_str());
 
-		
-
-
 		TRACE("Before Load");
 		 std::string output_dir = "./"; //"./"
 		OffLatticeSimulation<2,3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2,3>, 3 >::Load(output_dir, start_time);
@@ -104,14 +108,14 @@ public:
 
 		 p_simulator->SetEndTime(start_time + duration);
 		
-        	// Update the tractions in the Modifier assumes the AppliedForceModifier is the first in the vector
+    	// Update the tractions in the Modifier assumes the AppliedForceModifier is the first in the vector
 	    std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
-		TRACE("A");
-	    //assert(boost::dynamic_pointer_cast<AppliedForceModifier<2,3> >(*iter));
+	
+	    // assert(boost::dynamic_pointer_cast<AppliedForceModifier<2,3> >(*iter));
 	    boost::shared_ptr<AppliedForceModifier<2,3> > p_force_modifier = boost::static_pointer_cast<AppliedForceModifier<2, 3> >(*iter);
- 		TRACE("a");
+ 		
 		p_force_modifier->SetResetTractionsOnCells(true, traction_file);
-		TRACE("B");
+		
 
      	p_simulator->Solve();
 

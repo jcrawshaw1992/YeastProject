@@ -51,7 +51,7 @@ void AppliedForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopu
         Force[0] = cell_iter->GetCellData()->GetItem("applied_force_x");
         Force[1] = cell_iter->GetCellData()->GetItem("applied_force_y");
         Force[2] = cell_iter->GetCellData()->GetItem("applied_force_z");
-        double Pressure  = cell_iter->GetCellData()->GetItem("Pressure");
+        // double Pressure  = cell_iter->GetCellData()->GetItem("Pressure");
         // PRINT_VARIABLE(Pressure);
         
         //  Force= Create_c_vector(0.001,0.001,0);

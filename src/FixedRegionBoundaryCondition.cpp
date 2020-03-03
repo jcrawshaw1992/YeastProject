@@ -82,11 +82,11 @@ void FixedRegionBoundaryCondition<ELEMENT_DIM,SPACE_DIM>::ImposeBoundaryConditio
                     
                     // // Remove any CellLabels as can only have one label
                     CellPtr p_cell = this->mpCellPopulation->GetCellUsingLocationIndex(node_index);
-                     if (mIntialTime==1)
-                     {
-                            // p_cell->GetCellData()->SetItem("Boundary", 1);
+                    //  if (mIntialTime==1)
+                    //  {
+                            p_cell->GetCellData()->SetItem("BoundarySet", 1);
                             // TRACE("new boundary node")
-                     }
+                    //  }
                     
 
                     // p_cell->RemoveCellProperty<CellLabel>();
@@ -96,11 +96,7 @@ void FixedRegionBoundaryCondition<ELEMENT_DIM,SPACE_DIM>::ImposeBoundaryConditio
                     // boost::shared_ptr<AbstractCellProperty> p_label(CellPropertyRegistry::Instance()->Get<CellLabel>());
                     // this->mpCellPopulation->GetCellUsingLocationIndex(node_index)->AddCellProperty(p_label);
                  }
-                //  else
-                //  {
-                //      CellPtr p_cell = this->mpCellPopulation->GetCellUsingLocationIndex(node_index);
-                //      p_cell->GetCellData()->SetItem("Boundary", 0);
-                //  }
+              
             } 
             // else
             //      {
