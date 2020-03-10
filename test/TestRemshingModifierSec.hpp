@@ -40,12 +40,13 @@ public:
         std::string working_directory = "/Users/jcrawshaw/Documents/ChasteWorkingDirectory/ShrunkPlexusWithLongInlets/";
         std::string mesh_file = "/Users/jcrawshaw/Documents/testoutput/TestingRemeshingModifier/OriginalMesh.vtu"; //working_directory +"SetUpData/TestOriginal_WithStretchedInlets.vtu" ;//"SetUpData/config.vtu";
 
+
         std::string output_directory = "TestingRemeshingModifier";
 
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         HistoryDepMutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
-
+        
         // Create cells
         MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
 
@@ -62,10 +63,12 @@ public:
         double startime = 0;
         cell_population.SetChasteOutputDirectory(output_directory, startime);
         cell_population.ExecuteHistoryDependentRemeshing();
+        TRACE("In main code")
 
+
+        // Set up cell-based simulation
         OffLatticeSimulation<2, 3> simulator(cell_population);
         simulator.SetOutputDirectory(output_directory + "/WithremeshedMesh");
-
         simulator.SetEndTime(0.1);
         simulator.SetDt(0.01);
         simulator.SetSamplingTimestepMultiple(1);
@@ -89,34 +92,37 @@ public:
         simulator.Solve();
         TRACE("Solved")
 
-        SimulationTime::Instance()->Destroy();
-        SimulationTime::Instance()->SetStartTime(0.0);
         t = clock() - t;
-        std::cout << "simulation time: " << t / CLOCKS_PER_SEC << " seconds" << std::endl;
+        std::cout<<"simulation time: "<<t/CLOCKS_PER_SEC<<" seconds"<<std::endl;
     }
 };
 
 #endif /*TESTCYLINDRICALGROWTHDEFORMABLEMEMBRANE_HPP_*/
 
-// VtkMeshReader<2,3> mesh_reader2("/Users/jcrawshaw/Documents/testoutput/TestingRemeshingModifier/RemeshedGeometry.vtu");
-// HistoryDepMutableMesh<2,3> New_mesh2;
-// New_mesh2.ConstructFromMeshReader(mesh_reader2);
-//
-// mesh.DeleteMesh();
-// mesh.AssignNewMesh(&New_mesh2);
-// New_mesh2.~HistoryDepMutableMesh();
 
-//         //
-//         // boost::shared_ptr<RemeshingModifier<2, 3> > p_Mesh_modifier(new RemeshingModifier<2, 3>());
-//         // p_Mesh_modifier->SaveInitalConditions(cell_population);
-//         // simulator.AddSimulationModifier(p_Mesh_modifier);
 
-//     //     // p_Mesh_modifier->SetChasteOutputDirectory(output_directory, startime );
+        // VtkMeshReader<2,3> mesh_reader2("/Users/jcrawshaw/Documents/testoutput/TestingRemeshingModifier/RemeshedGeometry.vtu");
+        // HistoryDepMutableMesh<2,3> New_mesh2;
+        // New_mesh2.ConstructFromMeshReader(mesh_reader2);
+        //
+        // mesh.DeleteMesh();
+        // mesh.AssignNewMesh(&New_mesh2);
+        // New_mesh2.~HistoryDepMutableMesh();
 
-//     //     // // p_Mesh_modifier->RemeshGeometry();
-//     //     // // p_Mesh_modifier->MappingAdaptedMeshToInitalGeometry(cell_population, *p_mesh);
-//     //     // // std::map<unsigned, c_vector<double, 3> > RemeshedInitalConditions = p_Mesh_modifier->GetInitalConditions();
 
-//     //     // // Need to think about what I do now with the cell populations
+        //         //
+        //         // boost::shared_ptr<RemeshingModifier<2, 3> > p_Mesh_modifier(new RemeshingModifier<2, 3>());
+        //         // p_Mesh_modifier->SaveInitalConditions(cell_population);
+        //         // simulator.AddSimulationModifier(p_Mesh_modifier);
 
-//     // // To reset before looping: this is usually done by the SetUp and TearDown methods
+        //     //     // p_Mesh_modifier->SetChasteOutputDirectory(output_directory, startime );
+
+        //     //     // // p_Mesh_modifier->RemeshGeometry();
+        //     //     // // p_Mesh_modifier->MappingAdaptedMeshToInitalGeometry(cell_population, *p_mesh);
+        //     //     // // std::map<unsigned, c_vector<double, 3> > RemeshedInitalConditions = p_Mesh_modifier->GetInitalConditions();
+
+        //     //     // // Need to think about what I do now with the cell populations
+
+        //     // // To reset before looping: this is usually done by the SetUp and TearDown methods
+        //     // SimulationTime::Instance()->Destroy();
+        //     // SimulationTime::Instance()->SetStartTime(0.0);

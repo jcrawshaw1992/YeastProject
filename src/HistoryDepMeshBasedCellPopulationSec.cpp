@@ -76,17 +76,30 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
      this->RemeshGeometry();
      this->MappingAdaptedMeshToInitalGeometry();
 
+// Now reset the nodes and cells 
+    VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mChasteOutputDirectory + "RemeshedGeometry.vtu");
+    mNew_mesh.ConstructFromMeshReader(mesh_reader);
+
     static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>&>((this->mrMesh)).DeleteMesh();
+    // MutableMesh<ELEMENT_DIM, SPACE_DIM>* pNew_mesh = &mNew_mesh; 
     static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>&>((this->mrMesh)).AssignNewMesh(&mNew_mesh);
-   
-    MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
+
+
+    TRACE("New nodes")
+     MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
+
     std::vector<CellPtr> cells;
     CellsGenerator<FixedG1GenerationalCellCycleModel, ELEMENT_DIM> cells_generator;
     cells_generator.GenerateBasicRandom(cells, this->mrMesh.GetNumNodes(), p_differentiated_type);
 
 
-// 1) From the  AbstractCellPopulation Constructor  std::list<CellPtr> mCells; -- Protected
-    this->mCells.clear();
+//1) From the  AbstractCellPopulation Constructor
+
+     /** List of cells. */
+    // std::list<CellPtr> mCells; -- Protected
+    // std::list<CellPtr>& rGetCells(); @return reference to mCells.
+     this->mCells.clear();
+     PRINT_VARIABLE(this->mCells.size())
     for (std::vector<CellPtr>::iterator i=cells.begin(); i!= cells.end(); ++i)
     {
            this->mCells.push_back(*i);
@@ -100,6 +113,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
    
 
     // There must be a one-one correspondence between cells and location indices
+
     if (this->mCells.size() != this->mrMesh.GetNumNodes())
     {
         EXCEPTION("There is not a one-one correspondence between cells and location indices");
@@ -108,32 +122,39 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
     this->mLocationCellMap.clear();
     this->mCellLocationMap.clear();
 
-
     std::list<CellPtr>::iterator it = this->mCells.begin();
     for (unsigned i=0; it != this->mCells.end(); ++it, ++i)
     {
+        // These are cell things
         // Give each cell a pointer to the property registry (we have taken ownership in this constructor)
         (*it)->rGetCellPropertyCollection().SetCellPropertyRegistry(this->mpCellPropertyRegistry.get());
     }
     
-// 3)  From the AbstractCentreBasedCellPopulation Constructor -- If no location indices are specified, associate with nodes from the mesh.
- 
+// 3)  From the AbstractCentreBasedCellPopulation Constructor 
+
+// If no location indices are specified, associate with nodes from the mesh.
     std::list<CellPtr>::iterator iter = this->mCells.begin();
+    PRINT_2_VARIABLES(this->mCells.size() , this->mrMesh.GetNumNodes())
     typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->mrMesh.GetNodeIteratorBegin();
 
     for (unsigned i=0; iter != this->mCells.end(); ++iter, ++i, ++node_iter)
     {
         unsigned index =  node_iter->GetIndex(); // assume that the ordering matches
         AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::AddCellUsingLocationIndex(index,*iter);
-        
     }
 
     this->mpCentreBasedDivisionRule.reset(new RandomDirectionCentreBasedDivisionRule<ELEMENT_DIM, SPACE_DIM>());
 
-// 4) From the MeshBasedCellPopultion Constructor 
-    
+
+// 4)From the MeshBasedCellPopultion Constructor 
+    PRINT_2_VARIABLES(this->mCells.size(), this->mrMesh.GetNumNodes())
     assert(this->mCells.size() == this->mrMesh.GetNumNodes());
-    this->Validate();
+    bool validate =1;
+    if (validate)
+    {
+      
+        this->Validate();
+    }
 
     // Initialise the applied force at each node to zero
     for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
@@ -338,18 +359,7 @@ template class HistoryDepMeshBasedCellPopulation<2, 3>;
 EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMeshBasedCellPopulation)
 
 
-
-
-   // VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mChasteOutputDirectory + "RemeshedGeometry.vtu");
-    // mNew_mesh.ConstructFromMeshReader(mesh_reader);
-
-//  TRACE("History dependent remeshing")
-
+// check things are working
     // static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>&>((this->mrMesh)).AddANewNodeBehindBoundary();
     //     VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer("CheckingremeshsedMesh", "config", false);
     // mesh_writer.WriteFilesUsingMesh(static_cast<AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>&>((this->mrMesh)));
-
-//     // Now look at adding a new cell for the new node 
-//     // Option 1, follow the line of constructors to fine where I need to clear/delete cells and add new cells on 
-
- 
