@@ -246,6 +246,7 @@ void MembraneForcesBasic::AddForceContribution(AbstractCellPopulation<2, 3>& rCe
             {  
                 AverageForce += MembraneForceMap[NearestNodes[i]];
             }
+            
             AverageForce/=5;
             double AppliedPressure = norm_2(AverageForce);        
             // Loop over neighbouring elements to get normal 
@@ -266,13 +267,18 @@ void MembraneForcesBasic::AddForceContribution(AbstractCellPopulation<2, 3>& rCe
                 Normal += VectorProduct(vector_12, vector_13);
                 // Dont know if always pointing the right way
             }
-            Normal/=norm_2(Normal);
             
+            if (inner_prod(AverageForce, Normal)<0)
+            {
+                Normal/=-norm_2(Normal);
+            }else{
+            Normal/=norm_2(Normal);
+            }
 
             c_vector<double, 3> AppliedForce = AppliedPressure * Normal; //
           
             pNode->AddAppliedForceContribution(AppliedForce); // Add the new force
-            cell_iter->GetCellData()->SetItem("MembraneForce", norm_2(AppliedForce));
+            cell_iter->GetCellData()->SetItem("MembraneForce",AppliedPressure );
             // PRINT_VARIABLE( norm_2(AppliedForce))
             // MembraneForceMap[node_index]=AppliedForce ;
         }

@@ -92,22 +92,32 @@ void BoundariesModifier<ELEMENT_DIM, SPACE_DIM>::CreateBoundaryNodes(AbstractCel
             if(containing_elements.size() < 5)
             {
                 cell_iter->GetCellData()->SetItem("Boundary", 1);
+                std::set<unsigned> neighbouring_node_indices = rCellPopulation.GetNeighbouringNodeIndices(node_index);
+                for (std::set<unsigned>::iterator iter = neighbouring_node_indices.begin();
+                iter != neighbouring_node_indices.end();
+                ++iter)
+                {
+                    
+                    CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(*iter);
+                    p_cell->GetCellData()->SetItem("Boundary", 1);
+                }
+
             }
 
-            c_vector<double, SPACE_DIM> node_location = p_node->rGetLocation();
-            std::vector<c_vector<double, 3> >::iterator Normal_iter = boundary_plane_normals.begin();
-            std::vector<c_vector<double, 3> >::iterator Point_iter = boundary_plane_points.begin();
-            for (int i = 0; i < boundary_plane_normals.size(); i++)
-            {
-                double signed_distance = inner_prod(node_location - *Point_iter, *Normal_iter);
-                if (signed_distance < 0.0)
-                {
-                    cell_iter->SetMutationState(p_Mutation);
-                    break;
-                }
-                advance(Normal_iter, 1);
-                advance(Point_iter, 1);
-            }
+            // c_vector<double, SPACE_DIM> node_location = p_node->rGetLocation();
+            // std::vector<c_vector<double, 3> >::iterator Normal_iter = boundary_plane_normals.begin();
+            // std::vector<c_vector<double, 3> >::iterator Point_iter = boundary_plane_points.begin();
+            // for (int i = 0; i < boundary_plane_normals.size(); i++)
+            // {
+            //     double signed_distance = inner_prod(node_location - *Point_iter, *Normal_iter);
+            //     if (signed_distance < 0.0)
+            //     {
+            //         cell_iter->SetMutationState(p_Mutation);
+            //         break;
+            //     }
+            //     advance(Normal_iter, 1);
+            //     advance(Point_iter, 1);
+            // }
 
 
 

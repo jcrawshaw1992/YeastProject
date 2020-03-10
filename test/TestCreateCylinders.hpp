@@ -53,8 +53,21 @@ private:
 
 public:
 
+void TestEquationSystem() throw(Exception)
+    {
 
-void Test_CreateBendEllipticalCylinders_WithDiffereingRefinments() throw(Exception)
+Valuable a1, a2, b1, b2; // init with values
+
+    System sys;
+    Variable x,y;
+    sys << (x-a1)^2 + (y-b1)^2 - c1; // addin an equation as an equality to 0
+    sys << (x-a2)^2 + (y-b2)^2 - c2;
+
+    for(auto& solution : sys.Solve(x))
+            std::cout << solution;
+    }
+
+void OffTest_CreateBendEllipticalCylinders_WithDiffereingRefinments() throw(Exception)
     {
      
 

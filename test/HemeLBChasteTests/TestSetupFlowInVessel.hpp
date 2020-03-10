@@ -260,24 +260,24 @@ public:
         ----------------------------
         */
 
-        // // double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
-        // double P_tissue = 0.001466542; // Pa == 1.1000e-05 mmHg
+        // double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.1000e-05 mmHg
 
-        // // double TransmuralPressure =  P_blood - P_tissue;
+        // double TransmuralPressure =  P_blood - P_tissue;
 
-        // boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        // p_ForceOut->SetPressure(-P_tissue);
-        // simulator.AddForce(p_ForceOut);
+        boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
+        p_ForceOut->SetPressure(-P_tissue);
+        simulator.AddForce(p_ForceOut);
 
 
 
-    //     /*
-    //     -----------------------------
-    //     MembraneProperties Modifier
-    //     ----------------------------
-    //     */
+        /*
+        -----------------------------
+        MembraneProperties Modifier
+        ----------------------------
+        */
 
-        double BendingConst = 1e-15;
+        double BendingConst = 1e-13;
         std::map<double, c_vector<long double, 4> > GrowthMaps;  // From matlab sweep results 
                                     //         KA,          Kalpha           Ks
         GrowthMaps[10] = Create_c_vector(pow(10,-6.9), pow(10,-8.2459),pow(10, -9),BendingConst );
@@ -289,10 +289,10 @@ public:
 
         GrowthMaps[2] = Create_c_vector(pow(10,-6.8), pow(10,-6.8124),pow(10, -7) ,BendingConst );
         GrowthMaps[1.5] = Create_c_vector(pow(10,-6.5), pow(10,-6.3491),pow(10, -7) ,BendingConst );
-        GrowthMaps[1.2] =  Create_c_vector(pow(10,-6.2), pow(10,-5.8360),pow(10, -7),BendingConst  );
+        GrowthMaps[1.2] =  Create_c_vector(pow(10,-6.2)*1e1, pow(10,-5.8360),pow(10, -7)*1e1,BendingConst  );
 
         boost::shared_ptr<MembranePropertiesSecModifier<2, 3> > p_Membrane_modifier(new MembranePropertiesSecModifier<2, 3>());
-        p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 0,10, 1); 
+        p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 1.2, 0,10, 1); 
         p_Membrane_modifier->SetupSolve(cell_population,output_dir);
 
         boost::shared_ptr<BoundariesModifier<2, 3> > p_Boundary_modifier(new BoundariesModifier<2, 3>());
@@ -324,12 +324,10 @@ public:
         p_membrane_force->SetMembraneStiffness(BendingConst,30,30 );
         simulator.AddForce(p_membrane_force);
 
-
-
         // Create a plane boundary to represent the inlets/outlets and pass them to the simulation
         for(unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
         {
-           boost::shared_ptr<FixedRegionBoundaryCondition<2,3> > p_condition(new FixedRegionBoundaryCondition<2,3>(&cell_population,boundary_plane_points[boundary_id],-boundary_plane_normals[boundary_id],boundary_plane_radii[boundary_id]));
+           boost::shared_ptr<FixedRegionBoundaryCondition<2,3> > p_condition(new FixedRegionBoundaryCondition<2,3>(&cell_population,boundary_plane_points[boundary_id],boundary_plane_normals[boundary_id],boundary_plane_radii[boundary_id]));
             simulator.AddCellPopulationBoundaryCondition(p_condition);
         }
 

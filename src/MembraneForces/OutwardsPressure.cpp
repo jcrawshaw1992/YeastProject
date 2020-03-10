@@ -34,7 +34,7 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
  
             std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
             // PRINT_2_VARIABLES(node_index,containing_elements.size())
-            cell_iter->GetCellData()->SetItem("Node", node_index);
+            // cell_iter->GetCellData()->SetItem("Node", node_index);
 
         // TRACE("do we get here")
 
@@ -56,8 +56,7 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
 
             }
             Normal /=norm_2(Normal);
-             c_vector<double, 3> force = mStrength *Normal; // / norm_2(cell_location);
-             cell_iter->GetCellData()->SetItem("Pressure",mStrength );
+            c_vector<double, 3> force = mStrength *Normal; // / norm_2(cell_location);
 
     
             rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(force);

@@ -18,15 +18,8 @@ import math
 
 
 
-Iterations=100
-
-
-
 chaste_setup_exe = '/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/build/optimised/TestSetupFlowInInitallyCollapsedPipeRunner'
 chaste_run_exe = '/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/build/optimised/TestRunFlowInInitallyCollapsedPipeRunner'
-
-
-
 hemelb_setup_exe = 'env PYTHONPATH=/Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/setuptool:$PYTHONPATH /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/setuptool/scripts/hemelb-setup-nogui'
 
 radii_over_time = [] # empty array
@@ -40,7 +33,7 @@ def pause():
   
 
 # Creats a file callsed centerlines iter_number  in the file where the config.stl is saved. needs to be pointed at the stl folder 
-def vmtk_compute_stl_radii(iter_number): 
+def vmtk_compute_stl_radii(working_directory , iter_number): 
     print "**************   vmtk_compute_stl_radii  **************  "
     
     CenterLines_filename = working_directory + 'centerlines' +  str(iter_number) + '.vtp'
@@ -62,7 +55,7 @@ def vmtk_compute_stl_radii(iter_number):
 
     
 
-def generate_flow_vtus(timestep):
+def generate_flow_vtus(working_directory, timestep):
     print "  generate_flow_vtus   "
 
     # Make the vtu 
@@ -82,11 +75,12 @@ def generate_flow_vtus(timestep):
   
     
 
-def vtu2stl(iter):
+def vtu2stl(working_directory, iter):
 
     print "  Convert vtu to stl    "
     # Read the VTU file from disk
     vtu_reader = vtk.vtkXMLUnstructuredGridReader()
+
     vtu_reader.SetFileName(working_directory + 'config.vtu')
 
     extract_surface_filter = vtk.vtkDataSetSurfaceFilter()
@@ -104,7 +98,7 @@ def vtu2stl(iter):
 
    # ---------------------------------
  
-def run_hemelb_setup():
+def run_hemelb_setup(working_directory, plexus):
     print "HemeLB setting up"
  
    # TODO: It seems that when you use the --stl option below, the voxel size specified in .pr2 is ignored and the setup tool guesses one for you
@@ -114,7 +108,11 @@ def run_hemelb_setup():
  
     heme_profile_filename = working_directory + 'config.pr2' 
     ConfigDirectory = working_directory + 'config.stl'
-   
+
+    if plexus == 1:
+        voxel_size = 0.15e-5
+    print(voxel_size)
+    # pause()
     command = hemelb_setup_exe + ' ' + heme_profile_filename #+ ' --voxel ' + str(voxel_size) # + ' --geometry ' + working_directory + 'config.gmy' + ' --xml ' + working_directory + 'config.xml'
 
     subprocess.call(command, shell=True)
@@ -123,7 +121,7 @@ def run_hemelb_setup():
     # ---------------------------------
  
 
-def update_xml_file(iter_num, num_iters):
+def update_xml_file(working_directory, iter_num, num_iters):
 
     print "update_xml_file"
     # Load automatically generated XML file
@@ -145,20 +143,20 @@ def update_xml_file(iter_num, num_iters):
     # ElementTree.SubElement(surface, 'geometry', type='surface')
     # ElementTree.SubElement(surface, 'field', type='tangentialprojectiontraction')
 
-    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(50000), 'file': 'surface-traction.xtr'})
+    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-traction.xtr'})
     ElementTree.SubElement(surface, 'geometry', type='surface')
     ElementTree.SubElement(surface, 'field', type='traction')
 
-    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(50000), 'file': 'surface-tractions.xtr'})
+    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-tractions.xtr'})
     ElementTree.SubElement(surface, 'geometry', type='surface')
     ElementTree.SubElement(surface, 'field', type='traction')
     ElementTree.SubElement(surface, 'field', type='tangentialprojectiontraction')    
 
-    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(50000), 'file': 'surface-pressure.xtr'})
+    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'surface-pressure.xtr'})
     ElementTree.SubElement(surface, 'geometry', type='surface')
     ElementTree.SubElement(surface, 'field', type='pressure')
 
-    wholegeometry = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(50000), 'file': 'wholegeometry-velocity.xtr'})
+    wholegeometry = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(10000), 'file': 'wholegeometry-velocity.xtr'})
     ElementTree.SubElement(wholegeometry, 'geometry', type='whole')
     ElementTree.SubElement(wholegeometry, 'field', type='velocity')
 
@@ -168,7 +166,7 @@ def update_xml_file(iter_num, num_iters):
 
     # ---------------------------------
 
-def update_pr2_file(Radius_New):
+def update_pr2_file(working_directory, Radius_New):
 
 
     filename = working_directory + 'config.pr2'
@@ -216,7 +214,7 @@ def update_pr2_file(Radius_New):
     
     # ---------------------------------
 
-def run_hemelb():
+def run_hemelb(working_directory):
     print "**************   hemelb step  **************   "
     shutil.rmtree(working_directory + 'results/', ignore_errors=True)
     xml_config_file = working_directory + 'config.xml'
@@ -225,7 +223,7 @@ def run_hemelb():
 
     # ------------------------------------------
 
-def run_hemelb2():
+def run_hemelb2(working_directory):
 
     
     print "**************   hemelb step  **************   "
@@ -236,7 +234,7 @@ def run_hemelb2():
 
     # ------------------------------------------
 
-def WriteReadme(ElasticShearModulus, AreaDilationModulus, membrane_constant, Area_constant , Time_step, Sampling, duration, Scalling ):
+def WriteReadme(working_directory, ElasticShearModulus, AreaDilationModulus, membrane_constant, Area_constant , Time_step, Sampling, duration, Scalling ):
     print "**************   WriteReadme  **************   "
 
     file1 = open(working_directory +"readme.txt","w") 
@@ -254,79 +252,3 @@ def WriteReadme(ElasticShearModulus, AreaDilationModulus, membrane_constant, Are
     file1.close() 
 
     # ------------------------------------------
-
-
-if __name__=="__main__":
-    working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/FluidSimulation/' 
-    data_path =working_directory + 'SetUpData/'
-    
-    shutil.copy(data_path +'config.stl' , working_directory +'config.stl' )
-    shutil.copy(data_path +'config.xml' , working_directory +'config.xml' )
-    shutil.copy(data_path +'config.vtu' , working_directory +'config.vtu' )
-    shutil.copy(data_path +'config.pr2' , working_directory +'config.pr2' )
-    
-
-# Create the directory 
-    if not os.path.exists(working_directory):
-        os.makedirs(working_directory)
-
-# **** Set up what you need for the collected chaste mesh folder
-
-    newpath = working_directory +'ChasteMeshes/' 
-    if not os.path.exists(newpath):
-        os.makedirs(newpath)
-    else:
-        shutil.rmtree(newpath)
-        os.makedirs(newpath)
-
-
-    Hemepath = working_directory +'HemeLBFluid/' 
-    if not os.path.exists(Hemepath):
-        os.makedirs(Hemepath)
-    else:
-        shutil.rmtree(Hemepath)
-        os.makedirs(Hemepath)
-
-    # duration = 0.001
-    duration = 0.001
-    dt = 0.001 # changed from 0.0001
-    SamplingTimestepMultiple = 1
-    TimeStep = dt * SamplingTimestepMultiple
-    EndMeshFileNumber = duration /dt
-    list = range(0, int(EndMeshFileNumber), SamplingTimestepMultiple)
- 
-#     ResultsCounter=0
-#     MeshCounter=0
-#     PressureCounter =0
-    
-
-    # Define arguments to be parsed
-    parser = ArgumentParser(description='Run a vascular remodelling simulation')
-    parser.add_argument('--num_iterations', default=Iterations, type=int, help='Number of Hemelb/Chaste iterations to be run (optional, default is 5).')
-    parser.add_argument('--compute_radii', dest='compute_radii', action='store_true', help='Use VMTK to compute axis radii.')
-    parser.add_argument('--output_postfix', dest='output_postfix', default='', help='This string will be added to ChasteWorkingDirectory to get the output folder.')
-    parser.add_argument('--div_threshold', dest='div_threshold', default=1e10, help='This specifies the length that edges will divide at. (Defaults to no division, but 6e-4 is good for mm meshes')
-    parser.add_argument('--mesh_scale', dest='mesh_scale', default=1e-3, help='This specifies what to scale the mesh by so that all distances are in meters (defaults to mm).')
-    args = parser.parse_args()
-  
-    # pdb.set_trace()
-    start_time = 0
-    FluidSimulation = 1
-   
-    print "Run HemeLB setup "
-
-    run_hemelb_setup()
-
-  
-    update_xml_file(iter, args.num_iterations)
-
-    print "Run HemeLB"
-    # Step 3: HemeLB simulation
-    run_hemelb2() 
-    print'\n HemeLB simulation complete \n'
-    
-    generate_flow_vtus(3)
-
-    print '\n ********* ------ Completed ------ ********* \n'
-
-    

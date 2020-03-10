@@ -103,49 +103,27 @@ if __name__=="__main__":
     # ' ------- Setting up args ------- '
 
     Directory  = args.ifile #+ 'results_from_time_0/'
-    CenterLines_filename = args.ifile + 'PlexusCenterlines_Smoothed.vtp'
-    SmootherCenterlinesFile = args.ifile + 'PlexusCenterlines_Smoothedagain.vtp'
+    CenterLines_filename = args.ifile + 'PlexusCenterlines.vtp'
+    SmootherCenterlinesFile = args.ifile + 'PlexusCenterlines_Smoothed.vtp'
     ScalledCenterLines = args.ifile + 'PlexusCenterlines_Smoothed.vtp' # args.ifile + 'PlexusCenterlines_Scalled.vtp'
-    # Resamlpe the centerlines smooth centerlines with a moving average filter -->    vmtkcenterlineresampling -ifile PlexusInversed.vtp -length 20 -ofile resampledCenterlines.vtp  
-    SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ CenterLines_filename + ' -length 0.05 -ofile '+ SmootherCenterlinesFile
-    subprocess.call(SmoothCenterlinesCommond, shell=True)
 
-    # SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ SmootherCenterlinesFile + ' -length 0.001 -ofile '+ SmootherCenterlinesFile
-    # subprocess.call(SmoothCenterlinesCommond, shell=True)
-    # subprocess.call(SmoothCenterlinesCommond, shell=True)
-    # subprocess.call(SmoothCenterlinesCommond, shell=True)
-    # subprocess.call(SmoothCenterlinesCommond, shell=True)
-
-# vmtkcenterlineinterpolation
-# vmtkcenterlinesmoothing
-#   #     # Read in the centerlines file and edit the radius -> this is saved in a new file, which will be read in to generate the new mesh
-#     AdaptiveRadius =0
-#     if AdaptiveRadius:
-       
-#         reader = vtk.vtkXMLPolyDataReader()
-
-#         #Read in the centerlines file
-#         reader.SetFileName(CenterLines_filename)
-#         reader.Update()
-
-#         # Set up the vtk writer for the edited centerlines data 
-#         writer = vtk.vtkXMLPolyDataWriter()
-#         writer.SetFileName(ScalledCenterLines)
+    ScalledMeshVTK = args.ifile + 'scalled.stl'
+    ScalledMeshVTK_2 = args.ifile + 'TestRemeshing.stl'
+    ScalledMeshVTU = args.ifile + 'Plexus_2.vtu'
     
-#         point_data = reader.GetOutput().GetPointData()
 
-#         assert point_data.GetArrayName(0) == 'Radius', "VTP file doesn't contain array Radius"
-#         radii = point_data.GetArray(0)
-        
-#         # loop over the radius and save scale
-#         for i in range(radii.GetSize()):
-#             radius = radii.GetValue(i)/2
-#             reader.GetOutput().GetPointData().GetArray(0).SetValue(i,radius)
+    command = 'vmtksurfaceremeshing -ifile '+ScalledMeshVTK +' -iterations 6  -area 125 -ofile ' +ScalledMeshVTK_2
+    subprocess.call(command, shell=True)
 
-#         # Write the edited vtk data into the new centerlines file 
-#         writer.SetInputData(reader.GetOutput())
-#         writer.Write()
-       
+    # # Need to convert the mesh from a vtk to a vtu, this step is critical 
+    # convertFile(ScalledMeshVTK_2, ScalledMeshVTU)
+    # # ScalledMeshVTUN = args.ifile + 'PlexusNew.vtu'
+
+
+# #     # # Remove the ends from the mesh 
+#     RemoveInletCaps = 'vmtkmeshclipper -ifile '+ScalledMeshVTU +' -ofile '+ScalledMeshVTUN
+#     subprocess.call(RemoveInletCaps, shell=True)
+
 
 
     print "-------------------------------------"

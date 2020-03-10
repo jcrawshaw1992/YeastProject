@@ -21,34 +21,8 @@ t0 = time.time()
 hemelb_setup_exe = 'env PYTHONPATH=/Users/jcrawshaw/Documents/HemeLB/hemelb/Tools:/Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/setuptool:/Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/hemeTools/converters:$PYTHONPATH /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/setuptool/scripts/hemelb-setup-nogui'
 hemelb_setup_exe1 = 'env PYTHONPATH=/Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/setuptool:$PYTHONPATH /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/setuptool/scripts/hemelb-setup-nogui'
 
-
-
-
-
 voxel_size =  0.15 #0.1953e-06
-
 working_directory = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/bifurcation_cut/' #+ i +'/' #TestCylinderRadi_voxal/NotScalledUp/Radi_e-3/Voxal1.4e-8/' 
-
-# _______________________
-#  COnvert vtu to the stl i need 
-#  _______________________
-
-
-
-# print "  Convert vtu to stl    "
-#     # Read the VTU file from disk
-# vtu_reader = vtk.vtkXMLUnstructuredGridReader()
-# vtu_reader.SetFileName(working_directory + 'config.vtu')
-
-# extract_surface_filter = vtk.vtkDataSetSurfaceFilter()
-# extract_surface_filter.AddInputConnection(vtu_reader.GetOutputPort())
-
-# # Write out the data in unstructured grid format
-# stl_writer = vtk.vtkSTLWriter()
-# stl_writer.SetInputConnection(extract_surface_filter.GetOutputPort())
-# stl_writer.SetFileName(working_directory + 'config.stl')
-# stl_writer.Write()
-
 
 # _______________________
 # Set up the inital config.xml file 
@@ -74,13 +48,6 @@ command = hemelb_setup_exe1 + ' ' + heme_profile_filename + ' --voxel ' + str(vo
 
 subprocess.call(command, shell=True)
 print "HemeLB set up is DONE"
-
-# pause()
-
-print "update_xml_file"
-
-pause()
-# pause()
 
 # _______________________
 # Now update the xml file 
@@ -126,11 +93,8 @@ ElementTree.SubElement(wholegeometry, 'field', type='velocity')
 # Save XML file to disk
 tree.write(filename)
 
-print('here')
 
 print "done"
-pause()
-
 # _______________________
 # Run the HemeLB simulation  
 # _______________________
@@ -152,8 +116,6 @@ print "  generate_flow_vtus   "
     # Make the vtu 
 command = 'python /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/hemeTools/converters/GmyUnstructuredGridReader.py' + ' ' + working_directory + 'config.xml'
 subprocess.call(command, shell=True)
-
-pause()
 
 # this need to be generalised 
 # command = 'python /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py' + ' ' +  working_directory +'config.vtu' +' ' +  working_directory+ 'results/Extracted/surface-pressure.xtr' +' ' +  working_directory+ 'results/Extracted/wholegeometry-velocity.xtr'+' ' +  working_directory+ 'results/Extracted/surface-traction.xtr'+' ' +  working_directory+ 'results/Extracted/surface-tangentialprojectiontraction.xtr'

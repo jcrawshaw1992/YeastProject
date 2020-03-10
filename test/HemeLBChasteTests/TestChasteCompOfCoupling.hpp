@@ -173,7 +173,7 @@ PRINT_VARIABLE(iolets.size());
             }
             else
             {
-            	rBoundaryPlaneRadii.push_back(40e-6); // in m
+            	rBoundaryPlaneRadii.push_back(10); // in m
             }
         }
     }
@@ -185,8 +185,8 @@ public:
         
         std::string working_directory = "/Users/jcrawshaw/Documents/ChasteWorkingDirectory/ShrunkPlexusWithLongInlets/" ;
 		
-        std::string mesh_file =  working_directory + "SetUpData/config.vtu";
-		std::string mesh_file_0 =  working_directory + "SetUpData/InitalCondition_Plexus.vtu";
+        std::string mesh_file =  working_directory +"SetUpData/TestOriginal_WithStretchedInlets.vtu" ;//"SetUpData/config.vtu";
+		std::string mesh_file_0 =  working_directory + "SetUpData/InitalConfig2.vtu";
         double mesh_scale = 1e-3; 
         std::string hemelb_config_file =  working_directory + "config.xml";
         std::string traction_file =  working_directory + "results/Extracted/surface-tractions.xtr";
@@ -254,11 +254,11 @@ public:
 
         // Set up cell-based simulation
         OffLatticeSimulation<2,3> simulator(cell_population);
-        std::string output_dir = "TestNewInitalCondition/";
+        std::string output_dir = "TestNewInitalCondition/Second";
         
         simulator.SetOutputDirectory(output_dir);
-        simulator.SetSamplingTimestepMultiple(10);
-        simulator.SetDt(0.002);
+        simulator.SetSamplingTimestepMultiple(1);
+        simulator.SetDt(0.005);
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(10);
 
@@ -280,14 +280,12 @@ public:
         ----------------------------
         */
 
-         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
-        double P_tissue = 0.001466542; // Pa == 1.1000e-05 mmHg
+        // double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        // double P_tissue = 0.001466542; // Pa == 1.1000e-05 mmHg
 
-        // double TransmuralPressure =  P_blood - P_tissue;
-
-        boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        p_ForceOut->SetPressure(-P_tissue);
-        simulator.AddForce(p_ForceOut);
+        // boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
+        // p_ForceOut->SetPressure(P_blood-P_tissue);
+        // simulator.AddForce(p_ForceOut);
 
 
 
@@ -315,16 +313,6 @@ public:
         p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 1.2, 0,10, 1); 
         p_Membrane_modifier->SetupSolve(cell_population,output_dir);
 
-     
-
-         /*
-        -----------------------------
-        Bending forces
-        ----------------------------
-        */
-
-   
-
         // // // Create a plane boundary to represent the inlets/outlets and pass them to the simulation
 
         boost::shared_ptr<BoundariesModifier<2, 3> > p_Boundary_modifier(new BoundariesModifier<2, 3>());
@@ -332,32 +320,33 @@ public:
         p_Boundary_modifier->SetupSolve(cell_population,output_dir );
         std::map<unsigned, c_vector<unsigned, 5> > NearestNodesMap = p_Boundary_modifier->GetNeighbouringNodesMap();
 
-   
-     
-
 
         // PRINT_VARIABLE( boundary_plane_points.size());
         for(unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
         {
-            boost::shared_ptr<FixedRegionBoundaryCondition<2,3> > p_condition(new FixedRegionBoundaryCondition<2,3>(&cell_population,boundary_plane_points[boundary_id],-boundary_plane_normals[boundary_id],boundary_plane_radii[boundary_id]));
+            c_vector<double, 3> Point = boundary_plane_points[boundary_id];
+
+            boost::shared_ptr<FixedRegionBoundaryCondition<2,3> > p_condition(new FixedRegionBoundaryCondition<2,3>(&cell_population,Point,-boundary_plane_normals[boundary_id],boundary_plane_radii[boundary_id]));
             simulator.AddCellPopulationBoundaryCondition(p_condition);
-            TRACE("Here")
+            // TRACE("Here")
         }
+
+
          /*
         -----------------------------
         SMembrane forces
         ----------------------------
-        //  */
+         */
         boost::shared_ptr<MembraneForcesBasic> p_shear_force(new MembraneForcesBasic());
         p_shear_force->SetupMembraneConfiguration(cell_0_population);
         p_shear_force->SetNearestNodesForBoundaryNodes(NearestNodesMap);
         simulator.AddForce(p_shear_force);
 
-        boost::shared_ptr<MembraneStiffnessForce> p_membrane_force(new MembraneStiffnessForce());
-        p_membrane_force->SetupInitialMembrane(mesh_0, cell_0_population);
-        p_membrane_force->SetNearestNodesForBoundaryNodesBending(NearestNodesMap);
-        p_membrane_force->SetMembraneStiffness(BendingConst,30,30 );
-        simulator.AddForce(p_membrane_force);
+        // boost::shared_ptr<MembraneStiffnessForce> p_membrane_force(new MembraneStiffnessForce());
+        // p_membrane_force->SetupInitialMembrane(mesh_0, cell_0_population);
+        // p_membrane_force->SetNearestNodesForBoundaryNodesBending(NearestNodesMap);
+        // p_membrane_force->SetMembraneStiffness(BendingConst,30,30 );
+        // simulator.AddForce(p_membrane_force);
 
 
 

@@ -42,13 +42,22 @@ def vmtk_compute_stl_radii(radii_over_time, iter_number):
 
     # pdb.set_trace()
     reader = vtk.vtkXMLPolyDataReader()
+    #Read in the centerlines file
     reader.SetFileName(CenterLines_filename)
     reader.Update()
     point_data = reader.GetOutput().GetPointData()
     assert point_data.GetArrayName(0) == 'Radius', "VTP file doesn't contain array Radius"
     radii = point_data.GetArray(0)
+
     radii_over_time.append(np.array([radii.GetValue(i) for i in range(radii.GetSize())]))
-    print "    vmtk_compute_stl_radii DONE   "
+    RadArr = radii_over_time[len(radii_over_time)-1]
+    RadArr = RadArr[RadArr != 0]
+    # MaxRadi = np.amax(radii)
+    MinRadi = np.amin(RadArr)
+    # np.mean(RadArr)
+    
+    # pdb.set_trace()
+    return MinRadi
 
     
 
@@ -66,9 +75,6 @@ def generate_flow_vtus(working_directory):
     subprocess.call(command, shell=True)
 
     print "generate_flow_vtus DONE    "
-
-   
-
    # ---------------------------------
  
 def run_hemelb_setup():
@@ -136,11 +142,7 @@ def update_xml_file(period):
     # ---------------------------------
 
 def update_pr2_file(Radius_New):
-
-    
     filename = working_directory + 'config.pr2'
-    
-
     # Find the location of node 200, which is my seed, must make this more generailable so I can select my seeding node
     Nodesfilename = working_directory + 'ChasteMeshes/results.viznodes'
     MutationCells = working_directory + 'ChasteMeshes/MutationStates'
@@ -167,13 +169,10 @@ def update_pr2_file(Radius_New):
     NodeLocation[0] = str(float(NodeLocation[0])*1e3)
     NodeLocation[1] = str(float(NodeLocation[1])*1e3)
     NodeLocation[2] = str(float(NodeLocation[2])*1e3)
-    print NodeLocation
     
- 
-    
+        
     Seed_New = 'SeedPoint: {x: '+ NodeLocation[0] +', y: '+ NodeLocation[1]  + ', z: '+ NodeLocation[2] +'} \n'
-     
-
+    
     # pdb.set_trace()
     # Find the lines that the radius and the seed are defined 
     file = open(filename).readlines()
@@ -189,12 +188,14 @@ def update_pr2_file(Radius_New):
         if 'TimeStepSeconds:' in line:
             Time_Old = line 
 
-    newRadius = '  Radius: '+ str(Radius_New+5.5) +'\n'
+    NewRad = '  Radius: '+ str(Radius_New+4.5) +'\n'
    
-    print  'New Seed: '+  Seed_New 
+    # print  'New Seed: '+  Seed_New 
     dx = 2*Radius_New/15
+    print Radius_New
     dt = 0.1/4*dx*dx
-    
+    print dx
+    print dt
     VoxelSize = 'VoxelSize: ' + str(dx)
     Time_new = 'TimeStepSeconds: '+  str(dt) +'\n'
      
@@ -202,6 +203,11 @@ def update_pr2_file(Radius_New):
     s = s.replace(Seed_Old, Seed_New)
     s = s.replace(Time_Old, Time_new)
     s = s.replace(Voxel_Old, VoxelSize)
+    for line in file:
+        if 'Radius:' in line:                                                                                         
+            Radius_Old = line 
+            s = s.replace(line, NewRad)
+
     
     # s = s.replace(Radius_Old, newRadius)
     f = open(filename, 'w')
@@ -209,6 +215,7 @@ def update_pr2_file(Radius_New):
     f.close()
   
     print "Updated Seed and Radius in .pr2 file"
+    return dt
     
     # ------------------------------------------
 
@@ -218,8 +225,9 @@ def run_hemelb():
     print "**************   hemelb step  **************   "
     shutil.rmtree(working_directory + 'results/', ignore_errors=True)
     xml_config_file = working_directory + 'config.xml'
-    command = 'mpirun -np 1 hemelb -in ' + xml_config_file
+    command = 'mpirun -np 2 hemelb -in ' + xml_config_file
     subprocess.call(command, shell=True)
+    KillCommand = 'Stop-Process -Name "hemelb" -Force'
 
     # ------------------------------------------
 

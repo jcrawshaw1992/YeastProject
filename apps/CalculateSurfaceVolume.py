@@ -79,7 +79,6 @@ def vtu2stl(file,WorkingDirectory , OutPutDirectory, iter):
     stl_writer = vtk.vtkSTLWriter()
     stl_writer.SetInputConnection(extract_surface_filter.GetOutputPort())
     stl_writer.SetFileName(OutPutDirectory + 'mesh_' +str(iter)+'.stl')
-    
     stl_writer.Write()
 
 

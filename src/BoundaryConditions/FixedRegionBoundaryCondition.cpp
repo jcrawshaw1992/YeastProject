@@ -47,74 +47,44 @@ void FixedRegionBoundaryCondition<ELEMENT_DIM,SPACE_DIM>::ImposeBoundaryConditio
     {
         EXCEPTION("FixedRegionBoundaryCondition requires a subclass of AbstractOffLatticeCellPopulation.");
     }
-
     if (SPACE_DIM != 1)
     {
 		//assert(dynamic_cast<AbstractOffLatticeCellPopulation<ELEMENT_DIM,SPACE_DIM>*>(this->mpCellPopulation));
-
 		AbstractOffLatticeCellPopulation<ELEMENT_DIM,SPACE_DIM>* pStaticCastCellPopulation = static_cast<AbstractOffLatticeCellPopulation<ELEMENT_DIM,SPACE_DIM>*>(this->mpCellPopulation);
-
 		// Iterate over all nodes and update their positions according to the boundary conditions
 		unsigned num_nodes = pStaticCastCellPopulation->GetNumNodes();
 		for (unsigned node_index=0; node_index<num_nodes; node_index++)
 		{
 			Node<SPACE_DIM>* p_node = pStaticCastCellPopulation->GetNode(node_index);
-			c_vector<double, SPACE_DIM> node_location = p_node->rGetLocation();
-            
+			c_vector<double, SPACE_DIM> node_location = p_node->rGetLocation();          
 			// Find the old location of the node
 			c_vector<double, SPACE_DIM> node_old_location = rOldLocations.find(p_node)->second;
-
             // calculate the distance of the node from the central point if its to far then dont impose boundary condition
             double distance_from_point = norm_2(node_old_location - mPointOnPlane);
             if (distance_from_point < mRadius)
-            {
-                
+            {    
                 double signed_distance = inner_prod(node_old_location - mPointOnPlane, mNormalToPlane);
                 if (signed_distance > 0.0)
                 {
-
                     // Only allow movement perpendicular to the normal
                     c_vector<double,SPACE_DIM> displacement = node_location - node_old_location;
-
                     p_node->rGetModifiableLocation() = node_old_location + displacement - inner_prod(displacement,mNormalToPlane)*mNormalToPlane;
 
-                    // Uncomment this code if you want iolets labelled in Paraview for viz purposes
-                    
-                    // // Remove any CellLabels as can only have one label
-                    CellPtr p_cell = this->mpCellPopulation->GetCellUsingLocationIndex(node_index);
-                    //  if (mIntialTime==1)
-                    //  {
-                            p_cell->GetCellData()->SetItem("BoundarySet", 1);
-                            // TRACE("new boundary node")
-                    //  }
-                    
+                     CellPtr p_cell = this->mpCellPopulation->GetCellUsingLocationIndex(node_index);
+                     p_cell->RemoveCellProperty<CellLabel>();
 
-                    // p_cell->RemoveCellProperty<CellLabel>();
-                    // // TRACE("Stuffremoved here")
-    
-                    // // Add label to cell so can see them in Visualizer
-                    // boost::shared_ptr<AbstractCellProperty> p_label(CellPropertyRegistry::Instance()->Get<CellLabel>());
-                    // this->mpCellPopulation->GetCellUsingLocationIndex(node_index)->AddCellProperty(p_label);
+                      // Add label to cell so can see them in Visualizer
+                    boost::shared_ptr<AbstractCellProperty> p_label(CellPropertyRegistry::Instance()->Get<CellLabel>());
+                    this->mpCellPopulation->GetCellUsingLocationIndex(node_index)->AddCellProperty(p_label); // else
+
+                    //  TRACE("A")
                  }
               
             } 
-            // else
-            //      {
-            //          CellPtr p_cell = this->mpCellPopulation->GetCellUsingLocationIndex(node_index);
-            //          p_cell->GetCellData()->SetItem("Boundary", 0);
-            //      }
+           
 		}
     }
-    else
-    {
-        // SPACE_DIM == 1
-        NEVER_REACHED;
-        //FixedRegionBoundaryCondition::ImposeBoundaryCondition is not implemented in 1D
-    }
-    if (mIntialTime==1)
-    {
-        mIntialTime =0;
-    }
+
 }
 
 
@@ -164,3 +134,26 @@ template class FixedRegionBoundaryCondition<3,3>;
 // Serialization for Boost >= 1.36
 #include "SerializationExportWrapperForCpp.hpp"
 EXPORT_TEMPLATE_CLASS_ALL_DIMS(FixedRegionBoundaryCondition)
+
+
+ // Uncomment this code if you want iolets labelled in Paraview for viz purposes
+                    
+                    // // Remove any CellLabels as can only have one label
+                    // CellPtr p_cell = this->mpCellPopulation->GetCellUsingLocationIndex(node_index);
+                    // //  if (mIntialTime==1)
+                    // //  {
+                    //         p_cell->GetCellData()->SetItem("BoundarySet", 1);
+                            // TRACE("new boundary node")
+                    //  }
+                    
+
+                    // p_cell->RemoveCellProperty<CellLabel>();
+                    // // TRACE("Stuffremoved here")
+    
+                    // // Add label to cell so can see them in Visualizer
+                    // boost::shared_ptr<AbstractCellProperty> p_label(CellPropertyRegistry::Instance()->Get<CellLabel>());
+                    // this->mpCellPopulation->GetCellUsingLocationIndex(node_index)->AddCellProperty(p_label); // else
+            //      {
+            //          CellPtr p_cell = this->mpCellPopulation->GetCellUsingLocationIndex(node_index);
+            //          p_cell->GetCellData()->SetItem("Boundary", 0);
+            //      }
