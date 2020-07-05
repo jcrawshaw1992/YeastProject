@@ -98,93 +98,89 @@ def convertFile(vtkFile, VTUfile):
 if __name__=="__main__":
     parser = ArgumentParser(description='Get the radius file ')
     
-    parser.add_argument('--ifile', default='/Users/jcrawshaw/docker-polnet-master/Plexus_Course_2/', type=str, help='Need to supply a input folder')
+    parser.add_argument('--ifile', default='/Users/jcrawshaw/docker-polnet-master/Plexus/', type=str, help='Need to supply a input folder')
     args = parser.parse_args()    
     # ' ------- Setting up args ------- '
 
     Directory  = args.ifile #+ 'results_from_time_0/'
-    CenterLines_filename = args.ifile + 'PlexusCenterlines.vtp'
-    SmootherCenterlinesFile = args.ifile + 'PlexusCenterlines_Smoothed.vtp'
-    ScalledCenterLines = args.ifile + 'PlexusCenterlines_Smoothed.vtp' # args.ifile + 'PlexusCenterlines_Scalled.vtp'
+    CenterLines_filename = args.ifile + 'Centerlines.vtp'#'PlexusCenterlines.vtp'
+    SmootherCenterlinesFile = args.ifile + 'SmoothedCenterlines.vtp'#+ 'Centerlines_Smoothed.vtp'
+    ScalledCenterLines =args.ifile + 'CenterlinesScalled.vtp' # args.ifile + 'CCenterlines_Smoothed.vtp' # args.ifile + 'PlexusCenterlines_Scalled.vtp'
 
-    ScalledMeshVTK = args.ifile + 'InialMesh.vtk'
-    ScalledMeshVTK_2 = args.ifile + 'PlexusMesh.vtk'
-    ScalledMeshVTU = args.ifile + 'Plexus_2.vtu'
-    
-    
-    
-    AdaptiveRadius = 1
-    ResampleCenterlinesFile =0
-    Scalling = 10
+    MeshVTK = args.ifile + 'InialMesh.vtk'
+    MeshVTK_2 = args.ifile + 'Plexus.vtk'
+    MeshVTU = args.ifile +  'Plexus2.vtu'
+ 
+    ResampleCenterlinesFile = 1
+    Scalling = 2
+    AdaptiveRadius =1
 
-    CenterlinesGenerationNeeded =0
-    
+#     # Resamlpe the centerlines smooth centerlines with a moving average filter -->    vmtkcenterlineresampling -ifile PlexusInversed.vtp -length 20 -ofile resampledCenterlines.vtp  
+#     if ResampleCenterlinesFile:
+#         # SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ CenterLines_filename + ' -ofile '+ SmootherCenterlinesFile
+#         SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ CenterLines_filename + ' -length 0.05 -ofile '+ SmootherCenterlinesFile
+#         subprocess.call(SmoothCenterlinesCommond, shell=True)
 
-    if CenterlinesGenerationNeeded:
-        pdb.set_trace()
-        print ' You should  not need this if you have a centerlines file, go get the centerlines file properly '
-        # Generating a centerlines file form thse original mesh (the one from James and Miguel)
-        GetCenterlinesCommand = 'vmtk vmtknetworkextraction -ifile ' + Directory + 'config.stl' + ' -ofile ' + CenterLines_filename+"NewlyGenerated"
-        subprocess.call(GetCenterlinesCommand, shell=True)
+#         # SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ SmootherCenterlinesFile + ' -ofile '+ SmootherCenterlinesFile
+#         # subprocess.call(SmoothCenterlinesCommond, shell=True)
 
-    # Resamlpe the centerlines smooth centerlines with a moving average filter -->    vmtkcenterlineresampling -ifile PlexusInversed.vtp -length 20 -ofile resampledCenterlines.vtp  
-    if ResampleCenterlinesFile:
-        SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ CenterLines_filename + ' -ofile '+ SmootherCenterlinesFile
-        subprocess.call(SmoothCenterlinesCommond, shell=True)
-
-        SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ SmootherCenterlinesFile + ' -ofile '+ SmootherCenterlinesFile
-        subprocess.call(SmoothCenterlinesCommond, shell=True)
-
-  #     # Read in the centerlines file and edit the radius -> this is saved in a new file, which will be read in to generate the new mesh
-    if AdaptiveRadius:
+#   #     # Read in the centerlines file and edit the radius -> this is saved in a new file, which will be read in to generate the new mesh
+  
+#     if AdaptiveRadius:
        
-        reader = vtk.vtkXMLPolyDataReader()
+#         reader = vtk.vtkXMLPolyDataReader()
 
-        #Read in the centerlines file
-        reader.SetFileName(CenterLines_filename)
-        reader.Update()
+#         #Read in the centerlines file
+#         reader.SetFileName(SmootherCenterlinesFile)
+#         reader.Update()
 
-        # Set up the vtk writer for the edited centerlines data 
-        writer = vtk.vtkXMLPolyDataWriter()
-        writer.SetFileName(ScalledCenterLines)
+#         # Set up the vtk writer for the edited centerlines data 
+#         writer = vtk.vtkXMLPolyDataWriter()
+#         writer.SetFileName(ScalledCenterLines)
     
-        point_data = reader.GetOutput().GetPointData()
+#         point_data = reader.GetOutput().GetPointData()
 
-        assert point_data.GetArrayName(0) == 'Radius', "VTP file doesn't contain array Radius"
-        radii = point_data.GetArray(0)
+#         assert point_data.GetArrayName(0) == 'Radius', "VTP file doesn't contain array Radius"
+#         radii = point_data.GetArray(0)
         
-        # loop over the radius and save scale
-        for i in range(radii.GetSize()):
-            radius = radii.GetValue(i)/2
-            reader.GetOutput().GetPointData().GetArray(0).SetValue(i,radius)
+#         # loop over the radius and save scale
+#         for i in range(radii.GetSize()):
+#             radius = radii.GetValue(i)/Scalling
+#             reader.GetOutput().GetPointData().GetArray(0).SetValue(i,radius)
 
-        # Write the edited vtk data into the new centerlines file 
-        writer.SetInputData(reader.GetOutput())
-        writer.Write()
+#         # Write the edited vtk data into the new centerlines file 
+#         writer.SetInputData(reader.GetOutput())
+#         writer.Write()
        
 
-    print "Developing Mesh"
+#     # print "Developing Mesh"
 
-    # With the scalled radii generate a new mesh from with adapted centerlines file  -- here the discretisation dimension (i.e nunber of nodes in each axis) is currently 200 200 200, but might need changing 
-    command = 'vmtk vmtkcenterlinemodeller -ifile ' + ScalledCenterLines +' -radiusarray Radius -dimensions 150 150 150 --pipe vmtkmarchingcubes -ofile '+ ScalledMeshVTK # -handle Self'# -dimensions '+3   /Users/jcrawshaw/docker-polnet-master/GeneratingShrunkMesh/Original2.vtk
-    subprocess.call(command, shell=True)
+#     # With the scalled radii generate a new mesh from with adapted centerlines file  -- here the discretisation dimension (i.e nunber of nodes in each axis) is currently 200 200 200, but might need changing 
+#     # command = 'vmtk vmtkcenterlinemodeller -ifile ' + ScalledCenterLines +' -radiusarray Radius -dimensions 160 160 160  --pipe vmtkmarchingcubes -ofile '+ ScalledMeshVTK # -handle Self'# -dimensions '+3   /Users/jcrawshaw/docker-polnet-master/GeneratingShrunkMesh/Original2.vtk
+#     command = 'vmtk vmtkcenterlinemodeller -ifile ' + ScalledCenterLines +' -radiusarray Radius -dimensions 160 160 160 --pipe vmtkmarchingcubes -ofile '+ MeshVTK # -handle Self'# -dimensions '+3   /Users/jcrawshaw/docker-polnet-master/GeneratingShrunkMesh/Original2.vtk
+#     subprocess.call(command, shell=True)
 
     
-    # # pause()
-    # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-    command = 'vmtksurfaceremeshing -ifile '+ScalledMeshVTK +' -iterations 6  -area 125 -ofile ' +ScalledMeshVTK_2
+    # # # # pause()
+    # # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
+    # command = 'vmtksurfaceremeshing -ifile '+MeshVTK +' -iterations 10 -area 50 -ofile ' +MeshVTK_2
+    # subprocess.call(command, shell=True)
+    # 1e-2 *1e3
+    command = 'vmtksurfaceremeshing -ifile '+MeshVTK +' -iterations 10 -elementsizemode "edgelength" -edgelength 1.5 -ofile ' +MeshVTK_2
     subprocess.call(command, shell=True)
 
     # # Need to convert the mesh from a vtk to a vtu, this step is critical 
-    convertFile(ScalledMeshVTK_2, ScalledMeshVTU)
+
+    RemoveInletCaps = 'python clip2.py'
+    subprocess.call(RemoveInletCaps, shell=True)
+
+
+    # convertFile(ScalledMeshVTK_2, ScalledMeshVTU)
     # ScalledMeshVTUN = args.ifile + 'PlexusNew.vtu'
 
 
-# #     # # Remove the ends from the mesh 
-#     RemoveInletCaps = 'vmtkmeshclipper -ifile '+ScalledMeshVTU +' -ofile '+ScalledMeshVTUN
-#     subprocess.call(RemoveInletCaps, shell=True)
-
-
+# # #     # # Remove the ends from the mesh 
+      
 
     print "-------------------------------------"
     print "- Scalled Mesh has been generated  -"

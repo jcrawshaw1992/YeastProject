@@ -1,0 +1,7 @@
+#!/bin/bash
+# chmod 700 RunHemeLB
+echo /Users/jcrawshaw/Documents/testoutput/FlowThroughCollapsingNetwork/ForcedCollapse3/HemeLBFluid/config.xml
+mpirun -np 2 hemelb -in /Users/jcrawshaw/Documents/testoutput/FlowThroughCollapsingNetwork/ForcedCollapse3/HemeLBFluid/config.xml > /Users/jcrawshaw/Documents/testoutput/FlowThroughCollapsingNetwork/ForcedCollapse3/HemeLBFluid/HemeLBTerminalOutput.txt
+echo 'HemeLB has finished' > /Users/jcrawshaw/Documents/testoutput/FlowThroughCollapsingNetwork/ForcedCollapse3/HemeLBFluid/WaitFile.txt 
+echo 'HemeLB simulation complete' 
+osascript -e 'tell application "Terminal" to close first window' & exit

@@ -119,6 +119,8 @@ public:
     void DeleteMesh();
     void AssignNewMesh(HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>* New_Mesh);
     void AddANewNodeBehindBoundary();
+    void CreateNewMesh(HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>* New_Mesh, std::map<unsigned, c_vector<double, SPACE_DIM> > mInitalPositionOfRemeshedNodes);
+    
 
     /**
      * Destructor.

@@ -5,14 +5,113 @@
 
 // Need to include this to use the functions in this class
 // MathsFunctions maths_functions = MathsFunctions();
-// c_vector<c_vector<long double, 3>, 3> NewVec =  maths_functions.TheNewMatrixMultiplication(Matrix2, Matrix1);
+// c_vector<c_vector<double, 3>, 3> NewVec =  maths_functions.TheNewMatrixMultiplication(Matrix2, Matrix1);
+
+std::set<int> MathsFunctions::convertToSet(std::vector<int> v) 
+{ 
+    // Declaring the  set 
+    std::set<int> s; 
+  
+    // Traverse the Vector 
+    for (int x : v) { 
+  
+        // Insert each element 
+        // into the Set 
+        s.insert(x); 
+    } 
+  
+    // Return the resultant Set 
+    return s; 
+} 
+
+
+std::set<unsigned> MathsFunctions::convertToSet(std::vector<unsigned> v) 
+{ 
+    // Declaring the  set 
+    std::set<unsigned> s; 
+  
+    // Traverse the Vector 
+    for (unsigned x : v) { 
+  
+        // Insert each element 
+        // into the Set 
+        s.insert(x); 
+    } 
+  
+    // Return the resultant Set 
+    return s; 
+} 
+
+
+
+
+
+std::set<double> MathsFunctions::convertToSet(std::vector<double> v) 
+{ 
+    // Declaring the  set 
+    std::set<double> s; 
+  
+    // Traverse the Vector 
+    for (double x : v) { 
+  
+        // Insert each element 
+        // into the Set 
+        s.insert(x); 
+    } 
+  
+    // Return the resultant Set 
+    return s; 
+} 
+
+
+
+std::set<std::pair<double, double>> MathsFunctions::convertToSet(std::vector<std::pair<double, double>> v) 
+{ 
+    // Declaring the  set 
+    std::set<std::pair<double, double>> s; 
+  
+    // Traverse the Vector 
+    for (std::pair<double, double> x : v) { 
+  
+        // Insert each element 
+        // into the Set 
+        s.insert(x); 
+    } 
+  
+    // Return the resultant Set 
+    return s; 
+}
+
+
+
+std::set<Node<3>*> MathsFunctions::convertToSet(std::vector<Node<3>*> v) 
+{ 
+    // Declaring the  set 
+    std::set<Node<3>*> s; 
+  
+    // Traverse the Vector 
+    for (Node<3>* x : v) { 
+  
+        // Insert each element 
+        // into the Set 
+        s.insert(x); 
+    } 
+  
+    // Return the resultant Set 
+    return s; 
+} 
+
+
+
+
+
  
 
-c_vector<c_vector<long double, 3>, 3> MathsFunctions::MatrixMultiplication(c_vector<c_vector<long double, 3>, 3> Matrix1, c_vector<c_vector<long double, 3>, 3> Matrix2)
+c_vector<c_vector<double, 3>, 3> MathsFunctions::MatrixMultiplication(c_vector<c_vector<double, 3>, 3> Matrix1, c_vector<c_vector<double, 3>, 3> Matrix2)
 {
 
-    c_vector<c_vector<long double, 3>, 3> MatrixTranspose;
-    c_vector<c_vector<long double, 3>, 3> Answer;
+    c_vector<c_vector<double, 3>, 3> MatrixTranspose;
+    c_vector<c_vector<double, 3>, 3> Answer;
 
     // This will give us the determinat
     for (int i = 0; i < 3; i++)
@@ -31,10 +130,10 @@ c_vector<c_vector<long double, 3>, 3> MathsFunctions::MatrixMultiplication(c_vec
     return Answer;
 }
 
-c_vector<long double, 3> MathsFunctions::MatrixMultiplication(c_vector<c_vector<long double, 3>, 3> Matrix, c_vector<long double, 3> Vector)
+c_vector<double, 3> MathsFunctions::MatrixMultiplication(c_vector<c_vector<double, 3>, 3> Matrix, c_vector<double, 3> Vector)
 {
 
-    c_vector<long double, 3> Answer;
+    c_vector<double, 3> Answer;
 
 
         for (int i = 0; i < 3; i++)
@@ -306,9 +405,9 @@ bool MathsFunctions::IsVectorInVector(std::vector<c_vector<double, 3> > Vector, 
 
 
 
-c_vector<c_vector<long double, 3>, 3> MathsFunctions::MatrixTranspose(c_vector<c_vector<long double, 3>, 3> Matrix)
+c_vector<c_vector<double, 3>, 3> MathsFunctions::MatrixTranspose(c_vector<c_vector<double, 3>, 3> Matrix)
 {
-    c_vector<c_vector<long double, 3>, 3> MatrixTranspose;
+    c_vector<c_vector<double, 3>, 3> MatrixTranspose;
     for (int i = 0; i < 3; i++)
     { // Transporse of the matrix
         MatrixTranspose[i] = Create_c_vector(Matrix[0][i], Matrix[1][i], Matrix[2][i]);
@@ -316,15 +415,15 @@ c_vector<c_vector<long double, 3>, 3> MathsFunctions::MatrixTranspose(c_vector<c
     return MatrixTranspose;
 }
 
-c_vector<c_vector<long double, 3>, 3> MathsFunctions::Inverse(c_vector<c_vector<long double, 3>, 3> Matrix)
+c_vector<c_vector<double, 3>, 3> MathsFunctions::Inverse(c_vector<c_vector<double, 3>, 3> Matrix)
 {
 
-    c_vector<c_vector<long double, 3>, 3> MTranspose = MatrixTranspose(Matrix);
+    c_vector<c_vector<double, 3>, 3> MTranspose = MatrixTranspose(Matrix);
 
-    long double det = Matrix[0][0] * (Matrix[1][1] * Matrix[2][2] - Matrix[1][2] * Matrix[2][1]) - Matrix[0][1] * (Matrix[1][0] * Matrix[2][2] - Matrix[1][2] * Matrix[2][0]) + Matrix[0][2] * (Matrix[1][0] * Matrix[2][1] - Matrix[1][1] * Matrix[2][0]);
+    double det = Matrix[0][0] * (Matrix[1][1] * Matrix[2][2] - Matrix[1][2] * Matrix[2][1]) - Matrix[0][1] * (Matrix[1][0] * Matrix[2][2] - Matrix[1][2] * Matrix[2][0]) + Matrix[0][2] * (Matrix[1][0] * Matrix[2][1] - Matrix[1][1] * Matrix[2][0]);
 
     double l = 0, m = 1;
-    c_vector<c_vector<long double, 3>, 3> InverseMatrix;
+    c_vector<c_vector<double, 3>, 3> InverseMatrix;
     for (int k = 0; k < 3; k++)
     {
         l += 1, m += 1;
@@ -341,15 +440,15 @@ c_vector<c_vector<long double, 3>, 3> MathsFunctions::Inverse(c_vector<c_vector<
     return InverseMatrix;
 }
 
-c_vector<c_vector<long double, 3>, 3> MathsFunctions::Inverse(c_vector<c_vector<long double, 3>, 3> Matrix, double elem)
+c_vector<c_vector<double, 3>, 3> MathsFunctions::Inverse(c_vector<c_vector<double, 3>, 3> Matrix, double elem)
 {
 
-    long double det = Matrix[0][0] * (Matrix[1][1] * Matrix[2][2] - Matrix[1][2] * Matrix[2][1]) - Matrix[0][1] * (Matrix[1][0] * Matrix[2][2] - Matrix[1][2] * Matrix[2][0]) + Matrix[0][2] * (Matrix[1][0] * Matrix[2][1] - Matrix[1][1] * Matrix[2][0]);
+    double det = Matrix[0][0] * (Matrix[1][1] * Matrix[2][2] - Matrix[1][2] * Matrix[2][1]) - Matrix[0][1] * (Matrix[1][0] * Matrix[2][2] - Matrix[1][2] * Matrix[2][0]) + Matrix[0][2] * (Matrix[1][0] * Matrix[2][1] - Matrix[1][1] * Matrix[2][0]);
 
-    c_vector<c_vector<long double, 3>, 3> MTranspose = MatrixTranspose(Matrix);
+    c_vector<c_vector<double, 3>, 3> MTranspose = MatrixTranspose(Matrix);
 
     double l = 0, m = 1;
-    c_vector<c_vector<long double, 3>, 3> InverseMatrix;
+    c_vector<c_vector<double, 3>, 3> InverseMatrix;
     for (int k = 0; k < 3; k++)
     {
         l += 1, m += 1;
@@ -366,10 +465,10 @@ c_vector<c_vector<long double, 3>, 3> MathsFunctions::Inverse(c_vector<c_vector<
     return InverseMatrix;
 }
 
-c_vector<c_vector<long double, 3>, 3> MathsFunctions::RowReduction(c_vector<c_vector<long double, 3>, 3> Matrix)
+c_vector<c_vector<double, 3>, 3> MathsFunctions::RowReduction(c_vector<c_vector<double, 3>, 3> Matrix)
 {
     // row reduction to reduced row eshioln form
-    c_vector<c_vector<long double, 3>, 3> Identity;
+    c_vector<c_vector<double, 3>, 3> Identity;
     Identity[0] = Create_c_vector(1, 0, 0);
     Identity[1] = Create_c_vector(0, 1, 0);
     Identity[2] = Create_c_vector(0, 0, 1);
@@ -396,11 +495,11 @@ c_vector<c_vector<long double, 3>, 3> MathsFunctions::RowReduction(c_vector<c_ve
     return Identity;
 }
 
-// c_vector<c_vector<long double, 3>, 3> MathsFunctions::MappingMatrix(MeshBasedCellPopulation<2, 3>* p_cell_population, typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter, double a, double b, double theta)
+// c_vector<c_vector<double, 3>, 3> MathsFunctions::MappingMatrix(MeshBasedCellPopulation<2, 3>* p_cell_population, typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter, double a, double b, double theta)
 // {
 //     // Inverse Mapping Matrix
-//     c_vector<c_vector<long double, 3>, 3> NewPositionVector;
-//     c_vector<c_vector<long double, 3>, 3> PositionVector;
+//     c_vector<c_vector<double, 3>, 3> NewPositionVector;
+//     c_vector<c_vector<double, 3>, 3> PositionVector;
 
 //     Node<3>* pNode0 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(0));
 //     Node<3>* pNode1 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(1));
@@ -417,12 +516,12 @@ c_vector<c_vector<long double, 3>, 3> MathsFunctions::RowReduction(c_vector<c_ve
 //     NewPositionVector[2] = Create_c_vector(b * cos(theta), b * sin(theta), SpConst);
 //     NewPositionVector = MatrixTranspose(NewPositionVector);
 
-//     c_vector<c_vector<long double, 3>, 3> InverseE = MatrixMultiplication(PositionVector, Inverse(NewPositionVector));
+//     c_vector<c_vector<double, 3>, 3> InverseE = MatrixMultiplication(PositionVector, Inverse(NewPositionVector));
 
 //     return InverseE;
 // }
 
-// c_vector<c_vector<long double, 3>, 3> MathsFunctions::Mapping(c_vector<c_vector<long double, 3>, 3> PositionVector,   c_vector<c_vector<long double, 3>, 3> NewPositionVector)
+// c_vector<c_vector<double, 3>, 3> MathsFunctions::Mapping(c_vector<c_vector<double, 3>, 3> PositionVector,   c_vector<c_vector<double, 3>, 3> NewPositionVector)
 // {
 
 //         int SpConst =450; // prevents matrix begin singular
@@ -434,21 +533,21 @@ c_vector<c_vector<long double, 3>, 3> MathsFunctions::RowReduction(c_vector<c_ve
 //           PositionVector = MatrixTranspose(PositionVector);
 //           NewPositionVector = MatrixTranspose(NewPositionVector);
 
-//         c_vector<c_vector<long double, 3>, 3>  InverseE  = MatrixMultiplication(PositionVector, Inverse(NewPositionVector));
+//         c_vector<c_vector<double, 3>, 3>  InverseE  = MatrixMultiplication(PositionVector, Inverse(NewPositionVector));
 
 // return InverseE;
 // }
 
-long double MathsFunctions::det(c_vector<c_vector<long double, 2>, 2> Matrix)
+double MathsFunctions::det(c_vector<c_vector<double, 2>, 2> Matrix)
 {
 
-    long double Determinate = Matrix[0][0] * Matrix[1][1] - Matrix[0][1] * Matrix[1][0];
+    double Determinate = Matrix[0][0] * Matrix[1][1] - Matrix[0][1] * Matrix[1][0];
     return Determinate;
 }
 
-long double MathsFunctions::tr(c_vector<c_vector<long double, 2>, 2> Matrix)
+double MathsFunctions::tr(c_vector<c_vector<double, 2>, 2> Matrix)
 {
 
-    long double Trace = Matrix[0][0] + Matrix[1][1];
+    double Trace = Matrix[0][0] + Matrix[1][1];
     return Trace;
 }

@@ -72,7 +72,7 @@ protected:
     // Map of node1 Iital locations
     //std::map<unsigned,  c_vector<double, 3> > mNode0_IC;
     std::map<unsigned, c_vector<c_vector<double, 2>, 3> > mInitalVectors;
-    std::map<unsigned, c_vector<unsigned, 5> > mNearestNodesMap;
+    std::map<unsigned, c_vector<unsigned,2> > mNearestNodesMap;
     
 
 
@@ -128,7 +128,7 @@ public:
  * Function that saves a Map of all of the neighbours for all of the nodes at the boundaries 
 */
 
-    void SetNearestNodesForBoundaryNodes(std::map<unsigned, c_vector<unsigned, 5> > NearestNodesMap);
+    void SetNearestNodesForBoundaryNodes(std::map<unsigned, c_vector<unsigned, 2> > NearestNodesMap);
 
 
 

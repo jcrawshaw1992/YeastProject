@@ -32,7 +32,7 @@
 #include "Debug.hpp"
 #include "HistoryDepMutableMesh.hpp"
 #include "VtkMeshReader.hpp"
-
+#include <time.h>
 
 
 /**
@@ -67,16 +67,23 @@ private:
 
         archive & mOriginalNodePositions;
         archive & mInitalPositionOfRemeshedNodes;
-        // archive & mpMutableMesh;
         archive & mNew_mesh;
-
+        archive & mInitalVectors;
+        archive & mACoefficients;
+        archive & mBCoefficients;
+        archive & mArea0;
+        archive & mOriginalAngles;
+        archive & mTargetRemeshingEdgeLength;
+        archive & mIterations;
+        archive & mRelativePath;
+        archive & mPrintRemeshedIC;
+        archive & mMaxEdgelength;
+        archive & mRemeshingSoftwear;
     }
 
 protected:
    
-   
     /** Static cast of the mesh from AbstractCellPopulation */
-    // HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>* mpMutableMesh;
     HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM> mNew_mesh;
 
 public:
@@ -113,11 +120,34 @@ public:
      * Need a direction to the folder everything is savinging to  
      */
     void SetChasteOutputDirectory(std::string ChasteOutputDirectory, double startime);
+    void SetChasteOutputDirectory(std::string ChasteOutputDirectory);
     std::string mChasteOutputDirectory;
 
-    void ExecuteHistoryDependentRemeshing();
+    void SetRelativePath(std::string ChasteOutputDirectory, double startime);
+    void SetRelativePath(std::string ChasteOutputDirectory);
+    std::string mRelativePath;
 
+    void ExecuteHistoryDependentRemeshing();
     void MappingAdaptedMeshToInitalGeometry();
+
+    // Function to find the cloeset element in last mesh 
+    unsigned GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
+
+    unsigned GetClosestElementInOldMeshMethod2(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
+
+    unsigned GetClosestElementInOldMeshMethod3(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
+    unsigned GetClosestElementInOldMeshMethod4(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
+
+    unsigned GetClosestElementInOldMeshMethod5(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
+    unsigned GetClosestElementInOldMeshMethod6(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
+
+
+    std::map<unsigned, unsigned > mMapOfProbNodes;
+
+
+    // When I get a population of new cells, I need to be able to give these new cells the same CellData as the Precious cells, this is particullary important for the 
+    // void UpdateCellData();
+
 
      /**
      * Map the new node to the old element   Element_0 has the node position from the inital condition 
@@ -130,18 +160,157 @@ public:
 
     c_vector<double, 3> NewNodeInInitalConfigurationFromChangeOfBasis(unsigned ClosestElement_OldMeshIndex, c_vector<double, SPACE_DIM> NewNode);
     std::map<unsigned, c_vector<double, SPACE_DIM> > mInitalPositionOfRemeshedNodes;
+    int mNumberOfChanges =1;
+
+
+    /**
+     * Writing out the inital node locations in to their own vtu so I can see what is going on 
+     */
+
+
+    void WriteOutMappedInitalConfig();
 
 
     /**
      * Calling the python code to do the remeshing  
      */
     void RemeshGeometry();
+    void RemeshGeometryWithVMTK();
+    void JiggleNodes();
+    void CheckCurvature();
+    void SetRemeshingSoftwear( std::string RemeshingSoftwear);
+    std::string mRemeshingSoftwear = "CGAL";
 
     void SaveInitalConditions();
+    void SaveInitalConditionsAtTime0();
     std::map<unsigned, c_vector<double, SPACE_DIM> > mOriginalNodePositions;
+    std::map<unsigned, c_vector<double, SPACE_DIM> > GetInitalNodePositions();
+    void SetMaxEdgelength();
+    bool PointInTriangle3D(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement);
+    bool PointInTriangle3D(c_vector<double, SPACE_DIM> Point, c_vector<c_vector<double, SPACE_DIM>, SPACE_DIM> Triangle);
+    double ClosestPointInTriangle(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement);
+    unsigned WhichElement(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> NewNodeLocation, unsigned Element1, unsigned Element2);
+    unsigned WhichElement2(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2,c_vector<double, SPACE_DIM> NewNodeLocation,  unsigned Element1, unsigned Element2);
+ 
 
 
 
+    bool PointInTriangle3D2(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement);
+    bool SameSideOfPlane(c_vector<double, SPACE_DIM> P1,c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> a, c_vector<double, SPACE_DIM> b);
+    bool SameSide(c_vector<double, SPACE_DIM> P1,c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> a, c_vector<double, SPACE_DIM> b);
+   
+    double mMaxEdgelength;
+
+    void SetMinArea();
+    double mMinArea;
+
+   /**
+     * THis method will loop over the edges in the remeshed mesh and make sure the edge lengths in the IC are not longer than the edge lenght in the original remesh's original config  
+    */
+    
+    void CheckRemeshedIC();
+
+
+
+    /**
+     * Set up the intial conditions for for the intial configuration for the forces 
+     */
+
+    void SetupMembraneConfiguration();
+    std::map<unsigned, c_vector<c_vector<double, 2>, 3> > mInitalVectors;
+    // Map to the inital aCoefficients for each element
+    std::map<unsigned, c_vector<double, 3> > mACoefficients;
+    // Map to the inital aCoefficients for each element
+    std::map<unsigned, c_vector<double, 3> > mBCoefficients;
+    std::map<unsigned, double> mArea0;
+    std::map<unsigned, c_vector<unsigned, 3> > mNearestNodesMap;
+
+
+    // Make the intial conditions accessable from other classes
+    // Access the inital angle for the bending force from other classes 
+    double GetOriginalAngle(std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge);
+
+
+
+    // Get the inital shape functions and areas and vectors for the shear and area forces 
+
+    ///=====
+
+    c_vector<c_vector<double, 2>, 3> GetInitalVectors(unsigned elem_index);
+    c_vector<c_vector<double, 3>, 2> GetInitalShapeFunction(unsigned elem_index);
+    double GetOriginalArea(unsigned elem_index);
+
+
+    /*
+     * Mark the boundary nodes as boundary nodes -- I have decidede that will be when a node has less than 5 containing elements  
+     */
+    void MarkBoundaryNodes();
+    std::set<unsigned> GetNeighbouringElements(unsigned elem_index);
+    std::vector<unsigned> GetCommonNodes(unsigned elem_1, unsigned elem_2);
+    c_vector<double, SPACE_DIM> GetElementNormal(unsigned elem_index);
+
+
+    // Can manually change how many bins in each dim there are from the test
+    void SetBinningIntervals(int nX, int nY, int nZ);
+    void SetBinningRegions();
+    void SetBinningRegions2();
+    std::map < std::vector<int>, std::vector<unsigned>> mBinMap;
+
+    //Finds the bin of any given point
+    std::vector<int> DetermineBin(c_vector<double, SPACE_DIM> Point);
+
+    // This function is called in SetBinningRegions to set the maximal dimesions of the domain, letting me determine whitch nth of the domain each point is in 
+    void SetMaxDomainDimensions();
+
+    // Binning member variables
+    // Set the number of intervals  -- default is 1, but can be changed with SetBinningIntervals
+    int mNx =1; int mNy =1; int mNz =1;
+
+    // Need max dimensions of the domain 
+    double mMaxX;
+    double mMinX;
+
+    double mMaxY;
+    double mMinY;
+
+    double mMaxZ;
+    double mMinZ;
+
+    double mFudgeScalling;
+
+    // Get the nearest nodes 
+    c_vector<unsigned, 3> GetNearestInternalNodes(unsigned node_index );
+
+
+    // Several methods need the centroids, so here is a method to create a map of the centoroids 
+    void  SetCentroidMap();
+
+    std::map<unsigned, c_vector<double, SPACE_DIM> > mCentroidMap; // Save the centroid for each element
+
+
+     /**
+     * Set up the angles for the bending force -- useing the inital conditions 
+     */
+
+    void SetInitialAnlgesAcrossMembrane();
+    std::map<std::pair<unsigned, unsigned>, double> mOriginalAngles;
+
+    bool CalculateElementNormals(std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge,
+                                std::pair<c_vector<double, SPACE_DIM>, c_vector<double, SPACE_DIM> >& nonUnitNormals,
+                                std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*>& otherNodes);
+
+
+
+    // Set the element are to set the remeshing element area to be -- determines discretisation of the geometry
+   
+    void SetTargetRemeshingEdgeLength(double TargetRemeshingEdgeLength);
+    double mTargetRemeshingEdgeLength = 1e-7; 
+    void SetTargetRemeshingIterations(int Iterations);
+    int mIterations = 5;
+
+    void SetPrintRemeshedIC(bool PrintRemeshedIC);
+    bool mPrintRemeshedIC = 0;
+    
 
     /**
      * Overridden WriteResultsToFiles() method.

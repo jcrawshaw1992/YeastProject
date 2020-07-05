@@ -1,5 +1,5 @@
-#ifndef APPLIEDFORCE_HPP_
-#define APPLIEDFORCE_HPP_
+#ifndef AppliedForce_HPP_
+#define AppliedForce_HPP_
 
 #include "ChasteSerialization.hpp"
 #include <boost/serialization/base_object.hpp>
@@ -46,6 +46,8 @@ public:
      */
     void AddForceContribution(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
 
+    void SetUpAppliedConfiguration();
+
     /**
      * Overridden OutputForceParameters() method.
      *
@@ -57,4 +59,4 @@ public:
 #include "SerializationExportWrapper.hpp"
 EXPORT_TEMPLATE_CLASS_ALL_DIMS(AppliedForce)
 
-#endif /*APPLIEDFORCE_HPP_*/
+#endif /*AppliedForce_HPP_*/

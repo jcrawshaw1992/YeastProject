@@ -65,6 +65,11 @@ public:
 
     void AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation);
 
+    void SetNearestNeighboursMap(std::map<unsigned, c_vector<unsigned, 2> > NearestNodesMap);
+    std::map<unsigned, c_vector<unsigned, 2> > mNearestNodesMap;
+
+
+
     /**
      * Overridden OutputForceParameters() method.
      *

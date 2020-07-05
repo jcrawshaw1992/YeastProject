@@ -254,7 +254,7 @@ public:
 
         // Set up cell-based simulation
         OffLatticeSimulation<2,3> simulator(cell_population);
-        std::string output_dir = "TestNewInitalCondition/Second";
+        std::string output_dir = "TestNewInitalCondition/third";
         
         simulator.SetOutputDirectory(output_dir);
         simulator.SetSamplingTimestepMultiple(1);

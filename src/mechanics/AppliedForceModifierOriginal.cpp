@@ -183,6 +183,11 @@ void AppliedForceModifier<ELEMENT_DIM,SPACE_DIM>::SetResetTractionsOnCells(bool 
 	assert(!resetTractionsOnCells || tractionFile!="");
 	mResetTractionsOnCells = resetTractionsOnCells;
 	mTractionFile = tractionFile;
+	if(mResetTractionsOnCells && mTractionFile !="")
+	{
+		LoadTractionFromFile();
+		UpdateCellData(rCellPopulation);
+	}
 }
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>

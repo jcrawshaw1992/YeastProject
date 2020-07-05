@@ -126,34 +126,49 @@ def clip_surface_with_plane(vtkFile, plane_origin, plane_normal, save_name):
     writer.Write()
 
 
-file_basename = '/Users/jcrawshaw/docker-polnet-master/PlexusNotScalled/PlexusMesh.vtk'
-Save_name = "/Users/jcrawshaw/docker-polnet-master/PlexusNotScalled/PlexusMesh_Clipped.vtk"
-ScalledMeshVTU = "/Users/jcrawshaw/docker-polnet-master/PlexusNotScalled/Plexus.vtu"
-
-#clip_surface_with_plane(file_basename, (500, 400, 10), (1, 0, 0))
-#clip_surface_with_plane(file_basename, (2000, 1200, 10), (-1, 0, 0))
-#clip_surface_with_plane(file_basename, (472, 420, 0), (0, -11, 0))
-clip_surface_with_plane(file_basename, (584.0682462724309, 1220.205,-46.025), (0.671,-0.7325,0.1142), Save_name)
-
-
-clip_surface_with_plane(Save_name, (188.38,740.09,23.53), (0.999,-0.0158,0.015), Save_name)
-
-
-clip_surface_with_plane(Save_name, (490.7664298534873, 350.7211701339496, 6.666), ( 0.7067859059916219, 0.7065452213525341, -0.0353204370796983), Save_name)
-clip_surface_with_plane(Save_name, (739.05,181.48,3.609), ( 0.259,0.96,-0.065), Save_name)
-clip_surface_with_plane(Save_name, (1234.1761995532954, 231.67,11.24), ( -0.762,0.646,0.015), Save_name)
-clip_surface_with_plane(Save_name, (1261.6921084158262, 875.832, 23.36), (-0.74,-0.67,-0.0219 ), Save_name)
-
-clip_surface_with_plane(Save_name, (1246.6,1177.32, -2.20), (-0.86, -0.505, -0.0042 ), Save_name)
-
-print "B"
-
-convertFile(Save_name, ScalledMeshVTU)
 
 
 
-        
+if __name__=="__main__":
+    print "B"
+    file_basename = '/Users/jcrawshaw/docker-polnet-master/Plexus/Plexus_.vtk'
+    Save_name ='/Users/jcrawshaw/docker-polnet-master/Plexus/Plexus_Clipped.vtk'
+    ScalledMeshVTU = '/Users/jcrawshaw/docker-polnet-master/Plexus/Plexus.vtu'
+
+
+    clip_surface_with_plane(file_basename, (584.0682462724309, 1220.205,-46.025), (0.671,-0.7325,0.1142), Save_name)
+    clip_surface_with_plane(Save_name, (724.0,1033, 7.07), ( 0.6,-0.77,0.021024), Save_name)
+    clip_surface_with_plane(Save_name, (515,725.22,-3.9552), (1,0,0), Save_name) 
+    clip_surface_with_plane(Save_name, (790.36,335.33,-9.04), (0.1633,0.9849,-0.0558), Save_name)
+    clip_surface_with_plane(Save_name, (1074.24,387.48,7.1176), (-0.718,0.6957,-0.0060), Save_name)
+
+    clip_surface_with_plane(Save_name, (566.662,419.26,-6.4678), (0.749,0.6611,0.034), Save_name)
+    clip_surface_with_plane(Save_name, (923.2201,999.48,64.698), (-0.8,-0.59,0.066), Save_name) # This is the double inlet clip 
+
+
+    clip_surface_with_plane(Save_name, (589,449,-10.92), (0.74,0.66,0.07), Save_name)
+
+
+    # clip_surface_with_plane(Save_name, (1118.3718539299637, 763.2531499987747, -37.29957198480793), (-0.747655752639549,-0.6640643141155529,-0.005427915182636253),Save_name)
+    # clip_surface_with_plane(Save_name, (1023.576557206921,441.4817104487465,5.7343), (-0.666436,0.74555,-0.003305),Save_name)
     
 
+    print "B"
+
+    convertFile(Save_name, ScalledMeshVTU)
 
 
+
+
+
+
+
+    # clip_surface_with_plane(Save_name, (868.1880952727679 ,983.8586368784662, 5.063651818901772), (-0.7599939029217574, -0.6465122180065016,0.06656740561316943),Save_name)
+    # ------ clip_surface_with_plane(Save_name, (1056.6586433396953,798.8830331184279,-31.680250029575088), (-0.77,-0.63,-0.0044),Save_name)
+   
+    # clip_surface_with_plane(Save_name, (876.821363827764, 977.783133265147, -2.05844433023), (-0.7675574981353623, -0.6395584949061747,0.04266636438146647),Save_name)
+    # clip_surface_with_plane(Save_name, (747.7243233621704, 984.6198633617935, -8.616802235081101), (0.6274776322716822, -0.77840504820888881,0.01890507661030046),Save_name)
+    # clip_surface_with_plane(Save_name, (1029.0492308823348,455.49674348752814, 9.689638578653245), (-0.6599581642858824, 0.7498856275322177,-0.0461168842510048),Save_name)
+    # clip_surface_with_plane(Save_name, (787.6737002773617, 366.26124, -15.0218), (0.11385,0.98604,-0.121459),Save_name)
+    # clip_surface_with_plane(Save_name, (538.5146716695529,734.31421627347754, -20.60246319604332), (0.991506264684339,-0.12632669710621983,-0.030933682127142006),Save_name)
+    

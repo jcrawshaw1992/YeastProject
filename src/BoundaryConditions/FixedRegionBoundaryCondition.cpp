@@ -59,24 +59,33 @@ void FixedRegionBoundaryCondition<ELEMENT_DIM,SPACE_DIM>::ImposeBoundaryConditio
 			c_vector<double, SPACE_DIM> node_location = p_node->rGetLocation();          
 			// Find the old location of the node
 			c_vector<double, SPACE_DIM> node_old_location = rOldLocations.find(p_node)->second;
+   
             // calculate the distance of the node from the central point if its to far then dont impose boundary condition
             double distance_from_point = norm_2(node_old_location - mPointOnPlane);
-            if (distance_from_point < mRadius)
+            
+            if (distance_from_point <= mRadius)
             {    
-                double signed_distance = inner_prod(node_old_location - mPointOnPlane, mNormalToPlane);
+                double signed_distance = inner_prod(node_location - mPointOnPlane, mNormalToPlane);
                 if (signed_distance > 0.0)
                 {
-                    // Only allow movement perpendicular to the normal
+
+                    //  // For the closest point on the plane we travel from node_location the signed_distance in the direction of -mNormalToPlane
+                    // c_vector<double, SPACE_DIM> nearest_point = node_location - signed_distance*mNormalToPlane;
+    
+                    // p_node->rGetModifiableLocation() = nearest_point;
+                    // // Only allow movement perpendicular to the normal -- for some reason this is not working 
                     c_vector<double,SPACE_DIM> displacement = node_location - node_old_location;
                     p_node->rGetModifiableLocation() = node_old_location + displacement - inner_prod(displacement,mNormalToPlane)*mNormalToPlane;
+                    // p_node->rGetModifiableLocation() = node_location - inner_prod(displacement,mNormalToPlane)*mNormalToPlane;
 
-                     CellPtr p_cell = this->mpCellPopulation->GetCellUsingLocationIndex(node_index);
-                     p_cell->RemoveCellProperty<CellLabel>();
+                    CellPtr p_cell = this->mpCellPopulation->GetCellUsingLocationIndex(node_index);
+                    //  p_cell->RemoveCellProperty<CellLabel>();
 
                       // Add label to cell so can see them in Visualizer
-                    boost::shared_ptr<AbstractCellProperty> p_label(CellPropertyRegistry::Instance()->Get<CellLabel>());
-                    this->mpCellPopulation->GetCellUsingLocationIndex(node_index)->AddCellProperty(p_label); // else
+                    // boost::shared_ptr<AbstractCellProperty> p_label(CellPropertyRegistry::Instance()->Get<CellLabel>());
+                    // this->mpCellPopulation->GetCellUsingLocationIndex(node_index)->AddCellProperty(p_label); // else
 
+                    p_cell->GetCellData()->SetItem("FixedBoundary", 1);
                     //  TRACE("A")
                  }
               

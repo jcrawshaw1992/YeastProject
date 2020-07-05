@@ -240,14 +240,14 @@ void MembraneForcesBasic::AddForceContribution(AbstractCellPopulation<2, 3>& rCe
         if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
         {
             c_vector<double, 3> AverageForce = Create_c_vector(0,0,0);
-            c_vector<unsigned, 5> NearestNodes = mNearestNodesMap[node_index];
+            c_vector<unsigned, 2> NearestNodes = mNearestNodesMap[node_index];
             std::set<unsigned> neighbouring_node_indices = rCellPopulation.GetNeighbouringNodeIndices(node_index);
-            for ( int i = 0; i <5; i++)
+            for ( int i = 0; i <2; i++)
             {  
                 AverageForce += MembraneForceMap[NearestNodes[i]];
             }
             
-            AverageForce/=5;
+            AverageForce/=2;
             double AppliedPressure = norm_2(AverageForce);        
             // Loop over neighbouring elements to get normal 
 
@@ -297,7 +297,7 @@ void MembraneForcesBasic::AddForceContribution(AbstractCellPopulation<2, 3>& rCe
 */
 
 
-void MembraneForcesBasic::SetNearestNodesForBoundaryNodes(std::map<unsigned, c_vector<unsigned, 5> > NearestNodesMap)
+void MembraneForcesBasic::SetNearestNodesForBoundaryNodes(std::map<unsigned, c_vector<unsigned, 2> > NearestNodesMap)
 {
 
     mNearestNodesMap = NearestNodesMap;

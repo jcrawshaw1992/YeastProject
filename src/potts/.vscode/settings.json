@@ -76,6 +76,15 @@
         "optional": "cpp",
         "set": "cpp",
         "typeindex": "cpp",
-        "condition_variable": "cpp"
+        "condition_variable": "cpp",
+        "__errc": "cpp",
+        "__node_handle": "cpp",
+        "bit": "cpp",
+        "codecvt": "cpp",
+        "csignal": "cpp",
+        "queue": "cpp",
+        "stack": "cpp",
+        "unordered_set": "cpp",
+        "filesystem": "cpp"
     }
 }

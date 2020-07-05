@@ -12,6 +12,20 @@
 #include <string>
 #include "PetscTools.hpp"
 #include "UblasCustomFunctions.hpp"
+#include <map>
+#include <algorithm>
+
+#include "ChasteSerialization.hpp"
+#include <boost/serialization/base_object.hpp>
+#include <boost/serialization/set.hpp>
+#include <boost/serialization/vector.hpp>
+
+
+#include "UblasCustomFunctions.hpp"
+#include "Debug.hpp"
+#include "Node.hpp"
+
+
 
 
 
@@ -25,27 +39,37 @@ class MathsFunctions
 public:
 
 
+    // Convert vector into a set 
+
+    std::set<int> convertToSet(std::vector<int> v); 
+    std::set<unsigned> convertToSet(std::vector<unsigned> v); 
+    std::set<double> convertToSet(std::vector<double> v); 
+    std::set<std::pair<double, double>> convertToSet(std::vector<std::pair<double, double>> v); 
+    std::set<Node<3>*> convertToSet(std::vector<Node<3>*> v); 
+
+
+
     // std::map<unsigned, c_vector< c_vector< double, 3>, 3> > mMapping;
   
     // std::map<unsigned, c_vector<double, 3> > mForceMap;
   
-    c_vector<c_vector<long double, 3>, 3> Inverse(c_vector<c_vector<long double, 3>, 3> Matrix);
+    c_vector<c_vector<double, 3>, 3> Inverse(c_vector<c_vector<double, 3>, 3> Matrix);
   
-    c_vector<c_vector<long double, 3>, 3> Inverse(c_vector<c_vector<long double, 3>, 3> Matrix, double elem);
+    c_vector<c_vector<double, 3>, 3> Inverse(c_vector<c_vector<double, 3>, 3> Matrix, double elem);
   
-    c_vector<c_vector<long double, 3>, 3> MatrixMultiplication(c_vector<c_vector<long double, 3>, 3> Matrix1, c_vector<c_vector<long double, 3>, 3> Matrix2);
+    c_vector<c_vector<double, 3>, 3> MatrixMultiplication(c_vector<c_vector<double, 3>, 3> Matrix1, c_vector<c_vector<double, 3>, 3> Matrix2);
   
-    c_vector<long double, 3> MatrixMultiplication(c_vector<c_vector<long double, 3>, 3> Matrix, c_vector<long double, 3> Vector);
+    c_vector<double, 3> MatrixMultiplication(c_vector<c_vector<double, 3>, 3> Matrix, c_vector<double, 3> Vector);
   
-    c_vector<c_vector<long double, 3>, 3> MatrixTranspose(c_vector<c_vector<long double, 3>, 3> Matrix1);
+    c_vector<c_vector<double, 3>, 3> MatrixTranspose(c_vector<c_vector<double, 3>, 3> Matrix1);
 
-    c_vector<c_vector<long double, 3>, 3> RowReduction(c_vector<c_vector<long double, 3>, 3> Matrix);
+    c_vector<c_vector<double, 3>, 3> RowReduction(c_vector<c_vector<double, 3>, 3> Matrix);
 
-    // c_vector<c_vector<long double, 3>, 3> MappingMatrix(MeshBasedCellPopulation<2, 3>* p_cell_population, typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter, double a, double b, double theta);
+    // c_vector<c_vector<double, 3>, 3> MappingMatrix(MeshBasedCellPopulation<2, 3>* p_cell_population, typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter, double a, double b, double theta);
     
-    long double det(c_vector<c_vector<long double, 2>, 2> Matrix);
+    double det(c_vector<c_vector<double, 2>, 2> Matrix);
 
-    long double tr(c_vector<c_vector<long double, 2>, 2> Matrix);
+    double tr(c_vector<c_vector<double, 2>, 2> Matrix);
 
 
 

@@ -49,7 +49,9 @@ void MembraneStiffnessForce::SetupInitialMembrane(MutableMesh<2, 3>& rMesh)
 
         if (boundary_edge_found)
         {
-            SetOriginalAngle(edge, DOUBLE_UNSET);
+            // SetOriginalAngle(edge, DOUBLE_UNSET);
+
+            mOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] = DOUBLE_UNSET;
         }
         else
         { // This is where the angle is set
@@ -105,7 +107,9 @@ void MembraneStiffnessForce::SetupInitialMembrane(MutableMesh<2, 3>& rMesh)
                 Angle = 0;
             }
 
-            SetOriginalAngle(edge, Angle);
+            // SetOriginalAngle(edge, Angle);
+
+            mOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] = Angle;
         }
     }
 }

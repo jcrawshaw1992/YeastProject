@@ -6,7 +6,7 @@ import shutil
 import os
 
 
-directory = '/Users/jcrawshaw/Documents/Projects/' 
+directory = '/Users/jcrawshaw/Documents/Projects/2020SupervisorMeetings/April/' 
 
 os.walk(directory)
 
