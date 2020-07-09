@@ -13,20 +13,28 @@ HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::HistoryDepMeshBasedCe
                                                                                              bool validate)
         : MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>(rMesh, rCells, locationIndices, deleteMesh, validate)
 {
-    TRACE("SAVE initial config")
+    // TRACE("SAVE initial config")
     SaveInitalConditions();
-    TRACE("SAVE initial config at Time 0 ")
+    // TRACE("SAVE initial config at Time 0 ")
     SaveInitalConditionsAtTime0();
-    TRACE("Mark Boudary ")
-    MarkBoundaryNodes();
-
-    // // Define all the inital configurations ... this needed to be done and the start, and whenever there is a remeshing
-    SetupMembraneConfiguration();
-    // SetInitialAnlgesAcrossMembrane();
-    SetMaxEdgelength();
+    // TRACE("Mark Boudary ")
+    DetermineDimensions();
     SetBinningIntervals(1,1,1);
     mFudgeScalling = 0.05;
     SetBinningRegions2();
+
+
+    bool SetUpInitialConfigurations =0;
+    if (SetUpInitialConfigurations ==1)
+    {
+        SaveInitalConditions();
+        SaveInitalConditionsAtTime0();
+        MarkBoundaryNodes();
+        // // Define all the inital configurations ... this needed to be done and the start, and whenever there is a remeshing
+        SetupMembraneConfiguration();
+        // SetInitialAnlgesAcrossMembrane();
+        SetMaxEdgelength();
+    }
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -41,64 +49,6 @@ HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::~HistoryDepMeshBasedC
 
     // mNew_mesh.~HistoryDepMutableMesh();
     // TRACE("Got rid of the new mesh class too ")
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SaveInitalConditions()
-{
-    for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
-         node_iter != this->rGetMesh().GetNodeIteratorEnd();
-         ++node_iter)
-    {
-        unsigned node_index = node_iter->GetIndex();
-        mOriginalNodePositions[node_index] = node_iter->rGetLocation();
-    }
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SaveInitalConditionsAtTime0()
-{
-    for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
-         node_iter != this->rGetMesh().GetNodeIteratorEnd();
-         ++node_iter)
-    {
-        unsigned node_index = node_iter->GetIndex();
-        mInitalPositionOfRemeshedNodes[node_index] = node_iter->rGetLocation();
-    }
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetMaxEdgelength()
-{
-    mMaxEdgelength = 0;
-    for (typename MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SpringIterator spring_iterator = this->SpringsBegin();
-         spring_iterator != this->SpringsEnd();
-         ++spring_iterator)
-    {
-        // mInitalPositionOfRemeshedNodes
-        unsigned nodeA_global_index = spring_iterator.GetNodeA()->GetIndex();
-        unsigned nodeB_global_index = spring_iterator.GetNodeB()->GetIndex();
-
-        c_vector<double, SPACE_DIM> A_location = this->GetNode(nodeA_global_index)->rGetLocation();
-        c_vector<double, SPACE_DIM> B_location = this->GetNode(nodeB_global_index)->rGetLocation();
-
-        if (abs(norm_2(A_location - B_location)) > mMaxEdgelength)
-        {
-            mMaxEdgelength = abs(norm_2(A_location - B_location));
-        }
-    }
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetTargetRemeshingEdgeLength(double TargetRemeshingEdgeLength)
-{
-    mTargetRemeshingEdgeLength = TargetRemeshingEdgeLength;
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetTargetRemeshingIterations(int Iterations)
-{
-    mIterations = Iterations;
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -117,8 +67,11 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
     }
     else if (mRemeshingSoftwear == "CGAL")
     {
-        TRACE("Remeshing with CGAL")
         this->RemeshGeometry();
+    }else if 
+    (mRemeshingSoftwear == "PreAllocatedMatlabMesh")
+    {
+        this->TakeInPreAllocatedRemeshGeometry();
     }
     this->SetBinningRegions2();
     this->MappingAdaptedMeshToInitalGeometry();
@@ -217,7 +170,7 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::WriteOutMappedInitalConfig()
 {
     // Read in the new mesh and have it as its own thjing
-    TRACE("Try write out the inital mesh");
+    //TRACE("Try write out the inital mesh");
 
     // Read in the new mesh
     VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mChasteOutputDirectory + "RemeshedGeometry.vtu");
@@ -226,36 +179,32 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::WriteOutMappedIn
 
     MappedICmesh.ConstructFromMeshReader(mesh_reader);
 
-    TRACE("Have the adapted mesh, which now I can change to the mapped inital mesh and write out to see what is going on ;) ");
-    PRINT_VARIABLE(MappedICmesh.GetNumNodes());
+    //TRACE("Have the adapted mesh, which now I can change to the mapped inital mesh and write out to see what is going on ;) ");
+    //PRINT_VARIABLE(MappedICmesh.GetNumNodes());
 
     for (int i = 0; i < MappedICmesh.GetNumNodes(); i++)
     {
         Node<SPACE_DIM>* p_node = MappedICmesh.GetNode(i);
         p_node->rGetModifiableLocation() = mInitalPositionOfRemeshedNodes[i];
     }
-    TRACE("Adapted nodes, now write");
+    // TRACE("Adapted nodes, now write");
     std::string OutputFile = "NewInitalConfiguration" + std::to_string(mNumberOfChanges);
     VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(mRelativePath, OutputFile, false);
-    TRACE("Creater writer");
+    // TRACE("Creater writer");
 
     mesh_writer.WriteFilesUsingMesh(MappedICmesh);
-    TRACE("Written")
+    // TRACE("Written")
     mNumberOfChanges += 1;
     // MappedICmesh.~MutableMesh();
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetPrintRemeshedIC(bool PrintRemeshedIC)
-{
-    mPrintRemeshedIC = PrintRemeshedIC;
-}
+
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
 {
 
-    TRACE("Remesh geometry here ")
+    // TRACE("Remesh geometry here ")
     // Outpust the mesh in .vtu format for HemeLB setup tool to pick up (first converted to stl, though).
     // std::string stlfile = mChasteOutputDirectory;
     VtkMeshWriter<2, 3> mesh_writer(mRelativePath, "config", false);
@@ -271,7 +220,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
 
     // Convert the .vtu into an .off
     std::string offfile = mChasteOutputDirectory + "CurrentMesh.off";
-    TRACE("Create .off")
+    // TRACE("Create .off")
     PRINT_VARIABLE(mChasteOutputDirectory)
     std::string vtu2offCommand = "meshio-convert " + mChasteOutputDirectory + "config.vtu " + offfile;
     std::system(vtu2offCommand.c_str()); // system only takes char *.
@@ -293,7 +242,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
     // Read in the new remeshsed mesh
     VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mChasteOutputDirectory + "RemeshedGeometry.vtu");
     mNew_mesh.ConstructFromMeshReader(mesh_reader);
-    TRACE("Have the new mesh ;) ")
+    // TRACE("Have the new mesh ;) ")
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -314,19 +263,19 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometryWi
 
     // Convert the .vtu into an .off
     std::string stlfile = mChasteOutputDirectory + "CurrentMesh.stl";
-    TRACE("Create .stl")
+    // TRACE("Create .stl")
     std::string vtu2stlCommand = "meshio-convert " + mChasteOutputDirectory + "config.vtu " + stlfile;
     std::system(vtu2stlCommand.c_str()); // system only takes char *.
 
     // Remesh the .stl
     std::string Remeshedstl = mChasteOutputDirectory + "RemeshedGeometry.stl";
-    TRACE("Remeshing geometry")
+    // TRACE("Remeshing geometry")
 
     // More info for the remeshing options found at https://sourceforge.net/p/vmtk/mailman/message/29391820/ and  http://www.vmtk.org/vmtkscripts/vmtksurfaceremeshing.html
     // std::string RemeshCommand = "vmtksurfaceremeshing -ifile " + stlfile + " -iterations " + std::to_string(mIterations) + " -area " + std::to_string(mTargetRemeshingElementArea) + " -maxarea "+ std::to_string(1.2*mTargetRemeshingElementArea) +" -ofile " + Remeshedstl;
     // std::system(RemeshCommand.c_str());
-
-    std::string RemeshCommand = "vmtksurfaceremeshing -ifile " + stlfile + " -iterations " + std::to_string(mIterations) + " -edgelength " + std::to_string(mTargetRemeshingEdgeLength) + " -ofile " + Remeshedstl + " -elementsizemode edgelength";
+    // PRINT_VARIABLE(mIterations)
+    std::string RemeshCommand = "vmtksurfaceremeshing -ifile " + stlfile + " -iterations " + std::to_string(mIterations) + " -elementsizemode 'edgelength' -edgelength " + std::to_string(mTargetRemeshingEdgeLength) + " -ofile " + Remeshedstl + " -elementsizemode edgelength";
     std::system(RemeshCommand.c_str());
 
     //Finally conver the Remeshed stl into a vtu -- meshio is your friend
@@ -337,67 +286,26 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometryWi
     // Read in the new mesh
     VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mChasteOutputDirectory + "RemeshedGeometry.vtu");
     mNew_mesh.ConstructFromMeshReader(mesh_reader);
-    TRACE("Have the new mesh ;) ");
+    // TRACE("Have the new mesh ;) ");
 }
 
+// Need to load up the mesh 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetRemeshingSoftwear(std::string RemeshingSoftwear)
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::TakeInPreAllocatedRemeshGeometry()
 {
-    if (RemeshingSoftwear != "CGAL" && RemeshingSoftwear != "VMTK")
-    {
-        EXCEPTION("RemeshingSoftwear must be CGAL or VMTK");
-    }
-    mRemeshingSoftwear = RemeshingSoftwear;
+    std::string Remeshedvtu = mChasteOutputDirectory + "RemeshedGeometry.vtu";
+    PRINT_VARIABLE(mChasteOutputDirectory)
+    copyfile(mPreAllocatedRemeshedMesh.c_str(), Remeshedvtu.c_str(), NULL, COPYFILE_DATA | COPYFILE_XATTR);
+     TRACE("Read in the new mesh")
+    VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mPreAllocatedRemeshedMesh);
+    mNew_mesh.ConstructFromMeshReader(mesh_reader);
+    // TRACE("Have the new mesh ;) ");
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::JiggleNodes()
-{
 
-    clock_t t = clock();
-    /// Loop over new and old mesh and find the nodes in the new mesh that are the cloest to the old mesh and put these nodes here --- this should be done in the mesh
-    // Loop over old mesh first, then new mesh
-    for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
-         node_iter != this->rGetMesh().GetNodeIteratorEnd();
-         ++node_iter)
-    {
-        unsigned node_index = node_iter->GetIndex();
-        c_vector<double, SPACE_DIM> OldNodeLocation = node_iter->rGetLocation();
 
-        // Now want to find the cloest node in the new mesh
 
-        double MinDistance = 1000000000000;
-        unsigned ClosestNewNode;
-        c_vector<double, SPACE_DIM> NewNodeLocation;
 
-        // Now want the location of the nodes in the new mesh
-
-        for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator NewN_iter = mNew_mesh.GetNodeIteratorBegin();
-             NewN_iter != mNew_mesh.GetNodeIteratorEnd();
-             ++NewN_iter)
-        {
-            NewNodeLocation = NewN_iter->rGetLocation();
-            if (norm_2(NewNodeLocation - OldNodeLocation) < MinDistance)
-            {
-                unsigned Newnode_index = NewN_iter->GetIndex();
-                MinDistance = norm_2(NewNodeLocation - OldNodeLocation);
-                ClosestNewNode = Newnode_index;
-            }
-        }
-        if (MinDistance < 0.005)
-        {
-
-            Node<SPACE_DIM>* p_node = mNew_mesh.GetNode(ClosestNewNode);
-            p_node->rGetModifiableLocation() = OldNodeLocation;
-        }
-    }
-
-    VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(mRelativePath, "RemeshedGeometry2", false);
-    mesh_writer.WriteFilesUsingMesh(mNew_mesh);
-
-    t = clock() - t;
-    std::cout << "simulation time: " << t / CLOCKS_PER_SEC << " seconds" << std::endl;
-}
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetCentroidMap()
 {
@@ -416,6 +324,28 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetCentroidMap()
         mCentroidMap[elem_index] = (pNode0->rGetLocation() + pNode1->rGetLocation() + pNode2->rGetLocation()) / 3;
     }
 }
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::DetermineDimensions()
+{
+    mDIM=2;
+    double Z = 0;//mNew_mesh.GetNodeIteratorBegin()->rGetLocation()[2];
+    for (typename MutableMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator iter = mNew_mesh.GetNodeIteratorBegin();
+         iter != mNew_mesh.GetNodeIteratorEnd();
+         ++iter)
+    {
+        unsigned node_index = iter->GetIndex();
+        c_vector<double, SPACE_DIM> NewNodeLocation = iter->rGetLocation();
+        if (NewNodeLocation[2]!=Z)
+        {
+            mDIM =3;
+            break;
+        }
+    }
+}
+
+
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 std::vector<unsigned> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetCommonNodes(unsigned elem_1, unsigned elem_2)
@@ -603,35 +533,41 @@ unsigned HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestEl
 {
 
     // This method is super simple. -- Just find the closest element -- it isnt perfect, 
-    unsigned ClosestElement ;
-    double distance = 1000000;
+    unsigned ClosestElement;
+    double distance = 100;
     bool HaveElement =0;
+    
     for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
             elem_iter != this->rGetMesh().GetElementIteratorEnd();
             ++elem_iter)
     {
-            // Now need to find the cloeset element in this bin
+        // Now need to find the cloeset element in this bin
         unsigned elem_index = elem_iter->GetIndex();
         c_vector<double, SPACE_DIM> Centroid = mCentroidMap[elem_index];
-        if (abs(norm_2(NewNodeLocation - Centroid)) < distance)
+
+        if (abs(norm_2(NewNodeLocation - Centroid)) <= distance)
         {
             distance = abs(norm_2(NewNodeLocation - Centroid));
-            ClosestElement = elem_index;
-            
+            ClosestElement = elem_index;  
+            // if (PointInTriangle3D(NewNodeLocation, ClosestElement))
+            //     {
+            //         break;
+            //     } 
         }
     }
-    if ( PointInTriangle3D(NewNodeLocation, ClosestElement))
-        {
-            HaveElement =1;
-            mMapOfProbNodes[node_index] = 1; 
-
-        }
+//   HaveElement =1;
+    if (PointInTriangle3D(NewNodeLocation, ClosestElement))
+    {
+      HaveElement =1;
+      mMapOfProbNodes[node_index] = 1; 
+    }
+    
     unsigned num_elements = this->rGetMesh().GetNumElements();
 /// ----------------------- ////////
     if (HaveElement == 0)
     {
         unsigned OrginalClosest = ClosestElement;
-        distance = mMaxEdgelength*100;
+        distance = 100;
         std::pair<unsigned,unsigned> ClosestEdge;
         c_vector<double, SPACE_DIM> ClosestEdgeNorm ;
         c_vector<double, SPACE_DIM> ClosestMidPoint;
@@ -647,22 +583,26 @@ unsigned HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestEl
                 c_vector<double, SPACE_DIM> EdgeVector = P2- P1;
                 EdgeVector/=norm_2(EdgeVector);
                 c_vector<double, SPACE_DIM> V = NewNodeLocation - P1;
-                // Normal to the plane containing the edge and the new node
+                 // Normal to the plane containing the edge and the new node
                 c_vector<double, SPACE_DIM> PlaneNormal = VectorProduct(EdgeVector, V)/norm_2(V);
+
+                c_vector<double, SPACE_DIM> Norm;
+
                 PlaneNormal/=norm_2(PlaneNormal);
+            
+            
                 // Now can find the normal to the edge that is contaned in the plane defined by the three points
                 c_vector<double, SPACE_DIM> EdgeNormal = VectorProduct(EdgeVector, PlaneNormal);
                 EdgeNormal/=norm_2(EdgeNormal);
-
-                double Dist2Edge = abs(inner_prod(EdgeNormal, V));
-
-                if ( Dist2Edge< distance )
+                double Dist2Edge = abs(inner_prod(EdgeNormal, V)); 
+        
+                if ( Dist2Edge<= distance )
                 {
                     distance = Dist2Edge;
                     ClosestEdge = std::pair<unsigned,unsigned>(NodeIndexA, NodeIndexB);
                     ClosestEdgeNorm = EdgeNormal;
                 }
-          }
+            }
         c_vector<double, SPACE_DIM> P1 = this->GetNode(ClosestEdge.first)->rGetLocation();
         c_vector<double, SPACE_DIM> P2 = this->GetNode(ClosestEdge.second)->rGetLocation();
 
@@ -672,33 +612,81 @@ unsigned HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestEl
         std::set<unsigned> shared_elements;
         std::set_intersection(elements_containing_node1.begin(),  elements_containing_node1.end(), elements_containing_node3.begin(),  elements_containing_node3.end(),  std::inserter(shared_elements, shared_elements.begin()));
         typename std::set<unsigned>::iterator CommonElements = shared_elements.begin();
+
         unsigned Element1 = *CommonElements;
         if (shared_elements.size() ==1)
         {
                 ClosestElement =Element1; HaveElement=1;
-
-            mMapOfProbNodes[node_index] = 2; 
+                mMapOfProbNodes[node_index] = 2; 
         }
         else 
         {   
             std::advance(CommonElements, 1); 
             unsigned Element2 = *CommonElements;
-                if (PointInTriangle3D(NewNodeLocation, Element1)==1)
-                {
-                    ClosestElement =Element1; HaveElement=1;
+            if (PointInTriangle3D(NewNodeLocation, Element1)==1)
+            {
+                ClosestElement =Element1; HaveElement=1;
+                mMapOfProbNodes[node_index] = 3; 
+                TRACE("Option 1")
+            }else if( PointInTriangle3D(NewNodeLocation, Element2) ==1)
+            {
+                ClosestElement =Element2;  HaveElement=1;
 
-                    mMapOfProbNodes[node_index] = 3; 
-                }else if( PointInTriangle3D(NewNodeLocation, Element2) ==1)
-                {
-                    ClosestElement =Element2;  HaveElement=1;
+                mMapOfProbNodes[node_index] = 3; 
+                TRACE("Option 2")
+            }
+        }
+        if (HaveElement ==0)
+        {
+            distance =100;
+            ClosestElement = OrginalClosest;
+            // for (typename MutableMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator iter = mNew_mesh.GetNodeIteratorBegin();
+            // iter != mNew_mesh.GetNodeIteratorEnd();
+            // ++iter)
+            // {
+            //     unsigned node_index = iter->GetIndex();
+            //     c_vector<double, SPACE_DIM> NodeLocation = iter->rGetLocation();
+            //     double DistToNode = norm_2(NodeLocation  - NewNodeLocation);
 
-                    mMapOfProbNodes[node_index] = 3; 
-                }
-                else{
-                        unsigned ClosestElement = OrginalClosest;//WhichElement2(P1, P2, NewNodeLocation,  Element1,  Element2);
-                         mMapOfProbNodes[node_index] = 4; 
-                }
-                // else if ( ClosestPointInTriangle(NewNodeLocation, Element1) <= ClosestPointInTriangle(NewNodeLocation, Element2))
+            //     if (DistToNode < distance)
+            //     {
+            //         distance = DistToNode;
+            //         ClosestNode = node_index;
+            //     }
+            // }
+            // PRINT_VARIABLE(ClosestNode)
+            //  std::set<unsigned> ContainingElements = this->GetNode(ClosestNode)->rGetContainingElementIndices();
+            //  -- need to iterate over the containing elements and get the one containing 
+            //  for (std::set<unsigned>::iterator iter = ContainingElements.begin();
+                //  iter != ContainingElements.end();
+                //  ++iter)
+                // {
+
+                //     if (PointInTriangle3D(NewNodeLocation, *iter))
+                //     {
+                //             ClosestElement = *iter;
+                //     }
+                // }
+        }
+
+
+    }
+
+    double ClosestCentroidDistance = abs(norm_2(NewNodeLocation - mCentroidMap[ClosestElement]));
+    // PRINT_VARIABLE(ClosestCentroidDistance);
+    if(ClosestCentroidDistance >0.85)
+    {
+        TRACE("Broken node here")
+    }
+// check closest point is within certain region 
+
+
+    assert(ClosestElement !=-10);
+    // mMapOfProbNodes[node_index] = 3;
+    return ClosestElement;
+}
+
+// else if ( ClosestPointInTriangle(NewNodeLocation, Element1) <= ClosestPointInTriangle(NewNodeLocation, Element2))
                 // {
                 //     ClosestElement =Element1;  HaveElement=1;
                 //     mMapOfProbNodes[node_index] = 4; 
@@ -729,15 +717,8 @@ unsigned HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestEl
 
             // ClosestElement = WinningElement2;
             // assert( ClosestElement == Element1  || ClosestElement == Element2 );
-        }
-    }
-    /// ----------------------- ////////
 
-//// ---------------------------
-    assert(ClosestElement !=-10);
-    // mMapOfProbNodes[node_index] = 3;
-    return ClosestElement;
-}
+
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 unsigned HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::WhichElement(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> NewNodeLocation,unsigned Element1, unsigned Element2)
@@ -819,8 +800,8 @@ unsigned HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::WhichElement
             // Need to determine the direction of the normal
 
             c_vector<double, SPACE_DIM> NormalArm = PlaneNormal + EdgeMidpoint;
-            double DistanceToA = norm_2(NormalArm - mCentroidMap[Element1]); // A being the center point of element 1
-            double DistanceToB = norm_2(NormalArm - mCentroidMap[Element2]); // A being the center point of element 2
+            double DistanceToA = abs(norm_2(NormalArm - mCentroidMap[Element1])); // A being the center point of element 1
+            double DistanceToB = abs(norm_2(NormalArm - mCentroidMap[Element2])); // A being the center point of element 2
             assert(DistanceToB != DistanceToA);
             if (DistanceToA < DistanceToB)
             {
@@ -838,7 +819,7 @@ unsigned HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::WhichElement
                     return Element2;
                 }
 
-            }  else if (DistanceToB < DistanceToA)
+            }  else if (DistanceToB > DistanceToA)
             {
             // TRACE("The normal is pointing towards element 2 ")
             double side = inner_prod((NewNodeLocation - EdgeMidpoint), PlaneNormal);
@@ -1065,322 +1046,6 @@ c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::N
     return P_0;
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::PointInTriangle3D(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement)
-{
-
-    Element<ELEMENT_DIM, SPACE_DIM>* p_element = this->rGetMesh().GetElement(ClosestElement);
-    // Collect the intial configuration of the nodes, and the deformed config, send them into the mapping function
-    c_vector<c_vector<double, SPACE_DIM>, SPACE_DIM> Triangle;
-    for (int i = 0; i < 3; ++i)
-    {
-        Triangle[i] = this->rGetMesh().GetNode(p_element->GetNodeGlobalIndex(i))->rGetLocation();
-    }
-
-    // Get normal
-
-    c_vector<double, SPACE_DIM> CenterPoint = (Triangle[1] + Triangle[0] + Triangle[2]) / 3;
-
-    c_vector<double, SPACE_DIM> Line1 = Triangle[1] - Triangle[0]; // Vector 1 to 2
-    c_vector<double, SPACE_DIM> Line2 = Triangle[2] - Triangle[0]; // Vector 1 to 3
-    c_vector<double, SPACE_DIM> Line3 = Triangle[2] - Triangle[1]; // Vector 2 to 3
-
-    c_vector<double, SPACE_DIM> Midpoint1 = (Triangle[1] + Triangle[0]) / 2;
-    c_vector<double, SPACE_DIM> Midpoint2 = (Triangle[2] + Triangle[0]) / 2;
-    c_vector<double, SPACE_DIM> Midpoint3 = (Triangle[2] + Triangle[1]) / 2;
-
-    c_vector<double, SPACE_DIM> NormalToElement = VectorProduct(Line1, Line2);
-    NormalToElement /= norm_2(NormalToElement);
-
-    c_vector<double, SPACE_DIM> Normal1 = VectorProduct(Line1, NormalToElement);
-    Normal1 /= norm_2(Normal1);
-
-    c_vector<double, SPACE_DIM> Normal2 = VectorProduct(Line2, NormalToElement);
-    Normal2 /= norm_2(Normal2);
-
-    c_vector<double, SPACE_DIM> Normal3 = VectorProduct(Line3, NormalToElement);
-    Normal3 /= norm_2(Normal3);
-
-    // Think I will need to do the anle things to check if the normal is pointing towards the center or not.....
-
-    c_vector<double, SPACE_DIM> Center2MidPoint1 = CenterPoint - Midpoint1;
-    c_vector<double, SPACE_DIM> Center2MidPoint2 = CenterPoint - Midpoint2;
-    c_vector<double, SPACE_DIM> Center2MidPoint3 = CenterPoint - Midpoint3;
-    // Needs to be below plane
-    double sign1 = inner_prod(Normal1, (CenterPoint - Midpoint1));
-    if (sign1 > 0)
-    {
-        Normal1 *= -1;
-    }
-
-    double sign2 = inner_prod(Normal2, (CenterPoint - Midpoint2));
-    if (sign2 > 0)
-    {
-        Normal2 *= -1;
-        sign2 = inner_prod(Normal2, (CenterPoint - Midpoint2));
-    }
-    double sign3 = inner_prod(Normal3, (CenterPoint - Midpoint3));
-    if (sign3 > 0)
-    {
-        Normal3 *= -1;
-        sign3 = inner_prod(Normal3, (CenterPoint - Midpoint3));
-    }
-    sign1 = inner_prod(Normal1, (Point - Midpoint1));
-    sign2 = inner_prod(Normal2, (Point - Midpoint2));
-    sign3 = inner_prod(Normal3, (Point - Midpoint3));
-    bool Answer;
-    if (sign1 <= 0 && sign2 <= 0 && sign3 <= 0)
-    {
-        Answer = 1;
-    }
-    else
-    {
-        Answer = 0;
-    }
-
-    // if (SameSideOfPlane(Point,Triangle[0], Triangle[1],Triangle[2]) & SameSideOfPlane(Point,Triangle[1], Triangle[0],Triangle[2])& SameSideOfPlane(Point,Triangle[2], Triangle[0],Triangle[1]))
-    // {
-    //     Answer = 1;
-    // }
-    // else
-    // {
-    //     Answer = 0;
-    // }
-    return Answer;
-}
-
-
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ClosestPointInTriangle(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement)
-{
-
-    Element<ELEMENT_DIM, SPACE_DIM>* p_element = this->rGetMesh().GetElement(ClosestElement);
-    // Collect the intial configuration of the nodes, and the deformed config, send them into the mapping function
-    c_vector<c_vector<double, SPACE_DIM>, SPACE_DIM> Triangle;
-    for (int i = 0; i < 3; ++i)
-    {
-        Triangle[i] = this->rGetMesh().GetNode(p_element->GetNodeGlobalIndex(i))->rGetLocation();
-    }
-
-    // Get normal
-    // c_vector<double, SPACE_DIM> CenterPoint = (Triangle[1] + Triangle[0] + Triangle[2]) / 3;
-
-    c_vector<double, SPACE_DIM> Line1 = Triangle[1] - Triangle[0]; // Vector 1 to 2
-    c_vector<double, SPACE_DIM> Line2 = Triangle[2] - Triangle[0]; // Vector 1 to 3
-    c_vector<double, SPACE_DIM> Line3 = Triangle[2] - Triangle[1]; // Vector 2 to 3
-
-    c_vector<double, SPACE_DIM> ElementNormal =  GetElementNormal(ClosestElement);
-
-    // Need to create a plane containing the triangle. 
-    // Let  Triangle[0] be the origin
-    c_vector<double, SPACE_DIM> v = Point-Triangle[0];
-    double dist = inner_prod(ElementNormal, v);
-    c_vector<double, SPACE_DIM> projected_point = Point - dist*ElementNormal;
-    // Check that my normal was facing the right way - 
-    assert( inner_prod(ElementNormal, projected_point-Triangle[0]) < 1e-13 );
-
-    if (PointInTriangle3D(projected_point, ClosestElement) ==1)
-    {
-        return dist;
-    }
-    else{
-    // Get the closest point on each line --- 
-    
-        c_vector<double, SPACE_DIM> Normal1 = VectorProduct(Line1, ElementNormal);
-        Normal1 /= norm_2(Normal1);
-
-        c_vector<double, SPACE_DIM> Normal2 = VectorProduct(Line2, ElementNormal);
-        Normal2 /= norm_2(Normal2);
-
-        c_vector<double, SPACE_DIM> Normal3 = VectorProduct(Line3, ElementNormal);
-        Normal3 /= norm_2(Normal3);
-
-        double dist1 = abs(inner_prod(Normal1, (projected_point-Triangle[1])));
-        double dist2 = abs(inner_prod(Normal2, (projected_point-Triangle[2])));
-        double dist3 = abs(inner_prod(Normal3, (projected_point-Triangle[2])));
-        // Find the smallest distance 
-
-        double MinDistane = std::min(dist1, std::min(dist2, dist3));
-
-        double PointDistanceToElement = sqrt(MinDistane*MinDistane +dist*dist );
-        return PointDistanceToElement;
-    }
-
- 
-}
-
-
-
-
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::PointInTriangle3D(c_vector<double, SPACE_DIM> Point, c_vector<c_vector<double, SPACE_DIM>, SPACE_DIM> Triangle)
-{
-
-    // Get normals
-    c_vector<double, SPACE_DIM> CenterPoint = (Triangle[1] + Triangle[0] + Triangle[2]) / 3;
-
-    c_vector<double, SPACE_DIM> Line1 = Triangle[1] - Triangle[0]; // Vector 1 to 2
-    c_vector<double, SPACE_DIM> Line2 = Triangle[2] - Triangle[0]; // Vector 1 to 3
-    c_vector<double, SPACE_DIM> Line3 = Triangle[2] - Triangle[1]; // Vector 2 to 3
-
-    c_vector<double, SPACE_DIM> Midpoint1 = (Triangle[1] + Triangle[0]) / 2;
-    c_vector<double, SPACE_DIM> Midpoint2 = (Triangle[2] + Triangle[0]) / 2;
-    c_vector<double, SPACE_DIM> Midpoint3 = (Triangle[2] + Triangle[1]) / 2;
-
-    c_vector<double, SPACE_DIM> NormalToElement = VectorProduct(Line1, Line2);
-    NormalToElement /= norm_2(NormalToElement);
-
-    c_vector<double, SPACE_DIM> Normal1 = VectorProduct(Line1, NormalToElement);
-    Normal1 /= norm_2(Normal1);
-
-    c_vector<double, SPACE_DIM> Normal2 = VectorProduct(Line2, NormalToElement);
-    Normal2 /= norm_2(Normal2);
-
-    c_vector<double, SPACE_DIM> Normal3 = VectorProduct(Line3, NormalToElement);
-    Normal3 /= norm_2(Normal3);
-
-    // Think I will need to do the anle things to check if the normal is pointing towards the center or not.....
-
-    c_vector<double, SPACE_DIM> Center2MidPoint1 = CenterPoint - Midpoint1;
-    c_vector<double, SPACE_DIM> Center2MidPoint2 = CenterPoint - Midpoint2;
-    c_vector<double, SPACE_DIM> Center2MidPoint3 = CenterPoint - Midpoint3;
-    // Needs to be below plane
-    double sign1 = inner_prod(Normal1, (CenterPoint - Midpoint1));
-    if (sign1 > 0)
-    {
-        Normal1 *= -1;
-    }
-
-    double sign2 = inner_prod(Normal2, (CenterPoint - Midpoint2));
-    if (sign2 > 0)
-    {
-        Normal2 *= -1;
-        sign2 = inner_prod(Normal2, (CenterPoint - Midpoint2));
-    }
-    double sign3 = inner_prod(Normal3, (CenterPoint - Midpoint3));
-    if (sign3 > 0)
-    {
-        Normal3 *= -1;
-        sign3 = inner_prod(Normal3, (CenterPoint - Midpoint3));
-    }
-    sign1 = inner_prod(Normal1, (Point - Midpoint1));
-    sign2 = inner_prod(Normal2, (Point - Midpoint2));
-    sign3 = inner_prod(Normal3, (Point - Midpoint3));
-    bool Answer;
-    if (sign1 <= 0 && sign2 <= 0 && sign3 <= 0)
-    {
-        Answer = 1;
-    }
-    else
-    {
-        Answer = 0;
-    }
-    bool Answer1;
-    if (SameSideOfPlane(Point,Triangle[0], Triangle[1],Triangle[2]) & SameSideOfPlane(Point,Triangle[1], Triangle[0],Triangle[2])& SameSideOfPlane(Point,Triangle[2], Triangle[0],Triangle[1]))
-    {
-        Answer1 = 1;
-    }
-    else
-    {
-        Answer1 = 0;
-    }
-    if (Answer1 !=1)
-    {
-        PRINT_2_VARIABLES(Answer, Answer1)
-    }
-    return Answer;
-}
-
-
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::PointInTriangle3D2(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement)
-{
-
-    Element<ELEMENT_DIM, SPACE_DIM>* p_element = this->rGetMesh().GetElement(ClosestElement);
-    // Collect the intial configuration of the nodes, and the deformed config, send them into the mapping function
-    c_vector<c_vector<double, SPACE_DIM>, SPACE_DIM> Triangle;
-    for (int i = 0; i < 3; ++i)
-    {
-        Triangle[i] = this->rGetMesh().GetNode(p_element->GetNodeGlobalIndex(i))->rGetLocation();
-    }
-
-    bool Answer;
-    if (SameSide(Point, Triangle[0], Triangle[1], Triangle[2]) & SameSide(Point, Triangle[1], Triangle[0], Triangle[2]) & SameSide(Point, Triangle[2], Triangle[0], Triangle[1]))
-    {
-        Answer = 1;
-    }
-    else
-    {
-        Answer = 0;
-    }
-    return Answer;
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SameSideOfPlane(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> a, c_vector<double, SPACE_DIM> b)
-{
-    bool Answer;
-    ;
-    // % Need to create plane from one of the lines and the opposite point -- here
-    // % order of points is very important... dam
-    c_vector<double, SPACE_DIM> Line = b - a;
-    c_vector<double, SPACE_DIM> Midpoint = (a + b) / 2;
-
-    c_vector<double, SPACE_DIM> vector_12 = a - P2; // Vector 1 to 2
-    c_vector<double, SPACE_DIM> vector_13 = b - P2; // Vector 1 to 3
-
-    c_vector<double, SPACE_DIM> NormalToElement = -VectorProduct(vector_12, vector_13);
-    NormalToElement /= norm_2(NormalToElement);
-    c_vector<double, SPACE_DIM> NormalToPlane = VectorProduct(NormalToElement, Line);
-    NormalToPlane /= -norm_2(NormalToPlane);
-
-    // Need to check which way the normal is pointing.... need the normal
-    if (norm_2(P2 - (Midpoint + 0.000001 * NormalToPlane)) < norm_2(P2 - Midpoint))
-    {
-        // The normal is pointing the wrong way, flip it around
-        NormalToPlane *= -1;
-    }
-
-    // Now determine if this is above or below plane
-    double sign = inner_prod(NormalToPlane, (P1 - Midpoint));
-    // If sign is neg, point is below plane, i.e on the triangle side of the
-    // plane, is sign is pos, the point is away from the triangle
-
-    if (sign <= 0)
-    {
-        Answer = 1;
-    }
-    else
-    {
-        Answer = 0;
-    }
-    return Answer;
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SameSide(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> a, c_vector<double, SPACE_DIM> b)
-{
-    bool Answer;
-    // % Need to create plane from one of the lines and the opposite point -- here
-    c_vector<double, SPACE_DIM> A = b - a;
-    c_vector<double, SPACE_DIM> B = P1 - a;
-    c_vector<double, SPACE_DIM> C = P2 - a;
-
-    c_vector<double, SPACE_DIM> cp1 = VectorProduct(A, B);
-    c_vector<double, SPACE_DIM> cp2 = VectorProduct(A, C);
-    if (inner_prod(cp1, cp2) >= 0)
-    {
-        Answer = 1;
-    }
-    else
-    {
-        Answer = 0;
-    }
-    return Answer;
-}
 
 // For the shear and area forces
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -1754,86 +1419,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
     // }
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::CalculateElementNormals(std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge,
-                                                                                        std::pair<c_vector<double, SPACE_DIM>, c_vector<double, SPACE_DIM> >& nonUnitNormals,
-                                                                                        std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*>& otherNodes)
-{
-    Node<SPACE_DIM>* pNode1 = edge.first;
-    Node<SPACE_DIM>* pNode3 = edge.second;
-
-    /*
-     *  Find common triangles
-     
-      */
-    // Find the indices of the elements owned by each node
-    std::set<unsigned> elements_containing_node1 = pNode1->rGetContainingElementIndices();
-    std::set<unsigned> elements_containing_node3 = pNode3->rGetContainingElementIndices();
-
-    // Find common elements
-    std::set<unsigned> shared_elements;
-    std::set_intersection(elements_containing_node1.begin(),
-                          elements_containing_node1.end(),
-                          elements_containing_node3.begin(),
-                          elements_containing_node3.end(),
-                          std::inserter(shared_elements, shared_elements.begin()));
-
-    // Check that the nodes have a common edge
-    switch (shared_elements.size())
-    {
-        case 1:
-            // We found a boundary edge and we finish here
-            return true;
-        case 2:
-            break;
-        default:
-            NEVER_REACHED;
-    }
-
-    std::set<unsigned>::iterator set_iter = shared_elements.begin();
-    Element<2, SPACE_DIM>* pElement1 = this->rGetMesh().GetElement(*set_iter);
-    ++set_iter;
-    Element<2, SPACE_DIM>* pElement2 = this->rGetMesh().GetElement(*set_iter);
-
-    // Find additional nodes
-    Node<SPACE_DIM>* pNode2 = NULL;
-    Node<SPACE_DIM>* pNode4 = NULL;
-    for (unsigned local_index = 0; local_index < 3; ++local_index)
-    {
-        unsigned index_for_node2 = pElement1->GetNodeGlobalIndex(local_index);
-        unsigned index_for_node4 = pElement2->GetNodeGlobalIndex(local_index);
-
-        if ((index_for_node2 != pNode1->GetIndex()) && (index_for_node2 != pNode3->GetIndex()))
-        {
-            pNode2 = pElement1->GetNode(local_index);
-        }
-
-        if ((index_for_node4 != pNode1->GetIndex()) && (index_for_node4 != pNode3->GetIndex()))
-        {
-            pNode4 = pElement2->GetNode(local_index);
-        }
-    }
-    assert(pNode2 != NULL);
-    assert(pNode4 != NULL);
-
-    // Calculate the force acting on each node
-    c_vector<double, SPACE_DIM> vector_A = pNode1->rGetLocation() - pNode3->rGetLocation();
-    c_vector<double, SPACE_DIM> vector_B = pNode2->rGetLocation() - pNode3->rGetLocation();
-    c_vector<double, SPACE_DIM> normal_1 = VectorProduct(vector_A, vector_B);
-
-    vector_A = pNode4->rGetLocation() - pNode3->rGetLocation();
-    vector_B = pNode1->rGetLocation() - pNode3->rGetLocation();
-
-    c_vector<double, SPACE_DIM> normal_2 = VectorProduct(vector_A, vector_B);
-    double Area1 = 0.5 * norm_2(normal_1);
-    // double Area2 = 0.5 * norm_2(normal_2);
-    normal_2 /= norm_2(normal_2);
-    normal_1 /= norm_2(normal_1);
-    nonUnitNormals = std::pair<c_vector<double, SPACE_DIM>, c_vector<double, SPACE_DIM> >(normal_1, normal_2);
-    otherNodes = std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*>(pNode2, pNode4);
-
-    return false;
-}
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetOriginalAngle(std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge)
@@ -1871,13 +1456,7 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetOriginalAre
     return mArea0[elem_index];
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningIntervals(int nX, int nY, int nZ)
-{
-    mNx = nX;
-    mNy = nY;
-    mNz = nZ;
-}
+
 
 
 
@@ -2180,6 +1759,606 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetRelativePath(
 {
     mRelativePath = ChasteOutputDirectory;
 }
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetPaths(std::string ChasteOutputDirectory)
+{
+    mRelativePath = ChasteOutputDirectory;
+
+     // Note std::string is easier to add together, but in the end what I will be putting into system will be a char *
+    char* C = getenv("CHASTE_TEST_OUTPUT");
+    std::string directory;
+    directory += C;
+
+    directory += "/" + ChasteOutputDirectory;
+    mChasteOutputDirectory = directory;
+
+
+}
+
+
+
+
+
+//============
+
+
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SaveInitalConditions()
+{
+    for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
+         node_iter != this->rGetMesh().GetNodeIteratorEnd();
+         ++node_iter)
+    {
+        unsigned node_index = node_iter->GetIndex();
+        mOriginalNodePositions[node_index] = node_iter->rGetLocation();
+    }
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SaveInitalConditionsAtTime0()
+{
+    for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
+         node_iter != this->rGetMesh().GetNodeIteratorEnd();
+         ++node_iter)
+    {
+        unsigned node_index = node_iter->GetIndex();
+        mInitalPositionOfRemeshedNodes[node_index] = node_iter->rGetLocation();
+    }
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetMaxEdgelength()
+{
+    mMaxEdgelength = 0;
+    for (typename MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SpringIterator spring_iterator = this->SpringsBegin();
+         spring_iterator != this->SpringsEnd();
+         ++spring_iterator)
+    {
+        // mInitalPositionOfRemeshedNodes
+        unsigned nodeA_global_index = spring_iterator.GetNodeA()->GetIndex();
+        unsigned nodeB_global_index = spring_iterator.GetNodeB()->GetIndex();
+
+        c_vector<double, SPACE_DIM> A_location = this->GetNode(nodeA_global_index)->rGetLocation();
+        c_vector<double, SPACE_DIM> B_location = this->GetNode(nodeB_global_index)->rGetLocation();
+
+        if (abs(norm_2(A_location - B_location)) > mMaxEdgelength)
+        {
+            mMaxEdgelength = abs(norm_2(A_location - B_location));
+        }
+    }
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetTargetRemeshingEdgeLength(double TargetRemeshingEdgeLength)
+{
+    mTargetRemeshingEdgeLength = TargetRemeshingEdgeLength;
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetTargetRemeshingIterations(int Iterations)
+{
+    mIterations = Iterations;
+}
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetPrintRemeshedIC(bool PrintRemeshedIC)
+{
+    mPrintRemeshedIC = PrintRemeshedIC;
+}
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetRemeshingSoftwear(std::string RemeshingSoftwear)
+{
+    if (RemeshingSoftwear != "CGAL" && RemeshingSoftwear != "VMTK" && RemeshingSoftwear !="PreAllocatedMatlabMesh")
+    {
+        EXCEPTION("RemeshingSoftwear must be CGAL or VMTK or PreAllocatedMatlabMesh");
+    }
+    mRemeshingSoftwear = RemeshingSoftwear;
+}
+
+
+
+// Set the pathway to the mesh I need to read in
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::PreAllocatedRemeshedMesh(std::string RemeshedMesh)
+{
+    mPreAllocatedRemeshedMesh = RemeshedMesh;
+}
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::JiggleNodes()
+{
+
+    clock_t t = clock();
+    /// Loop over new and old mesh and find the nodes in the new mesh that are the cloest to the old mesh and put these nodes here --- this should be done in the mesh
+    // Loop over old mesh first, then new mesh
+    for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
+         node_iter != this->rGetMesh().GetNodeIteratorEnd();
+         ++node_iter)
+    {
+        unsigned node_index = node_iter->GetIndex();
+        c_vector<double, SPACE_DIM> OldNodeLocation = node_iter->rGetLocation();
+
+        // Now want to find the cloest node in the new mesh
+
+        double MinDistance = 1000000000000;
+        unsigned ClosestNewNode;
+        c_vector<double, SPACE_DIM> NewNodeLocation;
+
+        // Now want the location of the nodes in the new mesh
+
+        for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator NewN_iter = mNew_mesh.GetNodeIteratorBegin();
+             NewN_iter != mNew_mesh.GetNodeIteratorEnd();
+             ++NewN_iter)
+        {
+            NewNodeLocation = NewN_iter->rGetLocation();
+            if (norm_2(NewNodeLocation - OldNodeLocation) < MinDistance)
+            {
+                unsigned Newnode_index = NewN_iter->GetIndex();
+                MinDistance = norm_2(NewNodeLocation - OldNodeLocation);
+                ClosestNewNode = Newnode_index;
+            }
+        }
+        if (MinDistance < 0.005)
+        {
+
+            Node<SPACE_DIM>* p_node = mNew_mesh.GetNode(ClosestNewNode);
+            p_node->rGetModifiableLocation() = OldNodeLocation;
+        }
+    }
+
+    VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(mRelativePath, "RemeshedGeometry2", false);
+    mesh_writer.WriteFilesUsingMesh(mNew_mesh);
+
+    t = clock() - t;
+    std::cout << "simulation time: " << t / CLOCKS_PER_SEC << " seconds" << std::endl;
+}
+
+
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::CalculateElementNormals(std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge,
+                                                                                        std::pair<c_vector<double, SPACE_DIM>, c_vector<double, SPACE_DIM> >& nonUnitNormals,
+                                                                                        std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*>& otherNodes)
+{
+    Node<SPACE_DIM>* pNode1 = edge.first;
+    Node<SPACE_DIM>* pNode3 = edge.second;
+
+    /*
+     *  Find common triangles
+     
+      */
+    // Find the indices of the elements owned by each node
+    std::set<unsigned> elements_containing_node1 = pNode1->rGetContainingElementIndices();
+    std::set<unsigned> elements_containing_node3 = pNode3->rGetContainingElementIndices();
+
+    // Find common elements
+    std::set<unsigned> shared_elements;
+    std::set_intersection(elements_containing_node1.begin(),
+                          elements_containing_node1.end(),
+                          elements_containing_node3.begin(),
+                          elements_containing_node3.end(),
+                          std::inserter(shared_elements, shared_elements.begin()));
+
+    // Check that the nodes have a common edge
+    switch (shared_elements.size())
+    {
+        case 1:
+            // We found a boundary edge and we finish here
+            return true;
+        case 2:
+            break;
+        default:
+            NEVER_REACHED;
+    }
+
+    std::set<unsigned>::iterator set_iter = shared_elements.begin();
+    Element<2, SPACE_DIM>* pElement1 = this->rGetMesh().GetElement(*set_iter);
+    ++set_iter;
+    Element<2, SPACE_DIM>* pElement2 = this->rGetMesh().GetElement(*set_iter);
+
+    // Find additional nodes
+    Node<SPACE_DIM>* pNode2 = NULL;
+    Node<SPACE_DIM>* pNode4 = NULL;
+    for (unsigned local_index = 0; local_index < 3; ++local_index)
+    {
+        unsigned index_for_node2 = pElement1->GetNodeGlobalIndex(local_index);
+        unsigned index_for_node4 = pElement2->GetNodeGlobalIndex(local_index);
+
+        if ((index_for_node2 != pNode1->GetIndex()) && (index_for_node2 != pNode3->GetIndex()))
+        {
+            pNode2 = pElement1->GetNode(local_index);
+        }
+
+        if ((index_for_node4 != pNode1->GetIndex()) && (index_for_node4 != pNode3->GetIndex()))
+        {
+            pNode4 = pElement2->GetNode(local_index);
+        }
+    }
+    assert(pNode2 != NULL);
+    assert(pNode4 != NULL);
+
+    // Calculate the force acting on each node
+    c_vector<double, SPACE_DIM> vector_A = pNode1->rGetLocation() - pNode3->rGetLocation();
+    c_vector<double, SPACE_DIM> vector_B = pNode2->rGetLocation() - pNode3->rGetLocation();
+    c_vector<double, SPACE_DIM> normal_1 = VectorProduct(vector_A, vector_B);
+
+    vector_A = pNode4->rGetLocation() - pNode3->rGetLocation();
+    vector_B = pNode1->rGetLocation() - pNode3->rGetLocation();
+
+    c_vector<double, SPACE_DIM> normal_2 = VectorProduct(vector_A, vector_B);
+    double Area1 = 0.5 * norm_2(normal_1);
+    // double Area2 = 0.5 * norm_2(normal_2);
+    normal_2 /= norm_2(normal_2);
+    normal_1 /= norm_2(normal_1);
+    nonUnitNormals = std::pair<c_vector<double, SPACE_DIM>, c_vector<double, SPACE_DIM> >(normal_1, normal_2);
+    otherNodes = std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*>(pNode2, pNode4);
+
+    return false;
+}
+
+
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::PointInTriangle3D(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement)
+{
+
+    Element<ELEMENT_DIM, SPACE_DIM>* p_element = this->rGetMesh().GetElement(ClosestElement);
+    // Collect the intial configuration of the nodes, and the deformed config, send them into the mapping function
+    c_vector<c_vector<double, SPACE_DIM>, SPACE_DIM> Triangle;
+    for (int i = 0; i < 3; ++i)
+    {
+        Triangle[i] = this->rGetMesh().GetNode(p_element->GetNodeGlobalIndex(i))->rGetLocation();
+    }
+
+    // Get normal
+
+    c_vector<double, SPACE_DIM> CenterPoint = (Triangle[1] + Triangle[0] + Triangle[2]) / 3;
+
+    c_vector<double, SPACE_DIM> Line1 = Triangle[1] - Triangle[0]; // Vector 1 to 2
+    c_vector<double, SPACE_DIM> Line2 = Triangle[2] - Triangle[0]; // Vector 1 to 3
+    c_vector<double, SPACE_DIM> Line3 = Triangle[2] - Triangle[1]; // Vector 2 to 3
+
+    c_vector<double, SPACE_DIM> Midpoint1 = (Triangle[1] + Triangle[0]) / 2;
+    c_vector<double, SPACE_DIM> Midpoint2 = (Triangle[2] + Triangle[0]) / 2;
+    c_vector<double, SPACE_DIM> Midpoint3 = (Triangle[2] + Triangle[1]) / 2;
+
+    c_vector<double, SPACE_DIM> NormalToElement = VectorProduct(Line1, Line2);
+    NormalToElement /= norm_2(NormalToElement);
+
+    c_vector<double, SPACE_DIM> Normal1 = VectorProduct(Line1, NormalToElement);
+    Normal1 /= norm_2(Normal1);
+
+    c_vector<double, SPACE_DIM> Normal2 = VectorProduct(Line2, NormalToElement);
+    Normal2 /= norm_2(Normal2);
+
+    c_vector<double, SPACE_DIM> Normal3 = VectorProduct(Line3, NormalToElement);
+    Normal3 /= norm_2(Normal3);
+
+    // Think I will need to do the anle things to check if the normal is pointing towards the center or not.....
+
+    c_vector<double, SPACE_DIM> Center2MidPoint1 = CenterPoint - Midpoint1;
+    c_vector<double, SPACE_DIM> Center2MidPoint2 = CenterPoint - Midpoint2;
+    c_vector<double, SPACE_DIM> Center2MidPoint3 = CenterPoint - Midpoint3;
+    // Needs to be below plane
+    double sign1 = inner_prod(Normal1, (CenterPoint - Midpoint1));
+    if (sign1 > 0)
+    {
+        Normal1 *= -1;
+    }
+
+    double sign2 = inner_prod(Normal2, (CenterPoint - Midpoint2));
+    if (sign2 > 0)
+    {
+        Normal2 *= -1;
+        sign2 = inner_prod(Normal2, (CenterPoint - Midpoint2));
+    }
+    double sign3 = inner_prod(Normal3, (CenterPoint - Midpoint3));
+    if (sign3 > 0)
+    {
+        Normal3 *= -1;
+        sign3 = inner_prod(Normal3, (CenterPoint - Midpoint3));
+    }
+    sign1 = inner_prod(Normal1, (Point - Midpoint1));
+    sign2 = inner_prod(Normal2, (Point - Midpoint2));
+    sign3 = inner_prod(Normal3, (Point - Midpoint3));
+    bool Answer;
+    if (sign1 <= 0 && sign2 <= 0 && sign3 <= 0)
+    {
+        Answer = 1;
+    }
+    else
+    {
+        Answer = 0;
+    }
+
+    // if (SameSideOfPlane(Point,Triangle[0], Triangle[1],Triangle[2]) & SameSideOfPlane(Point,Triangle[1], Triangle[0],Triangle[2])& SameSideOfPlane(Point,Triangle[2], Triangle[0],Triangle[1]))
+    // {
+    //     Answer = 1;
+    // }
+    // else
+    // {
+    //     Answer = 0;
+    // }
+    return Answer;
+}
+
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::PointInTriangle2D(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement)
+{
+    bool Answer =0;
+    Element<ELEMENT_DIM, SPACE_DIM>* p_element = this->rGetMesh().GetElement(ClosestElement);
+    // Collect the intial configuration of the nodes, and the deformed config, send them into the mapping function
+    c_vector<c_vector<double, SPACE_DIM>, SPACE_DIM> Triangle;
+    for (int i = 0; i < 3; ++i)
+    {
+        Triangle[i] = this->rGetMesh().GetNode(p_element->GetNodeGlobalIndex(i))->rGetLocation();
+    }
+
+    if (SameSideOfPlane(Point,Triangle[0], Triangle[1],Triangle[2]) & SameSideOfPlane(Point,Triangle[1], Triangle[0],Triangle[2])& SameSideOfPlane(Point,Triangle[2], Triangle[0],Triangle[1]))
+    {
+        Answer = 1;
+    }
+    else
+    {
+        Answer = 0;
+    }
+    return Answer;
+}
+
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ClosestPointInTriangle(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement)
+{
+
+    Element<ELEMENT_DIM, SPACE_DIM>* p_element = this->rGetMesh().GetElement(ClosestElement);
+    // Collect the intial configuration of the nodes, and the deformed config, send them into the mapping function
+    c_vector<c_vector<double, SPACE_DIM>, SPACE_DIM> Triangle;
+    for (int i = 0; i < 3; ++i)
+    {
+        Triangle[i] = this->rGetMesh().GetNode(p_element->GetNodeGlobalIndex(i))->rGetLocation();
+    }
+
+    // Get normal
+    // c_vector<double, SPACE_DIM> CenterPoint = (Triangle[1] + Triangle[0] + Triangle[2]) / 3;
+
+    c_vector<double, SPACE_DIM> Line1 = Triangle[1] - Triangle[0]; // Vector 1 to 2
+    c_vector<double, SPACE_DIM> Line2 = Triangle[2] - Triangle[0]; // Vector 1 to 3
+    c_vector<double, SPACE_DIM> Line3 = Triangle[2] - Triangle[1]; // Vector 2 to 3
+
+    c_vector<double, SPACE_DIM> ElementNormal =  GetElementNormal(ClosestElement);
+
+    // Need to create a plane containing the triangle. 
+    // Let  Triangle[0] be the origin
+    c_vector<double, SPACE_DIM> v = Point-Triangle[0];
+    double dist = inner_prod(ElementNormal, v);
+    c_vector<double, SPACE_DIM> projected_point = Point - dist*ElementNormal;
+    // Check that my normal was facing the right way - 
+    assert( inner_prod(ElementNormal, projected_point-Triangle[0]) < 1e-13 );
+
+    if (PointInTriangle3D(projected_point, ClosestElement) ==1)
+    {
+        return dist;
+    }
+    else{
+    // Get the closest point on each line --- 
+    
+        c_vector<double, SPACE_DIM> Normal1 = VectorProduct(Line1, ElementNormal);
+        Normal1 /= norm_2(Normal1);
+
+        c_vector<double, SPACE_DIM> Normal2 = VectorProduct(Line2, ElementNormal);
+        Normal2 /= norm_2(Normal2);
+
+        c_vector<double, SPACE_DIM> Normal3 = VectorProduct(Line3, ElementNormal);
+        Normal3 /= norm_2(Normal3);
+
+        double dist1 = abs(inner_prod(Normal1, (projected_point-Triangle[1])));
+        double dist2 = abs(inner_prod(Normal2, (projected_point-Triangle[2])));
+        double dist3 = abs(inner_prod(Normal3, (projected_point-Triangle[2])));
+        // Find the smallest distance 
+
+        double MinDistane = std::min(dist1, std::min(dist2, dist3));
+
+        double PointDistanceToElement = sqrt(MinDistane*MinDistane +dist*dist );
+        return PointDistanceToElement;
+    }
+
+ 
+}
+
+
+
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::PointInTriangle3D(c_vector<double, SPACE_DIM> Point, c_vector<c_vector<double, SPACE_DIM>, SPACE_DIM> Triangle)
+{
+
+    // Get normals
+    c_vector<double, SPACE_DIM> CenterPoint = (Triangle[1] + Triangle[0] + Triangle[2]) / 3;
+
+    c_vector<double, SPACE_DIM> Line1 = Triangle[1] - Triangle[0]; // Vector 1 to 2
+    c_vector<double, SPACE_DIM> Line2 = Triangle[2] - Triangle[0]; // Vector 1 to 3
+    c_vector<double, SPACE_DIM> Line3 = Triangle[2] - Triangle[1]; // Vector 2 to 3
+
+    c_vector<double, SPACE_DIM> Midpoint1 = (Triangle[1] + Triangle[0]) / 2;
+    c_vector<double, SPACE_DIM> Midpoint2 = (Triangle[2] + Triangle[0]) / 2;
+    c_vector<double, SPACE_DIM> Midpoint3 = (Triangle[2] + Triangle[1]) / 2;
+
+    c_vector<double, SPACE_DIM> NormalToElement = VectorProduct(Line1, Line2);
+    NormalToElement /= norm_2(NormalToElement);
+
+    c_vector<double, SPACE_DIM> Normal1 = VectorProduct(Line1, NormalToElement);
+    Normal1 /= norm_2(Normal1);
+
+    c_vector<double, SPACE_DIM> Normal2 = VectorProduct(Line2, NormalToElement);
+    Normal2 /= norm_2(Normal2);
+
+    c_vector<double, SPACE_DIM> Normal3 = VectorProduct(Line3, NormalToElement);
+    Normal3 /= norm_2(Normal3);
+
+    // Think I will need to do the anle things to check if the normal is pointing towards the center or not.....
+
+    c_vector<double, SPACE_DIM> Center2MidPoint1 = CenterPoint - Midpoint1;
+    c_vector<double, SPACE_DIM> Center2MidPoint2 = CenterPoint - Midpoint2;
+    c_vector<double, SPACE_DIM> Center2MidPoint3 = CenterPoint - Midpoint3;
+    // Needs to be below plane
+    double sign1 = inner_prod(Normal1, (CenterPoint - Midpoint1));
+    if (sign1 > 0)
+    {
+        Normal1 *= -1;
+    }
+
+    double sign2 = inner_prod(Normal2, (CenterPoint - Midpoint2));
+    if (sign2 > 0)
+    {
+        Normal2 *= -1;
+        sign2 = inner_prod(Normal2, (CenterPoint - Midpoint2));
+    }
+    double sign3 = inner_prod(Normal3, (CenterPoint - Midpoint3));
+    if (sign3 > 0)
+    {
+        Normal3 *= -1;
+        sign3 = inner_prod(Normal3, (CenterPoint - Midpoint3));
+    }
+    sign1 = inner_prod(Normal1, (Point - Midpoint1));
+    sign2 = inner_prod(Normal2, (Point - Midpoint2));
+    sign3 = inner_prod(Normal3, (Point - Midpoint3));
+    bool Answer;
+    if (sign1 <= 0 && sign2 <= 0 && sign3 <= 0)
+    {
+        Answer = 1;
+    }
+    else
+    {
+        Answer = 0;
+    }
+    bool Answer1;
+    if (SameSideOfPlane(Point,Triangle[0], Triangle[1],Triangle[2]) & SameSideOfPlane(Point,Triangle[1], Triangle[0],Triangle[2])& SameSideOfPlane(Point,Triangle[2], Triangle[0],Triangle[1]))
+    {
+        Answer1 = 1;
+    }
+    else
+    {
+        Answer1 = 0;
+    }
+    if (Answer1 !=1)
+    {
+        PRINT_2_VARIABLES(Answer, Answer1)
+    }
+    return Answer;
+}
+
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::PointInTriangle3D2(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement)
+{
+
+    Element<ELEMENT_DIM, SPACE_DIM>* p_element = this->rGetMesh().GetElement(ClosestElement);
+    // Collect the intial configuration of the nodes, and the deformed config, send them into the mapping function
+    c_vector<c_vector<double, SPACE_DIM>, SPACE_DIM> Triangle;
+    for (int i = 0; i < 3; ++i)
+    {
+        Triangle[i] = this->rGetMesh().GetNode(p_element->GetNodeGlobalIndex(i))->rGetLocation();
+    }
+
+    bool Answer;
+    if (SameSide(Point, Triangle[0], Triangle[1], Triangle[2]) & SameSide(Point, Triangle[1], Triangle[0], Triangle[2]) & SameSide(Point, Triangle[2], Triangle[0], Triangle[1]))
+    {
+        Answer = 1;
+    }
+    else
+    {
+        Answer = 0;
+    }
+    return Answer;
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SameSideOfPlane(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> a, c_vector<double, SPACE_DIM> b)
+{
+    bool Answer;
+    ;
+    // % Need to create plane from one of the lines and the opposite point -- here
+    // % order of points is very important... dam
+    c_vector<double, SPACE_DIM> Line = b - a;
+    c_vector<double, SPACE_DIM> Midpoint = (a + b) / 2;
+
+    c_vector<double, SPACE_DIM> vector_12 = a - P2; // Vector 1 to 2
+    c_vector<double, SPACE_DIM> vector_13 = b - P2; // Vector 1 to 3
+
+    c_vector<double, SPACE_DIM> NormalToElement = -VectorProduct(vector_12, vector_13);
+    NormalToElement /= norm_2(NormalToElement);
+    c_vector<double, SPACE_DIM> NormalToPlane = VectorProduct(NormalToElement, Line);
+    NormalToPlane /= -norm_2(NormalToPlane);
+
+    // Need to check which way the normal is pointing.... need the normal
+    if (norm_2(P2 - (Midpoint + 0.000001 * NormalToPlane)) < norm_2(P2 - Midpoint))
+    {
+        // The normal is pointing the wrong way, flip it around
+        NormalToPlane *= -1;
+    }
+
+    // Now determine if this is above or below plane
+    double sign = inner_prod(NormalToPlane, (P1 - Midpoint));
+    // If sign is neg, point is below plane, i.e on the triangle side of the
+    // plane, is sign is pos, the point is away from the triangle
+
+    if (sign <= 0)
+    {
+        Answer = 1;
+    }
+    else
+    {
+        Answer = 0;
+    }
+    return Answer;
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SameSide(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> a, c_vector<double, SPACE_DIM> b)
+{
+    bool Answer;
+    // % Need to create plane from one of the lines and the opposite point -- here
+    c_vector<double, SPACE_DIM> A = b - a;
+    c_vector<double, SPACE_DIM> B = P1 - a;
+    c_vector<double, SPACE_DIM> C = P2 - a;
+
+    c_vector<double, SPACE_DIM> cp1 = VectorProduct(A, B);
+    c_vector<double, SPACE_DIM> cp2 = VectorProduct(A, C);
+    if (inner_prod(cp1, cp2) >= 0)
+    {
+        Answer = 1;
+    }
+    else
+    {
+        Answer = 0;
+    }
+    return Answer;
+}
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningIntervals(int nX, int nY, int nZ)
+{
+    mNx = nX;
+    mNy = nY;
+    mNz = nZ;
+}
+
+
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::OutputCellPopulationParameters(out_stream& rParamsFile)

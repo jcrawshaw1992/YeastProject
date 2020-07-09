@@ -33,6 +33,7 @@
 #include "HistoryDepMutableMesh.hpp"
 #include "VtkMeshReader.hpp"
 #include <time.h>
+#include <copyfile.h>
 
 
 /**
@@ -125,6 +126,7 @@ public:
 
     void SetRelativePath(std::string ChasteOutputDirectory, double startime);
     void SetRelativePath(std::string ChasteOutputDirectory);
+    void SetPaths(std::string ChasteOutputDirectory);
     std::string mRelativePath;
 
     void ExecuteHistoryDependentRemeshing();
@@ -176,9 +178,15 @@ public:
      */
     void RemeshGeometry();
     void RemeshGeometryWithVMTK();
+    void TakeInPreAllocatedRemeshGeometry();
+    void PreAllocatedRemeshedMesh(std::string RemeshedMesh);
+    std::string mPreAllocatedRemeshedMesh;
+
+
+
     void JiggleNodes();
     void CheckCurvature();
-    void SetRemeshingSoftwear( std::string RemeshingSoftwear);
+    void SetRemeshingSoftwear(std::string RemeshingSoftwear);
     std::string mRemeshingSoftwear = "CGAL";
 
     void SaveInitalConditions();
@@ -188,6 +196,7 @@ public:
     void SetMaxEdgelength();
     bool PointInTriangle3D(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement);
     bool PointInTriangle3D(c_vector<double, SPACE_DIM> Point, c_vector<c_vector<double, SPACE_DIM>, SPACE_DIM> Triangle);
+    bool PointInTriangle2D(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement);
     double ClosestPointInTriangle(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement);
     unsigned WhichElement(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> NewNodeLocation, unsigned Element1, unsigned Element2);
     unsigned WhichElement2(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2,c_vector<double, SPACE_DIM> NewNodeLocation,  unsigned Element1, unsigned Element2);
@@ -265,6 +274,10 @@ public:
     // Binning member variables
     // Set the number of intervals  -- default is 1, but can be changed with SetBinningIntervals
     int mNx =1; int mNy =1; int mNz =1;
+
+    // If the geometry is 2d, need to record it  with this member in 
+    int mDIM =3;
+    void DetermineDimensions();
 
     // Need max dimensions of the domain 
     double mMaxX;
