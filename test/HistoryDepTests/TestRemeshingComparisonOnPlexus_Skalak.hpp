@@ -87,9 +87,9 @@ void TestPlexusDeformationWithRemeshingw() throw (Exception)
         simulator.SetEndTime(5000);
 
         /*
-          -----------------------------
-          RemeshingTriggerOnHeteroMeshModifier
-          ----------------------------
+        -----------------------------
+        RemeshingTriggerOnHeteroMeshModifier
+        ----------------------------
         */  
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
         p_Mesh_modifier->SetRemeshingInterval(3000);//  p_Mesh_modifier->SetRemeshingInterval(400); //(1000);
@@ -99,6 +99,7 @@ void TestPlexusDeformationWithRemeshingw() throw (Exception)
         p_ElementWriter_modifier->SetElementMetricsFileName("/Users/jcrawshaw/Documents/testoutput/"+output_dir);
         p_ElementWriter_modifier->SetWriteoutInterval(500);
         simulator.AddSimulationModifier(p_ElementWriter_modifier);
+
         /*
         -----------------------------
         Compressive tissue pressure

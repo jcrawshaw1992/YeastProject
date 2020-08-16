@@ -1,33 +1,27 @@
 #!/usr/bin/env python
 # vasc_res_sim.py
-import subprocess
-import vtk
+# import vtk
 import shutil
 import os
-from xml.etree import ElementTree
-import glob
 from argparse import ArgumentParser
-import numpy as np
-import time
-import matplotlib.pyplot as plt
-import csv
-import pdb
 import string
 import math
-# from FileConverter import vtuTostl
-# import FSI_Fun
+
 
 
 if __name__=="__main__":
     parser = ArgumentParser(description='Sort HemeLB vtu files ')
-    parser.add_argument('-Directory', default = '/Users/jcrawshaw/Documents/ChasteWorkingDirectory/FlowFolder/', type=str, help='Need to supply a input folder')
-    parser.add_argument('-CurrentNumberOfFiles', default=10, type=float, help='Need to know which how many files I an adding')
+    parser.add_argument('-Directory', default = 'TestHemeLBChasteLinkage/', type=str, help='Need to supply a input folder')
+    parser.add_argument('-CurrentNumberOfFiles', default=0, type=float, help='Need to know which how many files I an adding')
+    parser.add_argument('-Time', default=50.0, type=int, help='Can look for chaste vtus at simulations runs other than the first i.e results_from_time_10')
     args = parser.parse_args()    
 # # ' ------- Setting up args ------- '
     print "/Users/jcrawshaw/Documents/testoutput/" + args.Directory+ "HemeLB_results_from_time_0/Extracted/"
-    Directory  = "/Users/jcrawshaw/Documents/testoutput/" + args.Directory+ "HemeLB_results_from_time_0/Extracted/"
+    time = str(int(args.Time))
+ 
+    # Directory  = "/Users/jcrawshaw/Documents/testoutput/" + args.Directory+ "HemeLB_results_from_time_0/Extracted/"
     HemeLBDirectory = "/Users/jcrawshaw/Documents/testoutput/" + args.Directory  + "HemeLB_results_from_time_0/"
-    ChasteDirectory = "/Users/jcrawshaw/Documents/testoutput/" +  args.Directory +'results_from_time_0/'
+    ChasteDirectory = "/Users/jcrawshaw/Documents/testoutput/" +  args.Directory +'results_from_time_'+time+'/'
     PriorFinalOutput = args.CurrentNumberOfFiles
     Directory  = "/Users/jcrawshaw/Documents/testoutput/" + args.Directory+ "HemeLBFluid/results_PriorTimeStep/Extracted/"
 
@@ -66,4 +60,4 @@ if __name__=="__main__":
     outF = open(HemeLBDirectory+"CurrentLastFluidOutput.txt", "w")
     outF.write(MaxNumber)
     outF.close()
-    # print '\n ********* ------ vtus from last time step sorted ------ ********* \n'
+    print '\n ********* ------ vtus from last time step sorted ------ ********* \n'

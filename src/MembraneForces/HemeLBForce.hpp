@@ -6,17 +6,13 @@
 
 #include "AbstractForce.hpp"
 #include "AbstractMesh.hpp"
-
-// Needed here to avoid serialization errors (on Boost<1.37)
 #include "CellLabel.hpp"
-
-#include <boost/filesystem.hpp>
+#include <boost/filesystem.hpp>// Needed here to avoid serialization errors (on Boost<1.37)
 #include <ctime>
 #include <boost/algorithm/string/predicate.hpp>
 #include <cstdlib>
 #include <filesystem>
 // namespace fs = std::filesystem;
-
 // #include <direct.h>
 #include <boost/filesystem.hpp>
 #include <mpi.h>
@@ -47,21 +43,12 @@
 // #include "PetscTools.hpp"
 #include "XdrFileReader.hpp"
 #include <map>
-
-
-
 #include "vtkXMLUnstructuredGridReader.h"
-
 #include <vtkPolyData.h>
-
-
 #include "AppliedForceModifier.hpp"
 #include "MeshBasedCellPopulation.hpp"
-
 #include "Debug.hpp"
 #include <math.h>
-
-
 
 #include "ChasteSerialization.hpp"
 #include <boost/serialization/base_object.hpp>
@@ -79,6 +66,7 @@
 #include "HasEndothelialCell.hpp"
 #include "MeshBasedCellPopulation.hpp"
 #include "HistoryDepMeshBasedCellPopulation.hpp"
+#include "UblasCustomFunctions.hpp"
 
 
 /**
@@ -131,28 +119,40 @@ public:
     int mCenterlinesNumber = 1;
     bool mRunHemeLB = 1;
     bool mSetupHemeLB = 1;
-    
+    double mConstantPressure =0;
+    void SetConstantPressure(double Pressure);
 
     void WriteOutVtuFile(std::string outputDirectory);
     HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM> *mMesh;
 
+    void SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
+    void SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, bool RunInitalHemeLB);
+    void SetUpFilePaths(std::string outputDirectory, bool CreateFiles, bool RenamePriorResults);
 
-    void SetUpHemeLBConfiguration(std::string outputDirectory, HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh, AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
-    
     void ExecuteHemeLB();
     bool CheckIfSteadyStateAchieved();
     void ReRunHemeLB();
     void LoadTractionFromFile();
     void UpdateCellData(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation);
 
+    void SetStartTime(double StartTime);
+
+    double mStartTime ;
+    double GetStartTime();
 
 
-    void LoadTractionFromVTKFile();
-    void UpdateCellData2(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation);
+
+
+    // void LoadTractionFromVTKFile();
+    // void UpdateCellData2(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation);
 
 
     double mLatestFinialHemeLBVTU = -1;
     double mExecuteHemeLBCounter = 0;
+    double mTriggerHemeLB = 1500;
+    
+    std::string mResultsDirectory;
+    std::string mRemoveResultsDirectory;
     std::map<unsigned, c_vector<double, 3>> mForceMap;
 
 
@@ -181,10 +181,11 @@ public:
 
     // Inlets and out lets -- this will let me write the pr2 file 
     void Inlets(c_vector<double, 3> PlaneNormal, c_vector<double, 3> Point, double pressure, std::string FlowDirection);
-
+    void SetFluidSolidIterations(double Iterations);
     std::vector<std::vector<c_vector<double, 3>>> mIolets; // Each vector has one boundary, this is a vecotr of two vectors, none being the normal and the other is the point defining the plane
 
     std::vector<double> mPressure;
+    double mEstimatedIC;
     std::vector<std::string> mType;
     double mHemeLBScalling = 1;//1e3;
     
@@ -212,3 +213,150 @@ public:
 EXPORT_TEMPLATE_CLASS_ALL_DIMS(HemeLBForce)
 
 #endif /*HemeLBForce_HPP_*/
+
+
+
+
+
+
+
+
+
+/*
+********************
+   Code graveyard 
+********************
+template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData2(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation)
+{
+
+	assert(SPACE_DIM==3); // Currently assumes that SPACE_DIM = 3
+	std::map<unsigned, c_vector<unsigned, 2>  > LatticeToNodeMap;
+	MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+
+	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+		 cell_iter != rCellPopulation.End();
+		 ++cell_iter)
+	{
+		c_vector<double, SPACE_DIM> location = rCellPopulation.GetLocationOfCellCentre(*cell_iter);
+		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
+		unsigned nearest_fluid_site = UNSIGNED_UNSET;
+		double distance_to_fluid_site = DBL_MAX;
+	
+		for (unsigned fluid_site_index = 0; fluid_site_index <  mAppliedPosition.size(); fluid_site_index++)
+		{
+			// Find the closest fluid site 
+			double distance = norm_2(location - mAppliedPosition[fluid_site_index]);
+			if (distance < distance_to_fluid_site)
+			{
+				distance_to_fluid_site = distance;	
+				nearest_fluid_site = fluid_site_index;
+			}
+		}
+		PRINT_2_VARIABLES(distance_to_fluid_site, nearest_fluid_site);
+		LatticeToNodeMap[node_index] = Create_c_vector(nearest_fluid_site, 0 );
+		assert(nearest_fluid_site != UNSIGNED_UNSET);
+
+		c_vector<double, 3> NormalVector = Create_c_vector(0,0,0);
+		std::set<unsigned>& containing_elements = pNode->rGetContainingElementIndices();
+        assert(containing_elements.size() > 0);
+		// Finding the normal to the node -- need to check this 
+        for (std::set<unsigned>::iterator iter = containing_elements.begin();
+            iter != containing_elements.end();
+            ++iter)
+        {
+            Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
+            Node<SPACE_DIM>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
+            Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
+
+            c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
+            c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
+
+            NormalVector  += VectorProduct(vector_13, vector_12);
+        }
+		NormalVector /=norm_2(NormalVector);
+		double Pressure = mAppliedPressure[nearest_fluid_site];    
+		c_vector<long double,3> Force = Pressure * NormalVector; 
+    
+		assert(fabs(Force[0])<1e10);
+		assert(fabs(Force[1])<1e10);
+		assert(fabs(Force[2])<1e10);
+		
+
+		// Store the force in CellData
+		cell_iter->GetCellData()->SetItem("Pressure", Pressure);
+		cell_iter->GetCellData()->SetItem("applied_force_x", Force[0]);
+		cell_iter->GetCellData()->SetItem("applied_force_y", Force[1]);
+		cell_iter->GetCellData()->SetItem("applied_force_z", Force[2]);
+    	}
+}
+
+
+
+
+
+template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromVTKFile()
+{
+    //   std::string TractionFile = mHemeLBDirectory + "results/Extracted/surface-tractions.xtr";
+      std::string file = mHemeLBDirectory + "results/Extracted/surface-pressure_3348.vtu";
+    
+        
+      vtkSmartPointer<vtkXMLUnstructuredGridReader> Reader = vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
+      Reader->SetFileName(file.c_str());
+      Reader->Update();
+
+      vtkUnstructuredGrid* Output = Reader->GetOutput();
+      vtkPointData* point_data = Reader->GetOutput()->GetPointData();
+
+    //   double NumberOfDataPoints = Reader->GetOutput()->GetNumberOfPoints();
+
+    //   // Write all of the coordinates of the points in the vtkPolyData to the console.
+    //   for(int i = 0; i < Output->GetNumberOfPoints(); i++)
+    //   {
+    //     double p[3];
+    //     Output->GetPoint(i,p);
+    //     c_vector<double,3> Point;
+    //     Point[0]= p[0]; Point[1]= p[1]; Point[2]= p[2];
+    //     mAppliedPosition.push_back(Point*1e3);
+    //   }
+
+
+
+      // PRINT_VARIABLE(NumberOfDataPoints)
+    //   std::cout << *point_data << std::endl;
+    //   std::cout << *Output << std::endl;
+      // vtkPointData* point_data = Reader->GetOutput()->GetPointData();
+
+
+    //   This will get the fluid property at each point -- still need the corrds 
+      vtkCellData *cellData = Output->GetCellData();
+
+    //   vtkDataSet *DataSet = Reader->GetOutputAsDataSet();
+
+    //   std::cout << *cellData << std::endl;
+    //   std::cout << *DataSet << std::endl;
+
+      
+    //   for (int i = 0; i < cellData->GetNumberOfArrays(); i++)
+    //   {
+          vtkDataArray* data = cellData->GetArray(0);
+        //   cout << "name " << data->GetName() << endl;
+          for (int j = 0; j < data->GetNumberOfTuples(); j++)
+          {
+              double value = data->GetTuple1(j);
+            //   cout << "  value " << j << "th is " << value << endl;
+              mAppliedPressure.push_back(value);
+
+          }
+    //   }
+    PRINT_2_VARIABLES(data->GetNumberOfTuples(), Output->GetNumberOfPoints())
+    // assert(mAppliedPosition.size() == Output->GetNumberOfPoints());
+    // assert(mAppliedTractions.size() == number_fluid_sites);
+    // assert(mAppliedTangentTractions.size() == number_fluid_sites);
+
+
+}
+
+*/

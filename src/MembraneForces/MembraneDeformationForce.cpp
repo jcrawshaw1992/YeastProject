@@ -194,28 +194,13 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
           // Force on Node 0
         c_vector<double, 3> vector_12t = pNode2->rGetLocation() - pNode1->rGetLocation();
         ForceOnNode[0] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, vector_12t);
-        AreaForceOnNode_TEMP[0] = -0.5 * KA * AreaDiff * VectorProduct(UnitNormal, vector_12t);
         // Force on Node 1
         c_vector<double, 3> vector_20 = pNode0->rGetLocation() - pNode2->rGetLocation();
         ForceOnNode[1] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, vector_20);
-        AreaForceOnNode_TEMP[1] = -0.5 * KA * AreaDiff *VectorProduct(UnitNormal, vector_20);
-
+        
         // Force on Node 2
         c_vector<double, 3> vector_01 = pNode1->rGetLocation() - pNode0->rGetLocation();
         ForceOnNode[2] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, vector_01);
-        AreaForceOnNode_TEMP[1] = -0.5 * KA * AreaDiff *VectorProduct(UnitNormal, vector_01);
-
-
-        // for (int i = 0; i < 3; i++)
-        // {
-        //     node_index = elem_iter->GetNodeGlobalIndex(i);
-        //     p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
-        //     // double AreaMode = norm_2(AreaForceOnNode_TEMP[i]) +  p_cell->GetCellData()->GetItem("AreaMod");
-        //     // p_cell->GetCellData()->SetItem("AreaMod",AreaMode );
-                
-        // }
-
-
 
         double CellArea;
         
@@ -223,19 +208,9 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
         {
             node_index = elem_iter->GetNodeGlobalIndex(i);
             CellArea= rCellPopulation.GetVolumeOfCell(rCellPopulation.GetCellUsingLocationIndex(node_index));
-    
-            // PRINT_VARIABLE(CellArea)
-            // if (CellArea < 1e-8)
-            // {
-            //     ForceOnNode[i] = Create_c_vector(0,0,0);
-            //     TRACE("Trip")
-            // }else
-            // {
-                ForceOnNode[i] /= CellArea;
-            // }
-            
-            MembraneForceMap[node_index] += ForceOnNode[i];  
-            // ForceMap[node_index] += ForceOnNode[i];      
+
+            ForceOnNode[i] /= CellArea;
+            MembraneForceMap[node_index] += ForceOnNode[i];    
         }
        
 

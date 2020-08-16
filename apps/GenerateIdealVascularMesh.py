@@ -85,6 +85,36 @@ def convertFile(vtkFile, VTUfile):
         print 'Finished'
 
 
+
+def CreateIdealSkeleton2(Directory, Generations,Height, Inlets,Outlets, HorizonatalEdgeLength, alpha):
+
+
+    # Standard length of Horizontal edges
+    L = HorizonatalEdgeLength
+
+    # Symetric about the yaxis
+    Nodes = np.array([[0,0]])
+    # Inlet Node
+    y = 2*L*m.sin(alpha)
+    x = L*m.cos(alpha)
+    X = x
+    Y = 0
+
+    for i in range(Generations):
+        # % need to do the fist and last one??
+        for j in range (height):
+            if i ==1:
+                Nodes =  np.append(Nodes, np.array([0,0]),axis=0)
+
+            NewNodes1 = np.array([[L, y], [x+LastNode[0], -y/2+LastNode[1]]])
+            
+            
+            
+        
+        # % need to do the first one??
+
+
+
 def CreateIdealSkeleton(Directory, Generations,Height, Inlets,Outlets, HorizonatalEdgeLength, alpha):
 
     # Standard length of Horizontal edges
@@ -188,13 +218,13 @@ def CreateIdealSkeleton(Directory, Generations,Height, Inlets,Outlets, Horizonat
             maxInColumns = np.amax(Nodes, axis=0)
             MaxX = maxInColumns[0] +x+L
             MaxY = maxInColumns[1]
-
+    
     if  (Inlets % 2) != 0: 
         MaxX = maxInColumns[0]-x
         Midline = 0
 
         for k in range (1):
-            for i in range(Outlets):
+            for i in range(Outlets-2):
                 i=i-1
                 print i
 
@@ -203,15 +233,15 @@ def CreateIdealSkeleton(Directory, Generations,Height, Inlets,Outlets, Horizonat
 
                 NewNode = np.array([[MaxX +x,y*i-y/2], [MaxX+x+L,y*i+y/2]])
                 Nodes =  np.append(Nodes, NewNode,axis=0)
-                # # print "ABC"
-                NewNode = np.array([[MaxX+x+L,-y*i-y/2], [MaxX+2*x+L,-y*i]])
+                # # # print "ABC"
+                NewNode = np.array([[MaxX+x+L,-y*i-y/2]])
                 Nodes =  np.append(Nodes, NewNode,axis=0)
 
-                NewNode = np.array([[MaxX+2*x+2*L,-y*i]])
-                Nodes =  np.append(Nodes, NewNode,axis=0)
+                # NewNode = np.array([[MaxX+2*x+2*L,-y*i]])
+                # Nodes =  np.append(Nodes, NewNode,axis=0)
 
-                Vein = MaxX+2*x+2*L
-
+                Vein = MaxX+L+x
+    
             # maxInColumns = np.amax(Nodes, axis=0)
             # MaxX = maxInColumns[0]
 
@@ -231,6 +261,7 @@ def CreateIdealSkeleton(Directory, Generations,Height, Inlets,Outlets, Horizonat
 
                 NewNode1 = np.array([[N[0]+x+L,N[1]+y/2*i], [N[0]+x+L,N[1]-y/2*i]])
                 Nodes =  np.append(Nodes, NewNode1,axis=0)
+            
 
     Nodes = np.unique(Nodes,axis=0)
     # Now try get the edges -- Going to loop through the Nodes and try find what is nearest 
@@ -257,12 +288,12 @@ def CreateIdealSkeleton(Directory, Generations,Height, Inlets,Outlets, Horizonat
     # try add the inlets and outlets here 
 
     # EdgeLine1= np.array([[11, -1.73205081], [15, 1.73205081]])
-    EdgeLine1= np.array([[0, 3], [0,-3]])
+    EdgeLine1= np.array([[0, 6], [0,-6]])
     Nodes =  np.append(Nodes , EdgeLine1,axis=0)
 
     Edges =  np.append(Edges, [[len(Nodes)-2,len(Nodes)-1]],axis=0)
 
-    EdgeLine1= np.array([[Vein, 3], [Vein,-3]])
+    EdgeLine1= np.array([[Vein, 6], [Vein,-6]])
     Nodes =  np.append(Nodes , EdgeLine1,axis=0)
 
     Edges =  np.append(Edges, [[len(Nodes)-2,len(Nodes)-1]],axis=0)
@@ -286,55 +317,61 @@ if __name__=="__main__":
   
     CPP_Centerlines_vtp_writer = "/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/build/optimised/GenerateIdealVascularMesh/Test_VTP_writerRunner"
 
-    Directory = "/Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/"
+    Directory = "/Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/Simple/"
     CenterLines_filename = Directory + "Centerlines.vtp"
    
     VTK_Mesh = Directory+"Meshinital.vtk"
-    Clipped_Mesh = Directory+"MeshClipped4.vtk"
-    VTK_MeshRefined = Directory+"MeshRefined.vtk"
+    Clipped_Mesh = Directory+"MeshClippedThird.vtk"
+    VTK_MeshRefined = Directory+"MeshRefined_Second.vtk"
+    VTK_MeshRefinedSec = Directory+"MeshRefined_Third.vtk"
     VTU_Mesh = Directory+"Mesh3.vtu"
 
     # # # # Set up the points for the centerlines and write into a file to be read in cpp 
-    Generations =1
-    Height =1
-    Inlets =3
-    Outlets =3
+    Generations = 2#4
+    Height =7
+
+    Inlets =7
+    Outlets =7
     HorizonatalEdgeLength =1
     alpha = m.pi/4
-    # CreateIdealSkeleton(Directory, Generations, Height,Inlets,Outlets, HorizonatalEdgeLength, alpha)
+    CreateIdealSkeleton(Directory, Generations, Height,Inlets,Outlets, HorizonatalEdgeLength, alpha)
 
-    # # # # read in the centerlines points into cpp to generate the centerlines.vtp file
-    # command = CPP_Centerlines_vtp_writer + ' -ofile ' + CenterLines_filename + ' -CenterlinePoints ' +Directory+ 'CenterlinePoints.txt -CenterlineEdges ' + Directory +'CenterlineEdges.txt'
-    # subprocess.call(command, shell=True)
+    # # # # # read in the centerlines points into cpp to generate the centerlines.vtp file
+    command = CPP_Centerlines_vtp_writer + ' -ofile ' + CenterLines_filename + ' -CenterlinePoints ' +Directory+ 'CenterlinePoints.txt -CenterlineEdges ' + Directory +'CenterlineEdges.txt -Radius 0.5' 
+    subprocess.call(command, shell=True)
 
 
-    # # #  # interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller
-    # SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ CenterLines_filename + ' -length 0.1 -ofile '+ CenterLines_filename
-    # subprocess.call(SmoothCenterlinesCommond, shell=True)
+    # # # #  # interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller
+    # # SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ CenterLines_filename + ' -length 0.1 -ofile '+ CenterLines_filename
+    # # subprocess.call(SmoothCenterlinesCommond, shell=True)
 
-    # # print "Developing Mesh"
-    # # With the scalled radii generate a new mesh from with adapted centerlines file  -- here the discretisation dimension (i.e nunber of nodes in each axis) is currently 200 200 200, but might need changing 
-    # command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 210 210 210 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
-    # subprocess.call(command, shell=True)
+    # # # print "Developing Mesh"
+    # # # With the scalled radii generate a new mesh from with adapted centerlines file  -- here the discretisation dimension (i.e nunber of nodes in each axis) is currently 200 200 200, but might need changing 
+    # # command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 180 180 150 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
+    # # subprocess.call(command, shell=True)
     
-    # # pause()
+    # # # pause()
     # #The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-    # command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 10 -edgelength 0.1 -elementsizemode "edgelength" -ofile ' +VTK_MeshRefined
+    # command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined +' -iterations 5 -edgelength 0.075 -elementsizemode "edgelength" -ofile ' +VTK_MeshRefinedSec
     # subprocess.call(command, shell=True)
 
 
-    # clip.clip_surface_with_plane(VTK_MeshRefined,(0,-2.5,0), (0,1,0), Clipped_Mesh)
-    # clip.clip_surface_with_plane(Clipped_Mesh,(0,2.5,0), (0,-1,0), Clipped_Mesh)
+    # # clip.clip_surface_with_plane(VTK_MeshRefined,(0,-5.5,0), (0,1,0), Clipped_Mesh)
+    # # clip.clip_surface_with_plane(Clipped_Mesh,(0,5.5,0), (0,-1,0), Clipped_Mesh)
 
-    clip.clip_surface_with_plane(VTK_MeshRefined,(0.39,0,0), (1,0,0), Clipped_Mesh)
-    clip.clip_surface_with_plane(Clipped_Mesh,(7.5,0,0), (-1,0,0), Clipped_Mesh)
+    # # clip.clip_surface_with_plane(VTK_MeshRefined,(0.39,0,0), (1,0,0), Clipped_Mesh)
+    # # clip.clip_surface_with_plane(Clipped_Mesh,(7.5,0,0), (-1,0,0), Clipped_Mesh)
+
+    # clip.clip_surface_with_plane(VTK_MeshRefinedSec,(0.25,0,0), (1,0,0), Clipped_Mesh)
+    # clip.clip_surface_with_plane(Clipped_Mesh,(14.5,0,0), (-1,0,0), Clipped_Mesh)
 
 
-    # convertFile(Clipped_Mesh , VTU_Mesh)
 
-    print "-------------------------------------"
-    print "-------------  Finito  --------------"
-    print "-------------------------------------"
+    # # convertFile(Clipped_Mesh , VTU_Mesh)
+
+    # print "-------------------------------------"
+    # print "-------------  Finito  --------------"
+    # print "-------------------------------------"
 
 
 

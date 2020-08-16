@@ -204,11 +204,11 @@ public:
                     // p_EdgeCorrectionForce->SetMeshType(1, N_D, N_Z );
                     // simulator.AddForce(p_EdgeCorrectionForce);
 
-                    // //         /*
-                    // //         -----------------------------
-                    // //         Boundaries
-                    // //         ----------------------------
-                    //         */
+                    /*
+                    -----------------------------
+                    Boundaries
+                    ----------------------------
+                    */
 
                     //Create a plane boundary to represent the inlet and pass them to the simulation
                     c_vector<long double, 3> Boundary1 = Create_c_vector(0, 0, -5e-6 * scale);

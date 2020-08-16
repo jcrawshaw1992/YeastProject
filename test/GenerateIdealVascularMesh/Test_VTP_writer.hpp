@@ -53,17 +53,19 @@ public:
 
     void TestGenerateIdealMesh() throw (Exception)
     {
-         std::string CenterlineEdgeFile; std::string CenterlinePointsFile; std::string output_file;
+         std::string CenterlineEdgeFile; std::string CenterlinePointsFile; std::string output_file;double RadiValue;
         if (CommandLineArguments::Instance()->OptionExists("-CenterlineEdges"))
         {
             CenterlineEdgeFile = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-CenterlineEdges"); 
             CenterlinePointsFile = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-CenterlinePoints");  
             output_file = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-ofile");
+            RadiValue = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Radius");
         }else
         {
             CenterlineEdgeFile = "/Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/CenterlineEdges.txt";
             CenterlinePointsFile = "/Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/CenterlinePoints.txt";
             output_file = "/Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/TestCenterlines.vtp";
+            RadiValue =0.2;
         }
         int SPACE_DIM =2;
         
@@ -166,7 +168,7 @@ public:
         vtkSmartPointer<vtkDoubleArray> radii_array = vtkSmartPointer<vtkDoubleArray>::New();
         radii_array->SetNumberOfComponents(1);
         radii_array->SetName("Radius");
-        double RadiValue =0.2;
+        
         for (unsigned vertex_id = 0; vertex_id < points->GetNumberOfPoints(); vertex_id++)
         {
             

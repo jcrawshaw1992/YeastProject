@@ -290,25 +290,23 @@ public:
         GrowthMaps[1.2] = Create_c_vector(pow(10, -6.2)*1e3, pow(10, -5.8360)*1e2, pow(10, -7)*1e2, BendingConst*1e1);
         GrowthMaps[2] = Create_c_vector(pow(10, -6.8), pow(10, -6.8124), pow(10, -7), BendingConst);
 
- TRACE("b")
+
         boost::shared_ptr<MembranePropertiesSecModifier<2, 3> > p_Membrane_modifier(new MembranePropertiesSecModifier<2, 3>());
-        // p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 1,1e-10, 1); 
+        
         p_Membrane_modifier->SetMembranePropeties(GrowthMaps, 2, 0,10, 1); 
 
         c_vector<double, 3> UpperPlaneNormal = Create_c_vector(-0.8,-0.5,0.2);
         c_vector<double, 3> UpperPlanePoint = Create_c_vector(0,0,0);
- TRACE("a")
-        // 0.32744165944755166, 0.42686455379901334, -0.060123920678753696)
-        // -0.5540204869237043, 0.831461324351056, 0.04163371442965216
+        
         c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.14,0.192,0);
         c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0.8,-0.5,0.1);
- TRACE("a")
+
         
         p_Membrane_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
         p_Membrane_modifier->SetBendingForce(cell_population, BendingConst);
 
         simulator.AddSimulationModifier(p_Membrane_modifier);
- TRACE("A")
+
 
         /*
         -----------------------------
@@ -324,12 +322,11 @@ public:
         Bending forces
         ----------------------------
         */
-        TRACE("B")
+       
         boost::shared_ptr<MembraneStiffnessForce> p_membrane_force(new MembraneStiffnessForce());
         p_membrane_force->SetupInitialMembrane(mesh, simulator.rGetCellPopulation());
         p_membrane_force->SetMembraneStiffness(BendingConst,30,30 );
         simulator.AddForce(p_membrane_force);
- TRACE("C")
 
         // Create a plane boundary to represent the inlets/outlets and pass them to the simulationVtkMeshReader
         double inlet_offset = 0.001;
@@ -341,18 +338,14 @@ public:
 
 
         }
- TRACE("D")
+
         // Save the set up simulation ready to be executed once flow results are available
         CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
     
         // Output the mesh in .vtu format for HemeLB setup tool to pick up (first converted to stl, though).
-      
-        VtkMeshWriter<2,3> mesh_writer(output_dir, "config", false);
-      
+        VtkMeshWriter<2,3> mesh_writer(output_dir, "config", false);   
         MutableMesh<2,3>* p_mesh= &(dynamic_cast<MeshBasedCellPopulation<2,3>*>(&(simulator.rGetCellPopulation()))->rGetMesh());
-     
         p_mesh->Scale(1.0/mesh_scale,1.0/mesh_scale,1.0/mesh_scale); // so distances are back in original scale
-     
         mesh_writer.WriteFilesUsingMesh(*p_mesh);
     }
 };

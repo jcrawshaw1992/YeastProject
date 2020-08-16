@@ -84,6 +84,7 @@
         "memory_resource": "cpp",
         "cfenv": "cpp",
         "cinttypes": "cpp",
-        "future": "cpp"
+        "future": "cpp",
+        "cassert": "cpp"
     }
 }

@@ -1,11 +1,4 @@
 #include "HemeLBForce.hpp"
-#include <cmath>
-#include "Debug.hpp"
-#include "MeshBasedCellPopulation.hpp"
-#include "UblasCustomFunctions.hpp"
-#include "EmptyBasementMatrix.hpp"
-#include <math.h>
-
 /*
     Chaste force that runs HemeLB and uses the forces from the HemeLB output.
     This is basically the linking script -- Go Jess
@@ -17,13 +10,9 @@
 
          TO DO 
     ----------------
-    1) Create centerlines to get the max (or min?) radius around the vessel -- giving us the required discretisation for space and 
-    time, as well as a convient way to determine cap size :) 
-    2) Put in a step where the mesh is saved as the required vtu file somewhere at the begining, then turned into the required stl 
-    3) Read out the HemeLB output and see if the required stability parameters are met at each step, and how long through the simulation 
-    is needed until stability was achieved
-    4) For the inital time step, have some measure of complexity of the vessel for how long we let the first time step run for, maybe this will
+    1) For the inital time step, have some measure of complexity of the vessel for how long we let the first time step run for, maybe this will
     be the spread of the radii 
+    2) See if I can get the code to run for long time in more complicated geometry i.e check for reliability
 */
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 HemeLBForce<ELEMENT_DIM, SPACE_DIM>::HemeLBForce()
@@ -39,25 +28,18 @@ HemeLBForce<ELEMENT_DIM, SPACE_DIM>::~HemeLBForce()
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
-    //  TRACE("Applied force");
-    assert(SPACE_DIM == 3); // Currently assumes that SPACE_DIM = 3
-
-    if (mExecuteHemeLBCounter == 600)
+    MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+    if (mExecuteHemeLBCounter == mTriggerHemeLB)
     {
         // /* Update mesh */
-
-        // HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-        MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-
-
         MutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh = p_cell_population->rGetMesh();
+        mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
 
-        // HistoryDepMutableMesh<2, 3>* mesh= static_cast<HistoryDepMutableMesh<2, 3>*>(p_mesh);
-        HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>* mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
-    
-        /* Run HemeLB */
+        WriteOutVtuFile(mOutputDirectory);
+
+        // /* Run HemeLB */
         ExecuteHemeLB();
-        /* Get the traction  */
+        // /* Get the traction  */
         LoadTractionFromFile();
         UpdateCellData(rCellPopulation);
         mExecuteHemeLBCounter = 0;
@@ -67,26 +49,195 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
         mExecuteHemeLBCounter += 1;
     }
 
-    MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-    MAKE_PTR(EmptyBasementMatrix, p_Basement);
+   MAKE_PTR(EmptyBasementMatrix, p_Basement);
     for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
          cell_iter != rCellPopulation.End();
          ++cell_iter)
     {
         unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
         Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
-        c_vector<double, 3> ForceOnNode = mForceMap[node_index];
+        c_vector<double, 3> ForceOnNode = mForceMap[node_index]/1;
+        rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(ForceOnNode); 
+    }
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
+{
+   
+    MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+    MutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh = p_cell_population->rGetMesh();
+    mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
+    
+
+    SetUpFilePaths(outputDirectory, 1,0);
+    TRACE("B WRITE HEMELB RUN FILE")
+    WriteHemeLBBashScript();  
+    ExecuteHemeLB();
+    LoadTractionFromFile();
+    UpdateCellData(rCellPopulation);
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string outputDirectory, AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, bool RunInitalHemeLB)
+{  
+    MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+    MutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh = p_cell_population->rGetMesh();
+    mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
+    bool RenamePriorResults =0;
+    SetUpFilePaths(outputDirectory,RunInitalHemeLB,RenamePriorResults);
+    /*  Need to generate the HemeLB bash script first */
+
+    TRACE("A WRITE HEMELB RUN FILE")
+    WriteHemeLBBashScript();   
+    if (RunInitalHemeLB ==1)
+    {
+        ExecuteHemeLB();
+    }
+    LoadTractionFromFile();
+    UpdateCellData(rCellPopulation);
+}
 
 
-        if (cell_iter->GetMutationState()->template IsType<EmptyBasementMatrix>())
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
+{       
+    /*  Rename prior results directory :)    */
+    std::string OldResultsDirectory = mHemeLBDirectory + "results_PriorTimeStep/";
+    if (boost::filesystem::exists(mResultsDirectory))
+    {      
+        if (boost::filesystem::exists(OldResultsDirectory))
+         {   
+            std::string RemoveOldResults ="rm -r " + OldResultsDirectory +" >nul";
+            system(RemoveOldResults.c_str());
+         }
+
+        std::rename(mResultsDirectory.c_str(), OldResultsDirectory.c_str());
+        system(mRemoveResultsDirectory.c_str());
+    }
+    else
+    {
+        OldResultsDirectory = mResultsDirectory;
+    }
+
+    // Setup HemeLB 
+    /*  Step -1: Generate the inital vtu and stl files  ... Need mesh here, call it config file and save somewhere paralle   */
+    WriteOutVtuFile(mOutputDirectory);
+
+    /*  Step 0: Create the HemeLB config.pr2 file */
+    double HemeLBSimulationTime = 500; // Too short right now, but who cares
+    int Period = HemeLBSimulationTime/2;
+    Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
+
+    // Step 1: Run HemeLB setup
+    std::string run_hemelb_setup = mhemelb_setup_exe + ' ' + mHemeLBDirectory + "config.pr2 >nul";
+    std::system(run_hemelb_setup.c_str());
+
+    // Step 2: Update xml file
+    std::string update_xml_file = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/update_xml_file.py -period "+std::to_string(Period) +" -directory " + mHemeLBDirectory + " -InitalConditions " + std::to_string(mEstimatedIC) +" >nul"; 
+    std::system(update_xml_file.c_str());
+
+
+    /*  Step 3: run HemeLB simulation
+        This command will open up a new terminal and run the bash script RunHemeLB (which is in apps/). 
+        Running HemeLB will take some time, so In the mean time I will set up for some things I will need to 
+        make the flow.vtus and then run the wait_file bash script, which will wait until HemeLB has finished 
+        (as definded by the generation of myfile.txt)
+    */
+
+    // Run HemeLB
+    std::system("open ./projects/VascularRemodelling/apps/RunHemeLB");
+
+    /*  Step 3a: 
+        While the current HemeLB simulation is running, sort some things out 
+        i) get the files from the last time step moved and duplication (only the last file is duplicated, this one is and easy & stable flow result to grab)
+    */
+
+
+    // Sort vtus files  --- still need to properly set up the file directories, but I think this will happen later
+    if (mCenterlinesNumber >1)
+    {
+
+        std::ostringstream strs1;
+        strs1 << mStartTime;
+        std::string StartTime = strs1.str();
+        PRINT_VARIABLE(StartTime)
+        std::string vtuFileSorting = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/SortVtuFiles.py -Directory " + mOutputDirectory + " -CurrentNumberOfFiles " + std::to_string(mLatestFinialHemeLBVTU) + " -Time " + StartTime+ " >nul";
+        std::system(vtuFileSorting.c_str());
+        UpdateCurrentyFlowVtuCount();
+    }
+    
+    CopyFile(mHemeLBDirectory + "centerlines.vtp", mHemeLB_output + "Centerlines_"+std::to_string(mCenterlinesNumber)+".vtp");
+    mCenterlinesNumber +=1;
+
+
+    // ---- I can other things Chaste needs running in the background here Maybe have some potts things going on
+    /* Now wait*/
+    std::string WaitCommand = "./projects/VascularRemodelling/apps/wait_file " + mHemeLBDirectory + "WaitFile.txt >nul";
+    std::system(WaitCommand.c_str());
+
+        /* Generate a new stl file from the vtu while HemeLB is going*/
+    // std::string ConvertVTUtoSTL = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/vtuTostl.py -Directory " + mHemeLBDirectory + " >nul";
+    // std::system(ConvertVTUtoSTL.c_str());
+
+    // Set up to generate the vtu files 
+    std::string GmyUnstructuredGridReader = "python /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >nul"; 
+    std::system(GmyUnstructuredGridReader.c_str());
+
+    if (CheckIfSteadyStateAchieved() ==0)
+    { 
+        ReRunHemeLB();
+    }
+
+    std::cout <<" Continue Chaste "<< std::endl;
+
+    // For the not first ones here is what I will do, this one is the set up so I wont bother here, but in future reps have the vtu sorting when HemelB is going
+    std::string GenerateFlowVtus = "python /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory + "results/Extracted/surface-traction.xtr >nul";
+    std::system(GenerateFlowVtus.c_str());
+
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ReRunHemeLB()
+{
+    TRACE("HemeLB had initially failed, running again with longer simulation time ")
+    bool SimulationSuccess =0;
+    double SimulationDuration[3] = {1800,1800, 18000};
+    for(unsigned i=0; i< 3;i++)
+    {
+        system(mRemoveResultsDirectory.c_str());
+
+        Writepr2File(mHemeLBDirectory,SimulationDuration[i]);
+        
+        /*  Step 1: Run HemeLB setup */
+        std::string run_hemelb_setup = mhemelb_setup_exe + ' ' + mHemeLBDirectory + "config.pr2 >nul";
+        std::system(run_hemelb_setup.c_str());
+
+        /*  Step 2: Update xml file */
+        std::string update_xml_file = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/update_xml_file.py -period 1111 -directory " + mHemeLBDirectory + " >nul"; 
+        std::system(update_xml_file.c_str());
+
+        std::system("open ./projects/VascularRemodelling/apps/RunHemeLB");
+
+        /* Now wait */
+        std::string WaitCommand = "./projects/VascularRemodelling/apps/wait_file " + mHemeLBDirectory + "WaitFile.txt";
+        std::system(WaitCommand.c_str());
+        bool Check = CheckIfSteadyStateAchieved();
+        if (Check)
         {
-            rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(-0.5*ForceOnNode);
-        }
-        else
-        {
-           rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(ForceOnNode); 
+            SimulationSuccess = 1;
+            break;
         }
     }
+    // if we get to here the HemeLB simulation still hasnt run after four attempts  -- Need to do a bunch of other things here, like generate flow vtus, but I will worry about that later next time hi have a break in the code 
+    assert(SimulationSuccess ==1);
+  
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetFluidSolidIterations(double Iterations)
+{
+    mTriggerHemeLB = Iterations;
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -115,11 +266,13 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOutVtuFile(std::string outputDirectory)
 {
 
-    VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(outputDirectory + "HemeLBFluid/", "config", false);
+    VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(outputDirectory + "HemeLBFluid/", "Chaste", false);
     mesh_writer.WriteFilesUsingMesh(*mMesh);
 
-    std::string VtuToStl = "meshio-convert " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "config.stl";
+    std::string VtuToStl = "meshio-convert " + mHemeLBDirectory + "Chaste.vtu " + mHemeLBDirectory + "config.stl  >nul";
     std::system(VtuToStl.c_str());
+
+
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -128,7 +281,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
 
     std::string CenterlinesFile = outputDirectory + "centerlines.vtp";
     /*  Need radius of mesh so I can specify HemeLB discretisation, and iolet cap sizes, to do this I am going to generate and sort the centerlines */
-    std::string GenerateCenterlinesFile = "vmtk vmtknetworkextraction -ifile " + outputDirectory + "config.stl -ofile " + CenterlinesFile;
+    std::string GenerateCenterlinesFile = "vmtk vmtknetworkextraction -ifile " + outputDirectory + "config.stl -ofile " + CenterlinesFile +" >nul";
     std::system(GenerateCenterlinesFile.c_str());
 
     /* Read the centerlines file and get the max radius */
@@ -143,24 +296,19 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     assert(p_scalars->GetNumberOfComponents() == 1); // Radi are scalars, so should only have one component for each data point, otherwise there is a problem
 
     std::vector<double> RadiVector;
-    double MaxRadius = 0;
+    double MinRadius = 1000000;
     for (unsigned i = 0; i < NumberOfDataPoints; i++)
     {
-        double* data = p_scalars->GetTuple(i);
-        RadiVector.push_back(*data);
-        if (*data > MaxRadius)
+        double* data = p_scalars->GetTuple(i); //RadiVector.push_back(*data);
+        if (*data < MinRadius & *data  >0)
         {
-            MaxRadius = *data;
+            MinRadius = *data;
         }
     }
-    // std::vector<double>::iterator MaxRadi = std::max_element(RadiVector.begin(), RadiVector.end());
-    // MaxRadius = *MaxRadi;
-    mRadius = MaxRadius * mHemeLBScalling;
+    mRadius = MinRadius * mHemeLBScalling;
 
     /* I have the max radius, this will be important for the discretisation and the cap sizes 
-
-        https://royalsocietypublishing.org/doi/pdf/10.1098/rsif.2014.0543
-        https://journals.aps.org/pre/pdf/10.1103/PhysRevE.89.023303
+        https://royalsocietypublishing.org/doi/pdf/10.1098/rsif.2014.0543   &&&&    https://journals.aps.org/pre/pdf/10.1103/PhysRevE.89.023303
 
         double maxMA = 0.2; -- I think it would be <0.1, but lets see
         Blood viscosity = 0.004 Pa s
@@ -170,13 +318,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
         double C = 1/3; // C^2_s -- Bernabeu et al 
         double tau = 0.8;// Bernabeu et al. demonstrated that the relaxation constant must be between t = 0.5-1 for stable HemeLB simulations, with minimal error at t = 0:8 Bernabeu et al 2014
         double nV = C*(tau -0.5) ;// Nondenominational kinematic viscosity
-
-        Now need to determine the discretisation
      */
 
     double V = 4; // Kinematic viscosity -- 4 mm^2/s  V = eta/rho
-
-    double deltaX = 2 * mRadius / 15; // Diameter/15
+    double deltaX = mRadius / 15; // Diameter/15
     double deltaT = 0.1 * deltaX * deltaX / V;
 
     //
@@ -187,7 +332,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     std::string ConfigFile = outputDirectory + "/config.pr2";
     config_pr2.open(ConfigFile);
     config_pr2 << "DurationSeconds: " + std::to_string(HemeLBSimulationDuration) + "\nIolets:\n";
-
+    mEstimatedIC = 0;
     for (unsigned i = 0; i < mIolets.size(); i++)
     {
         std::vector<c_vector<double, 3> > Iolets = mIolets[i];
@@ -206,18 +351,24 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
         }
         config_pr2 << "  Normal: {x: " + std::to_string(Normal[0]) + ", y: " + std::to_string(Normal[1]) + ", z: " + std::to_string(Normal[2]) + "}\n";
         config_pr2 << "  Pressure: {x: " + std::to_string(mPressure[i]) + ", y: 0.0, z: 0.0}\n";
+        mEstimatedIC+=mPressure[i];
         config_pr2 << "  Radius: " + std::to_string(mRadius * 3) + "\n";
         config_pr2 << "  Type: " + mType[i] + "\n";
     }
     config_pr2 << "OutputGeometryFile: config.gmy\n";
     config_pr2 << "OutputXmlFile: config.xml\n";
-    // Get seed point
-    c_vector<double, SPACE_DIM> Seed = mMesh->GetNodeIteratorBegin()->rGetLocation();
 
+
+    mEstimatedIC/=mIolets.size();
+    // /* Get seed point */
+    // typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = mMesh->GetNodeIteratorBegin();
+    // std::advance(node_iter, 100);
+
+    c_vector<double, SPACE_DIM> Seed = mMesh->GetNode(200)->rGetLocation();     
+  
     config_pr2 << "SeedPoint: {x: " + std::to_string(Seed[0]) + ", y: " + std::to_string(Seed[1]) + ", z: " + std::to_string(Seed[2]) + "}\n";
     config_pr2 << "StlFile: config.stl\n";
     config_pr2 << "StlFileUnitId: 1\n";
-    // config_pr2 << "TimeStepSeconds: " + std::to_string(deltaT) + "\n";
     std::ostringstream strs;
     strs << deltaT;
     std::string dt = strs.str();
@@ -228,13 +379,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     std::string dx = strs1.str();
 
     config_pr2 << "VoxelSize: " + dx;
-
-    // Add in each of the iolets now
     config_pr2.close();
-    TRACE("Finished writing the config.pr2 files")
-
-    // SO now this should have written the pr2 file... need to comple it
-    // double voxel_size =  std::to_string(deltaX);
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -253,35 +398,39 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
     bash_script << "osascript -e 'tell application \"Terminal\" to close first window' & exit";
 
     bash_script.close();
-    TRACE("bash script written, now need to make")
-    std::string compileBashScript = "chmod 700 " + BashFile;
+    std::string compileBashScript = "chmod 700 " + BashFile + " >nul";
     std::system(compileBashScript.c_str());
 
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string outputDirectory, HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh, AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetStartTime(double StartTime)
 {
-    
-    mMesh = &Mesh;    
+    mStartTime = StartTime;
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+double HemeLBForce<ELEMENT_DIM, SPACE_DIM>::GetStartTime()
+{
+    return mStartTime;
+}
+
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirectory, bool CreateFiles, bool RenamePriorResults)
+{
     assert(SPACE_DIM == 3);
-    if (boost::algorithm::ends_with(outputDirectory, "/"))
-    {
-         mHemeLBDirectory = "/Users/jcrawshaw/Documents/testoutput/" + outputDirectory + "HemeLBFluid/";
-         mHemeLB_output = "/Users/jcrawshaw/Documents/testoutput/" + outputDirectory + "HemeLB_results_from_time_0/";
-    }
-    else
-    {
-        mHemeLBDirectory = "/Users/jcrawshaw/Documents/testoutput/" + outputDirectory + "/HemeLBFluid/";
-        mHemeLB_output = "/Users/jcrawshaw/Documents/testoutput/" + outputDirectory + "/HemeLB_results_from_time_0/";
+    if (!boost::algorithm::ends_with(outputDirectory, "/"))
+    {   
         outputDirectory = outputDirectory + "/";
     }
     mOutputDirectory = outputDirectory;
+    mHemeLBDirectory = "/Users/jcrawshaw/Documents/testoutput/" + mOutputDirectory + "HemeLBFluid/";
+    mHemeLB_output = "/Users/jcrawshaw/Documents/testoutput/" + mOutputDirectory + "HemeLB_results_from_time_0/";
 
-    // mSetupHemeLB =0;
-    if (mSetupHemeLB)
-    {
-        bool RenamePriorResults = 0;
+    if (CreateFiles ==1)
+    {  
         if (boost::filesystem::exists(mHemeLBDirectory))
         {
             /* HemeLB directory already exists  */
@@ -306,10 +455,9 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
                 std::rename(mHemeLB_output.c_str(), OldDirectory.c_str());
             } 
             else{ 
-                std::string RemoveOldHemeLBDirectory = "rm -r " + mHemeLB_output;
+                std::string RemoveOldHemeLBDirectory = "rm -r " + mHemeLB_output +" >nul";
                 system(RemoveOldHemeLBDirectory.c_str());
             }
-            
         }
         /*  Create HemeLB Paths, parrallel to the results_0 folder, going to need the file name here   */
         boost::filesystem::path Redir(mHemeLB_output.c_str());
@@ -317,239 +465,13 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
 
         boost::filesystem::path dir(mHemeLBDirectory.c_str());
         boost::filesystem::create_directories(dir);
-
-        /*  Step -1: Generate the inital vtu and stl files  ... Need mesh here, call it config file and save somewhere paralle   */
-        WriteOutVtuFile(outputDirectory);
-
-        /*  Step 0: Create the inlets and outlets for HemeLB config.pr2 file   */
-        Writepr2File(mHemeLBDirectory, 10000);
-
-        std::string heme_profile_filename = mHemeLBDirectory + "config.pr2";
-        std::string ConfigDirectory = mHemeLBDirectory + "config.stl";
-
-        /*  Step 1: Run HemeLB setup */
-        std::string run_hemelb_setup = mhemelb_setup_exe + ' ' + heme_profile_filename + " >nul"; 
-        std::system(run_hemelb_setup.c_str());
-
-        // /*  Step 2: Update xml file */
-        std::string update_xml_file = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/update_xml_file.py -period 10000 -directory " + mHemeLBDirectory + " >nul"; 
-        std::system(update_xml_file.c_str());
-    }
-     mRunHemeLB =1;
-    if (mRunHemeLB)
-     {
-
-    //      /*  Step 2: Update xml file */
-    //     std::string update_xml_file = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/update_xml_file.py period 10000 -directory " + mHemeLBDirectory + " >nul"; 
-    //     std::system(update_xml_file.c_str());
-    //     /*  Need to generate the bash script first */
-    //     WriteHemeLBBashScript();
-
-    //     /*  Step 3: run HemeLB simulation
-    //         This command will open up a new terminal and run the bash script RunHemeLB (which is in apps/). 
-    //         Running HemeLB will take some time, so In the mean time I will set up for some things I will need to 
-    //         make the flow.vtus and then run the wait_file bash script, which will wait until HemeLB has finished 
-    //         (as definded by the generation of myfile.txt)
-    //     */
-
-    //     std::system("open ./projects/VascularRemodelling/apps/RunHemeLB");
-
-    //     /* Copy centerlines file for safe keeping */
-    //     CopyFile(mHemeLBDirectory + "centerlines.vtp", mHemeLB_output + "Centerlines_0.vtp");
-
-    //     /* Duplicate the config.xml file -- prevents corruption  */
-    //     CopyFile(mHemeLBDirectory + "config.xml",mHemeLBDirectory + "config2.xml" );
-
-
-    //     /* Now wait*/
-    //     std::string WaitCommand = "./projects/VascularRemodelling/apps/wait_file " + mHemeLBDirectory + "WaitFile.txt";
-    //     std::system(WaitCommand.c_str());
-
-    //      /* Generate a new stl file from the vtu while HemeLB is going*/
-    //     std::string ConvertVTUtoSTL = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/vtuTostl.py -Directory " + mHemeLBDirectory + " >nul";
-    //     std::system(ConvertVTUtoSTL.c_str());
-
-    //     std::string GmyUnstructuredGridReader = "python /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config2.xml  >nul";
-    //     std::system(GmyUnstructuredGridReader.c_str());
-
-
-    //     std::cout << " Continue Chaste " << std::endl;
-    //     TRACE("Finished waiting for HemeLB, generate_flow_vtus ")
-    //     bool Check = CheckIfSteadyStateAchieved();
-        bool Check =0;
-        if (Check ==0)
-        {   
-            ReRunHemeLB();
-        }
-
-        // For the not first ones here is what I will do, this one is the set up so I wont bother here, but in future reps have the vtu sorting when HemelB is going
-        std::string GenerateFlowVtus = "python /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config2.vtu " + mHemeLBDirectory + "results/Extracted/surface-pressure.xtr "+ mHemeLBDirectory + "results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory + "results/Extracted/surface-traction.xtr >nul";
-        std::system(GenerateFlowVtus.c_str());
-        TRACE("generated required vtus")
-
-    }
-    
-    LoadTractionFromFile();
-    UpdateCellData(rCellPopulation);
-}
-
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
-{
-
-
-    /*  Rename prior results directory :)    */
-    std::string ResultsDirectory = mHemeLBDirectory + "results/";
-    std::string OldResultsDirectory;
-    if (boost::filesystem::exists(ResultsDirectory))
-    {
-        OldResultsDirectory = mHemeLBDirectory + "results_PriorTimeStep/";
-        std::rename(ResultsDirectory.c_str(), OldResultsDirectory.c_str());
-    }
-    else
-    {
-        OldResultsDirectory = ResultsDirectory;
     }
 
-    assert(SPACE_DIM == 3);
-    bool setupHemeLB = 1;
-    if (setupHemeLB)
-    {
-        /*  Step -1: Generate the inital vtu and stl files  ... Need mesh here, call it config file and save somewhere paralle   */
-        WriteOutVtuFile(mOutputDirectory);
-
-        /*  Step 0: Create the inlets and outlets for HemeLB config.pr2 file   */
-        Writepr2File(mHemeLBDirectory,18000);
-
-        std::string heme_profile_filename = mHemeLBDirectory + "config.pr2";
-
-        // Step 1: Run HemeLB setup
-        std::string run_hemelb_setup = mhemelb_setup_exe + ' ' + heme_profile_filename + " >nul";
-        std::system(run_hemelb_setup.c_str());
-
-        // Step 2: Update xml file
-        TRACE("Update xml file ")
-        std::string update_xml_file = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/update_xml_file.py -period 10000 -directory " + mHemeLBDirectory + " >nul";
-        std::system(update_xml_file.c_str());
-    }
-    bool RunHemeLB = 1;
-    if (RunHemeLB)
-    {
-
-        /*  Step 3: run HemeLB simulation
-            This command will open up a new terminal and run the bash script RunHemeLB (which is in apps/). 
-            Running HemeLB will take some time, so In the mean time I will set up for some things I will need to 
-            make the flow.vtus and then run the wait_file bash script, which will wait until HemeLB has finished 
-            (as definded by the generation of myfile.txt)
-        */
-
-        std::system("open ./projects/VascularRemodelling/apps/RunHemeLB");
-
-        /*  Step 3a: 
-            While the current HemeLB simulation is running, sort some things out 
-            i) get the files from the last time step moved and duplication (only the last file is duplicated, this one is and easy & stable flow result to grab)
-        */
-
-        // Sort vtus files  --- still need to properly set up the file directories, but I think this will happen later
-        std::string vtuFileSorting = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/SortVtuFiles.py -Directory " + mOutputDirectory + " -CurrentNumberOfFiles " + std::to_string(mLatestFinialHemeLBVTU) + " >nul";
-        std::system(vtuFileSorting.c_str());
-
-        UpdateCurrentyFlowVtuCount();
-        CopyFile(mHemeLBDirectory + "centerlines.vtp", mHemeLB_output + "Centerlines_"+std::to_string(mCenterlinesNumber)+".vtp");
-
-        /* Generate a new stl file from the vtu while HemeLB is going*/
-        std::string ConvertVTUtoSTL = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/vtuTostl.py -Directory " + mHemeLBDirectory + " >nul";
-        std::system(ConvertVTUtoSTL.c_str());
-
-        /* Duplicate the config.xml file -- prevents corruption  */
-        CopyFile(mHemeLBDirectory + "config.xml", mHemeLBDirectory + "config2.xml");
-
-        std::string GmyUnstructuredGridReader = "python /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config2.xml >nul"; 
-        std::system(GmyUnstructuredGridReader.c_str());
-
-        
-        // ---- I can other things Chaste needs running in the background here Maybe have some potts things going on
-        /* Now wait*/
-        std::string WaitCommand = "./projects/VascularRemodelling/apps/wait_file " + mHemeLBDirectory + "WaitFile.txt";
-        std::system(WaitCommand.c_str());
-
-        if (CheckIfSteadyStateAchieved() ==0)
-        { 
-            ReRunHemeLB();
-        }
-
-        std::cout <<" Continue Chaste "<< std::endl;
-
-        // For the not first ones here is what I will do, this one is the set up so I wont bother here, but in future reps have the vtu sorting when HemelB is going
-        std::string GenerateFlowVtus = "python /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config2.vtu " + mHemeLBDirectory + "results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory + "results/Extracted/surface-traction.xtr >nul";
-        std::system(GenerateFlowVtus.c_str());
-    }
-}
-
-template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromVTKFile()
-{
-    //   std::string TractionFile = mHemeLBDirectory + "results/Extracted/surface-tractions.xtr";
-      std::string file = mHemeLBDirectory + "results/Extracted/surface-pressure_3348.vtu";
-    
-        
-      vtkSmartPointer<vtkXMLUnstructuredGridReader> Reader = vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
-      Reader->SetFileName(file.c_str());
-      Reader->Update();
-
-      vtkUnstructuredGrid* Output = Reader->GetOutput();
-      vtkPointData* point_data = Reader->GetOutput()->GetPointData();
-
-    //   double NumberOfDataPoints = Reader->GetOutput()->GetNumberOfPoints();
-
-    //   // Write all of the coordinates of the points in the vtkPolyData to the console.
-    //   for(int i = 0; i < Output->GetNumberOfPoints(); i++)
-    //   {
-    //     double p[3];
-    //     Output->GetPoint(i,p);
-    //     c_vector<double,3> Point;
-    //     Point[0]= p[0]; Point[1]= p[1]; Point[2]= p[2];
-    //     mAppliedPosition.push_back(Point*1e3);
-    //   }
-
-
-
-      // PRINT_VARIABLE(NumberOfDataPoints)
-    //   std::cout << *point_data << std::endl;
-    //   std::cout << *Output << std::endl;
-      // vtkPointData* point_data = Reader->GetOutput()->GetPointData();
-
-
-    //   This will get the fluid property at each point -- still need the corrds 
-      vtkCellData *cellData = Output->GetCellData();
-
-    //   vtkDataSet *DataSet = Reader->GetOutputAsDataSet();
-
-    //   std::cout << *cellData << std::endl;
-    //   std::cout << *DataSet << std::endl;
-
-      
-    //   for (int i = 0; i < cellData->GetNumberOfArrays(); i++)
-    //   {
-          vtkDataArray* data = cellData->GetArray(0);
-        //   cout << "name " << data->GetName() << endl;
-          for (int j = 0; j < data->GetNumberOfTuples(); j++)
-          {
-              double value = data->GetTuple1(j);
-            //   cout << "  value " << j << "th is " << value << endl;
-              mAppliedPressure.push_back(value);
-
-          }
-    //   }
-    PRINT_2_VARIABLES(data->GetNumberOfTuples(), Output->GetNumberOfPoints())
-    // assert(mAppliedPosition.size() == Output->GetNumberOfPoints());
-    // assert(mAppliedTractions.size() == number_fluid_sites);
-    // assert(mAppliedTangentTractions.size() == number_fluid_sites);
-
+    // Set up some more path names 
+    mResultsDirectory = mHemeLBDirectory + "results/";
+    mRemoveResultsDirectory = "rm -r " + mResultsDirectory + " >nul";
 
 }
-
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
@@ -557,7 +479,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
     std::string TractionFile = mHemeLBDirectory + "results/Extracted/surface-tractions.xtr";
     // std::string TractionFile = "/Users/jcrawshaw/Documents/ChasteWorkingDirectory/ShrunkPlexus/results/Extracted/surface-tractions.xtr";
 	TRACE("Load tracrtion file");
-	PRINT_VARIABLE(TractionFile); 
+	// PRINT_VARIABLE(TractionFile); 
 	FILE* traction_file = fopen((char*)TractionFile.c_str(), "r");
 	assert(traction_file != NULL);
 	
@@ -578,7 +500,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
 
     double voxel_size;
     reader.readDouble(voxel_size);
-    PRINT_VARIABLE(voxel_size)
+    // PRINT_VARIABLE(voxel_size)
 
     c_vector<double,3> origin;
     reader.readDouble(origin[0]);
@@ -615,7 +537,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
    // Data section (we are reading a single timestep)
     unsigned long long timestep_num;
     reader.readUnsignedLong(timestep_num);
-    PRINT_VARIABLE(timestep_num)
+    // PRINT_VARIABLE(timestep_num)
 
     mAppliedPosition.clear();
     mAppliedTractions.clear();
@@ -679,8 +601,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
 
     // 
 }
-
-
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation)
@@ -804,116 +724,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 }
 
 
-template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData2(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation)
-{
-
-	assert(SPACE_DIM==3); // Currently assumes that SPACE_DIM = 3
-	std::map<unsigned, c_vector<unsigned, 2>  > LatticeToNodeMap;
-	MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-
-	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
-		 cell_iter != rCellPopulation.End();
-		 ++cell_iter)
-	{
-		c_vector<double, SPACE_DIM> location = rCellPopulation.GetLocationOfCellCentre(*cell_iter);
-		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
-		unsigned nearest_fluid_site = UNSIGNED_UNSET;
-		double distance_to_fluid_site = DBL_MAX;
-	
-		for (unsigned fluid_site_index = 0; fluid_site_index <  mAppliedPosition.size(); fluid_site_index++)
-		{
-			// Find the closest fluid site 
-			double distance = norm_2(location - mAppliedPosition[fluid_site_index]);
-			if (distance < distance_to_fluid_site)
-			{
-				distance_to_fluid_site = distance;	
-				nearest_fluid_site = fluid_site_index;
-			}
-		}
-		PRINT_2_VARIABLES(distance_to_fluid_site, nearest_fluid_site);
-		LatticeToNodeMap[node_index] = Create_c_vector(nearest_fluid_site, 0 );
-		assert(nearest_fluid_site != UNSIGNED_UNSET);
-
-		c_vector<double, 3> NormalVector = Create_c_vector(0,0,0);
-		std::set<unsigned>& containing_elements = pNode->rGetContainingElementIndices();
-        assert(containing_elements.size() > 0);
-		// Finding the normal to the node -- need to check this 
-        for (std::set<unsigned>::iterator iter = containing_elements.begin();
-            iter != containing_elements.end();
-            ++iter)
-        {
-            Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
-            Node<SPACE_DIM>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
-            Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
-
-            c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
-            c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
-
-            NormalVector  += VectorProduct(vector_13, vector_12);
-        }
-		NormalVector /=norm_2(NormalVector);
-		double Pressure = mAppliedPressure[nearest_fluid_site];    
-		c_vector<long double,3> Force = Pressure * NormalVector; 
-    
-		assert(fabs(Force[0])<1e10);
-		assert(fabs(Force[1])<1e10);
-		assert(fabs(Force[2])<1e10);
-		
-
-		// Store the force in CellData
-		cell_iter->GetCellData()->SetItem("Pressure", Pressure);
-		cell_iter->GetCellData()->SetItem("applied_force_x", Force[0]);
-		cell_iter->GetCellData()->SetItem("applied_force_y", Force[1]);
-		cell_iter->GetCellData()->SetItem("applied_force_z", Force[2]);
-    	}
-}
-
-
-
-
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ReRunHemeLB()
-{
-    TRACE("HemeLB had initially failed, running again with longer simulation time ")
-    bool SimulationSuccess =0;
-    double SimulationDuration[3] = {18000,180000, 180000};
-    for(unsigned i=0; i< 3;i++)
-    {
-        std::string RemoveResultsDirectory = "rm -r " + mHemeLBDirectory+"results";
-        system(RemoveResultsDirectory.c_str());
-
-        Writepr2File(mHemeLBDirectory,SimulationDuration[i]);
-        std::string heme_profile_filename = mHemeLBDirectory + "config.pr2";
-        
-        /*  Step 1: Run HemeLB setup */
-        std::string run_hemelb_setup = mhemelb_setup_exe + ' ' + heme_profile_filename + " >nul"; 
-        std::system(run_hemelb_setup.c_str());
-
-        /*  Step 2: Update xml file */
-        std::string update_xml_file = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/update_xml_file.py -period 10000 -directory " + mHemeLBDirectory + " >nul"; 
-        std::system(update_xml_file.c_str());
-
-        std::system("open ./projects/VascularRemodelling/apps/RunHemeLB");
-
-        /* Now wait */
-        std::string WaitCommand = "./projects/VascularRemodelling/apps/wait_file " + mHemeLBDirectory + "WaitFile.txt";
-        std::system(WaitCommand.c_str());
-        bool Check = CheckIfSteadyStateAchieved();
-        if (Check)
-        {
-            SimulationSuccess = 1;
-            break;
-        }
-    }
-    // if we get to here the HemeLB simulation still hasnt run after four attempts 
-    assert(SimulationSuccess ==1);
-  
-}
-
-
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void  HemeLBForce<ELEMENT_DIM, SPACE_DIM>::CopyFile(std::string InputDirectory, std::string OutputDirectory)
 {
@@ -1009,3 +819,4 @@ template class HemeLBForce<2, 3>;
 // Serialization for Boost >= 1.36
 #include "SerializationExportWrapperForCpp.hpp"
 EXPORT_TEMPLATE_CLASS_ALL_DIMS(HemeLBForce)
+// CHASTE_CLASS_EXPORT(HemeLBForce)

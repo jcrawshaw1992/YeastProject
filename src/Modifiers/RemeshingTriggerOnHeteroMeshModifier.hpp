@@ -51,35 +51,39 @@ private:
 
     std::map<double, c_vector<long double, 4> > mGrowthMaps = {
         { 10, Create_c_vector(pow(10, -6.9), pow(10, -8.2459), pow(10, -9), 1e-14) },
-        //{ 8, Create_c_vector(pow(10,-6.9), pow(10,-8.0160),pow(10, -9) , 1e-14 ) },
-        //{ 6, Create_c_vector(pow(10,-6.9), pow(10,-7.7300),pow(10, -9) , 1e-14 )},
+        { 8, Create_c_vector(pow(10,-6.9), pow(10,-8.0160),pow(10, -9) , 1e-14 ) },
+        { 6, Create_c_vector(pow(10,-6.9), pow(10,-7.7300),pow(10, -9) , 1e-14 )},
         {5,   Create_c_vector(pow(10, -6.9341), pow(10, -7.7), pow(10, -8), 1e-14) },
         {4,   Create_c_vector(pow(10, -6.9), pow(10, -7.4224), pow(10, 8), 1e-14) },
-        {2.5, Create_c_vector(0, pow(10, -6.8), pow(10, -6.8124), 1e-14) }, //{2.5, Create_c_vector(pow(10, -6.8), pow(10, -6.8124), pow(10, -7), 1e-14) },
+        {2.5, Create_c_vector(pow(10, -5.8), pow(10, -6), pow(10, -5.5), 1e-14) }, //{2.5, Create_c_vector(pow(10, -6.8), pow(10, -6.8124), pow(10, -7), 1e-14) },
         {2,   Create_c_vector(pow(10, -6.8), pow(10, -6.8124), pow(10, -7), 1e-14) },
         {1.5, Create_c_vector(pow(10, -6.5), pow(10, -6.3491), pow(10, -7), 1e-14) },
-        {1.2, Create_c_vector(pow(10, -6.2), pow(10, -5.8360), pow(10, -7), 1e-14) }
+        {1.2, Create_c_vector(pow(10, -6.2), pow(10, -5.8360), pow(10, -7), 1e-14) },
+        // {1, Create_c_vector(pow(10, -4.6), pow(10, -4.9), pow(10, -5.2), 1e-14)}
+        {1, Create_c_vector(pow(10, -1), pow(10, -1), pow(10, -1), 1e-14)}
     };
 
+
+
+
+
+
     bool mOn = 0;
-    double mMaxZ;
-    double mMinZ;
 
     unsigned mSamplebasementNode;
-    unsigned mSampleECNode;
     bool mAchievedTargetK = 0;
-
     double mStrength = 2.5;
     bool mHetro = 0;
-    double mStepSize = 1e-15;
-    double mCounter = 100;
+    double mStepSize = 1e-10;
+    double mCounter = 2000;
     double mThreshold = 100;
     // double mSetupSolve;
     int mRemeshingInterval = 500;
     int mExecute = 0;
     bool mRemeshing = 0;
+    std::map<unsigned, c_vector<double, 2> > mDistanceToEndothelialRegion;
 
-    std::vector<unsigned> mNodesNextToBasement;
+    // std::vector<unsigned> mNodesNextToBasement;
     std::vector<unsigned> mBasementNodes;
 
     std::vector<std::vector<c_vector<double, 3> > > mBoundaries;
@@ -97,21 +101,25 @@ private:
     void serialize(Archive& archive, const unsigned int version)
     {
         archive& boost::serialization::base_object<AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM> >(*this);
-        archive& mGrowthMaps;
+        // archive& mGrowthMaps; -- cant have this one for some reason
         archive& mOn;
-        archive& mMaxZ;
-        archive& mMinZ;
-
         archive& mSamplebasementNode;
-        archive& mSampleECNode;
-        archive& mAchievedTargetK;
-
-        archive& mNodesNextToBasement;
+        
         archive& mBasementNodes;
         archive& mStepSize;
         archive& mCounter;
         archive& mBoundaries;
-        // archive & mSetupSolve;
+    
+        archive& mKbs;
+        archive& mKba;
+        archive& mKbA;
+
+        archive& mStrength;
+        archive& mHetro;
+        archive& mRemeshingInterval;
+        archive& mExecute;
+        archive& mRemeshing;
+        archive& mDistanceToEndothelialRegion;
     }
 
 public:
@@ -150,6 +158,11 @@ public:
      */
 
     void Boundaries(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPlanePoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> PlanePoint);
+    c_vector<c_vector<double, 3>, 2> PlateauDistributionFuction(double Length);
+
+    // Has spatial constants of the membrane function .. the ks and the as 
+    std::vector<c_vector<c_vector<double, 3>, 2>> mMembraneFuctionSpatialConstants;
+
 
     void SetMembraneStrength(double Strength);
 
@@ -166,6 +179,7 @@ public:
 
     void SetThreshold(double Threshold);
 
+    
     /**
 	 * Set mResetTractionsOnCells.
 	 *
@@ -180,13 +194,17 @@ public:
    * Helper method to store the applied tractions in CellData.
    */
     void UpdateCellData(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
+    void SetMembraneStrenghtOnNewMesh(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
+    
     void StepChange(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
+    double exec(const char* cmd);
 
-    void UpdateCellData_HillStep(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
 
-    double mKbs;
-    double mKba;
-    double mKbA;
+    // void UpdateCellData_HillStep(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
+
+    double  mKbs = (double)mGrowthMaps[1](2);
+    double mKba = (double)mGrowthMaps[1](1);
+    double mKbA = (double)mGrowthMaps[1](0);
 
     /**
      * Overridden OutputSimulationModifierParameters() method.
