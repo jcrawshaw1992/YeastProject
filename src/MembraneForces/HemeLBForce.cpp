@@ -18,11 +18,13 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 HemeLBForce<ELEMENT_DIM, SPACE_DIM>::HemeLBForce()
         : AbstractForce<ELEMENT_DIM, SPACE_DIM>()
 {
+    TRACE("The constructor is called ")
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 HemeLBForce<ELEMENT_DIM, SPACE_DIM>::~HemeLBForce()
 {
+    TRACE("The distructor is called ")
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -64,7 +66,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
-   
+   TRACE("SetUpHemeLBConfiguration -- only 2 inputs")
     MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
     MutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh = p_cell_population->rGetMesh();
     mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
@@ -238,6 +240,7 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetFluidSolidIterations(double Iterations)
 {
     mTriggerHemeLB = Iterations;
+    TRACE("Have set fluid iterations")
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -260,6 +263,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Inlets(c_vector<double, 3> PlaneNormal
     }
     assert(FlowDirection == "Inlet" || FlowDirection == "Outlet");
     mType.push_back(FlowDirection);
+    TRACE("I think the inlets should not be an issue ")
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -403,10 +407,15 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
 
 }
 
+/data/vascrem/HemeLBSimulaitons/TestingHemeLB
+/home/vascrem/hemelb-dev
+
+
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetStartTime(double StartTime)
 {
     mStartTime = StartTime;
+    TRACE("Here the start time is set")
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -425,9 +434,14 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirec
     {   
         outputDirectory = outputDirectory + "/";
     }
+    char* C = getenv("CHASTE_TEST_OUTPUT");
+    std::string directory;
+    directory += C ;
+     std::string mChasteOutputDirectory = directory +"/" ;
+    
     mOutputDirectory = outputDirectory;
-    mHemeLBDirectory = "/Users/jcrawshaw/Documents/testoutput/" + mOutputDirectory + "HemeLBFluid/";
-    mHemeLB_output = "/Users/jcrawshaw/Documents/testoutput/" + mOutputDirectory + "HemeLB_results_from_time_0/";
+    mHemeLBDirectory = mChasteOutputDirectory + mOutputDirectory + "HemeLBFluid/";
+    mHemeLB_output = mChasteOutputDirectory + mOutputDirectory + "HemeLB_results_from_time_0/";
 
     if (CreateFiles ==1)
     {  

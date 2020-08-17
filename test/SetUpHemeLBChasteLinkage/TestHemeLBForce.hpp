@@ -76,6 +76,7 @@ public:
         Add the HemeLB Force
         ----------------------------
         */        
+        TRACE("Here to add forces")
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(0,0,1);
         c_vector<double, 3> Point1 = Create_c_vector(0,0,1e-6 * scale);
 
