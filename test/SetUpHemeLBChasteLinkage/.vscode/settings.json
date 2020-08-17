@@ -85,6 +85,10 @@
         "cfenv": "cpp",
         "cinttypes": "cpp",
         "future": "cpp",
-        "cassert": "cpp"
+        "cassert": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "random": "cpp",
+        "ranges": "cpp"
     }
 }

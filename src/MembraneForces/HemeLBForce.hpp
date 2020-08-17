@@ -38,7 +38,6 @@
 #include "MutableMesh.hpp"
 
 // #include "PetscTools.hpp"
-#include "XdrFileReader.hpp"
 #include <map>
 #include "vtkXMLUnstructuredGridReader.h"
 #include <vtkPolyData.h>
