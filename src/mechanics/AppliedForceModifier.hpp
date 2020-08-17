@@ -18,6 +18,20 @@
 #include "LostEndothelialCell.hpp"
 #include "HasEndothelialCell.hpp"
 
+#include "MeshBasedCellPopulation.hpp"
+#include "UblasCustomFunctions.hpp"
+
+#include "BetaCateninOneHitCellMutationState.hpp"
+#include "WildTypeCellMutationState.hpp"
+#include "DifferentiatedCellProliferativeType.hpp"
+
+
+//  #include "MembraneShearForce.hpp"
+
+#include "Debug.hpp"
+#include <math.h>
+
+
 /**
  * A modifier class which at each simulation time step
  *
