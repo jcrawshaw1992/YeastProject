@@ -382,6 +382,18 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetBendingFor
 }
 
 
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+c_vector<double, 4> RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::Create_c_vector(double x, double y, double z, double t)
+{
+    c_vector<double, 4> v;
+    v[0] = x;
+    v[1] = y;
+    v[2] = z;
+    v[3] = t;
+    return v;
+}
+
+
 
 
 

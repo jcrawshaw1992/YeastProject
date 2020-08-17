@@ -63,6 +63,9 @@ private:
         {1, Create_c_vector(pow(10, -1), pow(10, -1), pow(10, -1), 1e-14)}
     };
 
+    c_vector<double, 4> Create_c_vector(double x, double y, double z, double t);
+
+
 
 
 
