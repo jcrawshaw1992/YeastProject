@@ -497,6 +497,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
 	FILE* traction_file = fopen((char*)TractionFile.c_str(), "r");
 	assert(traction_file != NULL);
 	
+
+    // I need to figure out how to effecrtivly point to the HemeLB reader 
 	hemelb::io::writers::xdr::XdrFileReader reader(traction_file);
 	
 	// File format described in http://pauli.chem.ucl.ac.uk/trac/hemelb/wiki/ExtractionFiles
@@ -522,7 +524,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
     reader.readDouble(origin[2]);
 
 
-    unsigned long long number_fluid_sites;
+    // unsigned long long number_fluid_sites;
+    uint64_t& number_fluid_sites;
     reader.readUnsignedLong(number_fluid_sites);
     unsigned field_count;
     reader.readUnsignedInt(field_count);
