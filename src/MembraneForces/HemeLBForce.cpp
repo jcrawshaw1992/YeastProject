@@ -741,7 +741,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void  HemeLBForce<ELEMENT_DIM, SPACE_DIM>::CopyFile(std::string InputDirectory, std::string OutputDirectory)
 {
-  copyfile(InputDirectory.c_str(), OutputDirectory.c_str(), NULL, COPYFILE_DATA | COPYFILE_XATTR);
+//   copyfile(InputDirectory.c_str(), OutputDirectory.c_str(), NULL, COPYFILE_DATA | COPYFILE_XATTR); 
+  std::filesystem::copy_file(mPreAllocatedRemeshedMesh.c_str(), Remeshedvtu.c_str()); // This was changed so the code could work on linux and mac
 }
 
 

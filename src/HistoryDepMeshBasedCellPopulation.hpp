@@ -24,7 +24,6 @@
 #include "CellBasedEventHandler.hpp"
 #include "CellId.hpp"
 
-#include <copyfile.h>
 #include <time.h>
 #include "Debug.hpp"
 #include "HistoryDepMutableMesh.hpp"
@@ -34,6 +33,7 @@
 #include "VoronoiDataWriter.hpp"
 #include "VtkMeshReader.hpp"
 #include "VtkMeshWriter.hpp"
+#include <filesystem>
 
 /**
  * A facade class encapsulating a mesh-based 'cell population'.
@@ -90,6 +90,9 @@ private:
         archive & mStartTime;
 
     }
+
+
+
 
 protected:
     /** Static cast of the mesh from AbstractCellPopulation */
@@ -152,6 +155,7 @@ public:
     // Function to find the cloeset element in last mesh
     
     unsigned GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
+
 
     std::map<unsigned, unsigned> mMapOfProbNodes;
 

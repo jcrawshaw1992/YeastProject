@@ -20,7 +20,6 @@
 #include <fstream>
 
 #include <iostream>
-#include <copyfile.h>
 
 #include <cstdio>
 #include <memory>
