@@ -11,7 +11,6 @@
 #include <ctime>
 #include <boost/algorithm/string/predicate.hpp>
 #include <cstdlib>
-// namespace fs = std::filesystem;
 // #include <direct.h>
 #include <boost/filesystem.hpp>
 #include <mpi.h>
