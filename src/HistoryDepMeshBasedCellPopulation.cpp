@@ -86,6 +86,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
         ---------------------------------
      */
 
+    assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     // Delete all the nodes and elements in the old mesh
     static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>&>((this->mrMesh)).DeleteMesh();
     // Assign the nodes and elements of the new mesh to the simulation's mesh
