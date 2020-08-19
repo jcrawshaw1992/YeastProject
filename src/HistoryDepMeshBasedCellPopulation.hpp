@@ -362,6 +362,6 @@ namespace boost
     } // namespace serialization
 } // namespace boost
 
-#include "SerializationExportWrapperForCpp.hpp"
+#include "SerializationExportWrapper.hpp"
 EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMeshBasedCellPopulation)
 #endif /*HistoryDepMeshBasedCellPopulation_HPP_*/
