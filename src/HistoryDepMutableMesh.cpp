@@ -128,9 +128,9 @@ void HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>::AddANewNodeBehindBoundary()
 }
 
 // Explicit instantiation
-template class HistoryDepMutableMesh<1, 1>;
-template class HistoryDepMutableMesh<1, 3>;
-template class HistoryDepMutableMesh<1, 2>;
+// template class HistoryDepMutableMesh<1, 1>;
+// template class HistoryDepMutableMesh<1, 3>;
+// template class HistoryDepMutableMesh<1, 2>;
 template class HistoryDepMutableMesh<2, 2>;
 template class HistoryDepMutableMesh<2, 3>;
 template class HistoryDepMutableMesh<3, 3>;
