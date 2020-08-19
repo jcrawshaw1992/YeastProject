@@ -2088,10 +2088,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::OutputCellPopula
 
 
 // Explicit instantiation
-template class HistoryDepMeshBasedCellPopulation<1,1>;
-template class HistoryDepMeshBasedCellPopulation<1,2>;
 template class HistoryDepMeshBasedCellPopulation<2,2>;
-template class HistoryDepMeshBasedCellPopulation<1,3>;
 template class HistoryDepMeshBasedCellPopulation<2,3>;
 template class HistoryDepMeshBasedCellPopulation<3,3>;
 
