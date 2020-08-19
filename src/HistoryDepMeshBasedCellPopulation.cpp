@@ -199,7 +199,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::WriteOutMappedIn
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
 {
- 
+    int SystemOutput;
     // TRACE("Remesh geometry here ")
     // Outpust the mesh in .vtu format for HemeLB setup tool to pick up (first converted to stl, though).
     VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(mRelativePath, "config", false);
@@ -218,21 +218,21 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
     // TRACE("Create .off")
     PRINT_VARIABLE(mChasteOutputDirectory)
     std::string vtu2offCommand = "meshio-convert " + mChasteOutputDirectory + "config.vtu " + offfile;
-    std::system(vtu2offCommand.c_str()); // system only takes char *.
+    SystemOutput = std::system(vtu2offCommand.c_str()); // system only takes char *.
 
     // Now excute the CGAL command to remesh the current geometry - not the input and output within this file have to be pre-set. I will explore if I can make this more neat later, should care.... dont care
     std::string CGALRemeshingCommand = "(cd  ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/;./isotropic_remeshing_ForChaste -input " + offfile + " -output " + mChasteOutputDirectory + "CurrentPlexusRemeshed.off -target_edge_length " + std::to_string(mTargetRemeshingEdgeLength) + " -iterations " + std::to_string(mIterations) + " )";
-    std::system(CGALRemeshingCommand.c_str()); // system only takes char *
+    SystemOutput = std::system(CGALRemeshingCommand.c_str()); // system only takes char *
 
     // Now ned to convert from .off back to a .vtu
 
     std::string Remeshedvtu = mChasteOutputDirectory + "RemeshedGeometry.vtu";
     std::string off2vtuCommand = "meshio-convert " + mChasteOutputDirectory + "CurrentPlexusRemeshed.off " + Remeshedvtu;
-    std::system(off2vtuCommand.c_str()); // system only takes char *
+    SystemOutput = std::system(off2vtuCommand.c_str()); // system only takes char *
 
     // /// Delete the orignal .off file -- else if the CurrentMesh.off fails to transfer, the old transfer will be the one taken
     // std::string DeleteOldCurrentConfigOff = "rm ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/data/CurrentMesh.off";
-    // std::system( DeleteOldCurrentConfigOff.c_str()); // system only takes char *
+    // SystemOutput = std::system( DeleteOldCurrentConfigOff.c_str()); // system only takes char *
 
     // Read in the new remeshsed mesh
     VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mChasteOutputDirectory + "RemeshedGeometry.vtu");
@@ -243,6 +243,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometryWithVMTK()
 {
+    int SystemOutput;
     // old, when using vmtk and stls
     /*
     * Here I will remesh the current chaste geometery
@@ -260,7 +261,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometryWi
     std::string stlfile = mChasteOutputDirectory + "CurrentMesh.stl";
     // TRACE("Create .stl")
     std::string vtu2stlCommand = "meshio-convert " + mChasteOutputDirectory + "config.vtu " + stlfile;
-    std::system(vtu2stlCommand.c_str()); // system only takes char *.
+    SystemOutput = std::system(vtu2stlCommand.c_str()); // system only takes char *.
 
     // Remesh the .stl
     std::string Remeshedstl = mChasteOutputDirectory + "RemeshedGeometry.stl";
@@ -268,15 +269,15 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometryWi
 
     // More info for the remeshing options found at https://sourceforge.net/p/vmtk/mailman/message/29391820/ and  http://www.vmtk.org/vmtkscripts/vmtksurfaceremeshing.html
     // std::string RemeshCommand = "vmtksurfaceremeshing -ifile " + stlfile + " -iterations " + std::to_string(mIterations) + " -area " + std::to_string(mTargetRemeshingElementArea) + " -maxarea "+ std::to_string(1.2*mTargetRemeshingElementArea) +" -ofile " + Remeshedstl;
-    // std::system(RemeshCommand.c_str());
+    // SystemOutput = std::system(RemeshCommand.c_str());
     // PRINT_VARIABLE(mIterations)
     std::string RemeshCommand = "vmtksurfaceremeshing -ifile " + stlfile + " -iterations " + std::to_string(mIterations) + " -elementsizemode 'edgelength' -edgelength " + std::to_string(mTargetRemeshingEdgeLength) + " -ofile " + Remeshedstl + " -elementsizemode edgelength";
-    std::system(RemeshCommand.c_str());
+    SystemOutput = std::system(RemeshCommand.c_str());
 
     //Finally conver the Remeshed stl into a vtu -- meshio is your friend
     std::string Remeshedvtu = mChasteOutputDirectory + "RemeshedGeometry.vtu";
     std::string stl2vtuCommand = " meshio-convert " + Remeshedstl + " " + Remeshedvtu;
-    std::system(stl2vtuCommand.c_str());
+    SystemOutput = std::system(stl2vtuCommand.c_str());
 
     // Read in the new mesh
     VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mChasteOutputDirectory + "RemeshedGeometry.vtu");
@@ -291,7 +292,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::TakeInPreAllocat
     std::string Remeshedvtu = mChasteOutputDirectory + "RemeshedGeometry.vtu";
     PRINT_VARIABLE(mChasteOutputDirectory)
     // bool copy_file(mPreAllocatedRemeshedMesh.c_str(), Remeshedvtu.c_str(), NULL, COPYFILE_DATA | COPYFILE_XATTR);
-    std::filesystem::copy_file(mPreAllocatedRemeshedMesh.c_str(), Remeshedvtu.c_str()); // This was changed so the code could work on linux and mac
+     boost::filesystem::copy_file(mPreAllocatedRemeshedMesh.c_str(), Remeshedvtu.c_str()); // This was changed so the code could work on linux and mac
     TRACE("Read in the new mesh")
     VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mPreAllocatedRemeshedMesh);
     mNew_mesh.ConstructFromMeshReader(mesh_reader);
