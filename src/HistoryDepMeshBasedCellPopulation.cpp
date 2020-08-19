@@ -2077,44 +2077,26 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::OutputCellPopula
     MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::OutputCellPopulationParameters(rParamsFile);
 }
 
-// Explicit instantiation
-template class HistoryDepMeshBasedCellPopulation<2, 2>;
-template class HistoryDepMeshBasedCellPopulation<2, 3>;
-template class HistoryDepMeshBasedCellPopulation<3, 3>;
-
-// Serialization for Boost >= 1.36
-#include "SerializationExportWrapperForCpp.hpp"
-EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMeshBasedCellPopulation)
-
-
-
 // // Explicit instantiation
-// template class HistoryDepMeshBasedCellPopulation<2,2>;
-// template class HistoryDepMeshBasedCellPopulation<2,3>;
-// template class HistoryDepMeshBasedCellPopulation<3,3>;
-
-// // Serialization for Boost >= 1.36
-// #include "SerializationExportWrapper.hpp"
-// EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMeshBasedCellPopulation)
-
-
-
-
-
-// // Explicit instantiation
-// template class MonodomainProblem<1,1>;
-// template class MonodomainProblem<1,2>;
-// template class MonodomainProblem<1,3>;
-// template class MonodomainProblem<2,2>;
-// template class MonodomainProblem<3,3>;
+// template class HistoryDepMeshBasedCellPopulation<2, 2>;
+// template class HistoryDepMeshBasedCellPopulation<2, 3>;
+// template class HistoryDepMeshBasedCellPopulation<3, 3>;
 
 // // Serialization for Boost >= 1.36
 // #include "SerializationExportWrapperForCpp.hpp"
-// EXPORT_TEMPLATE_CLASS2(MonodomainProblem, 1, 1)
-// EXPORT_TEMPLATE_CLASS2(MonodomainProblem, 1, 2)
-// EXPORT_TEMPLATE_CLASS2(MonodomainProblem, 1, 3)
-// EXPORT_TEMPLATE_CLASS2(MonodomainProblem, 2, 2)
-// EXPORT_TEMPLATE_CLASS2(MonodomainProblem, 3, 3)
+// EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMeshBasedCellPopulation)
+
+
+// Explicit instantiation
+template class HistoryDepMeshBasedCellPopulation<2,2>;
+template class HistoryDepMeshBasedCellPopulation<2,2>;
+template class HistoryDepMeshBasedCellPopulation<3,3>;
+
+// Serialization for Boost >= 1.36
+#include "SerializationExportWrapperForCpp.hpp"
+EXPORT_TEMPLATE_CLASS2(HistoryDepMeshBasedCellPopulation, 2, 3)
+EXPORT_TEMPLATE_CLASS2(HistoryDepMeshBasedCellPopulation, 2, 2)
+EXPORT_TEMPLATE_CLASS2(HistoryDepMeshBasedCellPopulation, 3, 3)
 
 
 
