@@ -129,7 +129,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(Ab
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOfTimeStep(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
-
+    assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
     if(mRemeshing)
     {
@@ -164,6 +164,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
+    assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
         mBasementNodes.clear();
         mDistanceToEndothelialRegion.clear();
 
@@ -239,7 +240,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetMembraneSt
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
-
+    assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     /*
         Tempral slowly increasing membrane properties --  increasing k, see next point
 
@@ -383,6 +384,7 @@ double RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::exec(const 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetBendingForce(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, double BendingConstant)
 {
+    assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     std::set<unsigned> MutantNodeIndices;
     std::set<unsigned> EdgeMutantNodeIndices;
     for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
@@ -402,15 +404,16 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetBendingFor
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::OutputSimulationModifierParameters(out_stream& rParamsFile)
 {
+    assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     // No parameters to output, so just call method on direct parent class
     AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM>::OutputSimulationModifierParameters(rParamsFile);
 }
 
 // Explicit instantiation
-template class RemeshingTriggerOnHeteroMeshModifier<1, 1>;
-template class RemeshingTriggerOnHeteroMeshModifier<1, 2>;
+// template class RemeshingTriggerOnHeteroMeshModifier<1, 1>;
+// template class RemeshingTriggerOnHeteroMeshModifier<1, 2>;
+// template class RemeshingTriggerOnHeteroMeshModifier<2, 2>;
 template class RemeshingTriggerOnHeteroMeshModifier<2, 2>;
-template class RemeshingTriggerOnHeteroMeshModifier<1, 3>;
 template class RemeshingTriggerOnHeteroMeshModifier<2, 3>;
 template class RemeshingTriggerOnHeteroMeshModifier<3, 3>;
 // Serialization for Boost >= 1.36
