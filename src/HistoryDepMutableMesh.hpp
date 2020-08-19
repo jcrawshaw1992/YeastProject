@@ -128,20 +128,13 @@ public:
     virtual ~HistoryDepMutableMesh();
 };
 
-// Explicit instantiation
-template class HistoryDepMutableMesh<1, 1>;
-template class HistoryDepMutableMesh<1, 2>;
-template class HistoryDepMutableMesh<2, 2>;
-template class HistoryDepMutableMesh<1, 3>;
-template class HistoryDepMutableMesh<2, 3>;
-template class HistoryDepMutableMesh<3, 3>;
-// Serialization for Boost >= 1.36
 
-#include "SerializationExportWrapperForCpp.hpp"
+#include "SerializationExportWrapper.hpp"
 EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMutableMesh)
 
-
-
-
-
 #endif /*HistoryDepMutableMesh_HPP_*/
+
+
+
+
+
