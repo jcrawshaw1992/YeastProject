@@ -41,6 +41,7 @@ HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>::~HistoryDepMutableMesh()
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>::DeleteMesh()
 {
+    assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     this->mNodes.clear();
     this->mElements.clear();
     this->mBoundaryNodes.clear();
@@ -55,7 +56,7 @@ void HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>::AssignNewMesh(HistoryDepMuta
     // this->mNodes = New_Mesh->mNodes;
     // this->mElements  = New_Mesh->mElements;
 
-
+    assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     this->mpDistributedVectorFactory = New_Mesh->mpDistributedVectorFactory;
     for (int i = 0; i < New_Mesh->mNodes.size(); ++i)
     {
@@ -85,6 +86,7 @@ void HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>::AssignNewMesh(HistoryDepMuta
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>::CreateNewMesh(HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>* New_Mesh, std::map<unsigned, c_vector<double, SPACE_DIM> > InitalPositionOfRemeshedNodes)
 {
+    assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     // this->mpDistributedVectorFactory = New_Mesh->mpDistributedVectorFactory;
     for (unsigned i = 0; i < New_Mesh->mNodes.size(); ++i)
     {
@@ -107,7 +109,7 @@ void HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>::CreateNewMesh(HistoryDepMuta
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>::AddANewNodeBehindBoundary()
 {
-
+    assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     // THis function lets me see what happens if we add one extra node, and then later redo all the cells
     c_vector<double, SPACE_DIM> point;
     //  1e-3,10e-3);
@@ -126,6 +128,9 @@ void HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>::AddANewNodeBehindBoundary()
 }
 
 // Explicit instantiation
+template class HistoryDepMutableMesh<1, 1>;
+template class HistoryDepMutableMesh<1, 3>;
+template class HistoryDepMutableMesh<1, 2>;
 template class HistoryDepMutableMesh<2, 2>;
 template class HistoryDepMutableMesh<2, 3>;
 template class HistoryDepMutableMesh<3, 3>;
