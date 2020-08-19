@@ -29,6 +29,18 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::RemeshingTriggerOnHeteroMeshModifier()
         : AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM>()
 {
+        mGrowthMaps =  {  { 10, Create_c_vector(pow(10, -6.9), pow(10, -8.2459), pow(10, -9), 1e-14) },
+        { 8, Create_c_vector(pow(10,-6.9), pow(10,-8.0160),pow(10, -9) , 1e-14 ) },
+        { 6, Create_c_vector(pow(10,-6.9), pow(10,-7.7300),pow(10, -9) , 1e-14 )},
+        {5,   Create_c_vector(pow(10, -6.9341), pow(10, -7.7), pow(10, -8), 1e-14) },
+        {4,   Create_c_vector(pow(10, -6.9), pow(10, -7.4224), pow(10, 8), 1e-14) },
+        {2.5, Create_c_vector(pow(10, -5.8), pow(10, -6), pow(10, -5.5), 1e-14) }, //{2.5, Create_c_vector(pow(10, -6.8), pow(10, -6.8124), pow(10, -7), 1e-14) },
+        {2,   Create_c_vector(pow(10, -6.8), pow(10, -6.8124), pow(10, -7), 1e-14) },
+        {1.5, Create_c_vector(pow(10, -6.5), pow(10, -6.3491), pow(10, -7), 1e-14) },
+        {1.2, Create_c_vector(pow(10, -6.2), pow(10, -5.8360), pow(10, -7), 1e-14) },
+        // {1, Create_c_vector(pow(10, -4.6), pow(10, -4.9), pow(10, -5.2), 1e-14)}
+        {1, Create_c_vector(pow(10, -1), pow(10, -1), pow(10, -1), 1e-14)}
+    };
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>

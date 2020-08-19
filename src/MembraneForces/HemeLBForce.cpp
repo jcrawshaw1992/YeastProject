@@ -494,6 +494,7 @@ template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
 {
     TRACE("This needs to be uncommented and fixed later")
+    //  scons b=GccOpt projects/VascularRemodelling/test/SetUpHemeLBChasteLinkage/TestHemeLBForce.hpp 
     // alias vascser="ssh vascrem@josborne.science.unimelb.edu.au"
 //     std::string TractionFile = mHemeLBDirectory + "results/Extracted/surface-tractions.xtr";
 //     // std::string TractionFile = "/Users/jcrawshaw/Documents/ChasteWorkingDirectory/ShrunkPlexus/results/Extracted/surface-tractions.xtr";
