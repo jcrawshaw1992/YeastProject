@@ -27,7 +27,6 @@
 #include "HistoryDepMeshBasedCellPopulation.hpp"
 #include "HistoryDepMutableMesh.hpp"
 
-#include "AppliedForceModifier.hpp"
 #include "RemeshingTriggerOnHeteroMeshModifier.hpp"
 #include "FixedRegionBoundaryCondition.hpp"
 #include "MembraneDeformationForce.hpp"

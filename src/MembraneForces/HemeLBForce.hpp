@@ -41,7 +41,7 @@
 #include <map>
 #include "vtkXMLUnstructuredGridReader.h"
 #include <vtkPolyData.h>
-#include "AppliedForceModifier.hpp"
+// #include "AppliedForceModifier.hpp"
 #include "MeshBasedCellPopulation.hpp"
 #include "Debug.hpp"
 #include <math.h>
