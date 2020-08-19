@@ -175,6 +175,9 @@ public:
     c_vector<double, 3> NewNodeInInitalConfigurationFromChangeOfBasis(unsigned ClosestElement_OldMeshIndex, c_vector<double, SPACE_DIM> NewNode);
     std::map<unsigned, c_vector<double, SPACE_DIM> > mInitalPositionOfRemeshedNodes;
     int mNumberOfChanges = 1;
+    int mNumberOfChanges2 = 1;
+
+int mNumberOfChanges20 = 1;
 
     /**
      * Writing out the inital node locations in to their own vtu so I can see what is going on 
