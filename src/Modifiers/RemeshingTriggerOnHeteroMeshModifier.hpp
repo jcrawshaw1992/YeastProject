@@ -50,8 +50,9 @@ private:
     // "BendingConstant" = mGrowthMaps[X](3));
 
     std::map<double, c_vector<long double, 4> > mGrowthMaps;
+    // Need my own version of "UblasCustomFunctions.hpp", which has c_vector<double, 4>, get James to push this one day 
 
-    c_vector<double, 4> Create_c_vector(double x, double y, double z, double t);
+    // c_vector<double, 4> Create_c_vector(double x, double y, double z, double t);
 
 
 
