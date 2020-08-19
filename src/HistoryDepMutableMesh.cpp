@@ -131,33 +131,25 @@ template class HistoryDepMutableMesh<2, 3>;
 template class HistoryDepMutableMesh<3, 3>;
 
 // Serialization for Boost >= 1.36
+
 #include "SerializationExportWrapperForCpp.hpp"
-EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMutableMesh)
-
-// TRACE("get rid of the new mesh that is redundant now")
-// New_Mesh->Clear();
-// New_Mesh->~HistoryDepMutableMesh();
-
-// Node<3>* p_node_3 = new Node<3>(3, false, 1.0, 1.0, 0.0);
-// unsigned new_node_index = node_based_cell_population.AddNode(p_node2);
-// unsigned new_node_index = MutableMesh<2,2>::AddNode(new Node<2>(0, location));
-// for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = New_Mesh->GetNodeIteratorBegin();
-    //      node_iter != New_Mesh->GetNodeIteratorEnd();
-    //       ++node_iter)
-    // {
-    //     // unsigned index =  node_iter->GetIndex(); // assume that the ordering matches
-    //     // AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::AddCellUsingLocationIndex(index,*iter);
-    //     Node<SPACE_DIM>* pNewNode = &*(node_iter);//New_Mesh->mNodes[i];
-    //     this->mNodes.push_back(pNewNode);
-
-    // }
+EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMutableMesh);
 
 
-    // Size of mesh is about to change
-    // this->mpDistributedVectorFactory.clear();
+// // Explicit instantiation
+// template class HistoryDepMutableMesh<1, 1>;
+// template class HistoryDepMutableMesh<1, 2>;
+// template class HistoryDepMutableMesh<2, 2>;
+// template class HistoryDepMutableMesh<1, 3>;
+// template class HistoryDepMutableMesh<2, 3>;
+// template class HistoryDepMutableMesh<3, 3>;
+// // Serialization for Boost >= 1.36
 
-    // this->mDeletedBoundaryElementIndices.clear();
-    // this->mDeletedNodeIndices.clear();
 
-    // TetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::Clear();
-    // this->mpDistributedVectorFactory = new DistributedVectorFactory(New_Mesh->GetNumNodes());
+// template class HemeLBForce<2, 3>;
+
+// // Serialization for Boost >= 1.36
+// #include "SerializationExportWrapperForCpp.hpp"
+// EXPORT_TEMPLATE_CLASS_ALL_DIMS(HemeLBForce)
+// // CHASTE_CLASS_EXPORT(HemeLBForce)
+
