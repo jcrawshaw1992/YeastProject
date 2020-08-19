@@ -2089,7 +2089,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::OutputCellPopula
 
 // Explicit instantiation
 template class HistoryDepMeshBasedCellPopulation<2,2>;
-template class HistoryDepMeshBasedCellPopulation<2,2>;
+template class HistoryDepMeshBasedCellPopulation<2,3>;
 template class HistoryDepMeshBasedCellPopulation<3,3>;
 
 // Serialization for Boost >= 1.36
