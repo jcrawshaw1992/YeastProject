@@ -285,6 +285,7 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirectory, double SimulationDuration)
 {
 
+// scp linalg/src/UblasCustomFunctions.hpp vascrem@josborne.science.unimelb.edu.au:/home/vascrem/Chaste/linalg/src/UblasCustomFunctions.hpp
     std::string CenterlinesFile = outputDirectory + "centerlines.vtp";
     /*  Need radius of mesh so I can specify HemeLB discretisation, and iolet cap sizes, to do this I am going to generate and sort the centerlines */
     std::string GenerateCenterlinesFile = "vmtk vmtknetworkextraction -ifile " + outputDirectory + "config.stl -ofile " + CenterlinesFile +" >nul";
@@ -297,7 +298,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
 
     vtkPointData* point_data = Reader->GetOutput()->GetPointData();
     double NumberOfDataPoints = Reader->GetOutput()->GetNumberOfPoints();
-    assert(point_data->HasArray(mRadiusdataName.c_str())); // No Radi point data
+    // assert(point_data->HasArray(mRadiusdataName.c_str())); // No Radi point data
     vtkDataArray* p_scalars = point_data->GetArray(mRadiusdataName.c_str());
     assert(p_scalars->GetNumberOfComponents() == 1); // Radi are scalars, so should only have one component for each data point, otherwise there is a problem
 
