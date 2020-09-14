@@ -18,12 +18,13 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 HemeLBForce<ELEMENT_DIM, SPACE_DIM>::HemeLBForce()
         : AbstractForce<ELEMENT_DIM, SPACE_DIM>()
 {
-    mMachine ="server";
+    TRACE("The constructor is called ")
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 HemeLBForce<ELEMENT_DIM, SPACE_DIM>::~HemeLBForce()
 {
+    TRACE("The distructor is called ")
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -65,18 +66,19 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
-//    TRACE("SetUpHemeLBConfiguration -- only 2 inputs") -- Hit here
+   TRACE("SetUpHemeLBConfiguration -- only 2 inputs")
     MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
     MutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh = p_cell_population->rGetMesh();
     mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
     
 
     SetUpFilePaths(outputDirectory, 1,0);
-    // TRACE("B WRITE HEMELB RUN FILE") -- Hit here 
+    TRACE("Have set the file paths")
     WriteHemeLBBashScript();  
+    TRACE("Have set the file paths")
     ExecuteHemeLB();
     LoadTractionFromFile();
-    // UpdateCellData(rCellPopulation);
+    UpdateCellData(rCellPopulation);
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -129,30 +131,15 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     /*  Step 0: Create the HemeLB config.pr2 file */
     double HemeLBSimulationTime = 500; // Too short right now, but who cares
     int Period = HemeLBSimulationTime/2;
-    TRACE("About to Writepr2File")
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
-    TRACE("Have done Writepr2File, now going to run hemeLB_setup")
+
     // Step 1: Run HemeLB setup
-    //  std::string mhemelb_setup_exe = "env PYTHONPATH=/home/vascrem/hemelb-dev/Tools/setuptool:$PYTHONPATH /home/vascrem/hemelb-dev/Tools/setuptool/scripts/hemelb-setup-nogui";
-    // env PYTHONPATH=/home/vascrem/hemelb-dev/Tools/setuptool:$PYTHONPATH/home/vascrem/hemelb-dev/Tools/setuptool/scripts/hemelb-setup-nogui /data/vascrem/testoutput/TestHemeLBForce/HemeLBFluid/config.pr2 
-
-
-    // env PYTHONPATH=/home/vascrem/hemelb-dev/Tools/setuptool:$PYTHONPATH/home/vascrem/hemelb-dev/Tools/setuptool/scripts/hemelb-setup-nogui python /data/vascrem/testoutput/TestHemeLBForce/HemeLBFluid/config.pr2
-
-
-    std::string run_hemelb_setup = mhemelb_setup_exe + ' ' + mHemeLBDirectory + "config.pr2";
+    std::string run_hemelb_setup = mhemelb_setup_exe + ' ' + mHemeLBDirectory + "config.pr2 >nul";
     SystemOutput = std::system(run_hemelb_setup.c_str());
 
-
-    TRACE("Have created the config.pr2 -- Go Jess")
-
-
     // Step 2: Update xml file
-    std::string update_xml_file = "python projects/VascularRemodelling/apps/update_xml_file.py -period "+std::to_string(Period) +" -directory " + mHemeLBDirectory + " -InitalConditions " + std::to_string(mEstimatedIC) +" >nul"; 
+    std::string update_xml_file = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/update_xml_file.py -period "+std::to_string(Period) +" -directory " + mHemeLBDirectory + " -InitalConditions " + std::to_string(mEstimatedIC) +" >nul"; 
     SystemOutput = std::system(update_xml_file.c_str());
-
-
-    TRACE("Edited the xml file")
 
 
     /*  Step 3: run HemeLB simulation
@@ -163,18 +150,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     */
 
     // Run HemeLB
-
-     TRACE(" Step 3: run HemeLB simulation")
-    if(mMachine =="server")
-    {
-        SystemOutput = std::system("./projects/VascularRemodelling/apps/RunHemeLB");
-    }else
-    {
-        SystemOutput = std::system("open ./projects/VascularRemodelling/apps/RunHemeLB");
-    }
-    
-
-    TRACE(" Have run HemeLB :) ")
+    SystemOutput = std::system("open ./projects/VascularRemodelling/apps/RunHemeLB");
 
     /*  Step 3a: 
         While the current HemeLB simulation is running, sort some things out 
@@ -190,7 +166,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
         strs1 << mStartTime;
         std::string StartTime = strs1.str();
         PRINT_VARIABLE(StartTime)
-        std::string vtuFileSorting = "python projects/VascularRemodelling/apps/SortVtuFiles.py -Directory " + mOutputDirectory + " -CurrentNumberOfFiles " + std::to_string(mLatestFinialHemeLBVTU) + " -Time " + StartTime+ " >nul";
+        std::string vtuFileSorting = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/SortVtuFiles.py -Directory " + mOutputDirectory + " -CurrentNumberOfFiles " + std::to_string(mLatestFinialHemeLBVTU) + " -Time " + StartTime+ " >nul";
         SystemOutput =  std::system(vtuFileSorting.c_str());
         UpdateCurrentyFlowVtuCount();
     }
@@ -199,29 +175,29 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     mCenterlinesNumber +=1;
 
 
-    // // ---- I can other things Chaste needs running in the background here Maybe have some potts things going on
-    // /* Now wait*/
-    // std::string WaitCommand = "./projects/VascularRemodelling/apps/wait_file " + mHemeLBDirectory + "WaitFile.txt >nul";
-    // SystemOutput =  std::system(WaitCommand.c_str());
+    // ---- I can other things Chaste needs running in the background here Maybe have some potts things going on
+    /* Now wait*/
+    std::string WaitCommand = "./projects/VascularRemodelling/apps/wait_file " + mHemeLBDirectory + "WaitFile.txt >nul";
+    SystemOutput =  std::system(WaitCommand.c_str());
 
-    //     /* Generate a new stl file from the vtu while HemeLB is going*/
-    // // std::string ConvertVTUtoSTL = "python projects/VascularRemodelling/apps/vtuTostl.py -Directory " + mHemeLBDirectory + " >nul";
-    // // SystemOutput = std::system(ConvertVTUtoSTL.c_str());
+        /* Generate a new stl file from the vtu while HemeLB is going*/
+    // std::string ConvertVTUtoSTL = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/vtuTostl.py -Directory " + mHemeLBDirectory + " >nul";
+    // SystemOutput = std::system(ConvertVTUtoSTL.c_str());
 
-    // // Set up to generate the vtu files 
-    // std::string GmyUnstructuredGridReader = "python " +mHemeLBPath+ "Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >nul"; 
-    // SystemOutput = std::system(GmyUnstructuredGridReader.c_str());
+    // Set up to generate the vtu files 
+    std::string GmyUnstructuredGridReader = "python /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >nul"; 
+    SystemOutput = std::system(GmyUnstructuredGridReader.c_str());
 
-    // if (CheckIfSteadyStateAchieved() ==0)
-    // { 
-    //     ReRunHemeLB();
-    // }
+    if (CheckIfSteadyStateAchieved() ==0)
+    { 
+        ReRunHemeLB();
+    }
 
-    // std::cout <<" Continue Chaste "<< std::endl;
+    std::cout <<" Continue Chaste "<< std::endl;
 
-    // // For the not first ones here is what I will do, this one is the set up so I wont bother here, but in future reps have the vtu sorting when HemelB is going
-    // std::string GenerateFlowVtus = "python " +mHemeLBPath+ "Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory + "results/Extracted/surface-traction.xtr >nul";
-    // SystemOutput = std::system(GenerateFlowVtus.c_str());
+    // For the not first ones here is what I will do, this one is the set up so I wont bother here, but in future reps have the vtu sorting when HemelB is going
+    std::string GenerateFlowVtus = "python /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory + "results/Extracted/surface-traction.xtr >nul";
+    SystemOutput = std::system(GenerateFlowVtus.c_str());
 
 }
 
@@ -243,7 +219,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ReRunHemeLB()
          SystemOutput = std::system(run_hemelb_setup.c_str());
 
         /*  Step 2: Update xml file */
-        std::string update_xml_file = "python projects/VascularRemodelling/apps/update_xml_file.py -period 1111 -directory " + mHemeLBDirectory + " >nul"; 
+        std::string update_xml_file = "python /Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/update_xml_file.py -period 1111 -directory " + mHemeLBDirectory + " >nul"; 
         SystemOutput = std::system(update_xml_file.c_str());
 
         SystemOutput = std::system("open ./projects/VascularRemodelling/apps/RunHemeLB");
@@ -267,7 +243,7 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetFluidSolidIterations(double Iterations)
 {
     mTriggerHemeLB = Iterations;
-    // TRACE("Have set fluid iterations") -- This was fine 
+    TRACE("Have set fluid iterations")
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -290,7 +266,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Inlets(c_vector<double, 3> PlaneNormal
     }
     assert(FlowDirection == "Inlet" || FlowDirection == "Outlet");
     mType.push_back(FlowDirection);
-    // TRACE("I think the inlets should not be an issue ") -- Fine
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -299,20 +274,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOutVtuFile(std::string outputDire
 
     VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(outputDirectory + "HemeLBFluid/", "Chaste", false);
     mesh_writer.WriteFilesUsingMesh(*mMesh);
-    TRACE("My problem is here")
+
     std::string VtuToStl = "meshio-convert " + mHemeLBDirectory + "Chaste.vtu " + mHemeLBDirectory + "config.stl  >nul";
     int SystemOutput = std::system(VtuToStl.c_str());
 
-
-}
-
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetHemeLBPath(std::string HemeLBPath)
-{
-
-    std::string mhemelb_setup_exe = "env PYTHONPATH=" + HemeLBPath +"/Tools/setuptool:$PYTHONPATH " + HemeLBPath +"/Tools/setuptool/scripts/hemelb-setup-nogui";
-    mHemeLBPath = HemeLBPath;
 
 }
 
@@ -348,7 +313,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
         }
     }
     mRadius = MinRadius * mHemeLBScalling;
-    PRINT_VARIABLE(mRadius)
 
     /* I have the max radius, this will be important for the discretisation and the cap sizes 
         https://royalsocietypublishing.org/doi/pdf/10.1098/rsif.2014.0543   &&&&    https://journals.aps.org/pre/pdf/10.1103/PhysRevE.89.023303
@@ -372,8 +336,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     int OutletNumber = 1;
     double HemeLBSimulationDuration = SimulationDuration * deltaT;
     ofstream config_pr2;
-    std::string ConfigFile = outputDirectory + "config.pr2";
-    PRINT_VARIABLE(ConfigFile)
+    std::string ConfigFile = outputDirectory + "/config.pr2";
     config_pr2.open(ConfigFile);
     config_pr2 << "DurationSeconds: " + std::to_string(HemeLBSimulationDuration) + "\nIolets:\n";
     mEstimatedIC = 0;
@@ -424,54 +387,27 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
 
     config_pr2 << "VoxelSize: " + dx;
     config_pr2.close();
-    TRACE("SHould have writien by now??")
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
 {
-    
+    TRACE("ABOUT to write bash script")
+    int Cores = 2;
+    ofstream bash_script;
 
+    std::string BashFile = "/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/apps/RunHemeLB";
+    bash_script.open(BashFile);
+    bash_script << "#!/bin/bash\n# chmod 700 RunHemeLB\n";
+    bash_script << "echo " + mHemeLBDirectory + "config.xml\n";
+    bash_script << "mpirun -np " + std::to_string(Cores) + " hemelb -in " + mHemeLBDirectory + "config.xml > " + mHemeLBDirectory + "HemeLBTerminalOutput.txt\n";
+    bash_script << "echo 'HemeLB has finished' > " + mHemeLBDirectory + "WaitFile.txt \n";
+    bash_script << "echo 'HemeLB simulation complete' \n";
+    bash_script << "osascript -e 'tell application \"Terminal\" to close first window' & exit";
 
-
-    if(mMachine =="server")
-    {
-            // Need to write bash scrip .... issue here 
-            int Cores = 5;
-            ofstream bash_script;
-
-            std::string BashFile = "projects/VascularRemodelling/apps/RunHemeLB";
-            bash_script.open(BashFile);
-            bash_script << "#!/bin/bash\n# chmod 700 RunHemeLB\n";
-            bash_script << "mpirun -np " + std::to_string(Cores) + " hemelb -in " + mHemeLBDirectory + "config.xml -out " + mHemeLBDirectory +"results/ >" + mHemeLBDirectory + "HemeLBTerminalOutput.txt\n";
-            bash_script << "echo 'HemeLB has finished' > " + mHemeLBDirectory + "WaitFile.txt \n";
-            bash_script << "echo 'HemeLB simulation complete' \n";
-            // bash_script << "osascript -e 'tell application \"Terminal\" to close first window' & exit";  Need to think about with with application to linux 
-            bash_script.close();
-            std::string compileBashScript = "chmod 700 " + BashFile + " >nul";
-            int SystemOutput = std::system(compileBashScript.c_str());
-            TRACE(" Wrote (and compiled?) bash scripted -- Local machine ")
-
-    }else
-    {
-        // Need to write bash scrip .... issue here 
-        int Cores = 2;
-        ofstream bash_script;
-
-        std::string BashFile = "projects/VascularRemodelling/apps/RunHemeLB";
-        bash_script.open(BashFile);
-        bash_script << "#!/bin/bash\n# chmod 700 RunHemeLB\n";
-        bash_script << "echo " + mHemeLBDirectory + "config.xml\n";
-        bash_script << "mpirun -np " + std::to_string(Cores) + " hemelb -in " + mHemeLBDirectory + "config.xml > " + mHemeLBDirectory + "HemeLBTerminalOutput.txt\n";
-        bash_script << "echo 'HemeLB has finished' > " + mHemeLBDirectory + "WaitFile.txt \n";
-        bash_script << "echo 'HemeLB simulation complete' \n";
-        bash_script << "osascript -e 'tell application \"Terminal\" to close first window' & exit";
-        bash_script.close();
-        std::string compileBashScript = "chmod 700 " + BashFile + " >nul";
-        int SystemOutput = std::system(compileBashScript.c_str());
-        TRACE(" Wrote (and compiled?) bash scripted -- Local machine ")
-    }
-    
+    bash_script.close();
+    std::string compileBashScript = "chmod 700 " + BashFile + " >nul";
+    int SystemOutput = std::system(compileBashScript.c_str());
 
 }
 
@@ -483,7 +419,7 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetStartTime(double StartTime)
 {
     mStartTime = StartTime;
-    // TRACE("Here the start time is set") -- This was fine
+    TRACE("Here the start time is set")
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -535,10 +471,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirec
             { /* Rename Old one, I want an option to go back and have a look at old stuff  */
                 time_t now = time(0);
                 std::string OldDirectory = mHemeLB_output + "_Circa_" + ctime(&now);
-
-
-
-
                 std::rename(mHemeLB_output.c_str(), OldDirectory.c_str());
             } 
             else{ 
@@ -560,158 +492,13 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirec
 
 }
 
-
-
-
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
 {
-
-    // std::string TractionFile = mHemeLBDirectory + "results/Extracted/surface-tractions.xtr";
-    std::string TractionFile = "/data/vascrem/testoutput/TestHemeLBForce/HemeLBFluid/results/Extracted/surface-tractions.xtr";
-  
-	TRACE("Load tracrtion file");
-	// PRINT_VARIABLE(mTractionFile);
-	FILE* traction_file = fopen((char*)TractionFile.c_str(), "r");
-	assert(traction_file != NULL);
-	
-	hemelb::io::writers::xdr::XdrFileReader reader(traction_file);
-
-	// File format described in http://pauli.chem.ucl.ac.uk/trac/hemelb/wiki/ExtractionFiles
-
-    unsigned hemelb_magic_number, extraction_magic_number, extraction_version_number;
-	// ding the traction file");
-    reader.readUnsignedInt(hemelb_magic_number);
-
-    reader.readUnsignedInt(extraction_magic_number);
-
-    reader.readUnsignedInt(extraction_version_number);
-	
-
-    assert(hemelb_magic_number == 0x686c6221);
-    assert(extraction_magic_number == 0x78747204);
-    assert(extraction_version_number == 4);
-
-
-    double voxel_size;
-    
-    reader.readDouble(voxel_size);
-    
-
-    c_vector<double,3> origin;
-    reader.readDouble(origin[0]);
-    reader.readDouble(origin[1]);
-    reader.readDouble(origin[2]);
-
-    // unsigned long long number_fluid_sites;
-    uint64_t number_fluid_sites; // Changed this so It would work on the server
-    reader.readUnsignedLong(number_fluid_sites);
-    TRACE("A")
-    unsigned field_count;
-    reader.readUnsignedInt(field_count);
-     TRACE("B")
-    assert(field_count == 2); // Traction and tangetial component of traction
-    unsigned header_length;
-    reader.readUnsignedInt(header_length);
-     TRACE("C")
-
-    // Traction field header
-    std::string field_name;
-    unsigned number_floats;
-    double traction_offset;
-     TRACE("D")
-
-    reader.readString(field_name, header_length);
-    reader.readUnsignedInt(number_floats);
-    assert(number_floats == 3);
-    reader.readDouble(traction_offset);
- TRACE("E")
-    // Tangential traction field header
-    double tanget_traction_offset;
-
-    reader.readString(field_name, header_length);
-    reader.readUnsignedInt(number_floats);
-    assert(number_floats == 3);
-    reader.readDouble(tanget_traction_offset);
- TRACE("F")
-    // Data section (we are reading a single timestep)
-    // unsigned long long timestep_num;
-    uint64_t timestep_num;  // Jess changed so would work on server
-    reader.readUnsignedLong(timestep_num);
-
-    mAppliedPosition.clear();
-    mAppliedTractions.clear();
-    mAppliedTangentTractions.clear();
- TRACE("G")
-    for (unsigned fluid_site_index = 0; fluid_site_index <  number_fluid_sites; fluid_site_index++)
-    {
-         TRACE("H")
-    	{
-             TRACE("I")
-    		c_vector<unsigned,3> coords;
-    		reader.readUnsignedInt(coords[0]);
-    		reader.readUnsignedInt(coords[1]);
-    		reader.readUnsignedInt(coords[2]);
-
-    		mAppliedPosition.push_back(origin+voxel_size*coords);
-			// c_vector<long double,3> LatticeSite= origin+voxel_size*coords;
-		// PRINT_VECTOR(LatticeSite);
-    	}
-
-    	{
-             TRACE("J")
-			c_vector<float,3> traction;
-			reader.readFloat(traction[0]);
-			traction[0] += traction_offset;
-			reader.readFloat(traction[1]);
-			traction[1] += traction_offset;
-			reader.readFloat(traction[2]);
-			traction[2] += traction_offset;
-			// PRINT_VECTOR(traction);
-
-			assert(fabs(traction[0])<1e10);
-			assert(fabs(traction[1])<1e10);
-			assert(fabs(traction[2])<1e10);
-
-			mAppliedTractions.push_back(traction);
-    	}
- TRACE("K")
-    	{
-             TRACE("L")
-			c_vector<float,3> tangent_traction;
-			reader.readFloat(tangent_traction[0]);
-			tangent_traction[0] += tanget_traction_offset;
-			reader.readFloat(tangent_traction[1]);
-			tangent_traction[1] += tanget_traction_offset;
-			reader.readFloat(tangent_traction[2]);
-			tangent_traction[2] += tanget_traction_offset;
-
-			assert(fabs(tangent_traction[0])<1e10);
-			assert(fabs(tangent_traction[1])<1e10);
-			assert(fabs(tangent_traction[2])<1e10);
-
-			mAppliedTangentTractions.push_back(tangent_traction);
-    	}
-    }
-
-    assert(mAppliedPosition.size() == number_fluid_sites);
-    assert(mAppliedTractions.size() == number_fluid_sites);
-    assert(mAppliedTangentTractions.size() == number_fluid_sites);
-}
-
-
-
-
-
-// template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-// void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
-// {
-//     TRACE("This needs to be uncommented and fixed later")
-   
-
-
-//     // std::string TractionFile = mHemeLBDirectory + "results/Extracted/surface-tractions.xtr";
-//     std::string TractionFile = "/data/vascrem/testoutput/TestHemeLBForce/HemeLBFluid/results/Extracted/surface-tractions.xtr";
+    TRACE("This needs to be uncommented and fixed later")
+    //  scons b=GccOpt projects/VascularRemodelling/test/SetUpHemeLBChasteLinkage/TestHemeLBForce.hpp 
+    // alias vascser="ssh vascrem@josborne.science.unimelb.edu.au"
+//     std::string TractionFile = mHemeLBDirectory + "results/Extracted/surface-tractions.xtr";
 //     // std::string TractionFile = "/Users/jcrawshaw/Documents/ChasteWorkingDirectory/ShrunkPlexus/results/Extracted/surface-tractions.xtr";
 // 	TRACE("Load tracrtion file");
 // 	// PRINT_VARIABLE(TractionFile); 
@@ -724,127 +511,119 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
 	
 // 	// File format described in http://pauli.chem.ucl.ac.uk/trac/hemelb/wiki/ExtractionFiles
 
-//       unsigned hemelb_magic_number, extraction_magic_number, extraction_version_number;
+//     unsigned hemelb_magic_number, extraction_magic_number, extraction_version_number;
 // 	// TRACE("Reading the traction file");
 //     reader.readUnsignedInt(hemelb_magic_number);
 //     reader.readUnsignedInt(extraction_magic_number);
 //     reader.readUnsignedInt(extraction_version_number);
 	
-//     TRACE("A");
+
 //     assert(hemelb_magic_number == 0x686c6221);
 //     assert(extraction_magic_number == 0x78747204);
 //     assert(extraction_version_number == 4);
-//     TRACE("B");
 
 //     double voxel_size;
 //     reader.readDouble(voxel_size);
-//     TRACE("C");
+//     // PRINT_VARIABLE(voxel_size)
+
 //     c_vector<double,3> origin;
 //     reader.readDouble(origin[0]);
 //     reader.readDouble(origin[1]);
 //     reader.readDouble(origin[2]);
-//     TRACE("D");
 
-// // TRACE("ALPAH")
 
-//     // unsigned long long number_fluid_sites;
-//      TRACE("E");
-//     uint64_t& number_fluid_sites; // Changed this so It would work on the server
+//     unsigned long long number_fluid_sites;
+//     // uint64_t& number_fluid_sites; // Changed this so It would work on the server
 //     reader.readUnsignedLong(number_fluid_sites);
-//      TRACE("F");
 //     unsigned field_count;
 //     reader.readUnsignedInt(field_count);
 //     assert(field_count == 2); // Traction and tangetial component of traction
-//      TRACE("G");
 //     unsigned header_length;
 //     reader.readUnsignedInt(header_length);
-//      TRACE("H");
 
 //     // Traction field header
 //     std::string field_name;
 //     unsigned number_floats;
 //     double traction_offset;
-//     TRACE("BEta")
 
-// //     reader.readString(field_name, header_length);
-// //     reader.readUnsignedInt(number_floats);
-// //     assert(number_floats == 3);
-// //     reader.readDouble(traction_offset);
+//     reader.readString(field_name, header_length);
+//     reader.readUnsignedInt(number_floats);
+//     assert(number_floats == 3);
+//     reader.readDouble(traction_offset);
 
-// //     // Tangential traction field header
-// //     double tanget_traction_offset;
+//     // Tangential traction field header
+//     double tanget_traction_offset;
 
-// //     reader.readString(field_name, header_length);
-// //     reader.readUnsignedInt(number_floats);
-// //     assert(number_floats == 3);
-// //     reader.readDouble(tanget_traction_offset);
+//     reader.readString(field_name, header_length);
+//     reader.readUnsignedInt(number_floats);
+//     assert(number_floats == 3);
+//     reader.readDouble(tanget_traction_offset);
 
-// //    // Data section (we are reading a single timestep)
-// //     unsigned long long timestep_num;
-// //     // uint64_t&  timestep_num; // Changed this so It would work on the server
-// //     reader.readUnsignedLong(timestep_num);
-// //     // PRINT_VARIABLE(timestep_num)
-// //     TRACE("GAmma")
+//    // Data section (we are reading a single timestep)
+//     unsigned long long timestep_num;
+//     // uint64_t&  timestep_num; // Changed this so It would work on the server
+//     reader.readUnsignedLong(timestep_num);
+//     // PRINT_VARIABLE(timestep_num)
 
-// //     mAppliedPosition.clear();
-// //     mAppliedTractions.clear();
-// //     mAppliedTangentTractions.clear();
+//     mAppliedPosition.clear();
+//     mAppliedTractions.clear();
+//     mAppliedTangentTractions.clear();
 
-// //     for (unsigned fluid_site_index = 0; fluid_site_index <  number_fluid_sites; fluid_site_index++)
-// //     {
-// //     	{
-// //     		c_vector<unsigned,3> coords;
-// //     		reader.readUnsignedInt(coords[0]);
-// //     		reader.readUnsignedInt(coords[1]);
-// //     		reader.readUnsignedInt(coords[2]);
+//     for (unsigned fluid_site_index = 0; fluid_site_index <  number_fluid_sites; fluid_site_index++)
+//     {
+//     	{
+//     		c_vector<unsigned,3> coords;
+//     		reader.readUnsignedInt(coords[0]);
+//     		reader.readUnsignedInt(coords[1]);
+//     		reader.readUnsignedInt(coords[2]);
     	
-// //             mAppliedPosition.push_back((origin+coords*voxel_size)*1e3); // mAppliedPosition.push_back(origin+voxel_size*coords); <---- this was the original line, its not good, give completluy wrong results, it looks like a time based problem, may need to revist 
+//             mAppliedPosition.push_back((origin+coords*voxel_size)*1e3); // mAppliedPosition.push_back(origin+voxel_size*coords); <---- this was the original line, its not good, give completluy wrong results, it looks like a time based problem, may need to revist 
 
-// //     	}
+//     	}
 
-// //     	{
-// // 			c_vector<float,3> traction;
-// // 			reader.readFloat(traction[0]);
-// // 			traction[0] += traction_offset;
-// // 			reader.readFloat(traction[1]);
-// // 			traction[1] += traction_offset;
-// // 			reader.readFloat(traction[2]);
-// // 			traction[2] += traction_offset;
-// // 			// PRINT_VECTOR(traction);
+//     	{
+// 			c_vector<float,3> traction;
+// 			reader.readFloat(traction[0]);
+// 			traction[0] += traction_offset;
+// 			reader.readFloat(traction[1]);
+// 			traction[1] += traction_offset;
+// 			reader.readFloat(traction[2]);
+// 			traction[2] += traction_offset;
+// 			// PRINT_VECTOR(traction);
 
-// // 			assert(fabs(traction[0])<1e10);
-// // 			assert(fabs(traction[1])<1e10);
-// // 			assert(fabs(traction[2])<1e10);
+// 			assert(fabs(traction[0])<1e10);
+// 			assert(fabs(traction[1])<1e10);
+// 			assert(fabs(traction[2])<1e10);
 
-// // 			mAppliedTractions.push_back(traction);
-// //     	}
+// 			mAppliedTractions.push_back(traction);
+//     	}
 
-// //     	{
-// // 			c_vector<float,3> tangent_traction;
-// // 			reader.readFloat(tangent_traction[0]);
-// // 			tangent_traction[0] += tanget_traction_offset;
-// // 			reader.readFloat(tangent_traction[1]);
-// // 			tangent_traction[1] += tanget_traction_offset;
-// // 			reader.readFloat(tangent_traction[2]);
-// // 			tangent_traction[2] += tanget_traction_offset;
+//     	{
+// 			c_vector<float,3> tangent_traction;
+// 			reader.readFloat(tangent_traction[0]);
+// 			tangent_traction[0] += tanget_traction_offset;
+// 			reader.readFloat(tangent_traction[1]);
+// 			tangent_traction[1] += tanget_traction_offset;
+// 			reader.readFloat(tangent_traction[2]);
+// 			tangent_traction[2] += tanget_traction_offset;
 
-// // 			assert(fabs(tangent_traction[0])<1e10);
-// // 			assert(fabs(tangent_traction[1])<1e10);
-// // 			assert(fabs(tangent_traction[2])<1e10);
+// 			assert(fabs(tangent_traction[0])<1e10);
+// 			assert(fabs(tangent_traction[1])<1e10);
+// 			assert(fabs(tangent_traction[2])<1e10);
 
-// // 			mAppliedTangentTractions.push_back(tangent_traction);
-// //     	}
-// //     }
+// 			mAppliedTangentTractions.push_back(tangent_traction);
+//     	}
+//     }
 
-// //     assert(mAppliedPosition.size() == number_fluid_sites);
-// //     assert(mAppliedTractions.size() == number_fluid_sites);
-// //     assert(mAppliedTangentTractions.size() == number_fluid_sites);
-
-
+//     assert(mAppliedPosition.size() == number_fluid_sites);
+//     assert(mAppliedTractions.size() == number_fluid_sites);
+//     assert(mAppliedTangentTractions.size() == number_fluid_sites);
 
 
-//     // 
-// }
+
+
+    // 
+}
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation)
@@ -1056,15 +835,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::OutputForceParameters(out_stream& rPar
     // Call method on direct parent class
     AbstractForce<ELEMENT_DIM, SPACE_DIM>::OutputForceParameters(rParamsFile);
 }
-
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetMachine(std::string Machine)
-{
-    assert( Machine == "mac" || Machine == "server");
-    mMachine = Machine;
-}
-
 
 /////////////////////////////////////////////////////////////////////////////
 // Explicit instantiation
