@@ -7,13 +7,8 @@
 
 #include "UblasCustomFunctions.hpp"
 #include <cxxtest/TestSuite.h>
-// #include <cstdio>
-// #include <ctime>
-// #include <cmath>
-// #include <vector> 
 
 #include "Debug.hpp"
-#include "VtkMeshReader.hpp"
 #include "Honeycomb3DCylinderMeshGenerator.hpp"
 #include "SmartPointers.hpp"
  
@@ -27,17 +22,18 @@
 #include "HistoryDepMeshBasedCellPopulation.hpp"
 #include "HistoryDepMutableMesh.hpp"
 
-#include "RemeshingTriggerOnHeteroMeshModifier.hpp"
-#include "FixedRegionBoundaryCondition.hpp"
-#include "MembraneDeformationForce.hpp"
-#include "OutwardsPressure.hpp"
 #include "HemeLBForce.hpp"
 
 
 class TestRemeshing  : public AbstractCellBasedTestSuite
 {
 public:
- void TestHemeLBInBasicCylinder() throw (Exception)
+ void TestHemeLBReader() throw (Exception)
+    {
+      boost::shared_ptr<HemeLBForce<2,3>> p_ForceOut(new HemeLBForce<2, 3>());
+      p_ForceOut->LoadTractionFromFile();
+    }
+    void OffTestHemeLBInBasicCylinder() throw (Exception)
     {
         double scale = 1e3;
         double Length = 50e-6 * scale;
@@ -89,12 +85,12 @@ public:
         double OutletPressure = 1.5*(0.002133152 - 0.001466542)*(0.98);
 
         boost::shared_ptr<HemeLBForce<2,3>> p_ForceOut(new HemeLBForce<2, 3>());
-        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
+        // p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
+        // p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
         p_ForceOut->SetStartTime(0);
-        p_ForceOut->SetFluidSolidIterations(100);
+        // p_ForceOut->SetFluidSolidIterations(100);
         p_ForceOut->SetUpHemeLBConfiguration(output_dir, simulator.rGetCellPopulation());
-        simulator.AddForce(p_ForceOut);
+        // simulator.AddForce(p_ForceOut);
     
   }
 

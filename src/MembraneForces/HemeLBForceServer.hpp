@@ -25,9 +25,8 @@
 #include <array>
 #include <utility>
 
-
-#include </usr/local/Cellar/vtk/8.2.0_11/include/vtk-8.2/vtkSmartPointer.h>
-#include </usr/local/Cellar/vtk/8.2.0_11/include/vtk-8.2/vtkXMLPolyDataReader.h> // Need to read the centerlines file
+#include <vtkSmartPointer.h>
+#include <vtkXMLPolyDataReader.h> // Need to read the centerlines file
 
 #include <algorithm>
 #include <vector>
@@ -40,9 +39,8 @@
 
 // #include "PetscTools.hpp"
 #include <map>
-#include "/usr/local/Cellar/vtk/8.2.0_11/include/vtk-8.2/vtkXMLUnstructuredGridReader.h"
-#include </usr/local/Cellar/vtk/8.2.0_11/include/vtk-8.2/vtkPolyData.h>
-// #include "AppliedForceModifier.hpp"
+#include "vtkXMLUnstructuredGridReader.h"
+#include <vtkPolyData.h>
 #include "MeshBasedCellPopulation.hpp"
 #include "Debug.hpp"
 #include <math.h>
@@ -119,10 +117,6 @@ public:
     double mConstantPressure =0;
     void SetConstantPressure(double Pressure);
 
-    void SetMachine(std::string Machine);
-    std::string mMachine; // Machine can be mac or Linux server, will make this better soon 
-    
-
     void WriteOutVtuFile(std::string outputDirectory);
     HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM> *mMesh;
 
@@ -140,8 +134,6 @@ public:
 
     double mStartTime ;
     double GetStartTime();
-
-
 
 
 
@@ -196,13 +188,16 @@ public:
     std::string mOutputDirectory;
     std::string mHemeLBDirectory;
     std::string mHemeLB_output;
-    std::string mhemelb_setup_exe = "env PYTHONPATH=/Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/setuptool:$PYTHONPATH /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/setuptool/scripts/hemelb-setup-nogui";
+    // std::string mhemelb_setup_exe = "env PYTHONPATH=/Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/setuptool:$PYTHONPATH /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/setuptool/scripts/hemelb-setup-nogui";
+    std::string mhemelb_setup_exe = "env PYTHONPATH=/home/vascrem/hemelb-dev/Tools/setuptool:$PYTHONPATH /home/vascrem/hemelb-dev/Tools/setuptool/scripts/hemelb-setup-nogui";
+    std::string mHemeLBPath = "/home/vascrem/hemelb-dev/";
+    void SetHemeLBPath(std::string HemeLBPath);
 
+    void SetMachine(std::string Machine);
+    std::string mMachine ="server"; // Machine can be mac or Linux server, will make this better soon 
 
-    // Function to help return system commands 
-    
+    // Function to help return system commands     
     std::pair<std::string, int> exec(const char* cmd);
-
 
     /**
      * Overridden OutputForceParameters() method.

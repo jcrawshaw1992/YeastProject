@@ -114,21 +114,21 @@ void ElementQualityOutputModifier<ELEMENT_DIM, SPACE_DIM>::WriteOutDataToFiles(A
     // Here we need to write and append 
   
     // Open the file 
-    ofstream oAreafile(mAreaFileName, ios::out | ios::app);
-    ofstream oInternalAnglesfile(mInternalAnglesFileName, ios::out | ios::app);
-    ofstream oAspectRatiofile(mAspectRatioFileName, ios::out | ios::app);
+    std::ofstream oAreafile(mAreaFileName, std::ios::out | std::ios::app);
+    std::ofstream oInternalAnglesfile(mInternalAnglesFileName, std::ios::out | std::ios::app);
+    std::ofstream oAspectRatiofile(mAspectRatioFileName, std::ios::out | std::ios::app);
 
-    ofstream oRadiusRatiofile(mRadiusRatioFileName, ios::out | ios::app);
-    ofstream oEdgeLengthsfile(mEdgeLengthsFileName, ios::out | ios::app);
-    ofstream oMeanChangeInLocalCurvaturefile(mMeanChangeInLocalCurvatureFileName, ios::out | ios::app);
-    ofstream oElementRadifile(mElementRadiFileName, ios::out | ios::app);
+    std::ofstream oRadiusRatiofile(mRadiusRatioFileName, std::ios::out | std::ios::app);
+    std::ofstream oEdgeLengthsfile(mEdgeLengthsFileName, std::ios::out | std::ios::app);
+    std::ofstream oMeanChangeInLocalCurvaturefile(mMeanChangeInLocalCurvatureFileName, std::ios::out | std::ios::app);
+    std::ofstream oElementRadifile(mElementRadiFileName, std::ios::out | std::ios::app);
 
-    ofstream oEdgeAnglefile(mEdgeAnglefile, ios::out | ios::app);
-    ofstream oLocalNodesForEdege(mLocalNodesForEdege, ios::out | ios::app);
-    ofstream oContainingElementsForEdges(mContainingElementsForEdges, ios::out | ios::app);
-    ofstream oRegionofContainingEdgesForEdges(mRegionofContainingEdgesForEdges, ios::out | ios::app);
+    std::ofstream oEdgeAnglefile(mEdgeAnglefile, std::ios::out | std::ios::app);
+    std::ofstream oLocalNodesForEdege(mLocalNodesForEdege, std::ios::out | std::ios::app);
+    std::ofstream oContainingElementsForEdges(mContainingElementsForEdges, std::ios::out | std::ios::app);
+    std::ofstream oRegionofContainingEdgesForEdges(mRegionofContainingEdgesForEdges, std::ios::out | std::ios::app);
 
-    ofstream oTimeFile(mTimeFiles, ios::out | ios::app);
+    std::ofstream oTimeFile(mTimeFiles, std::ios::out | std::ios::app);
     oContainingElementsForEdges << mTimeCounter << " ";
     oTimeFile << mTimeCounter << "\n ";
     

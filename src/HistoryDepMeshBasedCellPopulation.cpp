@@ -3,6 +3,7 @@
 #include "MathsFunctions.hpp"
 #include "RandomDirectionCentreBasedDivisionRule.hpp"
 #include "VtkMeshWriter.hpp"
+#include "VtkMeshReader.hpp"
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::HistoryDepMeshBasedCellPopulation(MutableMesh<ELEMENT_DIM, SPACE_DIM>& rMesh,
@@ -181,7 +182,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::WriteOutMappedIn
     //TRACE("Have the adapted mesh, which now I can change to the mapped inital mesh and write out to see what is going on ;) ");
     //PRINT_VARIABLE(MappedICmesh.GetNumNodes());
 
-    for (int i = 0; i < MappedICmesh.GetNumNodes(); i++)
+    for (unsigned i = 0; i < MappedICmesh.GetNumNodes(); i++)
     {
         Node<SPACE_DIM>* p_node = MappedICmesh.GetNode(i);
         p_node->rGetModifiableLocation() = mInitalPositionOfRemeshedNodes[i];
@@ -525,7 +526,7 @@ unsigned HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestEl
 {
     assert(SPACE_DIM ==3);
     // This method is super simple. -- Just find the closest element -- it isnt perfect,
-    unsigned ClosestElement;
+    int ClosestElement;
     double distance = 100;
     bool HaveElement = 0;
 
@@ -673,7 +674,7 @@ unsigned HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestEl
     }
     // check closest point is within certain region
 
-    assert(ClosestElement != -10);
+    // assert(ClosestElement != -10);
     // mMapOfProbNodes[node_index] = 3;
     return ClosestElement;
 }

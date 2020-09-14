@@ -69,7 +69,7 @@ public:
     virtual ~ElementQualityOutputModifier();
 
 
-    ofstream mOutputFile;
+    std::ofstream mOutputFile;
     std::string mFileName;
     std::string mAreaFileName;
     std::string mInternalAnglesFileName;

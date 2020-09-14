@@ -11,7 +11,9 @@
 #define HEMELB_IO_WRITERS_XDR_XDRFILEREADER_H
 
 #include <cstdio>
+#include "Debug.hpp"
 
+// I dont think the server can find this particullar code?? 
 #include "XdrReader.hpp"
 
 namespace hemelb
@@ -27,7 +29,9 @@ namespace hemelb
         class XdrFileReader : public XdrReader
         {
           public:
+            
             XdrFileReader(FILE* xdrFile);
+           
         };
 
       } // namespace xdr

@@ -15,7 +15,7 @@
  */
 
 #include "XdrFileReader.hpp"
-
+#include "Debug.hpp"
 namespace hemelb
 {
   namespace io
@@ -28,6 +28,7 @@ namespace hemelb
         // Constructor to create an Xdr object based on a file.
         XdrFileReader::XdrFileReader(FILE* xdrFile)
         {
+          TRACE("XdrFileReader Constructor") 
           xdrstdio_create(&mXdr, xdrFile, XDR_DECODE);
         }
 

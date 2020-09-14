@@ -12,7 +12,7 @@
 
 #include <cstdio>
 
-#include "XdrReader.hpp"
+#include "~/Chaste/projects/VascularRemodelling/src/mechanics/io/XdrReader.hpp"
 
 namespace hemelb
 {

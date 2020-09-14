@@ -1,7 +1,7 @@
 #!/bin/bash
 # chmod 700 RunHemeLB
-echo /Users/jcrawshaw/Documents/testoutput/TestHemeLBChasteLinkageLarger2/HemeLB/HemeLBFluid/config.xml
-mpirun -np 2 hemelb -in /Users/jcrawshaw/Documents/testoutput/TestHemeLBChasteLinkageLarger2/HemeLB/HemeLBFluid/config.xml > /Users/jcrawshaw/Documents/testoutput/TestHemeLBChasteLinkageLarger2/HemeLB/HemeLBFluid/HemeLBTerminalOutput.txt
-echo 'HemeLB has finished' > /Users/jcrawshaw/Documents/testoutput/TestHemeLBChasteLinkageLarger2/HemeLB/HemeLBFluid/WaitFile.txt 
+echo /Users/jcrawshaw/Documents/testoutput/TestHemeLBForceOnCylinder/HemeLBFluid/config.xml
+mpirun -np 2 hemelb -in /Users/jcrawshaw/Documents/testoutput/TestHemeLBForceOnCylinder/HemeLBFluid/config.xml > /Users/jcrawshaw/Documents/testoutput/TestHemeLBForceOnCylinder/HemeLBFluid/HemeLBTerminalOutput.txt
+echo 'HemeLB has finished' > /Users/jcrawshaw/Documents/testoutput/TestHemeLBForceOnCylinder/HemeLBFluid/WaitFile.txt 
 echo 'HemeLB simulation complete' 
 osascript -e 'tell application "Terminal" to close first window' & exit
