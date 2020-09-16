@@ -4,7 +4,7 @@ echo "Looking for .."
 echo "$1"
 while [ ! -f $1 ]
 do 
-     sleep 2
+     sleep 0.5
 done
 echo "File found"
 rm -f $1

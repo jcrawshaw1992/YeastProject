@@ -54,9 +54,8 @@ private:
 public:
 
 
-void TestCreateBendEllipticalCylinders_WithDiffereingRefinments() throw(Exception)
+void offTestCreateBendEllipticalCylinders_WithDiffereingRefinments() throw(Exception)
     {
-     
 
       unsigned Refinment[4] = {20,40,100,150};//,160};
        
@@ -146,11 +145,6 @@ void TestCreateBendEllipticalCylinders_WithDiffereingRefinments() throw(Exceptio
         }
 
     }
-
-
- 
- 
- 
  
 
 
@@ -249,13 +243,6 @@ void TestCreateBendEllipticalCylinders_WithDiffereingRefinments() throw(Exceptio
     }
 
 
- 
- 
- 
- 
- 
- 
- 
     void offTestRectLong() throw(Exception)
     {
      
@@ -324,6 +311,8 @@ void TestCreateBendEllipticalCylinders_WithDiffereingRefinments() throw(Exceptio
         SimulationTime::Instance()->Destroy();
         SimulationTime::Instance()->SetStartTime(0.0);
     }
+
+
     void offTestCylinderRect() throw(Exception)
     {
      
@@ -385,10 +374,6 @@ void TestCreateBendEllipticalCylinders_WithDiffereingRefinments() throw(Exceptio
         cell_population.GetNode(21)->rGetModifiableLocation() =Create_c_vector(-0.25 ,-0.25 ,2 ); 
         cell_population.GetNode(22)->rGetModifiableLocation() =Create_c_vector(0 ,-0.5, 2  ); 
         cell_population.GetNode(23)->rGetModifiableLocation() =Create_c_vector(0.25 ,-0.25 ,2   ); 
-
-
-
-
 
         simulator.Solve();
 

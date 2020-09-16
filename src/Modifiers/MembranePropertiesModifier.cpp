@@ -181,10 +181,11 @@ void MembranePropertiesModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOfTimeStep(A
         // }
     }
 
-    if (rCellPopulation.NeedToReconfigureCellDataInModifiers())
-    {
-        SetupSolve();
-    }
+TRACE("Do you need to fix up the cell data?")
+    // if (rCellPopulation.NeedToReconfigureCellDataInModifiers()) This needs to be dealth with Jess
+    // {
+    //     SetupSolve();
+    // }
 
 }
 

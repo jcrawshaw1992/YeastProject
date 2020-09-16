@@ -17,6 +17,10 @@ if __name__=="__main__":
     parser.add_argument('-period', dest='period', default='1000', help='Period to print out results, which will be turned into vtus --- we really only need the last output.')
     parser.add_argument('-directory', dest='directory', help='Need to provide a destination to find the xml file to edit ')
     parser.add_argument('-InitalConditions', dest='IC', default=0, help='Need to provide a destination to find the xml file to edit ')
+    parser.add_argument('-ConvergenceTermination', dest='CT', type=str, default='false', help='To terminate when the simulation reaches a steady state')
+    parser.add_argument('-AveragePressure', dest='A', type=str, default='false', help='To terminate when the simulation reaches a steady state')
+Need to play with this Jess
+
     
 
     # Only the final time output is needed, so this should be the period --- this is because it is time costly
@@ -26,6 +30,7 @@ if __name__=="__main__":
     args = parser.parse_args()
     period = args.period
     filename = args.directory + 'config.xml'
+    Terminate= args.ConvergenceTermination # Set to true or false :) 
     IC =  args.IC
 
     tree = ElementTree.parse(filename)
@@ -34,8 +39,10 @@ if __name__=="__main__":
     # Add monitoring of incompressibility and convergence
     monitoring = ElementTree.SubElement(root, 'monitoring')
     ElementTree.SubElement(monitoring, 'incompressibility') 
-    convergence = ElementTree.SubElement(monitoring, 'steady_flow_convergence', {'tolerance': '1e-3', 'terminate': 'false'})
-    ElementTree.SubElement(convergence, 'criterion', {'type': 'velocity', 'value': '0.01', 'units': 'm/s'})
+    # convergence = ElementTree.SubElement(monitoring, 'steady_flow_convergence', {'tolerance': '1e-3', 'terminate': 'false'})
+    convergence = ElementTree.SubElement(monitoring, 'steady_flow_convergence', {'tolerance': '1e-6', 'terminate': 'Terminate'})
+    # ElementTree.SubElement(convergence, 'criterion', {'type': 'velocity', 'value': '0.01', 'units': 'm/s'})
+    ElementTree.SubElement(convergence, 'criterion', {'type': 'pressure', 'value': '0.01', 'units': 'm/s'})
     
     # Add definition of properties to be extracted
     extr = ElementTree.SubElement(root, 'properties')

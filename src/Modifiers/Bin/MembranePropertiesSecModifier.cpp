@@ -180,10 +180,12 @@ void MembranePropertiesSecModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOfTimeSte
         // }
     }
 
-    if (rCellPopulation.NeedToReconfigureCellDataInModifiers())
-    {
-        SetupSolve();
-    }
+
+TRACE("Do you need to fix up the cell data?")
+    // if (rCellPopulation.NeedToReconfigureCellDataInModifiers())
+    // {
+    //     SetupSolve();
+    // }
 
 }
 

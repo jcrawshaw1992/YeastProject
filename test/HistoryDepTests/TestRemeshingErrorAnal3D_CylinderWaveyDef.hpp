@@ -38,16 +38,16 @@
 #include "RemeshingTriggerModifier.hpp"
 #include "UblasCustomFunctions.hpp"
 #include "VtkMeshReader.hpp"
-#include "XmlTools.hpp"
+// #include "XmlTools.hpp"
 
-using namespace xsd::cxx::tree;
+// using namespace xsd::cxx::tree;
 
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
 
 
- void offTestCreateCylinder() throw(Exception)
+ void TestCreateCylinder() throw(Exception)
     {
         unsigned N_D = 80;
         unsigned N_Z = 100;
@@ -247,7 +247,7 @@ public:
         }
     }
 
-    void offTestRemeshingCylinder_FineInitial_VMTK() throw(Exception)
+    void TestRemeshingCylinder_FineInitial_VMTK() throw(Exception)
     {
         std::vector<double> RootMeanSquared;
         std::vector<double> RootSTDSquared;
@@ -434,7 +434,7 @@ public:
         }
     }
 
-    void offTestRemeshingCylinder_CourseRemeshedMesh_VMTK() throw(Exception)
+    void TestRemeshingCylinder_CourseRemeshedMesh_VMTK() throw(Exception)
     {
         std::vector<double> RootMeanSquared;
         std::vector<double> RootSTDSquared;
@@ -600,7 +600,7 @@ public:
         }
     }
 
-    void offTestRemeshingCylinder_FineRemeshsed_VMTK() throw(Exception)
+    void TestRemeshingCylinder_FineRemeshsed_VMTK() throw(Exception)
     {
 
         std::vector<double> RootMeanSquared;

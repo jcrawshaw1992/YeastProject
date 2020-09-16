@@ -38,16 +38,16 @@
 #include "RemeshingTriggerModifier.hpp"
 #include "UblasCustomFunctions.hpp"
 #include "VtkMeshReader.hpp"
-#include "XmlTools.hpp"
+// #include "XmlTools.hpp"
 
-using namespace xsd::cxx::tree;
+// using namespace xsd::cxx::tree;
 
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
 
 
- void OffTestCreateCylinder() throw(Exception)
+ void TestCreateCylinder() throw(Exception)
     {
         unsigned N_D = 80;
         unsigned N_Z = 100;
@@ -65,7 +65,7 @@ public:
 
 
 
-    void offTestRemeshingCylinder_CourseInitial_VMTK() throw(Exception)
+    void OffTestRemeshingCylinder_CourseInitial_VMTK() throw(Exception)
     {
 
         std::vector<double> RootMeanSquared;
@@ -249,7 +249,7 @@ public:
         }
     }
 
-    void offTestRemeshingCylinder_FineInitial_VMTK() throw(Exception)
+    void OffTestRemeshingCylinder_FineInitial_VMTK() throw(Exception)
     {
 
         std::vector<double> RootMeanSquared;
@@ -433,7 +433,7 @@ public:
         }
     }
 
-    void offTestRemeshingCylinder_CourseRemeshedMesh_VMTK() throw(Exception)
+    void OffTestRemeshingCylinder_CourseRemeshedMesh_VMTK() throw(Exception)
     {
         std::vector<double> RootMeanSquared;
         std::vector<double> RootSTDSquared;
@@ -616,7 +616,7 @@ public:
         }
     }
 
-    void TestRemeshingCylinder_FineRemeshsed_VMTK() throw(Exception)
+    void OffTestRemeshingCylinder_FineRemeshsed_VMTK() throw(Exception)
     {
 
         std::vector<double> RootMeanSquared;
@@ -787,7 +787,7 @@ public:
         }
     }
 
-    void OffTestRemeshingCylinder_CourseInitial_CGAL() throw(Exception)
+    void TestRemeshingCylinder_CourseInitial_CGAL() throw(Exception)
     {
 
         std::vector<double> RootMeanSquared;
@@ -973,7 +973,7 @@ public:
         }
     }
 
-    void OffTestRemeshingCylinder_FineInitial_CGAL() throw(Exception)
+    void TestRemeshingCylinder_FineInitial_CGAL() throw(Exception)
     {
 
         std::vector<double> RootMeanSquared;
