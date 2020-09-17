@@ -43,7 +43,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
 
-    void TestCreateCylinder() throw(Exception)
+    void offTestCreateCylinder() throw(Exception)
     {
         unsigned N_D = 800;
         unsigned N_Z = 1000;
@@ -82,7 +82,7 @@ public:
         SystemOutput = std::system(MakeDirectory.c_str()); // system only takes char *
     }
 
-    void TestRemeshingCylinder_CoarseInitial() throw(Exception)
+    void offTestRemeshingCylinder_CoarseInitial() throw(Exception)
     {
 
         std::vector<double> EdgeL;
@@ -198,7 +198,7 @@ public:
         }
     }
 
-    void TestRemeshingCylinder_FineInitial() throw(Exception)
+    void offTestRemeshingCylinder_FineInitial() throw(Exception)
     {
 
         std::vector<double> EdgeL;
@@ -324,7 +324,7 @@ public:
         std::vector<double> Q25;
         std::vector<double> Q75;
 
-        double EdgeLength = 0.05;
+        double EdgeLength = 0.5;
         double Iter = 10;
         std::string output_dir = "~/Documents/testoutput/RemeshingErrorAnal3D/Cylinder_WaveyDef/FineRemeshed/";
         double startime = 0;
@@ -362,7 +362,7 @@ public:
             HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
             cell_population.SetChasteOutputDirectory(output_directory, startime);
             cell_population.SetInitialAnlgesAcrossMembrane();
-            cell_population.SetTargetRemeshingEdgeLength(EdgeLength);
+            cell_population.SetTargetRemeshingEdgeLength(RemeshedEdgeLength);
             cell_population.SetTargetRemeshingIterations(Iter);
 
             cell_population.SetRemeshingSoftwear("CGAL");
@@ -441,7 +441,7 @@ public:
         std::vector<double> Q25;
         std::vector<double> Q75;
 
-        double EdgeLength = 0.5;
+        double EdgeLength = 0.5; double RemeshedEdgeLength = 0.4;
         double Iter = 10;
         std::string output_dir = "~/Documents/testoutput/RemeshingErrorAnal3D/Cylinder_WaveyDef/CoarseRemeshed/";
         double startime = 0;
@@ -459,7 +459,6 @@ public:
             std::string Remeshedvtu = output_dir + "RemeshedCylinder" + mesh_size + ".vtu";
             std::string stl2vtuCommand = " meshio-convert " + output_dir + "RemeshedCylinder.off " + Remeshedvtu;
             std::system(stl2vtuCommand.c_str());
-            double RemeshedEdgeLength = 0.5;
 
             // Read in the new cylinder that is generated to my desire
             std::string mesh_file = "/Users/jcrawshaw/Documents/testoutput/RemeshingErrorAnal3D/Cylinder_WaveyDef/CoarseRemeshed/RemeshedCylinder" + mesh_size + ".vtu"; //Remeshedvtu;//"/Users/jcrawshaw/Documents/testoutput/RemeshingErrorAnal3D/Cylinder_WaveyDef/CGAL/CourseInital/RemeshedCylinder.vtu";
@@ -479,7 +478,7 @@ public:
             HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
             cell_population.SetChasteOutputDirectory(output_directory, startime);
             cell_population.SetInitialAnlgesAcrossMembrane();
-            cell_population.SetTargetRemeshingEdgeLength(EdgeLength);
+            cell_population.SetTargetRemeshingEdgeLength(RemeshedEdgeLength);
             cell_population.SetTargetRemeshingIterations(Iter);
 
             cell_population.SetRemeshingSoftwear("CGAL");
