@@ -19,6 +19,8 @@ if __name__=="__main__":
     parser.add_argument('-InitalConditions', dest='InitalConditions', default=0, help='Need to provide a destination to find the xml file to edit ')
     parser.add_argument('-ConvergenceTermination', dest='ConvergenceTermination', type=str, default='false', help='To terminate when the simulation reaches a steady state')
     parser.add_argument('-AveragePressure', dest='AveragePressure', type=float, default=0.005, help='Need average if termination is set to true')
+    # parser.add_argument('-AveragePressure', dest='AveragePressure', type=float, default=0.005, help='Need average if termination is set to true')
+   
     # Need to play with this Jess
 
     # Only the final time output is needed, so this should be the period --- this is because it is time costly

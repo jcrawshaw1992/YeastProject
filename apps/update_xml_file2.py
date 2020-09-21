@@ -18,8 +18,8 @@ if __name__=="__main__":
     parser.add_argument('-directory', dest='directory', help='Need to provide a destination to find the xml file to edit ')
     parser.add_argument('-InitalConditions', dest='IC', default=0, help='Need to provide a destination to find the xml file to edit ')
     parser.add_argument('-ConvergenceTermination', dest='ConvergenceTermination', type=str, default='false', help='To terminate when the simulation reaches a steady state')
-    parser.add_argument('-AverageVelocity', dest='AverageVelocity', type=str, default='false', help='To terminate when the simulation reaches a steady state')
-# Need to play with this Jess
+    parser.add_argument('-AverageVelocity', dest='AverageVelocity', type=float, default='false', help='To terminate when the simulation reaches a steady state')
+## Need to play with this Jess
 
     
 
@@ -33,6 +33,7 @@ if __name__=="__main__":
     Terminate= args.ConvergenceTermination # Set to true or false :) 
     IC =  args.IC
     AverageVelocity= args.AverageVelocity
+    tolerance= AverageVelocity*1e-5
 
     tree = ElementTree.parse(filename)
     root = tree.getroot()
@@ -41,7 +42,7 @@ if __name__=="__main__":
     monitoring = ElementTree.SubElement(root, 'monitoring')
     ElementTree.SubElement(monitoring, 'incompressibility') 
     # convergence = ElementTree.SubElement(monitoring, 'steady_flow_convergence', {'tolerance': '1e-3', 'terminate': 'false'})
-    convergence = ElementTree.SubElement(monitoring, 'steady_flow_convergence', {'tolerance': '1e-6', 'terminate': Terminate})
+    convergence = ElementTree.SubElement(monitoring, 'steady_flow_convergence', {'tolerance': str(tolerance), 'terminate': Terminate})
     # ElementTree.SubElement(convergence, 'criterion', {'type': 'velocity', 'value': '0.01', 'units': 'm/s'})
     ElementTree.SubElement(convergence, 'criterion', {'type': 'velocity', 'value': str(AverageVelocity), 'units': 'm/s'})
     

@@ -73,7 +73,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
     SetUpFilePaths(outputDirectory, 1,0);
     WriteHemeLBBashScript();  
     ExecuteHemeLB();
-    // LoadTractionFromFile();
+    LoadTractionFromFile();
     // UpdateCellData(rCellPopulation);
 }
 
@@ -125,22 +125,16 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     WriteOutVtuFile(mOutputDirectory);
 
     /*  Step 0: Create the HemeLB config.pr2 file */
-    double HemeLBSimulationTime = 1000; // Too short right now, but who cares
-    int Period = HemeLBSimulationTime/2;
+    double HemeLBSimulationTime = 1500; // Too short right now, but who cares
+    int Period = HemeLBSimulationTime/1.9;
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
+
     // Step 1: Run HemeLB setup
-    //  std::string mhemelb_setup_exe = "env PYTHONPATH=/home/vascrem/hemelb-dev/Tools/setuptool:$PYTHONPATH /home/vascrem/hemelb-dev/Tools/setuptool/scripts/hemelb-setup-nogui";
-    // env PYTHONPATH=/home/vascrem/hemelb-dev/Tools/setuptool:$PYTHONPATH/home/vascrem/hemelb-dev/Tools/setuptool/scripts/hemelb-setup-nogui /data/vascrem/testoutput/TestHemeLBForce/HemeLBFluid/config.pr2 
-
-
-    // env PYTHONPATH=/home/vascrem/hemelb-dev/Tools/setuptool:$PYTHONPATH/home/vascrem/hemelb-dev/Tools/setuptool/scripts/hemelb-setup-nogui python /data/vascrem/testoutput/TestHemeLBForce/HemeLBFluid/config.pr2
-
-
     std::string run_hemelb_setup = mhemelb_setup_exe + ' ' + mHemeLBDirectory + "config.pr2";
     SystemOutput = std::system(run_hemelb_setup.c_str());
 
     // Step 2: Update xml file
-    std::string update_xml_file = "python projects/VascularRemodelling/apps/update_xml_file.py -period "+std::to_string(Period) +" -directory " + mHemeLBDirectory + " -InitalConditions " + std::to_string(mEstimatedIC)+ " -ConvergenceTermination true -AverageVelocity " + std::to_string(mExpectedVelocity); 
+    std::string update_xml_file = "python projects/VascularRemodelling/apps/update_xml_file.py -period "+std::to_string(Period) +" -directory " + mHemeLBDirectory + " -InitalConditions " + std::to_string(mEstimatedIC)+ " -ConvergenceTermination true -AverageVelocity " + double_to_string(mExpectedVelocity, 16); 
     SystemOutput = std::system(update_xml_file.c_str());
 // /Volumes/Backup Plus/ChasteWorkingDirectory/ShrunkPlexus/SetUpData/config.xml
 
@@ -344,7 +338,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
         }
     }
     mRadius = MinRadius * mHemeLBScalling;
-    PRINT_VARIABLE(mRadius)
 
     /* I have the max radius, this will be important for the discretisation and the cap sizes 
         https://royalsocietypublishing.org/doi/pdf/10.1098/rsif.2014.0543   &&&&    https://journals.aps.org/pre/pdf/10.1103/PhysRevE.89.023303
@@ -352,7 +345,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
         double maxMA = 0.2; -- I think it would be <0.1, but lets see
         Blood viscosity = 0.004 Pa s
         Blood density = 1000 kg m-3
-        Period 10000oscillation = 60/70 s.
+        Period 10000 -- oscillation = 60/70 s.
 
         double C = 1/3; // C^2_s -- Bernabeu et al 
         double tau = 0.8;// Bernabeu et al. demonstrated that the relaxation constant must be between t = 0.5-1 for stable HemeLB simulations, with minimal error at t = 0:8 Bernabeu et al 2014
@@ -367,8 +360,9 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     double MinPressure  = *std::max_element(mPressure.begin(), mPressure.end());
 
     // This is for calculating the the velocity through the vessel 
-    mExpectedVelocity = (MaxPressure-MinPressure)/2(V) * mRadius* mRadius;
+    mExpectedVelocity = fabs((MaxPressure-MinPressure)/(2*V) * mRadius* mRadius);
     PRINT_VARIABLE(mExpectedVelocity)
+
 
     //
     int InletNumber = 1;
@@ -695,6 +689,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
 			assert(fabs(tangent_traction[2])<1e10);
 
 			mAppliedTangentTractions.push_back(tangent_traction);
+            PRINT_VECTOR(tangent_traction)
     	}
     }
 
@@ -1051,6 +1046,25 @@ std::pair<std::string, int> HemeLBForce<ELEMENT_DIM, SPACE_DIM>::exec(const char
     }
     return make_pair(result, return_code);
 }
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+std::string HemeLBForce<ELEMENT_DIM, SPACE_DIM>::double_to_string(double Number, long double precision)
+{
+
+    std::string NumberString = std::to_string(Number);
+    if (Number < 1e-4)
+    {
+      std::stringstream ss;
+      ss << setprecision(precision) << Number;
+      std::string str;
+      ss >> str;
+      NumberString =  str;
+    }
+
+    return NumberString;
+}
+
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::OutputForceParameters(out_stream& rParamsFile)
