@@ -140,7 +140,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     SystemOutput = std::system(run_hemelb_setup.c_str());
 
     // Step 2: Update xml file
-    mExpectedVelocity
     std::string update_xml_file = "python projects/VascularRemodelling/apps/update_xml_file.py -period "+std::to_string(Period) +" -directory " + mHemeLBDirectory + " -InitalConditions " + std::to_string(mEstimatedIC)+ " -ConvergenceTermination true -AverageVelocity " + std::to_string(mExpectedVelocity); 
     SystemOutput = std::system(update_xml_file.c_str());
 // /Volumes/Backup Plus/ChasteWorkingDirectory/ShrunkPlexus/SetUpData/config.xml
@@ -368,7 +367,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     double MinPressure  = *std::max_element(mPressure.begin(), mPressure.end());
 
     // This is for calculating the the velocity through the vessel 
-    mExpectedVelocity = (MaxPressure-MinPressure)/2(*V) * mRadius* mRadius;
+    mExpectedVelocity = (MaxPressure-MinPressure)/2(V) * mRadius* mRadius;
     PRINT_VARIABLE(mExpectedVelocity)
 
     //
