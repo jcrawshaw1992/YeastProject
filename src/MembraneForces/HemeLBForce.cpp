@@ -73,7 +73,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
     SetUpFilePaths(outputDirectory, 1,0);
     WriteHemeLBBashScript();  
     ExecuteHemeLB();
-    LoadTractionFromFile();
+    // LoadTractionFromFile();
     // UpdateCellData(rCellPopulation);
 }
 
@@ -140,8 +140,13 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     SystemOutput = std::system(run_hemelb_setup.c_str());
 
     // Step 2: Update xml file
-    std::string update_xml_file = "python projects/VascularRemodelling/apps/update_xml_file.py -period "+std::to_string(Period) +" -directory " + mHemeLBDirectory + " -InitalConditions " + std::to_string(mEstimatedIC)+ " -ConvergenceTermination true -AveragePressure " + std::to_string(mEstimatedIC)+" >nul"; 
+    mExpectedVelocity
+    std::string update_xml_file = "python projects/VascularRemodelling/apps/update_xml_file.py -period "+std::to_string(Period) +" -directory " + mHemeLBDirectory + " -InitalConditions " + std::to_string(mEstimatedIC)+ " -ConvergenceTermination true -AverageVelocity " + std::to_string(mExpectedVelocity); 
     SystemOutput = std::system(update_xml_file.c_str());
+// /Volumes/Backup Plus/ChasteWorkingDirectory/ShrunkPlexus/SetUpData/config.xml
+
+// python update_xml_file.py -period 20 -InitalConditions  20  -ConvergenceTermination true -AveragePressure  20
+
 
     /*  Step 3: run HemeLB simulation
         This command will open up a new terminal and run the bash script RunHemeLB (which is in apps/). 
@@ -189,10 +194,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     // SystemOutput =  std::system(WaitCommand.c_str());
     // TRACE("Have waited long enough :)") 
 
-    if (boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
+    while(! boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
     {
         TRACE("waiting within C")
-        sleep(0.1); 
+        sleep(1000); 
     }
 
         /* Generate a new stl file from the vtu while HemeLB is going*/
@@ -358,11 +363,18 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     double V = 4; // Kinematic viscosity -- 4 mm^2/s  V = eta/rho
     double deltaX = mRadius / 15; // Diameter/15
     double deltaT = 0.1 * deltaX * deltaX / V;
+   
+    double MaxPressure = *std::min_element(mPressure.begin(), mPressure.end());
+    double MinPressure  = *std::max_element(mPressure.begin(), mPressure.end());
+
+    // This is for calculating the the velocity through the vessel 
+    mExpectedVelocity = (MaxPressure-MinPressure)/2(*V) * mRadius* mRadius;
+    PRINT_VARIABLE(mExpectedVelocity)
 
     //
     int InletNumber = 1;
     int OutletNumber = 1;
-    double HemeLBSimulationDuration = SimulationDuration * deltaT*10;
+    double HemeLBSimulationDuration = SimulationDuration * deltaT;//*10;
     std::string HemeLBRunTime = std::to_string(HemeLBSimulationDuration);
     if (HemeLBSimulationDuration < 1e-4)
     {
@@ -430,7 +442,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
     
 
 
-PRINT_VARIABLE(mMachine)
+    PRINT_VARIABLE(mMachine)
     if(mMachine =="server")
     {
             // Need to write bash scrip .... issue here 

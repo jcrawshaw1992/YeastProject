@@ -1,0 +1,103 @@
+<hemelbsettings version="3">
+  <simulation>
+    <step_length units="s" value="0.0001" />
+    <steps units="lattice" value="50000" />
+    <stresstype value="1" />
+    <voxel_size units="m" value="0.00480051231384" />
+    <origin units="m" value="(0.136293527879,0.196880483871,-0.0504198782182)" />
+  </simulation>
+  <geometry>
+    <datafile path="config.gmy" />
+  </geometry>
+  <inlets>
+    <inlet>
+      <condition subtype="cosine" type="pressure">
+        <mean units="mmHg" value="5.0" />
+        <amplitude units="mmHg" value="0.0" />
+        <phase units="rad" value="0.0" />
+        <period units="s" value="1" />
+      </condition>
+      <normal units="dimensionless" value="(0.851077023448,0.505330847361,0.142508367701)" />
+      <position units="m" value="(0.178949764459,0.25822483365,-7.28706351277e-05)" />
+    </inlet>
+    <inlet>
+      <condition subtype="cosine" type="pressure">
+        <mean units="mmHg" value="5.0" />
+        <amplitude units="mmHg" value="0.0" />
+        <phase units="rad" value="0.0" />
+        <period units="s" value="1" />
+      </condition>
+      <normal units="dimensionless" value="(0.0947508050966,0.994364232035,0.0475611078738)" />
+      <position units="m" value="(0.31597602832,0.201328007413,0.00319802319345)" />
+    </inlet>
+    <inlet>
+      <condition subtype="cosine" type="pressure">
+        <mean units="mmHg" value="5.0" />
+        <amplitude units="mmHg" value="0.0" />
+        <phase units="rad" value="0.0" />
+        <period units="s" value="1" />
+      </condition>
+      <normal units="dimensionless" value="(-0.578985556517,0.81028322647,-0.0906466670465)" />
+      <position units="m" value="(0.491678846594,0.263227459242,0.00327089865165)" />
+    </inlet>
+  </inlets>
+  <outlets>
+    <outlet>
+      <condition subtype="cosine" type="pressure">
+        <mean units="mmHg" value="5.0" />
+        <amplitude units="mmHg" value="0.0" />
+        <phase units="rad" value="0.0" />
+        <period units="s" value="1" />
+      </condition>
+      <normal units="dimensionless" value="(-0.858198752522,-0.511521298126,0.0429052762831)" />
+      <position units="m" value="(0.528901499373,0.462233714366,-0.00238973688661)" />
+    </outlet>
+    <outlet>
+      <condition subtype="cosine" type="pressure">
+        <mean units="mmHg" value="1.0" />
+        <amplitude units="mmHg" value="0.0" />
+        <phase units="rad" value="0.0" />
+        <period units="s" value="1" />
+      </condition>
+      <normal units="dimensionless" value="(-0.737378838142,-0.671923730635,0.0692166834675)" />
+      <position units="m" value="(0.365724851806,0.667499114262,-0.00292259394572)" />
+    </outlet>
+    <outlet>
+      <condition subtype="cosine" type="pressure">
+        <mean units="mmHg" value="1.0" />
+        <amplitude units="mmHg" value="0.0" />
+        <phase units="rad" value="0.0" />
+        <period units="s" value="1" />
+      </condition>
+      <normal units="dimensionless" value="(0.978811459959,-0.194149918728,0.0650686937836)" />
+      <position units="m" value="(0.144935652253,0.45953383339,-0.00715488371445)" />
+    </outlet>
+    <outlet>
+      <condition subtype="cosine" type="pressure">
+        <mean units="mmHg" value="1.0" />
+        <amplitude units="mmHg" value="0.0" />
+        <phase units="rad" value="0.0" />
+        <period units="s" value="1" />
+      </condition>
+      <normal units="dimensionless" value="(0.643366689545,-0.765387634729,0.0161577036422)" />
+      <position units="m" value="(0.322535793579,0.651423682735,-0.000958163778873)" />
+    </outlet>
+  </outlets>
+  <visualisation>
+    <centre units="m" value="(0.0,0.0,0.0)" />
+    <orientation>
+      <longitude units="deg" value="45.0" />
+      <latitude units="deg" value="45.0" />
+    </orientation>
+    <display brightness="0.03" zoom="1.0" />
+    <range>
+      <maxvelocity units="m/s" value="0.1" />
+      <maxstress units="Pa" value="0.1" />
+    </range>
+  </visualisation>
+  <initialconditions>
+    <pressure>
+      <uniform units="mmHg" value="0.0" />
+    </pressure>
+  </initialconditions>
+<monitoring><incompressibility /><steady_flow_convergence terminate="true" tolerance="1e-6"><criterion type="pressure" units="m/s"

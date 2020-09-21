@@ -43,6 +43,9 @@ public:
 //       std::string str;
 //       ss >> str;
 //       std::cout << str << std::endl;
+  // std::string update_xml_file = "python projects/VascularRemodelling/apps/update_xml_file.py -period 100 -directory /data/vascrem/testoutput/TestHemeLBForce/HemeLBFluid -InitalConditions 0.0003 -ConvergenceTermination true -AveragePressure 0.004"; 
+  //     int SystemOutput = std::system(update_xml_file.c_str());
+
     
 
 

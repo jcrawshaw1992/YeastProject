@@ -182,6 +182,7 @@ public:
 
     std::vector<double> mPressure;
     double mEstimatedIC;
+    double mExpectedVelocity;
     std::vector<std::string> mType;
     double mHemeLBScalling = 1;//1e3;
     
