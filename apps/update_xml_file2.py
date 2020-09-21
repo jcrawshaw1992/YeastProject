@@ -19,7 +19,7 @@ if __name__=="__main__":
     parser.add_argument('-InitalConditions', dest='IC', default=0, help='Need to provide a destination to find the xml file to edit ')
     parser.add_argument('-ConvergenceTermination', dest='ConvergenceTermination', type=str, default='false', help='To terminate when the simulation reaches a steady state')
     parser.add_argument('-AverageVelocity', dest='AverageVelocity', type=float, default='false', help='To terminate when the simulation reaches a steady state')
-## Need to play with this Jess
+    ## Need to play with this Jess
 
     
 
@@ -33,7 +33,10 @@ if __name__=="__main__":
     Terminate= args.ConvergenceTermination # Set to true or false :) 
     IC =  args.IC
     AverageVelocity= args.AverageVelocity
-    tolerance= AverageVelocity*1e-5
+    tolerance= AverageVelocity*1e-3
+
+    print AverageVelocity
+    print tolerance
 
     tree = ElementTree.parse(filename)
     root = tree.getroot()
