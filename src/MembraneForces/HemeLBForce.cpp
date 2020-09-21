@@ -140,7 +140,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     SystemOutput = std::system(run_hemelb_setup.c_str());
 
     // Step 2: Update xml file
-    std::string update_xml_file = "python projects/VascularRemodelling/apps/update_xml_file.py -period "+std::to_string(Period) +" -directory " + mHemeLBDirectory + " -InitalConditions " + std::to_string(mEstimatedIC) +" >nul"; 
+    std::string update_xml_file = "python projects/VascularRemodelling/apps/update_xml_file.py -period "+std::to_string(Period) +" -directory " + mHemeLBDirectory + " -InitalConditions " + std::to_string(mEstimatedIC)+ " -ConvergenceTermination true -AveragePressure " + std::to_string(mEstimatedIC)+" >nul"; 
     SystemOutput = std::system(update_xml_file.c_str());
 
     /*  Step 3: run HemeLB simulation
