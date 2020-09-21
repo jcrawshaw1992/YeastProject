@@ -31,7 +31,7 @@ if __name__=="__main__":
     filename = args.directory + 'config.xml'
     Terminate= args.ConvergenceTermination # Set to true or false :) 
     AveragePressure= args.AveragePressure # Set to true or false :) 
-    IC =  args.IC
+    IC =  args.InitalConditions
 
     tree = ElementTree.parse(filename)
     root = tree.getroot()

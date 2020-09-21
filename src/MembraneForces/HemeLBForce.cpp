@@ -362,24 +362,18 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     //
     int InletNumber = 1;
     int OutletNumber = 1;
-    double HemeLBSimulationDuration = SimulationDuration * deltaT;
+    double HemeLBSimulationDuration = SimulationDuration * deltaT*10;
     std::string HemeLBRunTime = std::to_string(HemeLBSimulationDuration);
     if (HemeLBSimulationDuration < 1e-4)
     {
-      TRACE("HemeLBSimulationDuration is too small ")
       std::stringstream ss;
       ss << setprecision(16) << HemeLBSimulationDuration;
       std::string str;
       ss >> str;
-      std::cout << str << std::endl;
       HemeLBRunTime =  str;
     }
-
-    PRINT_VARIABLE(HemeLBRunTime)
-
     ofstream config_pr2;
     std::string ConfigFile = outputDirectory + "config.pr2";
-    PRINT_VARIABLE(ConfigFile)
     config_pr2.open(ConfigFile);
     config_pr2 << "DurationSeconds: " + HemeLBRunTime + "\nIolets:\n";
     mEstimatedIC = 0;
@@ -410,10 +404,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
 
 
     mEstimatedIC/=mIolets.size();
-    // /* Get seed point */
-    // typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = mMesh->GetNodeIteratorBegin();
-    // std::advance(node_iter, 100);
-
+    
+    /* Get seed point */
     c_vector<double, SPACE_DIM> Seed = mMesh->GetNode(200)->rGetLocation();     
   
     config_pr2 << "SeedPoint: {x: " + std::to_string(Seed[0]) + ", y: " + std::to_string(Seed[1]) + ", z: " + std::to_string(Seed[2]) + "}\n";
@@ -430,7 +422,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
 
     config_pr2 << "VoxelSize: " + dx;
     config_pr2.close();
-    TRACE("SHould have writien by now??")
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
