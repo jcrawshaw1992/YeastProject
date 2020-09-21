@@ -200,9 +200,7 @@ public:
 
     // Function to help return system commands     
     std::pair<std::string, int> exec(const char* cmd);
-
-
-
+    
     // Dont lose precision when going number to string   
     std::string double_to_string(double Number, long double precision);
 
