@@ -89,11 +89,11 @@ public:
         c_vector<double, 3> PlaneNormal2 = Create_c_vector(0,0,-1);
         c_vector<double, 3> Point2 = Create_c_vector(0,0,49e-6 * scale);
 
-        // double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
-        // double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
 
-        double InletPressure = (0.002133152 - 0.001466542)*1.2; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later 
-        double OutletPressure = (0.002133152 - 0.001466542)*(0.98);
+        double InletPressure = (P_blood - P_tissue)*1.2; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later 
+        double OutletPressure = (P_blood - P_tissue)*(0.98);
 
         boost::shared_ptr<HemeLBForce<2,3>> p_ForceOut(new HemeLBForce<2, 3>());
         p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
