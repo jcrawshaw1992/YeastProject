@@ -127,7 +127,7 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
 void OutwardsPressure::SetInitialPosition(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
     Node<3>* p_node = rCellPopulation.GetNode(100);
-    c_vector<double, 3> mInitialPosition = p_node->rGetLocation(); 
+    mInitialPosition = p_node->rGetLocation(); 
 
     mGrowthThreshold =1;
 }
