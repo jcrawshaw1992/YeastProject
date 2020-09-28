@@ -186,7 +186,7 @@ public:
     std::vector<std::string> mType;
     double mHemeLBScalling = 1;//1e3;
     
-
+    std::string mChasteOutputDirectory;
     std::string mOutputDirectory;
     std::string mHemeLBDirectory;
     std::string mHemeLB_output;

@@ -503,7 +503,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirec
     char* C = getenv("CHASTE_TEST_OUTPUT");
     std::string directory;
     directory += C ;
-    std::string mChasteOutputDirectory = directory +"/" ;
+    mChasteOutputDirectory = directory +"/" ;
     
     mOutputDirectory = outputDirectory;
     
