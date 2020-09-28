@@ -433,9 +433,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
 {
-    
-
-
     PRINT_VARIABLE(mMachine)
     if(mMachine =="server")
     {
@@ -509,10 +506,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirec
     std::string mChasteOutputDirectory = directory +"/" ;
     
     mOutputDirectory = outputDirectory;
-    PRINT_VARIABLE(mOutputDirectory)
+    
     mHemeLBDirectory = mChasteOutputDirectory + mOutputDirectory + "HemeLBFluid/";
     mHemeLB_output = mChasteOutputDirectory + mOutputDirectory + "HemeLB_results_from_time_0/";
-
+    PRINT_4_VARIABLES(mOutputDirectory, mHemeLBDirectory, mHemeLB_output, mChasteOutputDirectory)
     if (CreateFiles ==1)
     {  
         if (boost::filesystem::exists(mHemeLBDirectory))
