@@ -71,10 +71,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
     mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
 
     SetUpFilePaths(outputDirectory, 1,0);
-    // WriteHemeLBBashScript();  
-    // ExecuteHemeLB();
-    // LoadTractionFromFile();
-    // UpdateCellData(rCellPopulation);
+    WriteHemeLBBashScript();  
+    ExecuteHemeLB();
+    LoadTractionFromFile();
+    UpdateCellData(rCellPopulation);
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -174,7 +174,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
         strs1 << mStartTime;
         std::string StartTime = strs1.str();
         PRINT_VARIABLE(StartTime)
-        std::string vtuFileSorting = "python projects/VascularRemodelling/apps/SortVtuFiles.py -Directory " + mOutputDirectory + " -CurrentNumberOfFiles " + std::to_string(mLatestFinialHemeLBVTU) + " -Time " + StartTime+ " >nul";
+        std::string vtuFileSorting = "python projects/VascularRemodelling/apps/SortVtuFiles.py -Directory " + mChasteOutputDirectory+mOutputDirectory + " -CurrentNumberOfFiles " + std::to_string(mLatestFinialHemeLBVTU) + " -Time " + StartTime+ " >nul";
         SystemOutput =  std::system(vtuFileSorting.c_str());
         UpdateCurrentyFlowVtuCount();
     }
@@ -509,7 +509,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirec
     
     mHemeLBDirectory = mChasteOutputDirectory + mOutputDirectory + "HemeLBFluid/";
     mHemeLB_output = mChasteOutputDirectory + mOutputDirectory + "HemeLB_results_from_time_0/";
-    PRINT_4_VARIABLES(mOutputDirectory, mHemeLBDirectory, mHemeLB_output, mChasteOutputDirectory)
     if (CreateFiles ==1)
     {  
         if (boost::filesystem::exists(mHemeLBDirectory))
