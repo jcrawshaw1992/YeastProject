@@ -221,7 +221,7 @@ public:
         double EndTime = 50;
         double scale = 1e-2;        
         std::string output_dir = "TestHemeLBOnNetwork/";
-        std::string mesh_file = "/home/vascrem/MeshCollection/3_by_4/Mesh.vtu";
+        std::string mesh_file = "/home/vascrem/MeshCollection/3_by_4/MeshCoarse.vtu";
           
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
@@ -290,7 +290,7 @@ public:
         */        
 
         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        p_ForceOut->SetPressure((P_blood-P_tissue)/1);
+        p_ForceOut->SetPressure((P_blood-P_tissue)*0.8);
         // p_ForceOut->SetRadiusThreshold(0.002);
         p_ForceOut->SetInitialPosition(cell_population); 
         simulator.AddForce(p_ForceOut);
@@ -318,17 +318,16 @@ public:
         boundary_plane_points.push_back(Point2);
         boundary_plane_normals.push_back(PlaneNormal2);
         
-        Boundary_plane_points.push_back(Point3);
+        boundary_plane_points.push_back(Point3);
         boundary_plane_normals.push_back(PlaneNormal3);
         
-        Boundary_plane_points.push_back(Point4);
+        boundary_plane_points.push_back(Point4);
         boundary_plane_normals.push_back(PlaneNormal4);
         
-        Boundary_plane_points.push_back(Point5);
+        boundary_plane_points.push_back(Point5);
         boundary_plane_normals.push_back(PlaneNormal5);
 
-        
-        Boundary_plane_points.push_back(Point6);
+        boundary_plane_points.push_back(Point6);
         boundary_plane_normals.push_back(PlaneNormal6);
 
         for(unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
