@@ -31,11 +31,12 @@ void OutwardsPressure::SetRadiusThreshold(double RadialThreshold)
 void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
     double RadialPosition = 0;
+    double Growth =0;
     if (mGrowthThreshold!=0)
     {
         Node<3>* p_node = rCellPopulation.GetNode(100);
         c_vector<double, 3> Position = p_node->rGetLocation(); 
-        double Growth = norm_2(Position-mInitialPosition);
+        Growth = norm_2(Position-mInitialPosition);
         PRINT_2_VARIABLES(mRadialThreshold, Growth)
     }
     
