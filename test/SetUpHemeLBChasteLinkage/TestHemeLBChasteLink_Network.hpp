@@ -265,8 +265,20 @@ public:
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0);
         c_vector<double, 3> Point1 = Create_c_vector(0.004,0,0);
 
-        c_vector<double, 3> PlaneNormal2 = Create_c_vector(-1,0,0);
-        c_vector<double, 3> Point2 = Create_c_vector(7.5*scale,0,0)* scale;
+        c_vector<double, 3> PlaneNormal2 = Create_c_vector(1,0,0);
+        c_vector<double, 3> Point2 = Create_c_vector(0.004,-0.014,0);
+
+        c_vector<double, 3> PlaneNormal3 = Create_c_vector(1,0,0);
+        c_vector<double, 3> Point3 = Create_c_vector(0.004,0.014,0);
+
+        c_vector<double, 3> PlaneNormal4 = Create_c_vector(-1,0,0);
+        c_vector<double, 3> Point4 = Create_c_vector(0.075,0.014,0);
+
+        c_vector<double, 3> PlaneNormal5 = Create_c_vector(-1,0,0);
+        c_vector<double, 3> Point5 = Create_c_vector(0.075,0,0);
+
+        c_vector<double, 3> PlaneNormal6 = Create_c_vector(-1,0,0);
+        c_vector<double, 3> Point6 = Create_c_vector(0.075,-0.014,0);
 
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
