@@ -38,7 +38,7 @@
 class TestRemeshing  : public AbstractCellBasedTestSuite
 {
 public:
- void TestGrowToEquiCylinder() throw (Exception)
+ void OffTestGrowToEquiCylinder() throw (Exception)
     {
   
         double EndTime = 50;
@@ -139,10 +139,10 @@ public:
         CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
 }
 
- void offTestCollapsingCylinder() throw (Exception)
+ void TestCollapsingCylinder() throw (Exception)
     {        
         std::string output_dir = "TestHemeLBChaste/";
-        double scale = 1e3; double EndTime = 20;
+        double scale = 1e3; double EndTime = 50;
 
         // Load and fix any settings in the simulator 
         OffLatticeSimulation<2,3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2,3>, 3 >::Load(output_dir, EndTime);  
@@ -193,7 +193,6 @@ public:
         std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2,3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
       
-
         // Upstream 
         c_vector<double, 3> UpperPlanePoint = Create_c_vector(0,0,16e-6* scale);
         c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0,0,1);
@@ -203,7 +202,7 @@ public:
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
 
      	  p_simulator->Solve();
-        // CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
+        CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(p_simulator);
   }
 
 //   void offTestHemeLBChasteLinkageCylinder() throw (Exception)
