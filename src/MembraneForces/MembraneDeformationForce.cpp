@@ -64,9 +64,6 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
         Kalpha/=3;
         KA/=3;
         KS/=3;
-  
-
-
 
         unsigned elem_index = elem_iter->GetIndex();
 
@@ -220,6 +217,7 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
        
     }
 
+    // THis bit takes care of the edges ...
     for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
             cell_iter != rCellPopulation.End();
             ++cell_iter)

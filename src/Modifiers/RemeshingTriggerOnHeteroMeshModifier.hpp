@@ -53,13 +53,6 @@ private:
     // Need my own version of "UblasCustomFunctions.hpp", which has c_vector<double, 4>, get James to push this one day 
 
     // c_vector<double, 4> Create_c_vector(double x, double y, double z, double t);
-
-
-
-
-
-
-
     bool mOn = 0;
 
     unsigned mSamplebasementNode;
@@ -194,7 +187,7 @@ public:
 
     // void UpdateCellData_HillStep(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
 
-    double  mKbs = (double)mGrowthMaps[1](2);
+    double mKbs = (double)mGrowthMaps[1](2);
     double mKba = (double)mGrowthMaps[1](1);
     double mKbA = (double)mGrowthMaps[1](0);
 
