@@ -41,7 +41,7 @@ public:
  void TestGrowToEquiCylinder() throw (Exception)
     {
   
-        double EndTime = 4;
+        double EndTime = 50;
         double scale = 1e3;
         double Length = 50e-6 * scale;
         double Radius = 1e-6 * scale;
@@ -114,8 +114,7 @@ public:
         p_ForceOut->SetPressure((P_blood-P_tissue)/1);
         p_ForceOut->SetRadiusThreshold(5*Radius);
         simulator.AddForce(p_ForceOut);
-
-  
+ 
         /*
         -----------------------------
         Boundary conditions
@@ -140,71 +139,72 @@ public:
         CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
 }
 
-//  void offTestCollapsingCylinder() throw (Exception)
-//     {        
-//         std::string output_dir = "TestHemeLBChasteLinkageLarger2/";
-//         double scale = 1e3; double EndTime = 30;
+ void offTestCollapsingCylinder() throw (Exception)
+    {        
+        std::string output_dir = "TestHemeLBChaste/";
+        double scale = 1e3; double EndTime = 20;
 
-//         // Load and fix any settings in the simulator 
-//         OffLatticeSimulation<2,3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2,3>, 3 >::Load(output_dir, EndTime);  
+        // Load and fix any settings in the simulator 
+        OffLatticeSimulation<2,3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2,3>, 3 >::Load(output_dir, EndTime);  
 
-//         /* Update the ouput directory for the population  */ 
-//         static_cast<HistoryDepMeshBasedCellPopulation<2,3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
-//         static_cast<HistoryDepMeshBasedCellPopulation<2,3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+        /* Update the ouput directory for the population  */ 
+        static_cast<HistoryDepMeshBasedCellPopulation<2,3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+        static_cast<HistoryDepMeshBasedCellPopulation<2,3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
     
-//         /* Remove the constant pressure force   */ 
-//         // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
-//         p_simulator->SetEndTime(EndTime+800);
-//         p_simulator->SetSamplingTimestepMultiple(200);
-//         p_simulator->SetDt(0.002);
-//         p_simulator->SetOutputDirectory(output_dir+"GettingCollapseRight_a_8_LongInterval/");
+        /* Remove the constant pressure force   */ 
+        // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
+        p_simulator->RemoveAllForces();
+        p_simulator->SetEndTime(EndTime+800);
+        p_simulator->SetSamplingTimestepMultiple(100);
+        p_simulator->SetDt(0.002);
+        p_simulator->SetOutputDirectory(output_dir+"AddingHemeLBForceToArchivedSimulation/");
 
-//         /*
-//         -----------------------------
-//         Add the HemeLB Force
-//         ----------------------------
-//         */        
-//         // c_vector<double, 3> PlaneNormal1 = Create_c_vector(0,0,1);
-//         // c_vector<double, 3> Point1 = Create_c_vector(0,0,1e-6 * scale);
+        /*
+        -----------------------------
+        Add the HemeLB Force
+        ----------------------------
+        */        
+        c_vector<double, 3> PlaneNormal1 = Create_c_vector(0,0,1);
+        c_vector<double, 3> Point1 = Create_c_vector(0,0,1e-6 * scale);
 
-//         // c_vector<double, 3> PlaneNormal2 = Create_c_vector(0,0,-1);
-//         // c_vector<double, 3> Point2 = Create_c_vector(0,0,49e-6 * scale);
+        c_vector<double, 3> PlaneNormal2 = Create_c_vector(0,0,-1);
+        c_vector<double, 3> Point2 = Create_c_vector(0,0,49e-6 * scale);
 
-//         // double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
-//         // double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
 
-//         // double InletPressure = 1.5*(0.002133152 - 0.001466542)*1.2; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later 
-//         // double OutletPressure = 1.5*(0.002133152 - 0.001466542)*(0.98);
+        double InletPressure = 1.5*(0.002133152 - 0.001466542)*1.2; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later 
+        double OutletPressure = 1.5*(0.002133152 - 0.001466542)*(0.98);
 
-//         // boost::shared_ptr<HemeLBForce<2,3>> p_ForceOut(new HemeLBForce<2, 3>());
-//         // p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
-//         // p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
-//         // p_ForceOut->SetStartTime(EndTime);
-//         // p_ForceOut->SetFluidSolidIterations(100);
-//         // p_ForceOut->SetUpHemeLBConfiguration(output_dir, p_simulator->rGetCellPopulation());
-//         // p_simulator->AddForce(p_ForceOut);
+        boost::shared_ptr<HemeLBForce<2,3>> p_ForceOut(new HemeLBForce<2, 3>());
+        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
+        p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
+        p_ForceOut->SetStartTime(EndTime);
+        p_ForceOut->SetFluidSolidIterations(100);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir, p_simulator->rGetCellPopulation());
+        p_simulator->AddForce(p_ForceOut);
 
-//         /* 
-//         -----------------------------
-//         Edit  RemeshingTriggerOnHeteroMeshModifier
-//         ----------------------------
-//          */  
+        /* 
+        -----------------------------
+        Edit  RemeshingTriggerOnHeteroMeshModifier
+        ----------------------------
+         */  
 
-//         std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
-//         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2,3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
+        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
+        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2,3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
       
 
-//         // Upstream 
-//         c_vector<double, 3> UpperPlanePoint = Create_c_vector(0,0,16e-6* scale);
-//         c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0,0,1);
-//         // Down stream 
-//         c_vector<double, 3> LowerPlanePoint = Create_c_vector(0,0,34e-6 * scale);
-//         c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0,0,-1);
-//         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
+        // Upstream 
+        c_vector<double, 3> UpperPlanePoint = Create_c_vector(0,0,16e-6* scale);
+        c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0,0,1);
+        // Down stream 
+        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0,0,34e-6 * scale);
+        c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0,0,-1);
+        p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
 
-//      	  p_simulator->Solve();
-//         //  CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
-//   }
+     	  p_simulator->Solve();
+        // CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
+  }
 
 //   void offTestHemeLBChasteLinkageCylinder() throw (Exception)
 //     {        
