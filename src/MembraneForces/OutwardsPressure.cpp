@@ -35,7 +35,7 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
         Node<3>* p_node = rCellPopulation.GetNode(100);
         c_vector<double, 3> Position = p_node->rGetLocation(); 
         RadialPosition = sqrt(Position[0]*Position[0]+Position[1]*Position[1]);
-        PRINT_VARIABLE(RadialPosition)
+        PRINT_VARIABLE(RadialPosition, mRadialThreshold)
     }
     
     if (RadialPosition > mRadialThreshold || mRadialThreshold !=0)
