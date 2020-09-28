@@ -23,6 +23,7 @@ void OutwardsPressure::SetNearestNeighboursMap(std::map<unsigned, c_vector<unsig
 void OutwardsPressure::SetRadiusThreshold(double RadialThreshold)
 {
     mRadialThreshold = RadialThreshold;
+    mGrowthThreshold =1;
 }
 
 
@@ -30,15 +31,15 @@ void OutwardsPressure::SetRadiusThreshold(double RadialThreshold)
 void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
     double RadialPosition = 0;
-    if (mRadialThreshold !=0)
+    if (mGrowthThreshold!=0)
     {
         Node<3>* p_node = rCellPopulation.GetNode(100);
         c_vector<double, 3> Position = p_node->rGetLocation(); 
-        RadialPosition = sqrt(Position[0]*Position[0]+Position[1]*Position[1]);
-        PRINT_2_VARIABLES(RadialPosition, mRadialThreshold)
+        double Growth = norm_2(Position-mInitialPosition);
+        PRINT_2_VARIABLES(mRadialThreshold, Growth)
     }
     
-    if (RadialPosition < mRadialThreshold && mRadialThreshold !=0)
+    if (Growth < mRadialThreshold && mGrowthThreshold !=0)
     {  
         TRACE("RUNNING")
         HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);        
@@ -117,6 +118,17 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
     }
 }
  
+
+
+void OutwardsPressure::SetInitialPosition(AbstractCellPopulation<2, 3>& rCellPopulation)
+{
+    Node<3>* p_node = rCellPopulation.GetNode(100);
+    c_vector<double, 3> mInitialPosition = p_node->rGetLocation(); 
+
+    mGrowthThreshold =1;
+}
+ 
+
 
 void OutwardsPressure::OutputForceParameters(out_stream& rParamsFile)
 {

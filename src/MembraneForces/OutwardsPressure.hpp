@@ -64,6 +64,7 @@ public:
     void SetPressure(double Pressure);
 
     void AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation);
+    void SetInitialPosition(AbstractCellPopulation<2, 3>& rCellPopulation);
 
     void SetNearestNeighboursMap(std::map<unsigned, c_vector<unsigned, 2> > NearestNodesMap);
     std::map<unsigned, c_vector<unsigned, 2> > mNearestNodesMap;
@@ -71,10 +72,8 @@ public:
     void SetRadiusThreshold(double RadialThreshold);
 
     double mRadialThreshold=0;
-
-
-
-
+    c_vector<double, 3> mInitialPosition=Create_c_vector(0,0,0);
+    bool mGrowthThreshold ==0;
 
 
     /**
