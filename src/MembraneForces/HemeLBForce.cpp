@@ -125,7 +125,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     WriteOutVtuFile(mOutputDirectory);
 
     /*  Step 0: Create the HemeLB config.pr2 file */
-    double HemeLBSimulationTime = 1000; // Too short right now, but who cares
+    double HemeLBSimulationTime = 1000000; // Too short right now, but who cares
     int Period = HemeLBSimulationTime/1.9;
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
     
@@ -354,7 +354,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
      */
 
     double V = 4; // Kinematic viscosity -- 4 mm^2/s  V = eta/rho
-    double deltaX = mRadius / 15; // Diameter/15
+    double deltaX = mRadius / 15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
     double deltaT = 0.1 * deltaX * deltaX / V;
    
     double MaxPressure = *std::min_element(mPressure.begin(), mPressure.end());
@@ -368,7 +368,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     //
     int InletNumber = 1;
     int OutletNumber = 1;
-    double HemeLBSimulationDuration = SimulationDuration * deltaT;//*10;
+    double HemeLBSimulationDuration = SimulationDuration * deltaT*10;
     std::string HemeLBRunTime = std::to_string(HemeLBSimulationDuration);
     if (HemeLBSimulationDuration < 1e-4)
     {
@@ -437,7 +437,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
     if(mMachine =="server")
     {
             // Need to write bash scrip .... issue here 
-            int Cores = 10;
+            int Cores = 14;
             ofstream bash_script;
 
             std::string BashFile = "projects/VascularRemodelling/apps/RunHemeLB";

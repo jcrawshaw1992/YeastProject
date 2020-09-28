@@ -201,7 +201,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
                     double DotToUpperPlane = inner_prod(NodeToUpperPlane,UpperPlane );
                     double DotToLowerPlane = inner_prod(NodeToLowerPlane,LowerPlane );
     
-                    double radius = 0.1;
+                    double radius = 0.01; // XXX TODO this time step needs fixing 
                     if (DotToLowerPlane >= 0 && DotToUpperPlane >= 0)
                     {
                         if ( abs(norm_2(NodeToUpperPlane)) <radius ||  abs(norm_2(NodeToLowerPlane)) <radius  )
