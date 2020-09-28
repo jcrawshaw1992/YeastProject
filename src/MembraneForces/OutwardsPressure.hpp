@@ -73,7 +73,7 @@ public:
 
     double mRadialThreshold=0;
     c_vector<double, 3> mInitialPosition=Create_c_vector(0,0,0);
-    bool mGrowthThreshold ==0;
+    bool mGrowthThreshold=0;
 
 
     /**

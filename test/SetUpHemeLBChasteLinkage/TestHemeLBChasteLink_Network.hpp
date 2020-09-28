@@ -280,7 +280,7 @@ public:
         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
         p_ForceOut->SetPressure((P_blood-P_tissue)/1);
         p_ForceOut->SetRadiusThreshold(4*0.001);
-        p_ForceOut->SetInitialPosition(&cell_population); 
+        p_ForceOut->SetInitialPosition(cell_population); 
         simulator.AddForce(p_ForceOut);
 
         /*
