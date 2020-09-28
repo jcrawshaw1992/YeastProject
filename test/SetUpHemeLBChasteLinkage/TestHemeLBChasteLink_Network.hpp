@@ -263,7 +263,7 @@ public:
         ----------------------------
         */        
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0);
-        c_vector<double, 3> Point1 = Create_c_vector(0.25,0,0)* scale;
+        c_vector<double, 3> Point1 = Create_c_vector(0.004,0,0);
 
         c_vector<double, 3> PlaneNormal2 = Create_c_vector(-1,0,0);
         c_vector<double, 3> Point2 = Create_c_vector(7.5*scale,0,0)* scale;
@@ -279,9 +279,18 @@ public:
 
         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
         p_ForceOut->SetPressure((P_blood-P_tissue)/1);
-        p_ForceOut->SetRadiusThreshold(0.002);
+        // p_ForceOut->SetRadiusThreshold(0.002);
         p_ForceOut->SetInitialPosition(cell_population); 
         simulator.AddForce(p_ForceOut);
+
+        /*
+        -----------------------------
+        Membrane forces
+        ----------------------------
+        */
+        boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
+        simulator.AddForce(p_shear_force);
+
 
         /*
         -----------------------------
