@@ -731,8 +731,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		// PRINT_VARIABLE(distance_to_fluid_site);
 		LatticeToNodeMap[node_index] = Create_c_vector(nearest_fluid_site, 0 );
 		assert(nearest_fluid_site != UNSIGNED_UNSET);
-        PRINT_2_VARIABLES(nearest_fluid_site, distance_to_fluid_site)
-
 	
 		c_vector<double, 3> NormalVector = Create_c_vector(0,0,0);
 		std::set<unsigned>& containing_elements = pNode->rGetContainingElementIndices();
