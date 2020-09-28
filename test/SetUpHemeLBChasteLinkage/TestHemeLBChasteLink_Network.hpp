@@ -243,7 +243,7 @@ public:
         // Set up cell-based simulation
         OffLatticeSimulation<2,3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
-        simulator.SetSamplingTimestepMultiple(500);
+        simulator.SetSamplingTimestepMultiple(100);
         simulator.SetDt(0.02);
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
@@ -279,7 +279,7 @@ public:
 
         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
         p_ForceOut->SetPressure((P_blood-P_tissue)/1);
-        p_ForceOut->SetRadiusThreshold(4*0.001);
+        p_ForceOut->SetRadiusThreshold(0.002);
         p_ForceOut->SetInitialPosition(cell_population); 
         simulator.AddForce(p_ForceOut);
 

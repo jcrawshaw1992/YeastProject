@@ -37,6 +37,9 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
         Node<3>* p_node = rCellPopulation.GetNode(100);
         c_vector<double, 3> Position = p_node->rGetLocation(); 
         Growth = norm_2(Position-mInitialPosition);
+        PRINT_VECTOR(mInitialPosition)
+        PRINT_VECTOR(Position)
+
         PRINT_2_VARIABLES(mRadialThreshold, Growth)
     }
     
