@@ -38,8 +38,9 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
         PRINT_2_VARIABLES(RadialPosition, mRadialThreshold)
     }
     
-    if (RadialPosition > mRadialThreshold || mRadialThreshold !=0)
+    if (RadialPosition > mRadialThreshold && mRadialThreshold !=0)
     {  
+        TRACE("RUNNING")
         HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);        
         std::map<unsigned, c_vector<double, 3> > ForceMap;
         for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
