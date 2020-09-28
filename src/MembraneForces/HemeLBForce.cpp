@@ -71,10 +71,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
     mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
 
     SetUpFilePaths(outputDirectory, 1,0);
-    WriteHemeLBBashScript();  
-    ExecuteHemeLB();
-    LoadTractionFromFile();
-    UpdateCellData(rCellPopulation);
+    // WriteHemeLBBashScript();  
+    // ExecuteHemeLB();
+    // LoadTractionFromFile();
+    // UpdateCellData(rCellPopulation);
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -509,6 +509,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirec
     std::string mChasteOutputDirectory = directory +"/" ;
     
     mOutputDirectory = outputDirectory;
+    PRINT_VARIABLE(mOutputDirectory)
     mHemeLBDirectory = mChasteOutputDirectory + mOutputDirectory + "HemeLBFluid/";
     mHemeLB_output = mChasteOutputDirectory + mOutputDirectory + "HemeLB_results_from_time_0/";
 

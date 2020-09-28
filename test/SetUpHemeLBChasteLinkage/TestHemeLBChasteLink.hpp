@@ -181,28 +181,28 @@ public:
         p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(100);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir, p_simulator->rGetCellPopulation());
-        p_simulator->AddForce(p_ForceOut);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"AddingHemeLBForceToArchivedSimulation/", p_simulator->rGetCellPopulation());
+        // p_simulator->AddForce(p_ForceOut);
 
-        /* 
-        -----------------------------
-        Edit  RemeshingTriggerOnHeteroMeshModifier
-        ----------------------------
-         */  
+        // /* 
+        // -----------------------------
+        // Edit  RemeshingTriggerOnHeteroMeshModifier
+        // ----------------------------
+        //  */  
 
-        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
-        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2,3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
+        // std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
+        // boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2,3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
       
-        // Upstream 
-        c_vector<double, 3> UpperPlanePoint = Create_c_vector(0,0,16e-6* scale);
-        c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0,0,1);
-        // Down stream 
-        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0,0,34e-6 * scale);
-        c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0,0,-1);
-        p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
+        // // Upstream 
+        // c_vector<double, 3> UpperPlanePoint = Create_c_vector(0,0,16e-6* scale);
+        // c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0,0,1);
+        // // Down stream 
+        // c_vector<double, 3> LowerPlanePoint = Create_c_vector(0,0,34e-6 * scale);
+        // c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0,0,-1);
+        // p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
 
-     	  p_simulator->Solve();
-        CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(p_simulator);
+     	  // p_simulator->Solve();
+        // CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(p_simulator);
   }
 
 //   void offTestHemeLBChasteLinkageCylinder() throw (Exception)
