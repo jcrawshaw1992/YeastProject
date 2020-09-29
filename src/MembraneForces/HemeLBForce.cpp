@@ -137,10 +137,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     PRINT_2_VARIABLES(double_to_string(mExpectedVelocity, 6), double_to_string(mEstimatedIC, 11)  )
     std::string update_xml_file = "python projects/VascularRemodelling/apps/update_xml_file.py -period "+std::to_string(Period) +" -directory " + mHemeLBDirectory + " -InitalConditions " + double_to_string(mEstimatedIC, 11) + " -ConvergenceTermination true -AverageVelocity " + double_to_string(mExpectedVelocity, 20); 
     SystemOutput = std::system(update_xml_file.c_str());
-// /Volumes/Backup Plus/ChasteWorkingDirectory/ShrunkPlexus/SetUpData/config.xml
-
-// python update_xml_file.py -period 20 -InitalConditions  20  -ConvergenceTermination true -AveragePressure  20
-
 
     /*  Step 3: run HemeLB simulation
         This command will open up a new terminal and run the bash script RunHemeLB (which is in apps/). 
@@ -150,7 +146,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     */
 
     // Run HemeLB
-
      TRACE(" Step 3: run HemeLB simulation")
     if(mMachine =="server")
     {
@@ -166,19 +161,23 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
         i) get the files from the last time step moved and duplication (only the last file is duplicated, this one is and easy & stable flow result to grab)
     */
 
-
+ 
     // Sort vtus files  --- still need to properly set up the file directories, but I think this will happen later
     if (mCenterlinesNumber >1)
     {
+        TRACE("mCenterlinesNumber HemeLB")
         std::ostringstream strs1;
         strs1 << mStartTime;
         std::string StartTime = strs1.str();
         PRINT_VARIABLE(StartTime)
         std::string vtuFileSorting = "python projects/VascularRemodelling/apps/SortVtuFiles.py -Directory " + mChasteOutputDirectory+mOutputDirectory + " -CurrentNumberOfFiles " + std::to_string(mLatestFinialHemeLBVTU) + " -Time " + StartTime+ " >nul";
         SystemOutput =  std::system(vtuFileSorting.c_str());
-        UpdateCurrentyFlowVtuCount();
+        if (mFlowVtus)
+        {
+            UpdateCurrentyFlowVtuCount();  
+        }
+        
     }
-    
     CopyFile(mHemeLBDirectory + "centerlines.vtp", mHemeLB_output + "Centerlines_"+std::to_string(mCenterlinesNumber)+".vtp");
     mCenterlinesNumber +=1;
 
@@ -188,30 +187,32 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     // SystemOutput =  std::system(WaitCommand.c_str());
     // TRACE("Have waited long enough :)") 
 
+    PRINT_VARIABLE(! boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
     while(! boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
     {
         TRACE("waiting within C")
-        sleep(1000); 
+        sleep(4); 
     }
-
+    
         /* Generate a new stl file from the vtu while HemeLB is going*/
     // std::string ConvertVTUtoSTL = "python projects/VascularRemodelling/apps/vtuTostl.py -Directory " + mHemeLBDirectory + " >nul";
     // SystemOutput = std::system(ConvertVTUtoSTL.c_str());
 
-    // Set up to generate the vtu files 
-    std::string GmyUnstructuredGridReader = "python " +mHemeLBPath+ "Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >nul"; 
-    SystemOutput = std::system(GmyUnstructuredGridReader.c_str());
 
     // if (CheckIfSteadyStateAchieved() ==0)
-    // { 
-    //     ReRunHemeLB();
-    // }
+    // {    ReRunHemeLB();  }
 
-    std::cout <<" Continue Chaste "<< std::endl;
+    // Set up to generate the vtu files -> SHould have a vtu generated here, i think from the gmy file 
+    if (mFlowVtus)
+    {
+        TRACE("GmyUnstructuredGridReader")
+        std::string GmyUnstructuredGridReader = "python " +mHemeLBPath+ "Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >nul"; 
+        SystemOutput = std::system(GmyUnstructuredGridReader.c_str());
 
-    // For the not first ones here is what I will do, this one is the set up so I wont bother here, but in future reps have the vtu sorting when HemelB is going
-    std::string GenerateFlowVtus = "python " +mHemeLBPath+ "Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory + "results/Extracted/surface-traction.xtr >nul";
-    SystemOutput = std::system(GenerateFlowVtus.c_str());
+        // For the not first ones here is what I will do, this one is the set up so I wont bother here, but in future reps have the vtu sorting when HemelB is going
+        std::string GenerateFlowVtus = "python " +mHemeLBPath+ "Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory + "results/Extracted/surface-traction.xtr >nul";
+        SystemOutput = std::system(GenerateFlowVtus.c_str());
+    }
 
 }
 
@@ -290,9 +291,11 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOutVtuFile(std::string outputDire
     VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(outputDirectory + "HemeLBFluid/", "Chaste", false);
     mesh_writer.WriteFilesUsingMesh(*mMesh);
  
- 
+    // Not sure why this is called chaste.vtu, but it could be a bloody issue
     std::string VtuToStl = "meshio-convert " + mHemeLBDirectory + "Chaste.vtu " + mHemeLBDirectory + "config.stl  >nul";
     int SystemOutput = std::system(VtuToStl.c_str());
+    // VtuToStl = "meshio-convert " + mHemeLBDirectory + "Chaste.vtu " + mHemeLBDirectory + "config.vtu  >nul";
+    // int SystemOutput2 = std::system(VtuToStl.c_str());
 
 
 }
@@ -438,7 +441,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
     if(mMachine =="server")
     {
             // Need to write bash scrip .... issue here 
-            int Cores = 15;
+            int Cores = 6;
             ofstream bash_script;
 
             std::string BashFile = "projects/VascularRemodelling/apps/RunHemeLB";
@@ -929,6 +932,14 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetMachine(std::string Machine)
 {
     assert( Machine == "mac" || Machine == "server");
     mMachine = Machine;
+}
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetGenerateFlowVtus(bool FlowVtus)
+{
+
+    bool mFlowVtus = FlowVtus;
 }
 
 
