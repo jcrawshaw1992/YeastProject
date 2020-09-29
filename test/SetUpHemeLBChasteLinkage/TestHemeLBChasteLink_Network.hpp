@@ -360,7 +360,7 @@ public:
         p_simulator->SetEndTime(EndTime+800);
         p_simulator->SetSamplingTimestepMultiple(200);
         p_simulator->SetDt(0.002);
-        p_simulator->SetOutputDirectory(output_dir+"AddingHemeLBForceToArchivedSimulation/");
+        p_simulator->SetOutputDirectory(output_dir+"AddingHemeLBForceToArchivedSimulation_2/");
 
             
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0);
@@ -397,7 +397,7 @@ public:
         p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(5000);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"AddingHemeLBForceToArchivedSimulation/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"AddingHemeLBForceToArchivedSimulation_2/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
 
 

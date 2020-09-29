@@ -753,7 +753,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 
             NormalVector  += VectorProduct(vector_12, vector_13);
         }
-		NormalVector /=norm_2(NormalVector);
+		NormalVector /=-norm_2(NormalVector); // I think the normal is inwards facing 
 
 		// Get the HemeLB force at the closest lattice site 
 		c_vector<double,3> force = mAppliedTractions[nearest_fluid_site]/133.3223874;//*voronoi_cell_area;  Convert to Pas
