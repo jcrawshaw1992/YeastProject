@@ -125,7 +125,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     WriteOutVtuFile(mOutputDirectory);
 
     /*  Step 0: Create the HemeLB config.pr2 file */
-    double HemeLBSimulationTime = 1000000; // Too short right now, but who cares
+    double HemeLBSimulationTime = 5000; // Too short right now, but who cares
     int Period = HemeLBSimulationTime/1.9;
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
     
@@ -329,15 +329,16 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     assert(p_scalars->GetNumberOfComponents() == 1); // Radi are scalars, so should only have one component for each data point, otherwise there is a problem
 
     std::vector<double> RadiVector;
-    double MinRadius = 1000000;
-    for (unsigned i = 0; i < NumberOfDataPoints; i++)
-    {
-        double* data = p_scalars->GetTuple(i); //RadiVector.push_back(*data);
-        if (*data < MinRadius & *data  >0)
-        {
-            MinRadius = *data;
-        }
-    }
+    // double MinRadius = 1000000;
+    // for (unsigned i = 0; i < NumberOfDataPoints; i++)
+    // {
+    //     double* data = p_scalars->GetTuple(i); //RadiVector.push_back(*data);
+    //     if (*data < MinRadius & *data  >0)
+    //     {
+    //         MinRadius = *data;
+    //     }
+    // }
+    double MinRadius = 0.0015;
     mRadius = MinRadius * mHemeLBScalling;
 
     /* I have the max radius, this will be important for the discretisation and the cap sizes 
@@ -368,7 +369,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     //
     int InletNumber = 1;
     int OutletNumber = 1;
-    double HemeLBSimulationDuration = SimulationDuration * deltaT*10;
+    double HemeLBSimulationDuration = SimulationDuration * deltaT;
     std::string HemeLBRunTime = std::to_string(HemeLBSimulationDuration);
     if (HemeLBSimulationDuration < 1e-4)
     {
@@ -437,7 +438,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
     if(mMachine =="server")
     {
             // Need to write bash scrip .... issue here 
-            int Cores = 14;
+            int Cores = 15;
             ofstream bash_script;
 
             std::string BashFile = "projects/VascularRemodelling/apps/RunHemeLB";
