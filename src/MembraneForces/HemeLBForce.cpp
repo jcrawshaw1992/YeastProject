@@ -128,7 +128,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     double HemeLBSimulationTime = 5000; // Too short right now, but who cares
     int Period = HemeLBSimulationTime/1.9;
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
-    
+      
+
     // Step 1: Run HemeLB setup
     std::string run_hemelb_setup = mhemelb_setup_exe + ' ' + mHemeLBDirectory + "config.pr2";
     SystemOutput = std::system(run_hemelb_setup.c_str());
@@ -202,6 +203,12 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     // if (CheckIfSteadyStateAchieved() ==0)
     // {    ReRunHemeLB();  }
 
+    // Make your own HemeLB sim :) 
+    // ~/hemelb-dev/Tools/setuptool/scripts/hemelb-setup-nogui
+    // python ~/Chaste/projects/VascularRemodelling/apps/update_xml_file.py -period 1000 -directory /data/vascrem/testoutput/TestHemeLBOnNetwork/CollapsingMiddelBranch/HemeLBFluid/ -InitalConditions 0 -ConvergenceTermination false -AverageVelocity 0 
+    // python ~/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py config.xml     
+    // python ~/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py config.vtu  results/Extracted/surface-pressure.xtr results/Extracted/wholegeometry-velocity.xtr results/Extracted/surface-traction.xtr 
+        
     // Set up to generate the vtu files -> SHould have a vtu generated here, i think from the gmy file 
     if (mFlowVtus)
     {
@@ -332,16 +339,15 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     assert(p_scalars->GetNumberOfComponents() == 1); // Radi are scalars, so should only have one component for each data point, otherwise there is a problem
 
     std::vector<double> RadiVector;
-    // double MinRadius = 1000000;
-    // for (unsigned i = 0; i < NumberOfDataPoints; i++)
-    // {
-    //     double* data = p_scalars->GetTuple(i); //RadiVector.push_back(*data);
-    //     if (*data < MinRadius & *data  >0)
-    //     {
-    //         MinRadius = *data;
-    //     }
-    // }
-    double MinRadius = 0.0015;
+    double MinRadius = 1000000;
+    for (unsigned i = 0; i < NumberOfDataPoints; i++)
+    {
+        double* data = p_scalars->GetTuple(i); //RadiVector.push_back(*data);
+        if (*data < MinRadius & *data  >0)
+        {
+            MinRadius = *data;
+        }
+    }
     mRadius = MinRadius * mHemeLBScalling;
 
     /* I have the max radius, this will be important for the discretisation and the cap sizes 
@@ -409,6 +415,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
         config_pr2 << "  Radius: " + std::to_string(mRadius * 3) + "\n";
         config_pr2 << "  Type: " + mType[i] + "\n";
     }
+
+
     config_pr2 << "OutputGeometryFile: config.gmy\n";
     config_pr2 << "OutputXmlFile: config.xml\n";
 
