@@ -391,6 +391,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
                 c_vector<double, 3> LowerPoint = Create_c_vector(MaxX,-0.014,0);
                 Inlets(UpperPlaneNormal , UpperPoint, 0, "Outlet");
                 Inlets(LowerPlaneNormal , LowerPoint, 0, "Outlet");
+                CollapsedRegions(UpperPlaneNormal , UpperPoint, LowerPlaneNormal , LowerPoint);
             }
             if ( XValue.size()>1)
             {
@@ -405,6 +406,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
                 c_vector<double, 3> LowerPoint = Create_c_vector(MinX,-0.014,0);
                 Inlets(UpperPlaneNormal , UpperPoint, 0, "Outlet");
                 Inlets(LowerPlaneNormal , LowerPoint, 0, "Outlet");
+                CollapsedRegions(UpperPlaneNormal , UpperPoint, LowerPlaneNormal , LowerPoint);
             }  
            mNewInlets = 0; 
         }
@@ -875,7 +877,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		assert(fabs(shear_stress[2])<1e10);
 
         mForceMap[node_index] = Force;
-        
+
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("Pressure", Pressure);
 		cell_iter->GetCellData()->SetItem("applied_force_x", Force[0]);
