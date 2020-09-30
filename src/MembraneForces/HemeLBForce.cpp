@@ -207,7 +207,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     // ~/hemelb-dev/Tools/setuptool/scripts/hemelb-setup-nogui
     // python ~/Chaste/projects/VascularRemodelling/apps/update_xml_file.py -period 1000 -directory /data/vascrem/testoutput/TestHemeLBOnNetwork/CollapsingMiddelBranch/HemeLBFluid/ -InitalConditions 0 -ConvergenceTermination false -AverageVelocity 0 
     // python ~/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py config.xml     
-    // python ~/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py config.vtu  results/Extracted/surface-pressure.xtr results/Extracted/wholegeometry-velocity.xtr results/Extracted/surface-traction.xtr 
+    // python ~/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py config.vtu  results2/Extracted/surface-pressure.xtr results2/Extracted/wholegeometry-velocity.xtr results2/Extracted/surface-traction.xtr 
         
     // Set up to generate the vtu files -> SHould have a vtu generated here, i think from the gmy file 
     if (mFlowVtus)
@@ -339,10 +339,20 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     assert(p_scalars->GetNumberOfComponents() == 1); // Radi are scalars, so should only have one component for each data point, otherwise there is a problem
 
     std::vector<double> RadiVector;
+    std::vector<double> XValue;
     double MinRadius = 1000000;
+     double Radius_0 = 0.0020;
     for (unsigned i = 0; i < NumberOfDataPoints; i++)
     {
         double* data = p_scalars->GetTuple(i); //RadiVector.push_back(*data);
+        double Radius_t = *data; 
+        double RadiusChange = (Radius_t-Radius_0)/Radius_0*100;//-> Lets go for a 10% decrease -- change this descrese percent later and need to have some understanding of what the last radius was 
+
+        if (abs(RadiusChange) >30 & * data> 0)
+        {
+            // Want to add a 0 pressure boundary here 
+           XValue.push_back(*(Reader->GetOutput()->GetPoints()->GetPoint(i)));
+        }
         if (*data < MinRadius & *data  >0)
         {
             MinRadius = *data;
@@ -350,6 +360,48 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     }
     mRadius = MinRadius * mHemeLBScalling;
 
+    double Y =0;
+    // determine if I need aditional 0 inlets ect 
+    if (mNewInlets ==1)
+    {   
+        if ( XValue.size()>0)
+        {
+            // Additional inlets to be added 
+            if ( XValue.size()==1)
+            {
+                // Just one inlet 
+                double MaxX = *XValue.begin();
+                c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
+                c_vector<double, 3> LowerPlaneNormal = Create_c_vector(-1,0,0);
+                c_vector<double, 3> UpperPoint = Create_c_vector(MaxX,-0.014,0);
+                c_vector<double, 3> LowerPoint = Create_c_vector(MaxX,-0.014,0);
+                Inlets(UpperPlaneNormal , UpperPoint, 0, "Outlet");
+                Inlets(LowerPlaneNormal , LowerPoint, 0, "Outlet");
+            }
+            if ( XValue.size()>1)
+            {
+                //Going to have a start and end to the inlets -- if there are more than one region needing cutting off, im not sure what to do, but will deal with later
+                double MaxX = *std::min_element(XValue.begin(), XValue.end());
+                double MinX  = *std::max_element(XValue.begin(), XValue.end());
+                // Now I want to have the Max pointing towards pos and 
+                // min pointing towards neg
+                c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
+                c_vector<double, 3> LowerPlaneNormal = Create_c_vector(-1,0,0);
+                c_vector<double, 3> UpperPoint = Create_c_vector(MaxX,-0.014,0);
+                c_vector<double, 3> LowerPoint = Create_c_vector(MinX,-0.014,0);
+                Inlets(UpperPlaneNormal , UpperPoint, 0, "Outlet");
+                Inlets(LowerPlaneNormal , LowerPoint, 0, "Outlet");
+            }  
+           mNewInlets = 0; 
+        }
+    }
+    
+
+    // Here I want to be able to say if there has been a descrese from the initials ---
+
+   
+
+    
     /* I have the max radius, this will be important for the discretisation and the cap sizes 
         https://royalsocietypublishing.org/doi/pdf/10.1098/rsif.2014.0543   &&&&    https://journals.aps.org/pre/pdf/10.1103/PhysRevE.89.023303
 

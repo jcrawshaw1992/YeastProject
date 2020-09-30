@@ -116,6 +116,7 @@ public:
     bool mRunHemeLB = 1;
     bool mSetupHemeLB = 1;
     double mConstantPressure =0;
+    bool mNewInlets =1;
     void SetConstantPressure(double Pressure);
 
     void WriteOutVtuFile(std::string outputDirectory);
