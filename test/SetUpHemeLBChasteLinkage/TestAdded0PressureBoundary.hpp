@@ -159,7 +159,7 @@ public:
         p_simulator->SetEndTime(EndTime+300);
         p_simulator->SetSamplingTimestepMultiple(1400);
         p_simulator->SetDt(0.1);
-        p_simulator->SetOutputDirectory(output_dir+"CollapsingUpperBranch_WithOcclusionShortTS/");
+        p_simulator->SetOutputDirectory(output_dir+"CollapsingMiddelBranch_WithOcclusionShortTS/");
 
             
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0);
@@ -196,7 +196,7 @@ public:
         p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(1000);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"CollapsingUpperBranch_WithOcclusionShortTS/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"CollapsingMiddelBranch_WithOcclusionShortTS/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
 
 
@@ -219,10 +219,10 @@ public:
       
 
         // Upstream 
-        c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.036,0.014,0);
+        c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.036,0.0,0);
         c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
         // Down stream 
-        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.042,0.014,0);
+        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.042,0.0,0);
         c_vector<double, 3> LowerPlaneNormal = Create_c_vector(-1,0,0);
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
 

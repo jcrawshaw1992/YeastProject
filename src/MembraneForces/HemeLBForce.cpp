@@ -386,8 +386,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
                 double MaxX = *XValue.begin();
                 c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
                 c_vector<double, 3> LowerPlaneNormal = Create_c_vector(-1,0,0);
-                c_vector<double, 3> UpperPoint = Create_c_vector(MaxX,0.014,0);
-                c_vector<double, 3> LowerPoint = Create_c_vector(MaxX,0.014,0);
+                c_vector<double, 3> UpperPoint = Create_c_vector(MaxX,0,0);
+                c_vector<double, 3> LowerPoint = Create_c_vector(MaxX,0,0);
                 Inlets(UpperPlaneNormal , UpperPoint, 0, "Outlet");
                 Inlets(LowerPlaneNormal , LowerPoint, 0, "Outlet");
                 CollapsedRegions(UpperPlaneNormal , UpperPoint, LowerPlaneNormal , LowerPoint);
@@ -401,8 +401,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
                 // min pointing towards neg
                 c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
                 c_vector<double, 3> LowerPlaneNormal = Create_c_vector(-1,0,0);
-                c_vector<double, 3> UpperPoint = Create_c_vector(MaxX,0.014,0);
-                c_vector<double, 3> LowerPoint = Create_c_vector(MinX,0.014,0);
+                c_vector<double, 3> UpperPoint = Create_c_vector(MaxX,0,0);
+                c_vector<double, 3> LowerPoint = Create_c_vector(MinX,0,0);
                 Inlets(UpperPlaneNormal , UpperPoint, 0, "Outlet");
                 Inlets(LowerPlaneNormal , LowerPoint, 0, "Outlet");
                 CollapsedRegions(UpperPlaneNormal , UpperPoint, LowerPlaneNormal , LowerPoint);
