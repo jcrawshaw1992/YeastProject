@@ -157,7 +157,7 @@ public:
         // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
         p_simulator->RemoveAllForces();  
         p_simulator->SetEndTime(EndTime+300);
-        p_simulator->SetSamplingTimestepMultiple(1400);
+        p_simulator->SetSamplingTimestepMultiple(500);
         p_simulator->SetDt(0.1);
         p_simulator->SetOutputDirectory(output_dir+"CollapsingMiddelBranch_WithOcclusionShortTS/");
 

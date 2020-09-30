@@ -188,7 +188,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     // SystemOutput =  std::system(WaitCommand.c_str());
     // TRACE("Have waited long enough :)") 
 
-    PRINT_VARIABLE(! boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
+    PRINT_VARIABLE(boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
     while(! boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
     {
         TRACE("waiting within C")
@@ -599,7 +599,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirec
                 std::string OldDirectory = mHemeLBDirectory + "_Circa_" + ctime(&now);
                 std::rename(mHemeLBDirectory.c_str(), OldDirectory.c_str());
             }
-            else if (boost::filesystem::exists(mHemeLBDirectory))
+            else //if (boost::filesystem::exists(mHemeLBDirectory))
             {
                 std::string RemoveOldHemeLBDirectory = "rm -r " + mHemeLBDirectory;
                 SystemOutput = system(RemoveOldHemeLBDirectory.c_str());
