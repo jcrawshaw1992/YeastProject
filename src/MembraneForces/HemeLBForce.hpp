@@ -117,7 +117,7 @@ public:
     bool mSetupHemeLB = 1;
     double mConstantPressure =0;
     bool mNewInlets =1;
-    
+
     c_vector<c_vector<double, 3> , 4> mCollapsedRegion;
     
 
@@ -203,7 +203,7 @@ public:
     void SetHemeLBPath(std::string HemeLBPath);
 
     void SetGenerateFlowVtus( bool FlowVtus);
-    bool mFlowVtus=0;
+    bool mFlowVtus=1;
 
     void SetMachine(std::string Machine);
     std::string mMachine ="server"; // Machine can be mac or Linux server, will make this better soon 
