@@ -157,9 +157,9 @@ public:
         // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
         p_simulator->RemoveAllForces();  
         p_simulator->SetEndTime(EndTime+300);
-        p_simulator->SetSamplingTimestepMultiple(500);
+        p_simulator->SetSamplingTimestepMultiple(100);
         p_simulator->SetDt(0.1);
-        p_simulator->SetOutputDirectory(output_dir+"CollapsingMiddelBranch_WithOcclusionShortTS/");
+        p_simulator->SetOutputDirectory(output_dir+"CollapsingMiddelBranch_WithOcclusionShortTSSecond/");
 
             
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0);
@@ -196,7 +196,7 @@ public:
         p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(500);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"CollapsingMiddelBranch_WithOcclusionShortTS/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"CollapsingMiddelBranch_WithOcclusionShortTSSecond/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
 
 

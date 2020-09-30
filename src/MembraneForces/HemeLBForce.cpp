@@ -126,6 +126,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
 
     /*  Step 0: Create the HemeLB config.pr2 file */
     double HemeLBSimulationTime = 5000; //
+    if (mNewInlets =0)
+    {
+        HemeLBSimulationTime = 50000; //
+    }
     int Period = HemeLBSimulationTime/1.8;
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
       
