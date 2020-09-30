@@ -441,7 +441,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
     if(mMachine =="server")
     {
             // Need to write bash scrip .... issue here 
-            int Cores = 6;
+            int Cores = 12;
             ofstream bash_script;
 
             std::string BashFile = "projects/VascularRemodelling/apps/RunHemeLB";
