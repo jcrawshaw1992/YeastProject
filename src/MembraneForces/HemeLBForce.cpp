@@ -524,7 +524,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirec
                 std::string OldDirectory = mHemeLBDirectory + "_Circa_" + ctime(&now);
                 std::rename(mHemeLBDirectory.c_str(), OldDirectory.c_str());
             }
-            else
+            else if (boost::filesystem::exists(mHemeLBDirectory))
             {
                 std::string RemoveOldHemeLBDirectory = "rm -r " + mHemeLBDirectory;
                 SystemOutput = system(RemoveOldHemeLBDirectory.c_str());
@@ -536,13 +536,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirec
             { /* Rename Old one, I want an option to go back and have a look at old stuff  */
                 time_t now = time(0);
                 std::string OldDirectory = mHemeLB_output + "_Circa_" + ctime(&now);
-
-
-
-
                 std::rename(mHemeLB_output.c_str(), OldDirectory.c_str());
             } 
-            else{ 
+            else
+            { 
                 std::string RemoveOldHemeLBDirectory = "rm -r " + mHemeLB_output +" >nul";
                 SystemOutput =  system(RemoveOldHemeLBDirectory.c_str());
             }
@@ -557,7 +554,11 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirec
 
     // Set up some more path names 
     mResultsDirectory = mHemeLBDirectory + "results/";
-    mRemoveResultsDirectory = "rm -r " + mResultsDirectory + " >nul";
+    if (boost::filesystem::exists(mResultsDirectory))
+    {
+         mRemoveResultsDirectory = "rm -r " + mResultsDirectory + " >nul";
+    }
+   
 
 }
 
