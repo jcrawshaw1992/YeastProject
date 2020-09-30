@@ -117,6 +117,10 @@ public:
     bool mSetupHemeLB = 1;
     double mConstantPressure =0;
     bool mNewInlets =1;
+    
+    c_vector<c_vector<double, 3> , 4> mCollapsedRegion;
+    
+
     void SetConstantPressure(double Pressure);
 
     void WriteOutVtuFile(std::string outputDirectory);
@@ -178,6 +182,8 @@ public:
 
     // Inlets and out lets -- this will let me write the pr2 file 
     void Inlets(c_vector<double, 3> PlaneNormal, c_vector<double, 3> Point, double pressure, std::string FlowDirection);
+    void CollapsedRegions(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> LowerPoint);
+
     void SetFluidSolidIterations(double Iterations);
     std::vector<std::vector<c_vector<double, 3>>> mIolets; // Each vector has one boundary, this is a vecotr of two vectors, none being the normal and the other is the point defining the plane
 

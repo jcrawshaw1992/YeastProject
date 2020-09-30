@@ -291,6 +291,20 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Inlets(c_vector<double, 3> PlaneNormal
     // TRACE("I think the inlets should not be an issue ") -- Fine
 }
 
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::CollapsedRegions(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> LowerPoint)
+{
+    // Set the boundary planes for this hetro region, set an upper and a lower bound.
+    c_vector<c_vector<double, 3> , 4> mCollapsedRegion;
+    mCollapsedRegion[0] = UpperPlaneNormal * mHemeLBScalling;
+    mCollapsedRegion[1] = UpperPoint * mHemeLBScalling;
+    mCollapsedRegion[2] = LowerPlaneNormal * mHemeLBScalling;
+    mCollapsedRegion[3] = LowerPoint * mHemeLBScalling;
+
+}
+
+
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOutVtuFile(std::string outputDirectory)
 {
@@ -776,7 +790,9 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		 cell_iter != rCellPopulation.End();
 		 ++cell_iter)
 	{
+
 		c_vector<double, SPACE_DIM> location = rCellPopulation.GetLocationOfCellCentre(*cell_iter);
+
 		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
 		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
 		unsigned nearest_fluid_site = UNSIGNED_UNSET;
@@ -859,14 +875,9 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		assert(fabs(shear_stress[2])<1e10);
 
         mForceMap[node_index] = Force;
-
-
+        
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("Pressure", Pressure);
-		// PRINT_VARIABLE(Pressure);
-
-
-		// TRACE("Setting Force");
 		cell_iter->GetCellData()->SetItem("applied_force_x", Force[0]);
 		// PRINT_VECTOR(Force);
 		cell_iter->GetCellData()->SetItem("applied_force_y", Force[1]);
@@ -877,6 +888,44 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		cell_iter->GetCellData()->SetItem("applied_shear_stress_y", shear_stress[1]);
 		cell_iter->GetCellData()->SetItem("applied_shear_stress_z", shear_stress[2]);
 		cell_iter->GetCellData()->SetItem("applied_shear_stress_mag", norm_2(shear_stress));
+
+
+        if(mCollapsedRegion.size() !=0)
+        {
+
+            c_vector<double, 3> Node_location = location;
+            c_vector<double, 3> UpperPlane = -mCollapsedRegion[0] ;
+            c_vector<double, 3> UpperPoint = mCollapsedRegion[1];
+            c_vector<double, 3> LowerPlane = -mCollapsedRegion[2];
+            c_vector<double, 3> LowerPoint = mCollapsedRegion[3];
+
+             // Vector connecting the node to upper plane
+            c_vector<double, 3> NodeToUpperPlane = Node_location - UpperPoint;
+            c_vector<double, 3> NodeToLowerPlane = Node_location - LowerPoint;
+
+            double DotToUpperPlane = inner_prod(NodeToUpperPlane,UpperPlane );
+            double DotToLowerPlane = inner_prod(NodeToLowerPlane,LowerPlane );
+
+            double radius = 0.002; // XXX TODO Radius threshold needs fixing
+            if (DotToLowerPlane >= 0 && DotToUpperPlane >= 0)
+            {
+                if (norm_2(NodeToUpperPlane) <radius ||  norm_2(NodeToLowerPlane)<radius  )
+                {
+                    cell_iter->GetCellData()->SetItem("Pressure", 0);
+                   	cell_iter->GetCellData()->SetItem("applied_force_x", 0);
+                    cell_iter->GetCellData()->SetItem("applied_force_y", 0);
+                    cell_iter->GetCellData()->SetItem("applied_force_z", 0);
+                    cell_iter->GetCellData()->SetItem("applied_force_mag", 0);
+                    cell_iter->GetCellData()->SetItem("voronoi_cell_area", voronoi_cell_area);
+                    cell_iter->GetCellData()->SetItem("applied_shear_stress_x", 0);
+                    cell_iter->GetCellData()->SetItem("applied_shear_stress_y", 0);
+                    cell_iter->GetCellData()->SetItem("applied_shear_stress_z", 0);
+                    cell_iter->GetCellData()->SetItem("applied_shear_stress_mag", 0);
+                    mForceMap[node_index] = Create_c_vector(0,0,0);
+                }
+                
+            }
+        }
 	}
 }
 
