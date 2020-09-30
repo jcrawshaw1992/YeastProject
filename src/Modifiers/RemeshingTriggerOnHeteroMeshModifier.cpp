@@ -201,16 +201,18 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
                     double DotToUpperPlane = inner_prod(NodeToUpperPlane,UpperPlane );
                     double DotToLowerPlane = inner_prod(NodeToLowerPlane,LowerPlane );
     
-                    double radius = 0.0003; // XXX TODO this time step needs fixing 
+                    double radius = 0.003; // XXX TODO Radius threshold needs fixing
                     if (DotToLowerPlane >= 0 && DotToUpperPlane >= 0)
                     {
-                        if ( abs(norm_2(NodeToUpperPlane)) <radius ||  abs(norm_2(NodeToLowerPlane)) <radius  )
+                        // PRINT_VARIABLE((norm_2(NodeToUpperPlane)) )
+                        // PRINT_VECTOR(NodeToUpperPlane)
+
+                        if (norm_2(NodeToUpperPlane) <radius ||  norm_2(NodeToLowerPlane)<radius  )
                         {
                           
                             cell_iter->SetMutationState(p_Basement);
                             mBasementNodes.push_back(node_index);
                             mSamplebasementNode = node_index;
-                            TRACE("A" )
                                                                                     // DistanceToUpperPlane,DistanceToLowerPlane
                             mDistanceToEndothelialRegion[node_index] = Create_c_vector(norm_2(NodeToUpperPlane),norm_2(NodeToLowerPlane));
                             break;
