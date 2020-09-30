@@ -196,7 +196,7 @@ public:
         p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(5000);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"CollapsingLowerBranch/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"CollapsingLowerBranch_WithOcclusion/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
 
 
