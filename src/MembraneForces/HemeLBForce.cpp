@@ -296,17 +296,17 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Inlets(c_vector<double, 3> PlaneNormal
 }
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::CollapsedRegions(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> LowerPoint)
-{
-    // Set the boundary planes for this hetro region, set an upper and a lower bound.
-    c_vector<c_vector<double, 3> , 4> mCollapsedRegion;
-    mCollapsedRegion[0] = UpperPlaneNormal * mHemeLBScalling;
-    mCollapsedRegion[1] = UpperPoint * mHemeLBScalling;
-    mCollapsedRegion[2] = LowerPlaneNormal * mHemeLBScalling;
-    mCollapsedRegion[3] = LowerPoint * mHemeLBScalling;
+// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+// void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::CollapsedRegions(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> LowerPoint)
+// {
+//     // Set the boundary planes for this hetro region, set an upper and a lower bound.
+//     c_vector<c_vector<double, 3> , 4> mCollapsedRegion;
+//     mCollapsedRegion[0] = UpperPlaneNormal * mHemeLBScalling;
+//     mCollapsedRegion[1] = UpperPoint * mHemeLBScalling;
+//     mCollapsedRegion[2] = LowerPlaneNormal * mHemeLBScalling;
+//     mCollapsedRegion[3] = LowerPoint * mHemeLBScalling;
 
-}
+// }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOutVtuFile(std::string outputDirectory)
@@ -377,49 +377,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     }
     mRadius = MinRadius * mHemeLBScalling;
 
-    double Y =0;
-    // determine if I need aditional 0 inlets ect 
-    if (mNewInlets ==1)
-    {   
-        if ( XValue.size()>0)
-        {
-            // Additional inlets to be added 
-            if ( XValue.size()==1)
-            {
-                // Just one inlet 
-                double MaxX = *XValue.begin();
-                c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
-                c_vector<double, 3> LowerPlaneNormal = Create_c_vector(-1,0,0);
-                c_vector<double, 3> UpperPoint = Create_c_vector(MaxX,0,0);
-                c_vector<double, 3> LowerPoint = Create_c_vector(MaxX,0,0);
-                Inlets(UpperPlaneNormal , UpperPoint, 0, "Outlet");
-                Inlets(LowerPlaneNormal , LowerPoint, 0, "Outlet");
-                CollapsedRegions(UpperPlaneNormal , UpperPoint, LowerPlaneNormal , LowerPoint);
-            }
-            if ( XValue.size()>1)
-            {
-                //Going to have a start and end to the inlets -- if there are more than one region needing cutting off, im not sure what to do, but will deal with later
-                double MaxX = *std::min_element(XValue.begin(), XValue.end());
-                double MinX  = *std::max_element(XValue.begin(), XValue.end());
-                // Now I want to have the Max pointing towards pos and 
-                // min pointing towards neg
-                c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
-                c_vector<double, 3> LowerPlaneNormal = Create_c_vector(-1,0,0);
-                c_vector<double, 3> UpperPoint = Create_c_vector(MaxX,0,0);
-                c_vector<double, 3> LowerPoint = Create_c_vector(MinX,0,0);
-                Inlets(UpperPlaneNormal , UpperPoint, 0, "Outlet");
-                Inlets(LowerPlaneNormal , LowerPoint, 0, "Outlet");
-                CollapsedRegions(UpperPlaneNormal , UpperPoint, LowerPlaneNormal , LowerPoint);
-            }  
-           mNewInlets = 0; 
-        }
-    }
     
-
     // Here I want to be able to say if there has been a descrese from the initials ---
-
-   
-
     
     /* I have the max radius, this will be important for the discretisation and the cap sizes 
         https://royalsocietypublishing.org/doi/pdf/10.1098/rsif.2014.0543   &&&&    https://journals.aps.org/pre/pdf/10.1103/PhysRevE.89.023303
@@ -893,44 +852,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		cell_iter->GetCellData()->SetItem("applied_shear_stress_y", shear_stress[1]);
 		cell_iter->GetCellData()->SetItem("applied_shear_stress_z", shear_stress[2]);
 		cell_iter->GetCellData()->SetItem("applied_shear_stress_mag", norm_2(shear_stress));
-
-
-        if(mCollapsedRegion.size() !=0)
-        {
-
-            c_vector<double, 3> Node_location = location;
-            c_vector<double, 3> UpperPlane = -mCollapsedRegion[0] ;
-            c_vector<double, 3> UpperPoint = mCollapsedRegion[1];
-            c_vector<double, 3> LowerPlane = -mCollapsedRegion[2];
-            c_vector<double, 3> LowerPoint = mCollapsedRegion[3];
-
-             // Vector connecting the node to upper plane
-            c_vector<double, 3> NodeToUpperPlane = Node_location - UpperPoint;
-            c_vector<double, 3> NodeToLowerPlane = Node_location - LowerPoint;
-
-            double DotToUpperPlane = inner_prod(NodeToUpperPlane,UpperPlane );
-            double DotToLowerPlane = inner_prod(NodeToLowerPlane,LowerPlane );
-
-            double radius = 0.002; // XXX TODO Radius threshold needs fixing
-            if (DotToLowerPlane >= 0 && DotToUpperPlane >= 0)
-            {
-                if (norm_2(NodeToUpperPlane) <radius ||  norm_2(NodeToLowerPlane)<radius  )
-                {
-                    cell_iter->GetCellData()->SetItem("Pressure", 0);
-                   	cell_iter->GetCellData()->SetItem("applied_force_x", 0);
-                    cell_iter->GetCellData()->SetItem("applied_force_y", 0);
-                    cell_iter->GetCellData()->SetItem("applied_force_z", 0);
-                    cell_iter->GetCellData()->SetItem("applied_force_mag", 0);
-                    cell_iter->GetCellData()->SetItem("voronoi_cell_area", voronoi_cell_area);
-                    cell_iter->GetCellData()->SetItem("applied_shear_stress_x", 0);
-                    cell_iter->GetCellData()->SetItem("applied_shear_stress_y", 0);
-                    cell_iter->GetCellData()->SetItem("applied_shear_stress_z", 0);
-                    cell_iter->GetCellData()->SetItem("applied_shear_stress_mag", 0);
-                    mForceMap[node_index] = Create_c_vector(0,0,0);
-                }
-                
-            }
-        }
 	}
 }
 
@@ -1067,3 +988,79 @@ template class HemeLBForce<2, 3>;
 #include "SerializationExportWrapperForCpp.hpp"
 EXPORT_TEMPLATE_CLASS_ALL_DIMS(HemeLBForce)
 // CHASTE_CLASS_EXPORT(HemeLBForce)
+
+// ----------------------------------------------------------------------------------------------------------
+
+// if(mCollapsedRegion.size() !=0)
+//         {
+
+//             c_vector<double, 3> Node_location = location;
+//             c_vector<double, 3> UpperPlane = -mCollapsedRegion[0] ;
+//             c_vector<double, 3> UpperPoint = mCollapsedRegion[1];
+//             c_vector<double, 3> LowerPlane = -mCollapsedRegion[2];
+//             c_vector<double, 3> LowerPoint = mCollapsedRegion[3];
+
+//              // Vector connecting the node to upper plane
+//             c_vector<double, 3> NodeToUpperPlane = Node_location - UpperPoint;
+//             c_vector<double, 3> NodeToLowerPlane = Node_location - LowerPoint;
+
+//             double DotToUpperPlane = inner_prod(NodeToUpperPlane,UpperPlane );
+//             double DotToLowerPlane = inner_prod(NodeToLowerPlane,LowerPlane );
+
+//             double radius = 0.002; // XXX TODO Radius threshold needs fixing
+//             if (DotToLowerPlane >= 0 && DotToUpperPlane >= 0)
+//             {
+//                 if (norm_2(NodeToUpperPlane) <radius ||  norm_2(NodeToLowerPlane)<radius  )
+//                 {
+//                     cell_iter->GetCellData()->SetItem("Pressure", 0);
+//                    	cell_iter->GetCellData()->SetItem("applied_force_x", 0);
+//                     cell_iter->GetCellData()->SetItem("applied_force_y", 0);
+//                     cell_iter->GetCellData()->SetItem("applied_force_z", 0);
+//                     cell_iter->GetCellData()->SetItem("applied_force_mag", 0);
+//                     cell_iter->GetCellData()->SetItem("voronoi_cell_area", voronoi_cell_area);
+//                     cell_iter->GetCellData()->SetItem("applied_shear_stress_x", 0);
+//                     cell_iter->GetCellData()->SetItem("applied_shear_stress_y", 0);
+//                     cell_iter->GetCellData()->SetItem("applied_shear_stress_z", 0);
+//                     cell_iter->GetCellData()->SetItem("applied_shear_stress_mag", 0);
+//                     mForceMap[node_index] = Create_c_vector(0,0,0);
+//                 }
+                
+//             }
+//         }
+
+
+
+// double Y =0;
+//     // determine if I need aditional 0 inlets ect 
+//     if (mNewInlets ==1)
+//     {   
+//         if ( XValue.size()>0)
+//         {// Additional inlets to be added 
+//             if ( XValue.size()==1)
+//             { // Just one inlet 
+//                 double MaxX = *XValue.begin();
+//                 c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
+//                 c_vector<double, 3> LowerPlaneNormal = Create_c_vector(-1,0,0);
+//                 c_vector<double, 3> UpperPoint = Create_c_vector(MaxX,0,0);
+//                 c_vector<double, 3> LowerPoint = Create_c_vector(MaxX,0,0);
+//                 Inlets(UpperPlaneNormal , UpperPoint, 0, "Outlet");
+//                 Inlets(LowerPlaneNormal , LowerPoint, 0, "Outlet");
+//                 // CollapsedRegions(UpperPlaneNormal , UpperPoint, LowerPlaneNormal , LowerPoint);
+//             }
+//             if ( XValue.size()>1)
+//             {   //Going to have a start and end to the inlets -- if there are more than one region needing cutting off, im not sure what to do, but will deal with later
+//                 double MaxX = *std::min_element(XValue.begin(), XValue.end());
+//                 double MinX  = *std::max_element(XValue.begin(), XValue.end());
+//                 // Now I want to have the Max pointing towards pos and 
+//                 // min pointing towards neg
+//                 c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
+//                 c_vector<double, 3> LowerPlaneNormal = Create_c_vector(-1,0,0);
+//                 c_vector<double, 3> UpperPoint = Create_c_vector(MaxX,0,0);
+//                 c_vector<double, 3> LowerPoint = Create_c_vector(MinX,0,0);
+//                 Inlets(UpperPlaneNormal , UpperPoint, 0, "Outlet");
+//                 Inlets(LowerPlaneNormal , LowerPoint, 0, "Outlet");
+//                 // CollapsedRegions(UpperPlaneNormal , UpperPoint, LowerPlaneNormal , LowerPoint);
+//             }  
+//            mNewInlets = 0; 
+//         }
+//     }
