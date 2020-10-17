@@ -151,7 +151,7 @@ public:
     void MappingAdaptedMeshToInitalGeometry();
 
     void SetBoundaries(bool SetB);
-    bool mSetBoundaries = 0;
+    bool mSetBoundaries = 1;
 
     // Function to find the cloeset element in last mesh
     

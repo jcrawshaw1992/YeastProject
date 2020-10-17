@@ -60,7 +60,8 @@ private:
     double mStrength = 2.5;
     bool mHetro = 0;
     double mStepSize = 1e-10;
-    double mCounter = 2000;
+    double mCounter = 500;
+    unsigned mSteps =1;
     double mThreshold = 100;
     // double mSetupSolve;
     int mRemeshingInterval = 500;
@@ -190,6 +191,13 @@ public:
     double mKbs = (double)mGrowthMaps[1](2);
     double mKba = (double)mGrowthMaps[1](1);
     double mKbA = (double)mGrowthMaps[1](0);
+
+    bool mSlowIncreaseInMembraneStrength = 0;
+    void SetSlowIncreaseInMembraneStrength(bool SlowIncreaseInMembraneStrength, double TimeStepSize);
+    void SlowIncreaseInMembraneParameters(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
+    double mTimeStepSize;
+
+
 
     /**
      * Overridden OutputSimulationModifierParameters() method.

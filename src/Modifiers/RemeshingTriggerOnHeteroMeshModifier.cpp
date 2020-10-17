@@ -49,83 +49,11 @@ RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::~RemeshingTriggerO
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps, double Strength, bool Hetrogeneous, double StepSize, double SetupSolve)
-{
-    mGrowthMaps = GrowthMaps;
-    mStrength = Strength;
-    mHetro = Hetrogeneous;
-    mStepSize = StepSize;
-    mOn =  Hetrogeneous;
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetMembraneStrength(double Strength)
-{
-    mStrength = Strength;
-}
-
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetThreshold(double Threshold)
-{
-    // Interval between increasing membrane stiffness 
-    mThreshold = Threshold;
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::Boundaries(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPlanePoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> LowerPlanePoint)
-{
-
-    // Upper plane is defined as the one upstream and the lower is downstream
-    // Set the boundary planes for this hetro region, set an upper and a lower bound.
-    std::vector<  c_vector<double, 3> > CurrentBoundary;
-    CurrentBoundary.push_back(UpperPlaneNormal);
-    CurrentBoundary.push_back(UpperPlanePoint);
-
-    CurrentBoundary.push_back(LowerPlaneNormal);
-    CurrentBoundary.push_back(LowerPlanePoint);
-
-    mBoundaries.push_back(CurrentBoundary);
-
-    double Length = norm_2(UpperPlanePoint -LowerPlanePoint );
-    /*  M(x) = k/(1+x^2a) */
-    mMembraneFuctionSpatialConstants.push_back(PlateauDistributionFuction(Length));
-
-
-    mHetro = 1;
-    mStepSize = 1e-7;//1e-10;
-    mOn =  1;
-    
-}
-
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetRemeshingInterval(int RemeshingInterval)
-{
-    mRemeshing = 1;
-    mRemeshingInterval = RemeshingInterval;
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, std::string outputDirectory)
 {
       UpdateCellData(rCellPopulation);
 
-        // mK_ShearMod = mGrowthMaps[mStrength](2);
-        // mK_AreaDilationMod = std::min((double)Step_Kba, K_AreaDilationMod);
-        // mK_AreaMod 
-
-        //             cell_iter->GetCellData()->SetItem("ShearModulus", mGrowthMaps[mStrength](2));
-        //     cell_iter->GetCellData()->SetItem("AreaDilationModulus", mGrowthMaps[mStrength](1));
-        //     cell_iter->GetCellData()->SetItem("AreaConstant", mGrowthMaps[mStrength](0));
-        //     cell_iter->GetCellData()->SetItem("BendingConstant", mGrowthMaps[mStrength](3));
-
-
-
 }
-
-
-
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOfTimeStep(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
@@ -133,24 +61,20 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
     if(mRemeshing)
     {
-         if (mExecute>=mRemeshingInterval)
+        if (mExecute>=mRemeshingInterval)
         {
             pCellPopulation->ExecuteHistoryDependentRemeshing();
             UpdateCellData(rCellPopulation);
             TRACE("Need to update the membrane strenght for the new mesh, this next method has not yet been written ")
             SetMembraneStrenghtOnNewMesh(rCellPopulation);
              mExecute = 0;
-
         } 
         mExecute +=1;
-        
     }
 
-    // PRINT_VARIABLE(mHetro)
-
-    if (mHetro)
+    if (mHetro) // Need to make sure that the stiffer regions get stiffer at the right step size
     {
-        if (mCounter ==2000)
+        if (mCounter ==2000) // TODO this needs setting with a member variable
         {
             StepChange(rCellPopulation);
             mCounter =0;
@@ -159,12 +83,43 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
             mCounter+=1;
         }
     }
+    double NumberOfIterations = 300;
+    if (mSlowIncreaseInMembraneStrength ==1)/// Membrane parameters need to slowly increase :) 
+    {
+        if ( mSteps < NumberOfIterations +1)
+        {
+            mStepSize = NumberOfIterations; 
+            if (mCounter ==100) // TODO this needs setting with a member variable
+            {
+                SlowIncreaseInMembraneParameters(rCellPopulation);
+                mCounter =0;
+                mSteps +=1;
+                if (mSteps > 50)
+                {mSteps +=3;}
+            }else 
+            {
+                mCounter+=1;
+            }
+        }
+
+        if (mSteps >= NumberOfIterations)
+        {
+            mSlowIncreaseInMembraneStrength = 0;
+            UpdateCellData(rCellPopulation); // This will set all the membrane constants to their final values :) 
+        }
+                
+
+    }
+
+
+
+
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
-    assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
+        assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
         mBasementNodes.clear();
         mDistanceToEndothelialRegion.clear();
 
@@ -222,12 +177,85 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
                 }
             }
            
-            cell_iter->GetCellData()->SetItem("ShearModulus", mGrowthMaps[mStrength](2));
-            cell_iter->GetCellData()->SetItem("AreaDilationModulus", mGrowthMaps[mStrength](1));
-            cell_iter->GetCellData()->SetItem("AreaConstant", mGrowthMaps[mStrength](0));
-            cell_iter->GetCellData()->SetItem("BendingConstant", mGrowthMaps[mStrength](3));
+            if (mSlowIncreaseInMembraneStrength ==1) // Incase there needs to be a slow increase :S 
+            {
+                cell_iter->GetCellData()->SetItem("ShearModulus", 1e-8);
+                cell_iter->GetCellData()->SetItem("AreaDilationModulus", 1e-8);
+                cell_iter->GetCellData()->SetItem("AreaConstant", 1e-8);
+                cell_iter->GetCellData()->SetItem("BendingConstant", 0);
+                 
+            }else // Set now
+            {    
+                cell_iter->GetCellData()->SetItem("ShearModulus", mGrowthMaps[mStrength](2));
+                cell_iter->GetCellData()->SetItem("AreaDilationModulus", mGrowthMaps[mStrength](1));
+                cell_iter->GetCellData()->SetItem("AreaConstant", mGrowthMaps[mStrength](0));
+                cell_iter->GetCellData()->SetItem("BendingConstant", mGrowthMaps[mStrength](3));
+            }
+            
+
+
         }
   
+}
+
+/////------------------------------------------------------------------
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps, double Strength, bool Hetrogeneous, double StepSize, double SetupSolve)
+{
+    mGrowthMaps = GrowthMaps;
+    mStrength = Strength;
+    mHetro = Hetrogeneous;
+    mStepSize = StepSize;
+    mOn =  Hetrogeneous;
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetMembraneStrength(double Strength)
+{
+    mStrength = Strength;
+}
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetThreshold(double Threshold)
+{
+    // Interval between increasing membrane stiffness 
+    mThreshold = Threshold;
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::Boundaries(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPlanePoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> LowerPlanePoint)
+{
+
+    // Upper plane is defined as the one upstream and the lower is downstream
+    // Set the boundary planes for this hetro region, set an upper and a lower bound.
+    std::vector<  c_vector<double, 3> > CurrentBoundary;
+    CurrentBoundary.push_back(UpperPlaneNormal);
+    CurrentBoundary.push_back(UpperPlanePoint);
+
+    CurrentBoundary.push_back(LowerPlaneNormal);
+    CurrentBoundary.push_back(LowerPlanePoint);
+
+    mBoundaries.push_back(CurrentBoundary);
+
+    double Length = norm_2(UpperPlanePoint -LowerPlanePoint );
+    /*  M(x) = k/(1+x^2a) */
+    mMembraneFuctionSpatialConstants.push_back(PlateauDistributionFuction(Length));
+
+
+    mHetro = 1;
+    mStepSize = 1e-7;//1e-10;
+    mOn =  1;
+    
+}
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetRemeshingInterval(int RemeshingInterval)
+{
+    mRemeshing = 1;
+    mRemeshingInterval = RemeshingInterval;
 }
 
 
@@ -236,8 +264,18 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetMembraneStrenghtOnNewMesh(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
 
+
 }
 
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetSlowIncreaseInMembraneStrength(bool SlowIncreaseInMembraneStrength, double TimeStepSize)
+{
+    mSlowIncreaseInMembraneStrength = SlowIncreaseInMembraneStrength;
+    mTimeStepSize = 1e-6;//TimeStepSize;
+    mCounter =100;
+    mSteps = 1;
+}
+  
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -318,6 +356,30 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
 
     //Need to put in something to stop increasing membrane stiffness after its too stiff
 }
+
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SlowIncreaseInMembraneParameters(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
+{
+    /*
+    Linear increase in membrane properties over time, This is Nothing complicated, this is to stop putting on a huge force at the start of an archieved simulation 
+	*/
+    for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+        cell_iter != rCellPopulation.End();
+        ++cell_iter)
+    {
+        cell_iter->GetCellData()->SetItem("AreaConstant", mSteps * mGrowthMaps[mStrength](0)/mStepSize);
+        cell_iter->GetCellData()->SetItem("AreaDilationModulus",mSteps *  mGrowthMaps[mStrength](1)/mStepSize);
+        cell_iter->GetCellData()->SetItem("ShearModulus", mSteps * mGrowthMaps[mStrength](2)/mStepSize);
+        cell_iter->GetCellData()->SetItem("BendingConstant", mSteps * mGrowthMaps[mStrength](3)/mStepSize);
+
+        // PRINT_2_VARIABLES(mSteps * mGrowthMaps[mStrength](0)/mStepSize, mGrowthMaps[mStrength](0))
+        // PRINT_2_VARIABLES(mSteps * mGrowthMaps[mStrength](1)/mStepSize,mSteps * mGrowthMaps[mStrength](2)/mStepSize) 
+    }
+}
+
+
 
 
 

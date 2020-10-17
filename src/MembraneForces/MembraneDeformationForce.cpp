@@ -15,21 +15,6 @@ MembraneDeformationForce::MembraneDeformationForce()
 
 void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
-    // Double
-    //  double Kalpha = pow(10, -6.8124);
-    //  double KA = 0 ;
-    //  double KS = pow(10, -7);
-
-    // // 1.5
-    //  double KA = 0 ;
-    //  double Kalpha = pow(10, -6.3491);
-    //  double KS = pow(10, -7);
-
-    // // 1.5
-    //  double KA = 0 ;
-    //  double Kalpha = pow(10, -5.8360);
-    //  double KS = pow(10, -7);
-
    HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
 
     std::map<unsigned, c_vector<double, 3> > MembraneForceMap;
@@ -39,10 +24,7 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
     {
         unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
         MembraneForceMap[node_index] = Create_c_vector(0,0,0);
-        // cell_iter->GetCellData()->SetItem("ShearMod", 0 );
     }
-
-
 
     for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
          elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
@@ -211,54 +193,57 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
         }
        
 
-        // pNode0->AddAppliedForceContribution(ForceOnNode[0]);
-        // pNode1->AddAppliedForceContribution(ForceOnNode[1]);
-        // pNode2->AddAppliedForceContribution(ForceOnNode[2]);
+        pNode0->AddAppliedForceContribution(ForceOnNode[0]);
+        pNode1->AddAppliedForceContribution(ForceOnNode[1]);
+        pNode2->AddAppliedForceContribution(ForceOnNode[2]);
+        
        
     }
 
-    // THis bit takes care of the edges ...
+    // // THis bit takes care of the edges ...
     for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
             cell_iter != rCellPopulation.End();
             ++cell_iter)
     {
         
         unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-        Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
-
-        if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
-        {
-           
-           
-            c_vector<double, 3> AverageForce = Create_c_vector(0,0,0);
-            c_vector<unsigned, 3> NearestNodes =  p_cell_population->GetNearestInternalNodes(node_index);
-            for ( int i = 0; i <3; i++)
-            {  
-                AverageForce += MembraneForceMap[NearestNodes[i]];
-            }
-            
-            AverageForce/=3;
+        // Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);  
+        // if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
+        // {
+        //     c_vector<double, 3> AverageForce = Create_c_vector(0,0,0);
+        //     c_vector<unsigned, 3> NearestNodes =  p_cell_population->GetNearestInternalNodes(node_index);
+        //     for ( int i = 0; i <3; i++)
+        //     {  
+        //         AverageForce += MembraneForceMap[NearestNodes[i]];
+        //         //  if( norm_2(MembraneForceMap[NearestNodes[i]]) >10e10  )
+        //         // {
+        //         //     PRINT_VECTOR( MembraneForceMap[NearestNodes[i]])
+        //         // }
+        //     }
+        //     // PRINT_VARIABLE(NearestNodes.size())
+        //     AverageForce/=3;
         
-            if( norm_2(AverageForce) >10e10  )
-            {
-                PRINT_VECTOR( AverageForce)
-            }
-            assert(norm_2(AverageForce) <10e10);
-          
-            pNode->AddAppliedForceContribution(AverageForce); // Add the new force
-            cell_iter->GetCellData()->SetItem("MembraneForce",norm_2(AverageForce) );
+        //     // if( norm_2(AverageForce) >10e10  )
+        //     // {
+        //     //     PRINT_VECTOR( AverageForce)
+        //     // }
+        //     // assert(norm_2(AverageForce) <10e10);
+        //     // c_vector<double, 3> OldForce = MembraneForceMap[node_index]/norm_2(MembraneForceMap[node_index] );
+        //     // c_vector<double, 3> NewForce = OldForce *norm_2(AverageForce);
+        //     pNode->AddAppliedForceContribution(AverageForce); // Add the new force
+        //     cell_iter->GetCellData()->SetItem("MembraneForce",norm_2(AverageForce) );
 
-        }
-        else
-        {
+        // }
+        // else
+        // {
         
-            pNode->AddAppliedForceContribution(MembraneForceMap[node_index] ); // Add the new force
+            // pNode->AddAppliedForceContribution(MembraneForceMap[node_index] ); // Add the new force
             cell_iter->GetCellData()->SetItem("MembraneForce", norm_2(MembraneForceMap[node_index] ));
             // TRACE("Center")
             // double CellArea= rCellPopulation.GetVolumeOfCell(rCellPopulation.GetCellUsingLocationIndex(node_index));
             // PRINT_2_VARIABLES(CellArea,norm_2(MembraneForceMap[node_index] ))
-           
-        }
+        //    
+        // }
   
 
     }

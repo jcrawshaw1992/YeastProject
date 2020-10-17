@@ -1295,6 +1295,8 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MarkBoundaryNode
         (*cell_iter)->GetCellData()->SetItem("Boundary", 0);
         (*cell_iter)->GetCellData()->SetItem("FixedBoundary", 0);
     }
+
+    // IF we are checking for boundaries
     if (mSetBoundaries == 1)
     {
         for (std::list<CellPtr>::iterator cell_iter = this->mCells.begin(); cell_iter != this->mCells.end(); ++cell_iter)
@@ -1307,13 +1309,17 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MarkBoundaryNode
             if (containing_elements.size() < 5)
             {
                 (*cell_iter)->GetCellData()->SetItem("Boundary", 1);
-                std::set<unsigned> neighbouring_node_indices = this->GetNeighbouringNodeIndices(node_index);
-                for (std::set<unsigned>::iterator iter = neighbouring_node_indices.begin();
-                     iter != neighbouring_node_indices.end();
-                     ++iter)
+                bool SetSurroundingNodesAsEdges =0; // TODO make this a member variable I can adapt with a function 
+                if (SetSurroundingNodesAsEdges)
                 {
-                    CellPtr p_cell = this->GetCellUsingLocationIndex(*iter);
-                    p_cell->GetCellData()->SetItem("Boundary", 1);
+                    std::set<unsigned> neighbouring_node_indices = this->GetNeighbouringNodeIndices(node_index);
+                    for (std::set<unsigned>::iterator iter = neighbouring_node_indices.begin();
+                        iter != neighbouring_node_indices.end();
+                        ++iter)
+                    {
+                        CellPtr p_cell = this->GetCellUsingLocationIndex(*iter);
+                        p_cell->GetCellData()->SetItem("Boundary", 1);
+                    }
                 }
             }
         }
