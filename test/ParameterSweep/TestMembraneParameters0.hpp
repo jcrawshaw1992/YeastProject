@@ -208,7 +208,7 @@ public:
                     //                                          Strength,hetro,stepsize, setupsolve
                     p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
 
-                    if (AreaParameter[A] < 8 || DilationParameter[Di] < 8 || DeformationParamter[Def] < 8)
+                    if (AreaParameter[A] < (double)8 || DilationParameter[Di] < (double)8 || DeformationParamter[Def] < (double)8)
                     {
                         p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
                     }
