@@ -152,11 +152,11 @@ public:
 
         double P_blood = 0.002133152; double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
-        for (double A = 0; A < 8; A++)
+        for (int A = 0; A < 8; A++)
         {
-            for (double Di = 0; Di < 8; Di++)
+            for (int Di = 0; Di < 8; Di++)
             {
-                for (double Def = 0; Def < 8; Def++)
+                for (int Def = 0; Def < 8; Def++)
                 {
                     std::stringstream out;
                     out << "Param_" << AreaParameter[A] << "_DilationParam_" << DilationParameter[Di] << "_DeformationParam_" << DeformationParamter[Def];
