@@ -142,9 +142,9 @@ public:
     void TestParametersOverCylinder() throw(Exception)
     {
 
-        double AreaParameter[8] = {4, 4.5, 5, 5.5, 6, 6.5, 7, 8};
-        double DilationParameter[8] = {4, 4.5, 5, 5.5, 6, 6.5, 7, 8};
-        double DeformationParamter[8] = {4, 4.5, 5, 5.5, 6, 6.5, 7, 8};
+        double AreaParameter[7] = {4.5, 5, 5.5, 6, 6.5, 7, 8};
+        double DilationParameter[7] = {4.5, 5, 5.5, 6, 6.5, 7, 8};
+        double DeformationParamter[7] = {4.5, 5, 5.5, 6, 6.5, 7, 8};
 
         double NewEndTime = 30;
         double EndTime = 30;
@@ -152,11 +152,11 @@ public:
 
         double P_blood = 0.002133152; double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
-        for (int A = 0; A < 8; A++)
+        for (int A = 0; A < 7; A++)
         {
-            for (int Di = 0; Di < 8; Di++)
+            for (int Di = 0; Di < 7; Di++)
             {
-                for (int Def = 0; Def < 8; Def++)
+                for (int Def = 0; Def < 7; Def++)
                 {
                     std::stringstream out;
                     out << "Param_" << AreaParameter[A] << "_DilationParam_" << DilationParameter[Di] << "_DeformationParam_" << DeformationParamter[Def];
