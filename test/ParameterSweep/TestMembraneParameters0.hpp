@@ -27,7 +27,7 @@
 #include "HistoryDepMeshBasedCellPopulation.hpp"
 #include "HistoryDepMutableMesh.hpp"
 
-// #include "AppliedForceModifier.hpp"
+
 #include "FixedRegionBoundaryCondition.hpp"
 #include "HemeLBForce.hpp"
 #include "MembraneDeformationForce.hpp"
@@ -73,7 +73,7 @@ public:
         OffLatticeSimulation<2, 3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
         simulator.SetSamplingTimestepMultiple(1000);
-        simulator.SetDt(0.001);
+        simulator.SetDt(0.005);
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
 
@@ -135,31 +135,31 @@ public:
             simulator.AddCellPopulationBoundaryCondition(p_condition);
         }
         TRACE("Set to run archiving sim")
-      //   simulator.Solve();
-      //   CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+        // simulator.Solve();
+        // CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
     }
 
     void TestParametersOverCylinder() throw(Exception)
     {
-      unsigned AreaParameter[8] = { 5, 6, 7, 8, 9, 10 ,11,12};
-      unsigned DilationParameter[8] = { 5, 6, 7, 8, 9, 10 ,11,12};
-      unsigned DeformationParamter[8] = { 5, 6, 7, 8, 9, 10 ,11,12};
 
-      double NewEndTime = 200; double EndTime =30;
-      std::string output_dir = "ParameterSweep/Cylinder" ;
+        int AreaParameter[7] = {4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9};
+        int DilationParameter[7] = {4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9};
+        int DeformationParamter[7] = {4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9};
 
-      double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
-      double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
-      std::map<double, c_vector<long double, 4> > GrowthMaps;
-      
-        for (unsigned A = 0; A < 1; A++)
+        double NewEndTime = 40;
+        double EndTime = 30;
+        std::string output_dir = "ParameterSweep/Cylinder/";
+
+        double P_blood = 0.002133152; double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
+
+        for (int A = 0; A < 7; A++)
         {
-            for (unsigned Di = 0; Di < 1; Di++)
+            for (int Di = 0; Di < 7; Di++)
             {
-                for (unsigned Def = 0; Def < 1; Def++)
+                for (int Def = 0; Def < 7; Def++)
                 {
                     std::stringstream out;
-                    out << "AreaParam_" << AreaParameter[A] << "_DilationParam_" << DilationParameter[Di] << "_DeformationParam_" << DeformationParamter[Def];
+                    out << "Param_" << AreaParameter[A] << "_DilationParam_" << DilationParameter[Di] << "_DeformationParam_" << DeformationParamter[Def];
                     std::string ParameterSet = out.str();
 
                     // Load and fix any settings in the simulator
@@ -169,46 +169,49 @@ public:
                     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
                     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
 
-                    /* Remove the constant pressure force   */
                     p_simulator->RemoveAllForces();
                     p_simulator->SetEndTime(EndTime + NewEndTime);
-                    p_simulator->SetSamplingTimestepMultiple(1000);
-                    p_simulator->SetDt(0.01);
-                    p_simulator->SetOutputDirectory(output_dir+"/Parameters/"+ ParameterSet);
+                    p_simulator->SetSamplingTimestepMultiple(500);
+                    p_simulator->SetDt(0.001);
+                    p_simulator->SetOutputDirectory(output_dir + "Parameteres/"+ParameterSet );
 
-                     /*
-                     -----------------------------
-                     Constant Compressive tissue pressure
-                     ----------------------------
-                     */
+                    /*
+                    -----------------------------
+                    Constant Compressive tissue pressure
+                    ----------------------------
+                    */
+
+                    double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+                    double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
+
                     boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
                     p_ForceOut->SetPressure(P_blood - P_tissue);
                     p_simulator->AddForce(p_ForceOut);
 
-                     /*
-                     -----------------------------
-                     Membrane forces
-                     ----------------------------
-                     */
+                    /*
+                    -----------------------------
+                    Membrane forces
+                    ----------------------------
+                    */
                     boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
                     p_simulator->AddForce(p_shear_force);
 
-                     /* 
-                     -----------------------------
-                     Update membrane properties
-                     ----------------------------
-                     */
+                    /* 
+                    -----------------------------
+                    Update membrane properties
+                    ----------------------------
+                    */
                     std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
                     boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
+                    std::map<double, c_vector<long double, 4> > GrowthMaps;
                     GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter[A]), pow(10, -DilationParameter[Di]), pow(10, -DeformationParamter[Def]), 0);
                     //                                          Strength,hetro,stepsize, setupsolve
                     p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
-                    bool SlowIncrease = 0;
-                    if (AreaParameter[A] < 6 || DilationParameter[Di] < 6 || DeformationParamter[Def] < 6)
+
+                    if (AreaParameter[A] < 8 || DilationParameter[Di] < 8 || DeformationParamter[Def] < 8)
                     {
-                        SlowIncrease = 1;
+                        p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
                     }
-                    p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(SlowIncrease, SlowIncrease);
                     p_simulator->Solve();
                     CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
                 }
