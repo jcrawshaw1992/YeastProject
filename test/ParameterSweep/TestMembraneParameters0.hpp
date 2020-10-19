@@ -146,7 +146,7 @@ public:
         int DilationParameter[7] = {4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9};
         int DeformationParamter[7] = {4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9};
 
-        double NewEndTime = 40;
+        double NewEndTime = 30;
         double EndTime = 30;
         std::string output_dir = "ParameterSweep/Cylinder/";
 
