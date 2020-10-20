@@ -142,9 +142,9 @@ public:
     void TestParametersOverCylinder() throw(Exception)
     {
 
-        double AreaParameter[7] = {4.5, 5, 5.5, 6, 6.5, 7, 8};
-        double DilationParameter[7] = {4.5, 5, 5.5, 6, 6.5, 7, 8};
-        double DeformationParamter[7] = {4.5, 5, 5.5, 6, 6.5, 7, 8};
+        double AreaParameter[6] =  {5, 5.5, 6, 6.5, 7, 8};//{5, 5.5, 6, 6.5, 7, 8};
+        double DilationParameter[6] = {5, 5.5, 6, 6.5, 7, 8};
+        double DeformationParamter[6] = {5, 5.5, 6, 6.5, 7, 8};
 
         double NewEndTime = 30;
         double EndTime = 30;
@@ -152,11 +152,11 @@ public:
 
         double P_blood = 0.002133152; double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
-        for (int A = 0; A < 7; A++)
+        for (int A = 0; A < 6; A++)
         {
-            for (int Di = 0; Di < 7; Di++)
+            for (int Di = 0; Di < 6; Di++)
             {
-                for (int Def = 0; Def < 7; Def++)
+                for (int Def = 0; Def < 6; Def++)
                 {
                     std::stringstream out;
                     out << "Param_" << AreaParameter[A] << "_DilationParam_" << DilationParameter[Di] << "_DeformationParam_" << DeformationParamter[Def];
@@ -171,9 +171,9 @@ public:
 
                     p_simulator->RemoveAllForces();
                     p_simulator->SetEndTime(EndTime + NewEndTime);
-                    p_simulator->SetSamplingTimestepMultiple(500);
+                    p_simulator->SetSamplingTimestepMultiple(1000);
                     p_simulator->SetDt(0.001);
-                    p_simulator->SetOutputDirectory(output_dir + "Parameteres/"+ParameterSet );
+                    p_simulator->SetOutputDirectory(output_dir + "Parameteres2/"+ParameterSet );
 
                     /*
                     -----------------------------
