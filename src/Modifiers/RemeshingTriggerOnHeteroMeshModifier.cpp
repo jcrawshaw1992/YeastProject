@@ -97,9 +97,11 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                 if (mSteps > 30)
                 {mSteps +=4;}
                 else if(mSteps > 50)
-                 {mSteps +=8;}
+                 {mSteps +=8;
+                 TRACE("Hit A")}
                  else if(mSteps > 80)
-                 {mSteps +=50;}
+                 {mSteps +=50;
+                 TRACE("Hit B")}
             }else 
             {
                 mCounter+=1;
