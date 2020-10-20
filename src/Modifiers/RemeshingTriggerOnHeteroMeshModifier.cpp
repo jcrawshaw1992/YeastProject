@@ -83,7 +83,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
             mCounter+=1;
         }
     }
-    double NumberOfIterations = 200;
+    double NumberOfIterations = 100;
     if (mSlowIncreaseInMembraneStrength ==1)/// Membrane parameters need to slowly increase :) 
     {
         if ( mSteps < NumberOfIterations +1)
@@ -94,10 +94,10 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                 SlowIncreaseInMembraneParameters(rCellPopulation);
                 mCounter =0;
                 mSteps +=1;
-                if (mSteps > 20 && mSteps <61)
+                if (mSteps > 20 && mSteps <31)
                 { TRACE("Hit 0")
                     mSteps +=2;}
-                else if(mSteps > 50)
+                else if(mSteps > 30)
                  {mSteps +=10;
                  TRACE("Hit A")
                  }
