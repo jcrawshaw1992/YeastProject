@@ -94,12 +94,12 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                 SlowIncreaseInMembraneParameters(rCellPopulation);
                 mCounter =0;
                 mSteps +=1;
-                if (mSteps > 30)
+                if (mSteps > 10 && mSteps <51)
                 {
                     TRACE("Hit 0")
                     mSteps +=2;}
-                else if(mSteps > 50)
-                 {mSteps +=8;
+                else if(mSteps > 50&& mSteps <81)
+                 {mSteps +=10;
                  TRACE("Hit A")}
                  else if(mSteps > 80)
                  {mSteps +=50;

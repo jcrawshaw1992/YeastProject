@@ -142,9 +142,9 @@ public:
     void TestParametersOverCylinder() throw(Exception)
     {
 
-        double AreaParameter[6] =  {5, 5.5, 6, 6.5, 7, 8};//{5, 5.5, 6, 6.5, 7, 8};
-        double DilationParameter[6] = {5, 5.5, 6, 6.5, 7, 8};
-        double DeformationParamter[6] = {5, 5.5, 6, 6.5, 7, 8};
+        double AreaParameter[5] =  {6, 6.5, 7,7.5, 8};//{6, 6.5, 7, 8};
+        double DilationParameter[5] = {6, 6.5, 7,7.5, 8};
+        double DeformationParamter[5] = {6, 6.5, 7,7.5, 8};
 
         double NewEndTime = 30;
         double EndTime = 30;
@@ -152,11 +152,11 @@ public:
 
         double P_blood = 0.002133152; double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
-        for (int A = 0; A < 6; A++)
+        for (int A = 0; A < 5; A++)
         {
-            for (int Di = 0; Di < 6; Di++)
+            for (int Di = 0; Di < 5; Di++)
             {
-                for (int Def = 0; Def < 6; Def++)
+                for (int Def = 0; Def < 5; Def++)
                 {
                     std::stringstream out;
                     out << "Param_" << AreaParameter[A] << "_DilationParam_" << DilationParameter[Di] << "_DeformationParam_" << DeformationParamter[Def];
@@ -208,7 +208,7 @@ public:
                     //                                          Strength,hetro,stepsize, setupsolve
                     p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
 
-                    if (AreaParameter[A] < (double)8 || DilationParameter[Di] < (double)8 || DeformationParamter[Def] < (double)8)
+                    if (AreaParameter[A] < (double)7 || DilationParameter[Di] < (double)7 || DeformationParamter[Def] < (double)7)
                     {
                         p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
                     }
