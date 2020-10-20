@@ -7,7 +7,10 @@
 
 #include <cxxtest/TestSuite.h>
 #include "UblasCustomFunctions.hpp"
-
+// #include <cstdio>
+// #include <ctime>
+// #include <cmath>
+// #include <vector>
 
 #include "Debug.hpp"
 #include "Honeycomb3DCylinderMeshGenerator.hpp"
@@ -35,6 +38,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
+
 void TestParametersOverCylinder3B() throw(Exception)
     {
 
@@ -42,7 +46,7 @@ void TestParametersOverCylinder3B() throw(Exception)
         double DilationParameter[3] = {7,7.5, 8};
         double DeformationParamter[3] = { 7,7.5, 8};
 
-        double NewEndTime = 30;
+        double NewEndTime = 15;
         double EndTime = 30;
         std::string output_dir = "ParameterSweep/Cylinder/";
 
@@ -114,6 +118,7 @@ void TestParametersOverCylinder3B() throw(Exception)
             }
         }
     }
+
 };
 
 #endif /*TESTRELAXATION_HPP_*/

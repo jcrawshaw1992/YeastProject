@@ -39,7 +39,6 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
 
-
  void TestParametersOverCylinder1B() throw(Exception)
     {
 
@@ -47,7 +46,7 @@ public:
         double DilationParameter[3] = {7,7.5, 8};
         double DeformationParamter[2] = {6, 6.5};
 
-        double NewEndTime = 30;
+        double NewEndTime = 15;
         double EndTime = 30;
         std::string output_dir = "ParameterSweep/Cylinder/";
 
@@ -127,7 +126,7 @@ void offTestParametersOverCylinder2A() throw(Exception)
         double DilationParameter[2] = {6, 6.5};
         double DeformationParamter[2] = {6, 6.5};
 
-        double NewEndTime = 30;
+        double NewEndTime = 15;
         double EndTime = 30;
         std::string output_dir = "ParameterSweep/Cylinder/";
 
@@ -207,7 +206,7 @@ void offTestParametersOverCylinder2B() throw(Exception)
         double DilationParameter[3] = { 7,7.5, 8};
         double DeformationParamter[2] ={6, 6.5};
 
-        double NewEndTime = 30;
+        double NewEndTime = 15;
         double EndTime = 30;
         std::string output_dir = "ParameterSweep/Cylinder/";
 
@@ -287,7 +286,7 @@ void offTestParametersOverCylinder3A() throw(Exception)
         double DilationParameter[2] = {6, 6.5};
         double DeformationParamter[2] = {6, 6.5};
 
-        double NewEndTime = 30;
+        double NewEndTime = 15;
         double EndTime = 30;
         std::string output_dir = "ParameterSweep/Cylinder/";
 
@@ -366,7 +365,7 @@ void offTestParametersOverCylinder3B() throw(Exception)
         double DilationParameter[3] = {7,7.5, 8};
         double DeformationParamter[2] = {6, 6.5};
 
-        double NewEndTime = 30;
+        double NewEndTime = 15;
         double EndTime = 30;
         std::string output_dir = "ParameterSweep/Cylinder/";
 
