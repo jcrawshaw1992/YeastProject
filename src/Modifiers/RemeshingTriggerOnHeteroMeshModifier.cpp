@@ -95,11 +95,11 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                 mCounter =0;
                 mSteps +=1;
                 if (mSteps > 30)
-                {mSteps +=10;}
-                //  if (mSteps > 10)
-                // {mSteps +=3;}
-                // else if(mSteps > 50)
-                //  {mSteps +=20;}
+                {mSteps +=4;}
+                else if(mSteps > 50)
+                 {mSteps +=8;}
+                 else if(mSteps > 80)
+                 {mSteps +=50;}
             }else 
             {
                 mCounter+=1;

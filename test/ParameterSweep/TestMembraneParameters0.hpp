@@ -172,7 +172,7 @@ public:
                     p_simulator->RemoveAllForces();
                     p_simulator->SetEndTime(EndTime + NewEndTime);
                     p_simulator->SetSamplingTimestepMultiple(1000);
-                    p_simulator->SetDt(0.01);
+                    p_simulator->SetDt(0.001);
                     p_simulator->SetOutputDirectory(output_dir + "Parameteres2/"+ParameterSet );
 
                     /*
