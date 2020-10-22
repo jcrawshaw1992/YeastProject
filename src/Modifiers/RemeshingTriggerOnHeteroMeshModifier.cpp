@@ -99,7 +99,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                     mSteps +=2;}
                 else if(mSteps > 30)
                  {mSteps +=10;
-                 //TRACE("Hit A")
+                 TRACE("Hit A")
                  }
                 //  else if(mSteps > 80)
                 //  {mSteps +=20;
@@ -119,6 +119,11 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                 
 
     }
+
+
+
+// source ~/.bash_profile
+// scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParameters12.hpp
 
 
 
@@ -188,9 +193,9 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
            
             if (mSlowIncreaseInMembraneStrength ==1) // Incase there needs to be a slow increase :S 
             {
-                cell_iter->GetCellData()->SetItem("ShearModulus", 1e-8);
-                cell_iter->GetCellData()->SetItem("AreaDilationModulus", 1e-8);
-                cell_iter->GetCellData()->SetItem("AreaConstant", 1e-8);
+                cell_iter->GetCellData()->SetItem("ShearModulus", mStartingParameterForSlowIncrease);
+                cell_iter->GetCellData()->SetItem("AreaDilationModulus", mStartingParameterForSlowIncrease);
+                cell_iter->GetCellData()->SetItem("AreaConstant", mStartingParameterForSlowIncrease);
                 cell_iter->GetCellData()->SetItem("BendingConstant", 0);
                  
             }else // Set now
@@ -205,6 +210,11 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
 
         }
   
+}
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetStartingParameterForSlowIncrease(double StartingParameterForSlowIncrease)
+{
+ mStartingParameterForSlowIncrease =StartingParameterForSlowIncrease;
 }
 
 /////------------------------------------------------------------------

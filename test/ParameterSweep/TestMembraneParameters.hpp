@@ -41,42 +41,60 @@ public:
     void TestParametersOverCylinder3B() throw(Exception)
     {
 
-        // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-AreaParameter"));
-        // double AreaParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
-double AreaParameter = 1
-        // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-duration"));
-        // double DilationParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
-double DilationParameter =1
-        // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-traction_file"));
-        // double DeformationParamter = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-DeformationParamter");
-double DeformationParamter =1
-        double dt = 0.001
+        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-AreaParameter"));
+        double AreaParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
+
+        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-DilationParameter"));
+        double DilationParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
+
+        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-DeformationParamter"));
+        double DeformationParamter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DeformationParamter");
+        PRINT_3_VARIABLES(AreaParameter, DilationParameter, DeformationParamter)
+        double dt= 0.001;
          if (CommandLineArguments::Instance()->OptionExists("-dt"))
         {
-            dt = atof(CommandLineArguments::Instance()->GetStringCorrespondingToOption("-dt").c_str());
+            dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
         }
         double NewEndTime = 15;
         if (CommandLineArguments::Instance()->OptionExists("-NewEndTime"))
         {
-            NewEndTime = atof(CommandLineArguments::Instance()->GetStringCorrespondingToOption("-NewEndTime").c_str());
+            NewEndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-NewEndTime");
         }
         double EndTime = 30;
         if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
         {
-            EndTime = atof(CommandLineArguments::Instance()->GetStringCorrespondingToOption("-EndTime").c_str());
+            EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
+        }
+        double SamplingTimestepMultiple = 1000;
+        if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
+        {
+            SamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SamplingTimestepMultiple");
         }
 
-        std::string output_dir = "ParameterSweep/Cylinder/";
+        std::string ArchivedDirectory = "ParameterSweep/Cylinder/";
+        if (CommandLineArguments::Instance()->OptionExists("-ArchivedDirectory"))
+        {
+            ArchivedDirectory  = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-ArchivedDirectory");
+        }
+        
+         double SamplingTimestepMultiple = 1e-8;
+        if (CommandLineArguments::Instance()->OptionExists("-StartingParameterForSlowIncrease"))
+        {
+            StartingParameterForSlowIncrease= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-StartingParameterForSlowIncrease");
+        }
 
-        double P_blood = 0.002133152;
-        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
-
+        StartingParameterForSlowIncrease
+		
+        
+        PRINT_4_VARIABLES(dt, NewEndTime, EndTime, SamplingTimestepMultiple)
+    
         std::stringstream out;
         out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter;
         std::string ParameterSet = out.str();
+        std::string output_dir = "ParameterSweep/Cylinder/Parameteres3/";
 
         // Load and fix any settings in the simulator
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, EndTime);
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(ArchivedDirectory, EndTime);
 
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
@@ -84,9 +102,9 @@ double DeformationParamter =1
 
         p_simulator->RemoveAllForces();
         p_simulator->SetEndTime(EndTime + NewEndTime);
-        p_simulator->SetSamplingTimestepMultiple(1000);
+        p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
         p_simulator->SetDt(dt);
-        p_simulator->SetOutputDirectory(output_dir + "Parameteres2tests/" + ParameterSet);
+        p_simulator->SetOutputDirectory(output_dir + ParameterSet);
 
         /*
         -----------------------------
@@ -123,6 +141,7 @@ double DeformationParamter =1
 
         if (AreaParameter < (double)7 || DilationParameter < (double)7 || DeformationParamter < (double)7)
         {
+            p_Mesh_modifier->SetStartingParameterForSlowIncrease(StartingParameterForSlowIncrease);
             p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
         }
         p_simulator->Solve();

@@ -1,0 +1,7 @@
+#!/bin/bash
+# chmod 700 RunChaste
+echo 'To Run Chaste'
+# $1 #> $2
+/Users/jcrawshaw/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersRunner -AreaParameter 10  -DilationParameter 10 -DeformationParamter 10
+osascript -e 'tell application "Terminal" to close first window' & exit
+# /data/vascrem/testoutput/ParameterSweep/Cylinder/Parameteres3/TerminalOut.txt

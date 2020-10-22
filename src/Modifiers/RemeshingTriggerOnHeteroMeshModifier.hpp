@@ -146,6 +146,11 @@ public:
     void Boundaries(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPlanePoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> PlanePoint);
     c_vector<c_vector<double, 3>, 2> PlateauDistributionFuction(double Length);
 
+    void SetStartingParameterForSlowIncrease(double StartingParameterForSlowIncrease);
+    double mStartingParameterForSlowIncrease  1e-8;
+
+
+
     // Has spatial constants of the membrane function .. the ks and the as 
     std::vector<c_vector<c_vector<double, 3>, 2>> mMembraneFuctionSpatialConstants;
 
