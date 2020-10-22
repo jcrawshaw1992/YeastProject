@@ -19,7 +19,7 @@ if __name__=="__main__":
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParameters.hpp"
         subprocess.call(command, shell=True)
-    Server = 0
+    Server = 1
     if Server ==1:
         chaste_run_exe = '~/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersRunner'
         TerminalOutputFolder = "/data/vascrem/testoutput/ParameterSweep/Cylinder/SweepTerminalOutputs/"
