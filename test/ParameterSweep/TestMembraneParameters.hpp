@@ -48,13 +48,14 @@ double AreaParameter = 1
         // double DilationParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
 double DilationParameter =1
         // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-traction_file"));
-        // std::string DeformationParamter = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-DeformationParamter");
-std::string DeformationParamter =1
-        double dt = 0.001 if (CommandLineArguments::Instance()->OptionExists("-dt"))
+        // double DeformationParamter = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-DeformationParamter");
+double DeformationParamter =1
+        double dt = 0.001
+         if (CommandLineArguments::Instance()->OptionExists("-dt"))
         {
             dt = atof(CommandLineArguments::Instance()->GetStringCorrespondingToOption("-dt").c_str());
         }
-        ouble NewEndTime = 15;
+        double NewEndTime = 15;
         if (CommandLineArguments::Instance()->OptionExists("-NewEndTime"))
         {
             NewEndTime = atof(CommandLineArguments::Instance()->GetStringCorrespondingToOption("-NewEndTime").c_str());
