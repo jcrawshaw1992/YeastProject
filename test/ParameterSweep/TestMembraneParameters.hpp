@@ -77,17 +77,12 @@ public:
             ArchivedDirectory  = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-ArchivedDirectory");
         }
         
-         double SamplingTimestepMultiple = 1e-8;
+         double StartingParameterForSlowIncrease = 1e-8;
         if (CommandLineArguments::Instance()->OptionExists("-StartingParameterForSlowIncrease"))
         {
             StartingParameterForSlowIncrease= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-StartingParameterForSlowIncrease");
         }
-
-        StartingParameterForSlowIncrease
-		
-        
-        PRINT_4_VARIABLES(dt, NewEndTime, EndTime, SamplingTimestepMultiple)
-    
+        PRINT_4_VARIABLES(dt, NewEndTime,EndTime, SamplingTimestepMultiple)
         std::stringstream out;
         out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter;
         std::string ParameterSet = out.str();

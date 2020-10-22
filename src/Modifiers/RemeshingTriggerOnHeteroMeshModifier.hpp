@@ -147,7 +147,7 @@ public:
     c_vector<c_vector<double, 3>, 2> PlateauDistributionFuction(double Length);
 
     void SetStartingParameterForSlowIncrease(double StartingParameterForSlowIncrease);
-    double mStartingParameterForSlowIncrease  1e-8;
+    double mStartingParameterForSlowIncrease = 1e-8;
 
 
 
