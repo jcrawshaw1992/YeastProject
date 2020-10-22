@@ -10,61 +10,48 @@ import time
 import pdb
 import string
 import math
+import sys
 
 Iterations=30
 # SimulationsList = ['/Users/jcrawshaw/Documents/ChasteWorkingDirectory/IncreasedFluidPressure/' ,'/Users/jcrawshaw/Documents/ChasteWorkingDirectory/IncreasedFluidPressure/' ]
-chaste_setup_exe = '/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/build/optimised/HemeLBChasteTests/TestSetupFlowInVesselRunner'
 chaste_run_exe = '/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling/build/optimised/HemeLBChasteTests/TestRunFlowInVesselRunner'
-hemelb_setup_exe = 'env PYTHONPATH=/Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/setuptool:$PYTHONPATH /Users/jcrawshaw/Documents/HemeLB/hemelb/Tools/setuptool/scripts/hemelb-setup-nogui'
-radii_over_time = [] # empty array
+
 
 
 if __name__=="__main__":
-    GenerateRunner =0
+    GenerateRunner =1
     if GenerateRunner ==1:
-        print"Need to generate runner"
+        command = " /home/vascrem/Chaste scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParameters.hpp"
+#         subprocess.call(command, shell=True)
+        # print"Need to generate runner"
 
-    CompletedAreaParameter = [6, 6.5, 7,7.5, 8]
-    CompletedDilationParameter =[6, 6.5, 7,7.5, 8]
-    CompletedDeformationParamter = [6, 6.5, 7,7.5, 8]
+#     CompletedAreaParameter = [6, 6.5, 7,7.5, 8]
+#     CompletedDilationParameter =[6, 6.5, 7,7.5, 8]
+#     CompletedDeformationParamter = [6, 6.5, 7,7.5, 8]
 
-    AreaParameter = [4, 4.5,5, 5.5,6, 6.5, 7,7.5, 8, 8,8.5,9]
-    DilationParameter =[4, 4.5,5,5.5, 6, 6.5, 7,7.5, 8,8.5,9]
-    DeformationParamter = [6, 6.5,5.5, 7,7.5, 8, 8,8.5,9]
+#     AreaParameter = [4, 4.5,5, 5.5,6, 6.5, 7,7.5, 8, 8,8.5,9]
+#     DilationParameter =[4, 4.5,5,5.5, 6, 6.5, 7,7.5, 8,8.5,9]
+#     DeformationParamter = [6, 6.5,5.5, 7,7.5, 8, 8,8.5,9]
 
+#     # for i in AreaParameter:
+#     #     for j in DilationParameter:
+#     #         for k in DeformationParamter:
+#     #             if ((i in CompletedAreaParameter) & (j in CompletedDilationParameter) & (k in CompletedDeformationParamter)):
+#     #                 print "skip"
+#     #             else:
+#                       command = chaste_run_exe + ' -start_time ' + str(start_time) + ' -duration ' + str(duration) + ' -traction_file ' +  working_directory + 'results/Extracted/surface-tractions.xtr' + ' -mesh_scale ' +  str(mesh_scale)
+# #         subprocess.call(command, shell=True)
+#                      subprocess.Popen([sys.executable, "/home/vascrem/Chaste/projects/VascularRemodelling/apps/CollectSweepResults.py"])
+#                      print"somethingelse"
+#     #                 print" open new screen with naming convention"
+#     #                 print(" Set Chaste to run in this screen ")
+#     #                 print("Leave the screen  ")
 
-
-
-    proc = subprocess.Popen('screen -S sTest', shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-    proc.stdin.write('echo I would like to be inside screen here.\n')
-    proc.stdin.write('spark-submit S1.py\n')
-    statusProc = subprocess.run('screen -ls', shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-    statusString = statusProc.stdout.decode('ascii')
-    # parse screen's output (statusString) for your status list
-
-
-
-    # for i in AreaParameter:
-    #     for j in DilationParameter:
-    #         for k in DeformationParamter:
-    #             if ((i in CompletedAreaParameter) & (j in CompletedDilationParameter) & (k in CompletedDeformationParamter)):
-    #                 print "skip"
-    #             else:
-    #                 print" open new screen with naming convention"
-    #                 print(" Set Chaste to run in this screen ")
-    #                 print("Leave the screen  ")
-
-    print '\n ********* ------ Completed ------ ********* \n'
+#     print '\n ********* ------ Completed ------ ********* \n'
 
 
 
 
-# proc = subprocess.Popen('screen -S sTest', shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-# proc.stdin.write('echo I would like to be inside screen here.\n')
-# proc.stdin.write('spark-submit S1.py\n')
-# statusProc = subprocess.run('screen -ls', shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-# statusString = statusProc.stdout.decode('ascii')
-# parse screen's output (statusString) for your status list
 
 
 
