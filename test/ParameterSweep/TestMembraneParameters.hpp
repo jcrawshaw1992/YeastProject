@@ -41,15 +41,15 @@ public:
     void TestParametersOverCylinder3B() throw(Exception)
     {
 
-        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-AreaParameter"));
-        double AreaParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
-
-        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-duration"));
-        double DilationParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
-
-        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-traction_file"));
-        std::string DeformationParamter = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-DeformationParamter");
-
+        // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-AreaParameter"));
+        // double AreaParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
+double AreaParameter = 1
+        // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-duration"));
+        // double DilationParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
+double DilationParameter =1
+        // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-traction_file"));
+        // std::string DeformationParamter = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-DeformationParamter");
+std::string DeformationParamter =1
         double dt = 0.001 if (CommandLineArguments::Instance()->OptionExists("-dt"))
         {
             dt = atof(CommandLineArguments::Instance()->GetStringCorrespondingToOption("-dt").c_str());
@@ -85,7 +85,7 @@ public:
         p_simulator->SetEndTime(EndTime + NewEndTime);
         p_simulator->SetSamplingTimestepMultiple(1000);
         p_simulator->SetDt(dt);
-        p_simulator->SetOutputDirectory(output_dir + "Parameteres2/" + ParameterSet);
+        p_simulator->SetOutputDirectory(output_dir + "Parameteres2tests/" + ParameterSet);
 
         /*
         -----------------------------

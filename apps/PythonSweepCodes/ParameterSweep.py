@@ -21,8 +21,8 @@ chaste_run_exe = '/Users/jcrawshaw/Documents/Chaste/projects/VascularRemodelling
 if __name__=="__main__":
     GenerateRunner =1
     if GenerateRunner ==1:
-        command = " /home/vascrem/Chaste scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParameters.hpp"
-#         subprocess.call(command, shell=True)
+        command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParameters.hpp"
+        subprocess.call(command, shell=True)
         # print"Need to generate runner"
 
 #     CompletedAreaParameter = [6, 6.5, 7,7.5, 8]
