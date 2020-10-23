@@ -38,11 +38,16 @@ if __name__=="__main__":
     DilationParameter = [ 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
     DeformationParamter = [ 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
 
+
+    AreaParameter = [11,12,23]
+    DilationParameter = [ 11,34]
+    DeformationParamter = [11,34,12,23,44]
+
     dt = ' -dt 0.0005'
     EndTime = ' -NewEndTime 15' 
     SamplingTimestepMultiple = ' -SamplingTimestepMultiple 2000'
-    Parallel = 12
-    SleepyTime =120
+    Parallel = 3
+    SleepyTime =10# 120
     AvaliablePaths = range(Parallel)
     print AvaliablePaths
     for i in AreaParameter:
