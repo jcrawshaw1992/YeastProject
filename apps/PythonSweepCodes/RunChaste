@@ -2,4 +2,4 @@
 # chmod 700 RunChaste
 $1 > $2
 echo 'Chaste simulation complete' > $3
-# osascript -e 'tell application "Terminal" to close first window' & exit
+osascript -e 'tell application "Terminal" to close first window' & exit

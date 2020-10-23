@@ -32,15 +32,15 @@ if __name__=="__main__":
 
     subprocess.call("chmod 700 RunChaste", shell=True)
 
-    Completedarameters = [5.5, 6, 6.5, 7,7.5, 8]
-    AreaParameter = [5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
-    DilationParameter = [5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
-    DeformationParamter = [5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
+    Completedarameters = [6, 6.5, 7,7.5, 8]
+    AreaParameter = [5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
+    DilationParameter = [ 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
+    DeformationParamter = [ 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
 
-    dt = ' -dt 0.0001'
+    dt = ' -dt 0.0005'
     EndTime = ' -NewEndTime 15' 
-    SamplingTimestepMultiple = ' -SamplingTimestepMultiple 10000'
-    Parallel = 16
+    SamplingTimestepMultiple = ' -SamplingTimestepMultiple 2000'
+    Parallel = 10
     SleepyTime =50
     AvaliablePaths = range(Parallel)
     print AvaliablePaths
