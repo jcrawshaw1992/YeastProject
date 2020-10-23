@@ -99,7 +99,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                     mSteps +=2;}
                 else if(mSteps > 30)
                  {mSteps +=10;
-                 TRACE("Hit A")
+                //  TRACE("Hit A")
                  }
                 //  else if(mSteps > 80)
                 //  {mSteps +=20;

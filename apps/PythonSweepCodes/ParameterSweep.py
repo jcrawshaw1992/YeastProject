@@ -15,7 +15,8 @@ import os.path
 from os import path
 
 if __name__=="__main__":
-    GenerateRunner =1
+    t0 = time.time()
+    GenerateRunner =0
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParameters.hpp"
         subprocess.call(command, shell=True)
@@ -40,8 +41,8 @@ if __name__=="__main__":
     dt = ' -dt 0.0005'
     EndTime = ' -NewEndTime 15' 
     SamplingTimestepMultiple = ' -SamplingTimestepMultiple 2000'
-    Parallel = 10
-    SleepyTime =50
+    Parallel = 12
+    SleepyTime =120
     AvaliablePaths = range(Parallel)
     print AvaliablePaths
     for i in AreaParameter:
@@ -70,9 +71,9 @@ if __name__=="__main__":
                         if path.exists(OutputFile):
                             AvaliablePaths.append(P)
                             os.remove(OutputFile)
-                    # if len(AvaliablePaths) >0:
-                        # print AvaliablePaths
-                        # print "Have found a spare core or two :-) " 
+                    if len(AvaliablePaths) >0:
+                        print AvaliablePaths, "Have found a spare core or two :-) " 
+                        print time.time() - t0, "seconds time"
 
 
     print '\n ********* ------ Completed ------ ********* \n'
