@@ -82,14 +82,11 @@ public:
             {
                 if (SPACE_DIM ==3)
                 {
-                    // std::vector<double> v = {atof(&line[1]), atof(&line[4]), atof(&line[7])};
-                    // CenterlinesPoints.push_back(v);
-                    std::cout<<line<< std::endl;
+                    // std::cout<<line<< std::endl;
                     points->InsertNextPoint(atof(&line[1]), atof(&line[4]), atof(&line[7]));
                 }else if (SPACE_DIM ==2)
-                {
-                    
-                    std::cout<<line<< std::endl;
+                {             
+                    // std::cout<<line<< std::endl;
                     int i =1;
                     if(line[1]==' ') 
                     {
@@ -173,16 +170,16 @@ public:
         {
             
 
-            if (vertex_id == points->GetNumberOfPoints()-2  || vertex_id == points->GetNumberOfPoints()-1)
-            {
-             radii_array->InsertNextValue(RadiValue*1.25); 
-            }else if (vertex_id == points->GetNumberOfPoints()-3 || vertex_id == points->GetNumberOfPoints()-4)
-            {
-             radii_array->InsertNextValue(RadiValue*1.5); 
-            }
-            else{
+            // if (vertex_id == points->GetNumberOfPoints()-2  || vertex_id == points->GetNumberOfPoints()-1)
+            // {
+            //  radii_array->InsertNextValue(RadiValue); 
+            // }else if (vertex_id == points->GetNumberOfPoints()-3 || vertex_id == points->GetNumberOfPoints()-4)
+            // {
+            //  radii_array->InsertNextValue(RadiValue); 
+            // }
+            // else{
                 radii_array->InsertNextValue(RadiValue);
-            }
+            // }
         }
         polydata->GetPointData()->AddArray(radii_array);
         polydata->GetPointData()->SetActiveScalars("Radius");

@@ -38,7 +38,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void TestParametersOverCylinder3B() throw(Exception)
+    void TestParametersOverCylinder() throw(Exception)
     {
 
         TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-AreaParameter"));
