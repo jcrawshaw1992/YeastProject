@@ -157,7 +157,7 @@ if __name__=="__main__":
   
     CPP_Centerlines_vtp_writer = "/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/GenerateIdealVascularMesh/Test_VTP_writerRunner"
 
-    Directory = "//home/vascrem/MeshCollection/IdealisedNetwork/"
+    Directory = "/home/vascrem/MeshCollection/IdealisedNetwork/"
     CenterLines_filename = Directory + "Centerlines.vtp"
    
     VTK_Mesh = Directory+"Meshinital.vtk"
