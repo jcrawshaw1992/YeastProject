@@ -184,7 +184,7 @@ if __name__=="__main__":
     subprocess.call(SmoothCenterlinesCommond, shell=True)
 
     print "Developing Mesh"
-    With the scalled radii generate a new mesh from with adapted centerlines file  -- here the discretisation dimension (i.e nunber of nodes in each axis) is currently 200 200 200, but might need changing 
+    # With the scalled radii generate a new mesh from with adapted centerlines file  -- here the discretisation dimension (i.e nunber of nodes in each axis) is currently 200 200 200, but might need changing 
     command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 180 180 150 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
     subprocess.call(command, shell=True)
     
