@@ -43,7 +43,7 @@ public:
   void TestGrowToEquiIdealNetwork() throw (Exception)
     {
   
-        double EndTime = 80;
+        double EndTime = 10;
         double scale = 1e-2;        
         std::string output_dir = "TestHemeLBOnNetwork/Archiving";
         
@@ -90,22 +90,22 @@ public:
         ----------------------------
         */        
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0);
-        c_vector<double, 3> Point1 = Create_c_vector(0.004,0,0);
+        c_vector<double, 3> Point1 = Create_c_vector(0.006,0,0);
 
         c_vector<double, 3> PlaneNormal2 = Create_c_vector(1,0,0);
-        c_vector<double, 3> Point2 = Create_c_vector(0.004,-0.014,0);
+        c_vector<double, 3> Point2 = Create_c_vector(0.006,-0.020,0);
 
         c_vector<double, 3> PlaneNormal3 = Create_c_vector(1,0,0);
-        c_vector<double, 3> Point3 = Create_c_vector(0.004,0.014,0);
+        c_vector<double, 3> Point3 = Create_c_vector(0.006,0.020,0);
 
         c_vector<double, 3> PlaneNormal4 = Create_c_vector(-1,0,0);
-        c_vector<double, 3> Point4 = Create_c_vector(0.075,0.014,0);
+        c_vector<double, 3> Point4 = Create_c_vector(0.08,0.020,0);
 
         c_vector<double, 3> PlaneNormal5 = Create_c_vector(-1,0,0);
-        c_vector<double, 3> Point5 = Create_c_vector(0.075,0,0);
+        c_vector<double, 3> Point5 = Create_c_vector(0.08,0,0);
 
         c_vector<double, 3> PlaneNormal6 = Create_c_vector(-1,0,0);
-        c_vector<double, 3> Point6 = Create_c_vector(0.075,-0.014,0);
+        c_vector<double, 3> Point6 = Create_c_vector(0.08,-0.020,0);
 
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
@@ -117,7 +117,7 @@ public:
         */
 
         boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
-        p_ForceOut->SetPressure(-(P_blood - P_tissue));
+        p_ForceOut->SetPressure((P_blood - P_tissue));
         p_ForceOut->SetInitialPosition(cell_population, 0);
         p_ForceOut->SetRadiusThreshold(10);
         simulator.AddForce(p_ForceOut);

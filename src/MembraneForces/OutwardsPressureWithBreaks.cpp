@@ -33,11 +33,20 @@ void OutwardsPressureWithBreaks::AddForceContribution(AbstractCellPopulation<2, 
     double Growth =0;
     if (mGrowthThreshold!=0)
     {
-        Node<3>* p_node = rCellPopulation.GetNode(mNode);
+         Node<3>* p_node = rCellPopulation.GetNode(mNode);
         c_vector<double, 3> Position = p_node->rGetLocation(); 
         
         // Growth = norm_2(Position-mInitialPosition);
-         Growth = norm_2(Position)/norm_2(mInitialPosition);
+        
+
+        if (Cylinder ==1)
+        {
+             Growth = norm_2(Position)/norm_2(mInitialPosition);
+        }  
+        else // Network     
+        {
+            Growth = Position[2]/mInitialPosition[2];
+        } 
 
     }
     
