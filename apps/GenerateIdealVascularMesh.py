@@ -198,7 +198,7 @@ if __name__=="__main__":
     # command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.025 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined1
     # subprocess.call(command, shell=True)
 
-    # VTK_MeshRefined2 = Directory+"SecondRefined.vtk"
+    VTK_MeshRefined2 = Directory+"SecondRefined.vtk"
     # # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
     # command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined1 +' -iterations 5 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined2
     # subprocess.call(command, shell=True)
@@ -208,7 +208,7 @@ if __name__=="__main__":
     # command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined2 +' -iterations 5 -edgelength 0.04 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined
     # subprocess.call(command, shell=True)
    
-    clip.clip_surface_with_plane(VTK_MeshRefined1,(0.5,0,0), (1,0,0), Clipped_Mesh)
+    clip.clip_surface_with_plane(VTK_MeshRefined2,(0.5,0,0), (1,0,0), Clipped_Mesh)
     clip.clip_surface_with_plane(Clipped_Mesh,(MaxX-0.5,0,0), (-1,0,0), Clipped_Mesh)
 
     # print "-----------Converting---------------"

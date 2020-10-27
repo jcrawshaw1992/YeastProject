@@ -33,6 +33,7 @@
 #include "MembraneDeformationForce.hpp"
 #include "OutwardsPressureWithBreaks.hpp"
 // #include "OutwardsPressure.hpp"
+#include "MembraneStiffnessForce.hpp"
 #include "HemeLBForce.hpp"
 
 
@@ -43,9 +44,9 @@ public:
   void TestGrowToEquiIdealNetwork() throw (Exception)
     {
   
-        double EndTime = 10;
+        double EndTime = 3;
         double scale = 1e-2;        
-        std::string output_dir = "TestHemeLBOnNetwork/Archiving";
+        std::string output_dir = "TestHemeLBOnNetwork/ArchivingWithBending";
         
         std::string mesh_file = "/Users/jcrawshaw/Downloads/SimpleNetwork.vtu";
         
@@ -71,7 +72,7 @@ public:
         // Set up cell-based simulation
         OffLatticeSimulation<2,3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
-        simulator.SetSamplingTimestepMultiple(500);
+        simulator.SetSamplingTimestepMultiple(10);
         simulator.SetDt(0.002);
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
@@ -119,15 +120,28 @@ public:
         boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
         p_ForceOut->SetPressure((P_blood - P_tissue));
         p_ForceOut->SetInitialPosition(cell_population, 0);
-        p_ForceOut->SetRadiusThreshold(4);
+        p_ForceOut->SetRadiusThreshold(2);
         simulator.AddForce(p_ForceOut);
 
+          /*
+        -----------------------------
+        Bending Force
+        ----------------------------
+       */
+      double membrane_constant = 0 ;//1e-11;
+      boost::shared_ptr<MembraneStiffnessForce> p_membrane_force(new MembraneStiffnessForce());
+      p_membrane_force->SetMembraneStiffness(1e-15);
+      p_membrane_force->SetupInitialMembrane(mesh, cell_population);
+      simulator.AddForce(p_membrane_force);
 
-        // /*
-        // -----------------------------
-        // Membrane forces
-        // ----------------------------
-        // */
+
+
+
+        /*
+        -----------------------------
+        Membrane forces
+        ----------------------------
+        */
         // boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
         // simulator.AddForce(p_shear_force);
 

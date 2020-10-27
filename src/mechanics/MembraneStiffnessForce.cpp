@@ -163,17 +163,22 @@ bool MembraneStiffnessForce::CalculateElementNormalsInital(MutableMesh<2, 3>& rM
             CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex( pNode3->GetIndex());
             CellPtr p_cell4 = p_cell_population->GetCellUsingLocationIndex( pNode4->GetIndex());
 
-            c_vector<double, 3> Location_1;
-            Location_1[0] = p_cell1->GetCellData()->GetItem("Initial_Location_X");  Location_1[1] = p_cell1->GetCellData()->GetItem("Initial_Location_Y");  Location_1[2] = p_cell1->GetCellData()->GetItem("Initial_Location_Z");
+            c_vector<double, 3> Location_1 = pNode1->rGetLocation();
+            c_vector<double, 3> Location_2 = pNode2->rGetLocation();
+            c_vector<double, 3> Location_3 = pNode3->rGetLocation();
+            c_vector<double, 3> Location_4 = pNode4->rGetLocation();
 
-            c_vector<double, 3> Location_2;
-            Location_2[0] = p_cell2->GetCellData()->GetItem("Initial_Location_X");  Location_2[1] = p_cell2->GetCellData()->GetItem("Initial_Location_Y");  Location_2[2] = p_cell2->GetCellData()->GetItem("Initial_Location_Z");
 
-            c_vector<double, 3> Location_3;
-            Location_3[0] = p_cell3->GetCellData()->GetItem("Initial_Location_X");  Location_3[1] = p_cell3->GetCellData()->GetItem("Initial_Location_Y");  Location_3[2] = p_cell3->GetCellData()->GetItem("Initial_Location_Z");
+            // Location_1[0] = p_cell1->GetCellData()->GetItem("Initial_Location_X");  Location_1[1] = p_cell1->GetCellData()->GetItem("Initial_Location_Y");  Location_1[2] = p_cell1->GetCellData()->GetItem("Initial_Location_Z");
 
-            c_vector<double, 3> Location_4;
-            Location_4[0] = p_cell4->GetCellData()->GetItem("Initial_Location_X");  Location_4[1] = p_cell4->GetCellData()->GetItem("Initial_Location_Y");  Location_4[2] = p_cell4->GetCellData()->GetItem("Initial_Location_Z");
+            // c_vector<double, 3> Location_2;
+            // Location_2[0] = p_cell2->GetCellData()->GetItem("Initial_Location_X");  Location_2[1] = p_cell2->GetCellData()->GetItem("Initial_Location_Y");  Location_2[2] = p_cell2->GetCellData()->GetItem("Initial_Location_Z");
+
+            // c_vector<double, 3> Location_3;
+            // Location_3[0] = p_cell3->GetCellData()->GetItem("Initial_Location_X");  Location_3[1] = p_cell3->GetCellData()->GetItem("Initial_Location_Y");  Location_3[2] = p_cell3->GetCellData()->GetItem("Initial_Location_Z");
+
+            // c_vector<double, 3> Location_4;
+            // Location_4[0] = p_cell4->GetCellData()->GetItem("Initial_Location_X");  Location_4[1] = p_cell4->GetCellData()->GetItem("Initial_Location_Y");  Location_4[2] = p_cell4->GetCellData()->GetItem("Initial_Location_Z");
 
             c_vector<double, 3> vector_A = Location_1 - Location_3;
             c_vector<double, 3> vector_B = Location_2 - Location_3;
@@ -294,6 +299,7 @@ void MembraneStiffnessForce::AddForceContribution(AbstractCellPopulation<2,3>& r
 
         if (boundary_edge_found)
         {
+            // TRACE("Have boundary")
             continue;
         }
 
@@ -307,17 +313,13 @@ void MembraneStiffnessForce::AddForceContribution(AbstractCellPopulation<2,3>& r
         unsigned node_index4 = pNode4->GetIndex();
 
 
-          double  MembraneStiffness = 0;
+          double  MembraneStiffness = mMembraneStiffness;
         // unsigned node_index;
-        CellPtr p_cell1 = p_static_cast_cell_population->GetCellUsingLocationIndex(node_index1);  MembraneStiffness += p_cell1->GetCellData()->GetItem("BendingConstant");
+        CellPtr p_cell1 = p_static_cast_cell_population->GetCellUsingLocationIndex(node_index1);  //MembraneStiffness += p_cell1->GetCellData()->GetItem("BendingConstant");
+        CellPtr p_cell2 = p_static_cast_cell_population->GetCellUsingLocationIndex(node_index2);   //MembraneStiffness += p_cell2->GetCellData()->GetItem("BendingConstant");
+        CellPtr p_cell3 = p_static_cast_cell_population->GetCellUsingLocationIndex(node_index3); // MembraneStiffness += p_cell3->GetCellData()->GetItem("BendingConstant");
+        CellPtr p_cell4 = p_static_cast_cell_population->GetCellUsingLocationIndex(node_index4);  //MembraneStiffness += p_cell4->GetCellData()->GetItem("BendingConstant");
 
-        CellPtr p_cell2 = p_static_cast_cell_population->GetCellUsingLocationIndex(node_index2);   MembraneStiffness += p_cell2->GetCellData()->GetItem("BendingConstant");
-
-        CellPtr p_cell3 = p_static_cast_cell_population->GetCellUsingLocationIndex(node_index3);  MembraneStiffness += p_cell3->GetCellData()->GetItem("BendingConstant");
- 
-        CellPtr p_cell4 = p_static_cast_cell_population->GetCellUsingLocationIndex(node_index4);  MembraneStiffness += p_cell4->GetCellData()->GetItem("BendingConstant");
-
-        MembraneStiffness /= 4;
 
 
 
@@ -380,16 +382,32 @@ void MembraneStiffnessForce::AddForceContribution(AbstractCellPopulation<2,3>& r
         node4_contribution *= force_coefficient/rCellPopulation.GetVolumeOfCell(p_cell4);
 
 
-//        PRINT_3_VARIABLES(node1_contribution(0),node1_contribution(1),node1_contribution(2));
-//        PRINT_3_VARIABLES(node2_contribution(0),node2_contribution(1),node2_contribution(2));
-//        PRINT_3_VARIABLES(node3_contribution(0),node3_contribution(1),node3_contribution(2));
-//        PRINT_3_VARIABLES(node4_contribution(0),node4_contribution(1),node4_contribution(2));
-
+        double Boundary1 = p_cell1->GetCellData()->GetItem("Boundary"); double Boundary2 = p_cell2->GetCellData()->GetItem("Boundary");
+        double Boundary3 = p_cell3->GetCellData()->GetItem("Boundary"); double Boundary4 = p_cell4->GetCellData()->GetItem("Boundary");
         // Add the force contribution to each node
-        pNode1->AddAppliedForceContribution(node1_contribution);
-        pNode2->AddAppliedForceContribution(node2_contribution);
-        pNode3->AddAppliedForceContribution(node3_contribution);
-        pNode4->AddAppliedForceContribution(node4_contribution);
+        if (Boundary1 ==0)
+        {
+            pNode1->AddAppliedForceContribution(node1_contribution);
+        }
+        
+        if (Boundary2 ==0)
+        {
+            pNode2->AddAppliedForceContribution(node2_contribution);
+        }
+        
+        if (Boundary3 ==0)
+        {
+            pNode3->AddAppliedForceContribution(node3_contribution);
+        }
+        
+        if (Boundary4 ==0)
+        {
+            pNode4->AddAppliedForceContribution(node4_contribution);
+        }
+        
+        // pNode2->AddAppliedForceContribution(node2_contribution);
+        // pNode3->AddAppliedForceContribution(node3_contribution);
+        // pNode4->AddAppliedForceContribution(node4_contribution);
     }
 }
 

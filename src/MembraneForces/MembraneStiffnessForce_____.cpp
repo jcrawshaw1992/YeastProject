@@ -154,22 +154,23 @@ void MembraneStiffnessForce::SetupInitialMembrane(MutableMesh<2, 3>& rMesh, Abst
             unsigned Shared_Node_2_index = pNode4->GetIndex();
 
             c_vector<c_vector<double, 3>, 4> PositionVectors;
-            //  Location of each of the nodes
-
-            // for (double i = 0; i < Node_Indices.size(); i++)
-            // {
-            //     CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(Node_Indices[i]);
-
-            //     PositionVectors[i][0] = p_cell->GetCellData()->GetItem("Initial_Location_X");
-            //     PositionVectors[i][1] = p_cell->GetCellData()->GetItem("Initial_Location_Y");
-            //     PositionVectors[i][2] = p_cell->GetCellData()->GetItem("Initial_Location_Z");
-            // }
-
             PositionVectors[0] = pNode1->rGetLocation();
 
             PositionVectors[1] = pNode2->rGetLocation();
             PositionVectors[2] = pNode3->rGetLocation();
             PositionVectors[3] = pNode4->rGetLocation();
+            //  Location of each of the nodes
+
+            for (double i = 0; i < Node_Indices.size(); i++)
+            {
+                CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(Node_Indices[i]);
+
+                p_cell->GetCellData()->SetItem("Initial_Location_X", PositionVectors[i][0]);
+                p_cell->GetCellData()->SetItem("Initial_Location_Y", PositionVectors[i][1]);
+                p_cell->GetCellData()->SetItem("Initial_Location_Z", PositionVectors[i][2]);
+            }
+
+            
 
             // Element 1
             c_vector<double, 3> Element_1_vector_12 = PositionVectors[0] - PositionVectors[3]; // Vector 1 to 2
@@ -461,6 +462,13 @@ void MembraneStiffnessForce::AddForceContribution(AbstractCellPopulation<2, 3>& 
         node4_contribution *= (force_coefficient / rCellPopulation.GetVolumeOfCell(p_cell4));
 
 
+        // node1_contribution *= (force_coefficient);
+        // node2_contribution *= (force_coefficient);
+        // node3_contribution *= (force_coefficient);
+        // node4_contribution *= (force_coefficient);
+
+
+
         if (abs(norm_2(node1_contribution)) > 1000 || std::isnan(norm_2(node1_contribution)))
         {
             node1_contribution = Create_c_vector(0, 0, 0);
@@ -478,32 +486,32 @@ void MembraneStiffnessForce::AddForceContribution(AbstractCellPopulation<2, 3>& 
             node4_contribution = Create_c_vector(0, 0, 0);
         }
 
-        if (p_cell1->GetCellData()->GetItem("Boundary") == 0)
-        {
+        // if (p_cell1->GetCellData()->GetItem("Boundary") == 0)
+        // {
             pNode1->AddAppliedForceContribution(node1_contribution ); // Add the new force
             double BendingForce = p_cell1->GetCellData()->GetItem("BendingForce");
             p_cell1->GetCellData()->SetItem("BendingForce", norm_2(node1_contribution) + BendingForce);
-        }
+        // }
           
-        if (p_cell2->GetCellData()->GetItem("Boundary") == 0)
-        {
+        // if (p_cell2->GetCellData()->GetItem("Boundary") == 0)
+        // {
              pNode2->AddAppliedForceContribution(node2_contribution ); // Add the new force
-             double BendingForce = p_cell2->GetCellData()->GetItem("BendingForce");
+             BendingForce = p_cell2->GetCellData()->GetItem("BendingForce");
              p_cell2->GetCellData()->SetItem("BendingForce", norm_2(node2_contribution) + BendingForce);
 
-        }if (p_cell3->GetCellData()->GetItem("Boundary") == 0)
-        {
+        // }if (p_cell3->GetCellData()->GetItem("Boundary") == 0)
+        // {
              pNode3->AddAppliedForceContribution(node3_contribution ); // Add the new force
-             double BendingForce = p_cell3->GetCellData()->GetItem("BendingForce");
+             BendingForce = p_cell3->GetCellData()->GetItem("BendingForce");
              p_cell3->GetCellData()->SetItem("BendingForce", norm_2(node3_contribution) + BendingForce);
 
-        }
-        if (p_cell4->GetCellData()->GetItem("Boundary") == 0)
-        {
+        // }
+        // if (p_cell4->GetCellData()->GetItem("Boundary") == 0)
+        // {
              pNode4->AddAppliedForceContribution(node4_contribution ); // Add the new force
-             double BendingForce = p_cell4->GetCellData()->GetItem("BendingForce");
+             BendingForce = p_cell4->GetCellData()->GetItem("BendingForce");
              p_cell4->GetCellData()->SetItem("BendingForce", norm_2(node4_contribution) + BendingForce);
-        }
+        // }
          
 
         // BendingForceMap[node_index1] += node1_contribution;
