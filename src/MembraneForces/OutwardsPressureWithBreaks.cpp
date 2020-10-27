@@ -37,7 +37,6 @@ void OutwardsPressureWithBreaks::AddForceContribution(AbstractCellPopulation<2, 
         c_vector<double, 3> Position = p_node->rGetLocation(); 
         
         // Growth = norm_2(Position-mInitialPosition);
-        
 
         if (Cylinder ==1)
         {
@@ -46,6 +45,8 @@ void OutwardsPressureWithBreaks::AddForceContribution(AbstractCellPopulation<2, 
         else // Network     
         {
             Growth = Position[2]/mInitialPosition[2];
+            PRINT_2_VARIABLES(Growth, mRadialThreshold)
+    
         } 
 
     }

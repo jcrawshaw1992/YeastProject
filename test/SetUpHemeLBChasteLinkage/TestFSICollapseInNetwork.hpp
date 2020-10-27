@@ -160,7 +160,7 @@ public:
 
         for(unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
         {
-          boost::shared_ptr<FixedRegionBoundaryCondition<2,3> > p_condition(new FixedRegionBoundaryCondition<2,3>(&cell_population, boundary_plane_points[boundary_id],boundary_plane_normals[boundary_id],0.01));
+          boost::shared_ptr<FixedRegionBoundaryCondition<2,3> > p_condition(new FixedRegionBoundaryCondition<2,3>(&cell_population, boundary_plane_points[boundary_id],-boundary_plane_normals[boundary_id],0.01));
           simulator.AddCellPopulationBoundaryCondition(p_condition);
         }
       

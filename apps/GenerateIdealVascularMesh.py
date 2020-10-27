@@ -161,7 +161,7 @@ if __name__=="__main__":
   
     CPP_Centerlines_vtp_writer = "/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/GenerateIdealVascularMesh/Test_VTP_writerRunner"
 
-    Directory = "/home/vascrem/MeshCollection/IdealisedNetworkSecond/"
+    Directory = "/home/vascrem/MeshCollection/IdealisedNetwork/"
     CenterLines_filename = Directory + "Centerlines.vtp"
    
     VTK_Mesh = Directory+"Meshinital.vtk"
@@ -176,7 +176,6 @@ if __name__=="__main__":
     HorizonatalEdgeLength =1.3
     GenerationsLong = 2
     alpha = m.pi/3
-    Translation = 3
     MaxX = CreateIdealSkeleton(Directory, GenerationsHeigh, GenerationsLong, Height, HorizonatalEdgeLength, alpha, 0)
     
     # # # # # # # read in the centerlines points into cpp to generate the centerlines.vtp file
@@ -184,14 +183,14 @@ if __name__=="__main__":
     subprocess.call(command, shell=True)
 
 
-    # #  # interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller
-    SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ CenterLines_filename + ' -length 0.01 -ofile '+ CenterLines_filename
-    subprocess.call(SmoothCenterlinesCommond, shell=True)
+    # # #  # interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller
+    # SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ CenterLines_filename + ' -length 0.01 -ofile '+ CenterLines_filename
+    # subprocess.call(SmoothCenterlinesCommond, shell=True)
 
-    print "Developing Mesh"
-    # With the scalled radii generate a new mesh from with adapted centerlines file  -- here the discretisation dimension (i.e nunber of nodes in each axis) is currently 200 200 200, but might need changing 
-    command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 120 120 120 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
-    subprocess.call(command, shell=True)
+    # print "Developing Mesh"
+    # # With the scalled radii generate a new mesh from with adapted centerlines file  -- here the discretisation dimension (i.e nunber of nodes in each axis) is currently 200 200 200, but might need changing 
+    # command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 120 120 120 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
+    # subprocess.call(command, shell=True)
     
     # # # pause()
     VTK_MeshRefined1 = Directory+"FirstRefined.vtk"
@@ -206,7 +205,7 @@ if __name__=="__main__":
     
 
     # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-    command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined2 +' -iterations 5 -edgelength 0.05 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined
+    command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined2 +' -iterations 5 -edgelength 0.04 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined
     subprocess.call(command, shell=True)
    
     clip.clip_surface_with_plane(VTK_MeshRefined,(0.5,0,0), (1,0,0), Clipped_Mesh)
