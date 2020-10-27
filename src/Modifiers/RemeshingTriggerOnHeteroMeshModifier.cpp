@@ -29,18 +29,29 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::RemeshingTriggerOnHeteroMeshModifier()
         : AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM>()
 {
-        mGrowthMaps =  {  { 10, Create_c_vector(pow(10, -6.9), pow(10, -8.2459), pow(10, -9), 1e-14) },
-        { 8, Create_c_vector(pow(10,-6.9), pow(10,-8.0160),pow(10, -9) , 1e-14 ) },
-        { 6, Create_c_vector(pow(10,-6.9), pow(10,-7.7300),pow(10, -9) , 1e-14 )},
-        {5,   Create_c_vector(pow(10, -6.9341), pow(10, -7.7), pow(10, -8), 1e-14) },
-        {4,   Create_c_vector(pow(10, -6.9), pow(10, -7.4224), pow(10, 8), 1e-14) },
-        {2.5, Create_c_vector(pow(10, -5.8), pow(10, -6), pow(10, -5.5), 1e-14) }, //{2.5, Create_c_vector(pow(10, -6.8), pow(10, -6.8124), pow(10, -7), 1e-14) },
-        {2,   Create_c_vector(pow(10, -6.8), pow(10, -6.8124), pow(10, -7), 1e-14) },
-        {1.5, Create_c_vector(pow(10, -6.5), pow(10, -6.3491), pow(10, -7), 1e-14) },
-        {1.2, Create_c_vector(pow(10, -6.2), pow(10, -5.8360), pow(10, -7), 1e-14) },
-        // {1, Create_c_vector(pow(10, -4.6), pow(10, -4.9), pow(10, -5.2), 1e-14)}
-        {1, Create_c_vector(pow(10, -1), pow(10, -1), pow(10, -1), 1e-14)}
+        mGrowthMaps =  {  { 10, Create_c_vector(pow(10, -8), pow(10, -8), pow(10, -10), 1e-14) },
+        { 8, Create_c_vector(pow(10,-7.5), pow(10,-8.5),pow(10, -10) , 1e-14 ) },
+        { 6, Create_c_vector(pow(10,-7.5), pow(10,-7.5),pow(10, -6.5) , 1e-14 )},
+        {5,   Create_c_vector(pow(10, -7), pow(10, -10), pow(10, -10), 1e-14) },
+        {4,   Create_c_vector(pow(10, -7), pow(10, -7.5), pow(10, -10), 1e-14) },
+        {3, Create_c_vector(pow(10, -6.5), pow(10, -10), pow(10, -10), 1e-14) }, 
+        {2,   Create_c_vector(pow(10, -6.5), pow(10, -6.5), pow(10, -10), 1e-14) },
+        {1, Create_c_vector(pow(10, -5.5000), pow(10, -5.5000), pow(10, -5.5000), 1e-14)}
     };
+
+
+    // 1 5.5000    5.5000    5.5000
+    // 2 6.5000    6.5000   10.0000
+    // 3 6.5000   10.0000   10.0000
+    // 4 7.0000    7.5000   10.0000
+    // 5 7.0000   10.0000   10.0000
+    // 6 7.5000    7.5000    6.5000
+    // 7 7.5000    8.0000   10.0000
+    // 8 7.5000    8.5000   10.0000
+    // 9 7.5000   10.0000    6.5000
+    // 10 8.0000    8.0000   10.0000
+
+
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -411,11 +422,11 @@ c_vector<c_vector<double, 3>, 2> RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DI
 
     // ks will be same for each function, which is good, a will vary on the width of the gap 
 
-     /*  M(x) = k/(1+(bx)^2a) +Me*/
+     /*  M(x) = k/(1+(bx)^2a) +Me*/ 
 
-    double Basement_ShearMod = mGrowthMaps[1](2);
-    double Basement_AreaDilationMod = mGrowthMaps[1](1);
-    double Basement_AreaMod = mGrowthMaps[1](0);
+    double Basement_ShearMod = mGrowthMaps[mBasementMembraneStrength](2);
+    double Basement_AreaDilationMod = mGrowthMaps[mBasementMembraneStrength](1);
+    double Basement_AreaMod = mGrowthMaps[mBasementMembraneStrength](0);
     
     double Endo_ShearMod = mGrowthMaps[mStrength](2);
     double Endo_AreaDilationMod = mGrowthMaps[mStrength](1);
@@ -438,6 +449,16 @@ c_vector<c_vector<double, 3>, 2> RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DI
 
 
 
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetBasementMembraneStrength(double Strength)
+{
+  
+    mBasementMembraneStrength = Strength;
+}
+
+ 
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>

@@ -45,7 +45,7 @@ void OutwardsPressureWithBreaks::AddForceContribution(AbstractCellPopulation<2, 
         else // Network     
         {
             Growth = abs(Position[2]/mInitialPosition[2]);
-            // PRINT_4_VARIABLES(Position[2], mInitialPosition[2],Growth, mRadialThreshold)
+            PRINT_4_VARIABLES(Position[2], mInitialPosition[2],Growth, mRadialThreshold)
     
         } 
 

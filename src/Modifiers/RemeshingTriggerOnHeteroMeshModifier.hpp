@@ -96,9 +96,9 @@ private:
         archive& mCounter;
         archive& mBoundaries;
     
-        archive& mKbs;
-        archive& mKba;
-        archive& mKbA;
+        // archive& mKbs;
+        // archive& mKba;
+        // archive& mKbA;
 
         archive& mStrength;
         archive& mHetro;
@@ -157,6 +157,10 @@ public:
 
     void SetMembraneStrength(double Strength);
 
+    void SetBasementMembraneStrength(double Strength);
+
+    double mBasementMembraneStrength;
+
     /**
      * Set remeshing interval
      *  
@@ -193,9 +197,6 @@ public:
 
     // void UpdateCellData_HillStep(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
 
-    double mKbs = (double)mGrowthMaps[1](2);
-    double mKba = (double)mGrowthMaps[1](1);
-    double mKbA = (double)mGrowthMaps[1](0);
 
     bool mSlowIncreaseInMembraneStrength = 0;
     void SetSlowIncreaseInMembraneStrength(bool SlowIncreaseInMembraneStrength, double TimeStepSize);
