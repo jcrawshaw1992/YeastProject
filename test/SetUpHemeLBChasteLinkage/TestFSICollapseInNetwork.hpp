@@ -47,9 +47,9 @@ public:
         double scale = 1e-2;        
         std::string output_dir = "TestHemeLBOnNetwork/Archiving";
         
-        std::string mesh_file = "/Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/3_by_4/MeshCoarse.vtu";
+        // std::string mesh_file = "/Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/3_by_4/MeshCoarse.vtu";
         
-        // std::string mesh_file = "/home/vascrem/MeshCollection/3_by_4/MeshCoarse.vtu";
+        std::string mesh_file = "/home/vascrem/MeshCollection/IdealisedNetwork/SimpleNetwork.vtu";
           
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;

@@ -97,7 +97,7 @@ def UpdateNodesAndEdges(NewNodes,Nodes,Edges):
     Edges.append(Index)
     return Nodes,Edges
 
-def CreateIdealSkeleton(Directory, Generations,GenerationsX,Height,HorizonatalEdgeLength, theta):
+def CreateIdealSkeleton(Directory, Generations,GenerationsX,Height,HorizonatalEdgeLength, theta, Translation):
 
     # Symetric about the yaxis, Standard length of Horizontal edges, y is the vertical hight
     L = HorizonatalEdgeLength
@@ -141,7 +141,11 @@ def CreateIdealSkeleton(Directory, Generations,GenerationsX,Height,HorizonatalEd
         NewNodes = [[X_0,i*y], [X_0+L,i*y]] # Horizontal compotent on left
         Nodes,Edges = UpdateNodesAndEdges(NewNodes,Nodes,Edges)
     MaxX = X_0+L
-
+  
+    for i in range(1,len(Nodes)):
+        print i
+        print Nodes[i]
+        Nodes[i] += [0,7.0]
 
     with open(Directory+ 'CenterlinePoints.txt', 'w') as filehandle:
         filehandle.writelines("%s\n" % points for points in Nodes)
@@ -157,14 +161,13 @@ if __name__=="__main__":
   
     CPP_Centerlines_vtp_writer = "/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/GenerateIdealVascularMesh/Test_VTP_writerRunner"
 
-    Directory = "/home/vascrem/MeshCollection/IdealisedNetwork/"
+    Directory = "/home/vascrem/MeshCollection/IdealisedNetworkSecond/"
     CenterLines_filename = Directory + "Centerlines.vtp"
    
     VTK_Mesh = Directory+"Meshinital.vtk"
-    Clipped_Mesh = Directory+"MeshClippedThird.vtk"
-    VTK_MeshRefined = Directory+"MeshRefined_Second.vtk"
-    VTK_MeshRefinedSec = Directory+"MeshRefined_Third.vtk"
-    VTU_Mesh = Directory+"Mesh3.vtu"
+    Clipped_Mesh = Directory+"MeshClipped.vtk"
+    VTK_MeshRefined = Directory+"MeshRefined.vtk"
+    
 
     # # # # Set up the points for the centerlines and write into a file to be read in cpp 
 
@@ -173,8 +176,10 @@ if __name__=="__main__":
     HorizonatalEdgeLength =1.3
     GenerationsLong = 2
     alpha = m.pi/3
-    MaxX = CreateIdealSkeleton(Directory, GenerationsHeigh, GenerationsLong, Height, HorizonatalEdgeLength, alpha)
-    # # # # # read in the centerlines points into cpp to generate the centerlines.vtp file
+    Translation = 3
+    MaxX = CreateIdealSkeleton(Directory, GenerationsHeigh, GenerationsLong, Height, HorizonatalEdgeLength, alpha, 0)
+    
+    # # # # # # # read in the centerlines points into cpp to generate the centerlines.vtp file
     command = CPP_Centerlines_vtp_writer + ' -ofile ' + CenterLines_filename + ' -CenterlinePoints ' +Directory+ 'CenterlinePoints.txt -CenterlineEdges ' + Directory +'CenterlineEdges.txt -Radius 0.1' 
     subprocess.call(command, shell=True)
 
@@ -185,29 +190,35 @@ if __name__=="__main__":
 
     print "Developing Mesh"
     # With the scalled radii generate a new mesh from with adapted centerlines file  -- here the discretisation dimension (i.e nunber of nodes in each axis) is currently 200 200 200, but might need changing 
-    command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 180 180 150 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
+    command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 120 120 120 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
     subprocess.call(command, shell=True)
     
     # # # pause()
-    # #The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-    # command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined +' -iterations 5 -edgelength 0.075 -elementsizemode "edgelength" -ofile ' +VTK_MeshRefinedSec
-    # subprocess.call(command, shell=True)
+    VTK_MeshRefined1 = Directory+"FirstRefined.vtk"
+    # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
+    command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.025 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined1
+    subprocess.call(command, shell=True)
 
+    VTK_MeshRefined2 = Directory+"SecondRefined.vtk"
+    # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
+    command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined1 +' -iterations 5 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined2
+    subprocess.call(command, shell=True)
+    
 
-    # # clip.clip_surface_with_plane(VTK_MeshRefined,(0,-5.5,0), (0,1,0), Clipped_Mesh)
-    # # clip.clip_surface_with_plane(Clipped_Mesh,(0,5.5,0), (0,-1,0), Clipped_Mesh)
+    # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
+    command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined2 +' -iterations 5 -edgelength 0.05 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined
+    subprocess.call(command, shell=True)
+   
+    clip.clip_surface_with_plane(VTK_MeshRefined,(0.5,0,0), (1,0,0), Clipped_Mesh)
+    clip.clip_surface_with_plane(Clipped_Mesh,(MaxX-0.5,0,0), (-1,0,0), Clipped_Mesh)
 
-    # # clip.clip_surface_with_plane(VTK_MeshRefined,(0.39,0,0), (1,0,0), Clipped_Mesh)
-    # # clip.clip_surface_with_plane(Clipped_Mesh,(7.5,0,0), (-1,0,0), Clipped_Mesh)
-
-    # clip.clip_surface_with_plane(VTK_MeshRefinedSec,(0.25,0,0), (1,0,0), Clipped_Mesh)
-    # clip.clip_surface_with_plane(Clipped_Mesh,(MaxX-0.25,0,0), (-1,0,0), Clipped_Mesh)
-
+    # print "-----------Converting---------------"
+    # VTU_Mesh = Directory+"Mesh3.vtu"
     # convertFile(Clipped_Mesh , VTU_Mesh)
 
-    # print "-------------------------------------"
-    # print "-------------  Finito  --------------"
-    # print "-------------------------------------"
+    print "-------------------------------------"
+    print "-------------  Finito  --------------"
+    print "-------------------------------------"
 
 
 
