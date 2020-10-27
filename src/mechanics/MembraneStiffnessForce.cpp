@@ -385,25 +385,28 @@ void MembraneStiffnessForce::AddForceContribution(AbstractCellPopulation<2,3>& r
         double Boundary1 = p_cell1->GetCellData()->GetItem("Boundary"); double Boundary2 = p_cell2->GetCellData()->GetItem("Boundary");
         double Boundary3 = p_cell3->GetCellData()->GetItem("Boundary"); double Boundary4 = p_cell4->GetCellData()->GetItem("Boundary");
         // Add the force contribution to each node
-        if (Boundary1 ==0)
+        if (Boundary1 ==0 && Boundary2 ==0 && Boundary3 ==0 && Boundary4 ==0)
         {
             pNode1->AddAppliedForceContribution(node1_contribution);
-        }
-        
-        if (Boundary2 ==0)
-        {
             pNode2->AddAppliedForceContribution(node2_contribution);
-        }
-        
-        if (Boundary3 ==0)
-        {
             pNode3->AddAppliedForceContribution(node3_contribution);
-        }
-        
-        if (Boundary4 ==0)
-        {
             pNode4->AddAppliedForceContribution(node4_contribution);
         }
+        
+        // if (Boundary2 ==0)
+        // {
+        //     pNode2->AddAppliedForceContribution(node2_contribution);
+        // }
+        
+        // if (Boundary3 ==0)
+        // {
+        //     pNode3->AddAppliedForceContribution(node3_contribution);
+        // }
+        
+        // if (Boundary4 ==0)
+        // {
+        //     pNode4->AddAppliedForceContribution(node4_contribution);
+        // }
         
         // pNode2->AddAppliedForceContribution(node2_contribution);
         // pNode3->AddAppliedForceContribution(node3_contribution);

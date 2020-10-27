@@ -46,11 +46,11 @@ public:
   
         double EndTime = 3;
         double scale = 1e-2;        
-        std::string output_dir = "TestHemeLBOnNetwork/ArchivingWithBending";
+        std::string output_dir = "TestHemeLBOnNetwork/ArchivingWithBending3";
         
-        std::string mesh_file = "/Users/jcrawshaw/Downloads/SimpleNetwork.vtu";
+        // std::string mesh_file = "/Users/jcrawshaw/Downloads/SimpleNetwork2.vtu";
         
-        // std::string mesh_file = "/home/vascrem/MeshCollection/IdealisedNetwork/SimpleNetwork.vtu";
+        std::string mesh_file = "/home/vascrem/MeshCollection/IdealisedNetwork/SimpleNetwork2.vtu";
           
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
@@ -72,8 +72,8 @@ public:
         // Set up cell-based simulation
         OffLatticeSimulation<2,3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
-        simulator.SetSamplingTimestepMultiple(10);
-        simulator.SetDt(0.002);
+        simulator.SetSamplingTimestepMultiple(5);
+        simulator.SetDt(0.02);
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
         
@@ -123,14 +123,13 @@ public:
         p_ForceOut->SetRadiusThreshold(2);
         simulator.AddForce(p_ForceOut);
 
-          /*
+        /*
         -----------------------------
         Bending Force
         ----------------------------
        */
-      double membrane_constant = 0 ;//1e-11;
       boost::shared_ptr<MembraneStiffnessForce> p_membrane_force(new MembraneStiffnessForce());
-      p_membrane_force->SetMembraneStiffness(1e-15);
+      p_membrane_force->SetMembraneStiffness(1e-10);
       p_membrane_force->SetupInitialMembrane(mesh, cell_population);
       simulator.AddForce(p_membrane_force);
 
