@@ -31,8 +31,8 @@
 #include "RemeshingTriggerOnHeteroMeshModifier.hpp"
 #include "FixedRegionBoundaryCondition.hpp"
 #include "MembraneDeformationForce.hpp"
-#include "OutwardsPressureWithBreaks.hpp"
-// #include "OutwardsPressure.hpp"
+// #include "OutwardsPressureWithBreaks.hpp"
+#include "OutwardsPressure.hpp"
 #include "MembraneStiffnessForce.hpp"
 #include "HemeLBForce.hpp"
 
@@ -44,9 +44,9 @@ public:
   void TestGrowToEquiIdealNetwork() throw (Exception)
     {
   
-        double EndTime = 5;
+        double EndTime = 10;
         double scale = 1e-2;        
-        std::string output_dir = "TestHemeLBOnNetwork/ArchivingWithBending2";
+        std::string output_dir = "TestHemeLBOnNetwork/Archiving";
         
         // std::string mesh_file = "/Users/jcrawshaw/Downloads/SimpleNetwork2.vtu";
         
@@ -72,7 +72,7 @@ public:
         // Set up cell-based simulation
         OffLatticeSimulation<2,3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
-        simulator.SetSamplingTimestepMultiple(10);
+        simulator.SetSamplingTimestepMultiple(100);
         simulator.SetDt(0.02);
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
@@ -83,6 +83,7 @@ public:
         ----------------------------
         */  
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
+        p_Mesh_modifier->SetMembraneStrength(4);
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
         /*
@@ -117,10 +118,10 @@ public:
         ----------------------------
         */
 
-        boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
+        boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
         p_ForceOut->SetPressure(-(P_blood - P_tissue));
-        p_ForceOut->SetInitialPosition(cell_population, 0);
-        p_ForceOut->SetRadiusThreshold(3);
+        // p_ForceOut->SetInitialPosition(cell_population, 0);
+        // p_ForceOut->SetRadiusThreshold(3);
         simulator.AddForce(p_ForceOut);
 
         /*
@@ -128,22 +129,18 @@ public:
         Bending Force
         ----------------------------
        */
-      boost::shared_ptr<MembraneStiffnessForce> p_membrane_force(new MembraneStiffnessForce());
-      p_membrane_force->SetMembraneStiffness(-1e-13);
-      p_membrane_force->SetupInitialMembrane(mesh, cell_population);
-      simulator.AddForce(p_membrane_force);
-
-
-
+      // boost::shared_ptr<MembraneStiffnessForce> p_membrane_force(new MembraneStiffnessForce());
+      // p_membrane_force->SetMembraneStiffness(1e-13);
+      // p_membrane_force->SetupInitialMembrane(mesh, cell_population);
+      // simulator.AddForce(p_membrane_force);
 
         /*
         -----------------------------
         Membrane forces
         ----------------------------
         */
-        // boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        // simulator.AddForce(p_shear_force);
-
+        boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
+        simulator.AddForce(p_shear_force);
 
         /*
         -----------------------------
@@ -181,11 +178,11 @@ public:
         CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
 }
 
- void offTestCollapsingIdeaNework() throw (Exception)
+ void TestCollapsingIdeaNework() throw (Exception)
     {        
-        std::string output_dir = "TestHemeLBOnNetwork/";
+        std::string output_dir = "TestHemeLBOnNetwork/Archiving";
       
-        double scale = 1e-2; double EndTime = 50;
+        double scale = 1e-2; double EndTime = 10;
 
         // Load and fix any settings in the simulator 
         OffLatticeSimulation<2,3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2,3>, 3 >::Load(output_dir, EndTime);  
@@ -200,8 +197,7 @@ public:
         p_simulator->SetEndTime(EndTime+100);
         p_simulator->SetSamplingTimestepMultiple(200);
         p_simulator->SetDt(0.002);
-        p_simulator->SetOutputDirectory(output_dir+"AddingHemeLBForceToArchivedSimulation_2/");
-
+        p_simulator->SetOutputDirectory(output_dir+"CollapseWithHemeLBForce/");
             
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0);
         c_vector<double, 3> Point1 = Create_c_vector(0.0043,0,0);
@@ -237,7 +233,7 @@ public:
         p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(5000);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"AddingHemeLBForceToArchivedSimulation_2/", p_simulator->rGetCellPopulation(),0);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"CollapseWithHemeLBForce/", p_simulator->rGetCellPopulation(),0);
         p_simulator->AddForce(p_ForceOut);
 
 
@@ -267,9 +263,9 @@ public:
         c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.05,0,0);
         c_vector<double, 3> LowerPlaneNormal = Create_c_vector(-1,0,0);
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-        double StartingParameterForSlowIncrease = 1e-8;
-        p_Mesh_modifier->SetStartingParameterForSlowIncrease(StartingParameterForSlowIncrease);
-        p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
+        // double StartingParameterForSlowIncrease = 1e-8;
+        // p_Mesh_modifier->SetStartingParameterForSlowIncrease(StartingParameterForSlowIncrease);
+        // p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
 
 
      	  p_simulator->Solve();
