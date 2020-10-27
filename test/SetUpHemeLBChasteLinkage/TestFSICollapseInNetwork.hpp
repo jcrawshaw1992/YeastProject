@@ -195,8 +195,8 @@ public:
         // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
         p_simulator->RemoveAllForces();  
         p_simulator->SetEndTime(EndTime+100);
-        p_simulator->SetSamplingTimestepMultiple(200);
-        p_simulator->SetDt(0.002);
+        p_simulator->SetSamplingTimestepMultiple(1000);
+        p_simulator->SetDt(0.0002);
         p_simulator->SetOutputDirectory(output_dir+"CollapseWithHemeLBForce/");
             
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0);
