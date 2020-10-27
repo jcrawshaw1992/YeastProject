@@ -47,9 +47,9 @@ public:
         double scale = 1e-2;        
         std::string output_dir = "TestHemeLBOnNetwork/Archiving";
         
-        // std::string mesh_file = "/Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/3_by_4/MeshCoarse.vtu";
+        std::string mesh_file = "/Users/jcrawshaw/Downloads/SimpleNetwork.vtu";
         
-        std::string mesh_file = "/home/vascrem/MeshCollection/IdealisedNetwork/SimpleNetwork.vtu";
+        // std::string mesh_file = "/home/vascrem/MeshCollection/IdealisedNetwork/SimpleNetwork.vtu";
           
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
@@ -71,7 +71,7 @@ public:
         // Set up cell-based simulation
         OffLatticeSimulation<2,3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
-        simulator.SetSamplingTimestepMultiple(1000);
+        simulator.SetSamplingTimestepMultiple(500);
         simulator.SetDt(0.002);
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
@@ -119,7 +119,7 @@ public:
         boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
         p_ForceOut->SetPressure((P_blood - P_tissue));
         p_ForceOut->SetInitialPosition(cell_population, 0);
-        p_ForceOut->SetRadiusThreshold(10);
+        p_ForceOut->SetRadiusThreshold(4);
         simulator.AddForce(p_ForceOut);
 
 
