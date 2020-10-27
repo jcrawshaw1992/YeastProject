@@ -72,8 +72,8 @@ public:
         // Set up cell-based simulation
         OffLatticeSimulation<2,3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
-        simulator.SetSamplingTimestepMultiple(100);
-        simulator.SetDt(0.02);
+        simulator.SetSamplingTimestepMultiple(1000);
+        simulator.SetDt(0.002);
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
         
@@ -119,7 +119,7 @@ public:
         */
 
         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        p_ForceOut->SetPressure(-(P_blood - P_tissue));
+        p_ForceOut->SetPressure(-(P_blood - P_tissue));// needs to be negative for server ?? 
         // p_ForceOut->SetInitialPosition(cell_population, 0);
         // p_ForceOut->SetRadiusThreshold(3);
         simulator.AddForce(p_ForceOut);
@@ -178,7 +178,7 @@ public:
         CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
 }
 
- void TestCollapsingIdeaNework() throw (Exception)
+ void offTestCollapsingIdeaNework() throw (Exception)
     {        
         std::string output_dir = "TestHemeLBOnNetwork/Archiving";
       

@@ -1306,7 +1306,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MarkBoundaryNode
             // (*cell_iter)->GetCellData()->SetItem("Boundary", 0);
             std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
 
-            if (containing_elements.size() <= 5)
+            if (containing_elements.size() < 5)
             {
                 (*cell_iter)->GetCellData()->SetItem("Boundary", 1);
                 bool SetSurroundingNodesAsEdges =0; // TODO make this a member variable I can adapt with a function 
