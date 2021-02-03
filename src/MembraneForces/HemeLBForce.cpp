@@ -93,8 +93,9 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
     {
         ExecuteHemeLB();
     }
-    LoadTractionFromFile();
-    UpdateCellData(rCellPopulation);
+    TRACE("Need to turn Load and Update on later!")
+    // LoadTractionFromFile();
+    // UpdateCellData(rCellPopulation);
 }
 
 
@@ -125,12 +126,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     WriteOutVtuFile(mOutputDirectory);
 
     /*  Step 0: Create the HemeLB config.pr2 file */
-    double HemeLBSimulationTime = 5000; //
-    if (mNewInlets =0)
-    {
-        HemeLBSimulationTime = 50000; //
-    }
-    int Period = HemeLBSimulationTime/1.8;
+    double HemeLBSimulationTime = 4000; //
+    int Period = HemeLBSimulationTime*0.8;
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
       
 
@@ -140,7 +137,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
 
     // Step 2: Update xml file
     PRINT_2_VARIABLES(double_to_string(mExpectedVelocity, 6), double_to_string(mEstimatedIC, 11)  )
-    std::string update_xml_file = "python projects/VascularRemodelling/apps/update_xml_file.py -period "+std::to_string(Period) +" -directory " + mHemeLBDirectory + " -InitalConditions " + double_to_string(mEstimatedIC, 11) + " -ConvergenceTermination true -AverageVelocity " + double_to_string(mExpectedVelocity, 20); 
+    std::string update_xml_file = "python projects/VascularRemodelling/apps/update_xml_file.py -period "+std::to_string(Period) +" -directory " + mHemeLBDirectory + " -InitalConditions " + double_to_string(mEstimatedIC, 11) + " -ConvergenceTermination false -AverageVelocity " + double_to_string(mExpectedVelocity, 20); 
     SystemOutput = std::system(update_xml_file.c_str());
 
     /*  Step 3: run HemeLB simulation
@@ -192,12 +189,12 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     // SystemOutput =  std::system(WaitCommand.c_str());
     // TRACE("Have waited long enough :)") 
 
-    PRINT_VARIABLE(boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
-    while(! boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
-    {
-        TRACE("waiting within C")
-        sleep(4); 
-    }
+    // PRINT_VARIABLE(boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
+    // while(! boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
+    // {
+    //     TRACE("waiting within C")
+    //     sleep(10); 
+    // }
     
         /* Generate a new stl file from the vtu while HemeLB is going*/
     // std::string ConvertVTUtoSTL = "python projects/VascularRemodelling/apps/vtuTostl.py -Directory " + mHemeLBDirectory + " >nul";
@@ -394,7 +391,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
      */
 
     double V = 4; // Kinematic viscosity -- 4 mm^2/s  V = eta/rho
-    double deltaX = mRadius / 15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
+    double deltaX = 2*mRadius/15;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
     double deltaT = 0.1 * deltaX * deltaX / V;
    
     double MaxPressure = *std::min_element(mPressure.begin(), mPressure.end());
@@ -403,7 +400,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     // This is for calculating the the velocity through the vessel 
     mExpectedVelocity = fabs((MaxPressure-MinPressure)/(2*V) * mRadius* mRadius);
     PRINT_VARIABLE(mExpectedVelocity)
-
 
     //
     int InletNumber = 1;
@@ -479,7 +475,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
     if(mMachine =="server")
     {
             // Need to write bash scrip .... issue here 
-            int Cores = 12;
+            int Cores = 15;
             ofstream bash_script;
 
             std::string BashFile = "projects/VascularRemodelling/apps/RunHemeLB";
@@ -551,6 +547,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirec
     
     mHemeLBDirectory = mChasteOutputDirectory + mOutputDirectory + "HemeLBFluid/";
     mHemeLB_output = mChasteOutputDirectory + mOutputDirectory + "HemeLB_results_from_time_0/";
+    // PINRT_VARIABLE(mHemeLB_output)
+    // PINRT_VARIABLE(mHemeLBDirectory)
     if (CreateFiles ==1)
     {  
         if (boost::filesystem::exists(mHemeLBDirectory))

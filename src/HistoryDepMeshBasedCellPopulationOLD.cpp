@@ -1,4 +1,9 @@
 #include "HistoryDepMeshBasedCellPopulation.hpp"
+#include <ctime>
+#include "MathsFunctions.hpp"
+#include "RandomDirectionCentreBasedDivisionRule.hpp"
+#include "VtkMeshReader.hpp"
+#include "VtkMeshWriter.hpp"
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::HistoryDepMeshBasedCellPopulation(MutableMesh<ELEMENT_DIM, SPACE_DIM>& rMesh,
@@ -9,8 +14,10 @@ HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::HistoryDepMeshBasedCe
         : MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>(rMesh, rCells, locationIndices, deleteMesh, validate)
 {
     SaveInitalConditions();
-    this->SetBinningRegions();
-    // SetBinningIntervals(1, 1, 1);
+    SaveInitalConditionsAtTime0();
+    DetermineDimensions();
+    SetBinningIntervals(1, 1, 1);
+    SetBinningRegions();
     bool InitialRemesh =0;
     if (InitialRemesh)
     {
@@ -23,7 +30,7 @@ HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::HistoryDepMeshBasedCe
         MarkBoundaryNodes();
         // Define all the inital configurations ... this needed to be done and the start, and whenever there is a remeshing
         SetupMembraneConfiguration();
-        SetInitialAnlgesAcrossMembrane();
+        // SetInitialAnlgesAcrossMembrane();
         // SetMaxEdgelength();
     }
 }
@@ -48,13 +55,13 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBoundaries(bo
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDependentRemeshing()
 {
-    /*
-     * 1) Remesh geometry
-     * 2) Map
-     * 3) Delete old mesh and reset with new mesh
-     * 4) detele old cells and relpace with the cells for the current mesh  
-	 */
-    TRACE("Remesh Geometry")
+    // TRACE("ExecuteHistoryDependentRemeshing")
+    // step by step
+    // 1) remesh geometry
+    // 2) Map
+    // 3) Delete old mesh and reset with new mesh
+    // 4) detele old cells and relpace with the cells for the current mesh
+
     if (mRemeshingSoftwear == "VMTK")
     {
         this->RemeshGeometryWithVMTK();
@@ -144,7 +151,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
     // Now redefine all the inital configurations ... this needed to be done and the start, and whenever there is a remeshing
     MarkBoundaryNodes();
     SetupMembraneConfiguration();
-    SetInitialAnlgesAcrossMembrane();
+    // SetInitialAnlgesAcrossMembrane();
 
     // Initialise the applied force at each node to zero
     for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
@@ -155,7 +162,11 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
         CellPtr p_cell = this->GetCellUsingLocationIndex(node_iter->GetIndex());
         p_cell->GetCellData()->SetItem("MappingMethod", mMapOfProbNodes[node_iter->GetIndex()]);
     }
-    this->SetBinningRegions();//Remove this later :) 
+
+    this->SetBinningRegions();
+    // TRACE("Binning dome")
+
+    // I want to iterate around and set the problem nodes from the mapping as cell data
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -223,7 +234,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
     // Convert the .vtu into an .off
     std::string offfile = mChasteOutputDirectory + "CurrentMesh.off";
     // TRACE("Create .off")
-    // PRINT_VARIABLE(mChasteOutputDirectory)
+    PRINT_VARIABLE(mChasteOutputDirectory)
     std::string vtu2offCommand = "meshio-convert " + mChasteOutputDirectory + "config.vtu " + offfile;
     SystemOutput = std::system(vtu2offCommand.c_str()); // system only takes char *.
 
@@ -232,7 +243,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
     SystemOutput = std::system(CGALRemeshingCommand.c_str()); // system only takes char *
 
     // Now ned to convert from .off back to a .vtu
-    // TRACE("Now ned to convert from .off back to a .vtu")
+    TRACE("Now ned to convert from .off back to a .vtu")
     std::string Remeshedvtu = mChasteOutputDirectory + "RemeshedGeometry.vtu";
     std::string off2vtuCommand = "meshio-convert " + mChasteOutputDirectory + "CurrentPlexusRemeshed.off " + Remeshedvtu;
     SystemOutput = std::system(off2vtuCommand.c_str()); // system only takes char *
@@ -240,11 +251,11 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
     // /// Delete the orignal .off file -- else if the CurrentMesh.off fails to transfer, the old transfer will be the one taken
     // std::string DeleteOldCurrentConfigOff = "rm ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/data/CurrentMesh.off";
     // SystemOutput = std::system( DeleteOldCurrentConfigOff.c_str()); // system only takes char *
-    // TRACE("Read in the new mesh")
+    TRACE("Read in the new mesh")
     // Read in the new remeshsed mesh
     VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mChasteOutputDirectory + "RemeshedGeometry.vtu");
     mNew_mesh.ConstructFromMeshReader(mesh_reader);
-    // TRACE("Have the new mesh ;) ")
+    TRACE("Have the new mesh ;) ")
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -277,6 +288,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometryWi
     // More info for the remeshing options found at https://sourceforge.net/p/vmtk/mailman/message/29391820/ and  http://www.vmtk.org/vmtkscripts/vmtksurfaceremeshing.html
     // std::string RemeshCommand = "vmtksurfaceremeshing -ifile " + stlfile + " -iterations " + std::to_string(mIterations) + " -area " + std::to_string(mTargetRemeshingElementArea) + " -maxarea "+ std::to_string(1.2*mTargetRemeshingElementArea) +" -ofile " + Remeshedstl;
     // SystemOutput = std::system(RemeshCommand.c_str());
+    // PRINT_VARIABLE(mIterations)
     std::string RemeshCommand = "vmtksurfaceremeshing -ifile " + stlfile + " -iterations " + std::to_string(mIterations) + " -elementsizemode 'edgelength' -edgelength " + std::to_string(mTargetRemeshingEdgeLength) + " -ofile " + Remeshedstl + " -elementsizemode edgelength";
     SystemOutput = std::system(RemeshCommand.c_str());
 
@@ -296,10 +308,10 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::TakeInPreAllocatedRemeshGeometry()
 {
     std::string Remeshedvtu = mChasteOutputDirectory + "RemeshedGeometry.vtu";
-    // PRINT_VARIABLE(mChasteOutputDirectory)
+    PRINT_VARIABLE(mChasteOutputDirectory)
     // bool copy_file(mPreAllocatedRemeshedMesh.c_str(), Remeshedvtu.c_str(), NULL, COPYFILE_DATA | COPYFILE_XATTR);
     boost::filesystem::copy_file(mPreAllocatedRemeshedMesh.c_str(), Remeshedvtu.c_str()); // This was changed so the code could work on linux and mac
-    // TRACE("Read in the new mesh")
+    TRACE("Read in the new mesh")
     VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mPreAllocatedRemeshedMesh);
     mNew_mesh.ConstructFromMeshReader(mesh_reader);
     // TRACE("Have the new mesh ;) ");
@@ -324,7 +336,24 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetCentroidMap()
     }
 }
 
-
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::DetermineDimensions()
+{
+    mDIM = 2;
+    double Z = 0; //mNew_mesh.GetNodeIteratorBegin()->rGetLocation()[2];
+    for (typename MutableMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator iter = mNew_mesh.GetNodeIteratorBegin();
+         iter != mNew_mesh.GetNodeIteratorEnd();
+         ++iter)
+    {
+        unsigned node_index = iter->GetIndex();
+        c_vector<double, SPACE_DIM> NewNodeLocation = iter->rGetLocation();
+        if (NewNodeLocation[2] != Z)
+        {
+            mDIM = 3;
+            break;
+        }
+    }
+}
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 std::vector<unsigned> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetCommonNodes(unsigned elem_1, unsigned elem_2)
@@ -354,249 +383,67 @@ std::vector<unsigned> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>:
     return CommonNodes;
 }
 
-
-
-
-
-// Binning methods  -- this needs to be simplified
-
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningIntervals(int nX, int nY, int nZ)
+std::vector<int> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::DetermineBin(c_vector<double, SPACE_DIM> Point)
 {
-    mNx = nX; mNy = nY; mNz = nZ;
-}
-
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetMeshSize()
-{
-    // Want to get the max and min dims in x, y and z
-    // Get some first place, then find what is smaller and larger in each direction 
-    c_vector<double, 3> Location_0 = (this->rGetMesh().GetNodeIteratorBegin())->rGetLocation();
-    mMaxX = Location_0[0]; mMinX = Location_0[0];
-    mMaxY = Location_0[1]; mMinY = Location_0[1];
-    mMaxZ = Location_0[2]; mMinZ = Location_0[2];
-
-    // Start by finding the max x, y, z locations
-    for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
-         node_iter != this->rGetMesh().GetNodeIteratorEnd();
-         ++node_iter)
+    bool FoundXRegion = 0;
+    bool FoundYRegion = 0;
+    bool FoundZRegion = 0;
+    int xStep = 1;
+    int yStep = 1;
+    int zStep = 1;
+    while (FoundXRegion == 0 && xStep <= mNx)
     {
-        c_vector<double, 3> Location = node_iter->rGetLocation();
-        // X directions
-        if (Location[0] < mMinX)
+        double itervalx = (mMaxX - mMinX) / mNx;
+        if (Point[0] < mMinX + itervalx * xStep) // Look for x bin
         {
-         mMinX = Location[0];
-        } else if (Location[0] > mMaxX)
-        {
-         mMaxX = Location[0];
-        }
-        // Y directions
-        if (Location[1] < mMinY)
-        {
-         mMinY = Location[1];
-        } else if (Location[1] > mMaxY)
-        {
-            mMaxY = Location[1];
-        }
-        // Z directions
-        if (Location[2] < mMinZ)
-        {
-            mMinZ = Location[2];
-        } else if (Location[2] > mMaxZ)
-        {
-            mMaxZ = Location[2];
-        }
-    }
 
-    double Xdom = (mMaxX - mMinX)/20;
-    double Ydom = (mMaxY - mMinY)/20;
-    double Zdom = (mMaxZ - mMinZ)/20;
-    mMaxX += Xdom; mMaxY += Ydom;  mMaxZ += Zdom;
-    mMinX -= Xdom; mMinY -= Ydom;  mMinZ -= Zdom;
-
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningWidth()
-{
-    // I need the maximal dimensions   
-    double X = mMaxX - mMinX;
-    double Y = mMaxY - mMinY;
-    double Z = mMaxZ - mMinZ;
-    
-     double NumberOfBins = mNz*mNy*mNz;
-     for (int i=0; i<mNx+1;++i)
-     {
-          for (int j=0; j<mNy+1;++j)
+            // if (Point[0] - mMinX <= (mMaxX - mMinX) * xStep / mNx) // Look for x bin
+            // {
+            FoundXRegion = 1; // SO we know it should be in this spacial step
+            while (FoundYRegion == 0 && yStep <= mNy)
             {
-                for (int k=0; k<mNz+1;++k)
+                if (Point[1] <= (mMaxY - mMinY) * yStep / mNy) // Look for y bin
                 {
-                    std::vector<int> BinIdentifier = { i,j,k };
-                    double Xinterval_L = mMinX +(X*(i)/mNx);
-                  
-                    double Xinterval_U = mMinX +(X*(i+1)/mNx) ;
 
-                    double Yinterval_L = mMinY +(Y*j/mNy);
-                    double Yinterval_U = mMinY +(Y*(j+1)/mNy);
+                    // if (Point[1] - mMinY <= (mMaxY - mMinY) * yStep / mNy) // Look for y bin
+                    // {
+                    FoundYRegion = 1; // We now also have the y bin
+                    while (FoundZRegion == 0 && zStep <= mNz) // Look for z bin
+                    {
+                        if (Point[2] <= (mMaxZ - mMinZ) * zStep / mNz)
+                        {
 
-                    double Zinterval_L = mMinZ +(Z*k/mNz);
-                    double Zinterval_U = mMinZ +(Z*(k+1)/mNz);
-                    mBinCoords[BinIdentifier] = { Xinterval_L,Xinterval_U, Yinterval_L,Yinterval_U , Zinterval_L , Zinterval_U};
-                    // PRINT_VECTOR(mBinCoords[BinIdentifier]);
-                }
-            }
-         
-     }
-     
-    
-}
-
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningRegions()
-{
-
-    assert(SPACE_DIM == 3 && ELEMENT_DIM == 2 );
-
-    // Setting the binning regions of the old map here 
-    this->SetMeshSize();
-    this->SetBinningWidth();
-    this->SetCentroidMap();
-    // Clear the map so I dont have the old elements and the new elements messing the binning up
-    mBin.clear();
-    mEdgeBin.clear();
-    double BlurryRegion = 10;
-    double X = (mMaxX - mMinX)/BlurryRegion;
-    double Y = (mMaxY - mMinY)/BlurryRegion;
-    double Z = (mMaxZ - mMinZ)/BlurryRegion;
-    
-
-    // Need to iterate over the elements and determine which bin each element centroid is in. I look for the cloesest old centeroid for each new node, so it fits that I will have the centroids sorted in the bins
-    for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
-         elem_iter != this->rGetMesh().GetElementIteratorEnd();
-         ++elem_iter)
-    {
-        unsigned elem_index = elem_iter->GetIndex();
-        c_vector<double, SPACE_DIM> Centroid = mCentroidMap[elem_index];
-
-        for (int i=0; i<mNx+1;++i)
-        {
-            for (int j=0; j<mNy+1;++j)
-            {
-                for (int k=0; k<mNz+1;++k)
-                {
-                    // std::vector<double> BinLimits =mBinCoords[{ i,j,k }];
-                    double MinX = GetBinLowerX(mBinCoords[{ i,j,k }])-X ; double MaxX = GetBinUpperX(mBinCoords[{ i,j,k }])+X ;
-                    double MinY = GetBinLowerY(mBinCoords[{ i,j,k }])-Y; double MaxY = GetBinUpperY(mBinCoords[{ i,j,k }])+Y;
-                    double MinZ = GetBinLowerZ(mBinCoords[{ i,j,k }])-Z; double MaxZ = GetBinUpperZ(mBinCoords[{ i,j,k }])+Z;
-
-                    // Check if this element is in this bin (can be in multiple bins )
-                    if (Centroid[0]>= MinX &&  Centroid[0]<= MaxX )
-                      {if (Centroid[1]>= MinY &&  Centroid[1]<= MaxY )
-                        { if (Centroid[2]>= MinZ &&  Centroid[2]<= MaxZ )
-                            {
-                                mBin[{ i,j,k }].push_back(elem_index);
-                                // Label everything for visulisation sake
-                                 for (int l= 0; l < 3; l++)
-                                    {
-                                        CellPtr p_cell = this->GetCellUsingLocationIndex(elem_iter->GetNodeGlobalIndex(l));
-                                        p_cell->GetCellData()->SetItem("i", i);
-                                        p_cell->GetCellData()->SetItem("j", j);
-                                        p_cell->GetCellData()->SetItem("k", k);
-                                        p_cell->GetCellData()->SetItem("BIN", i+j+k);
-                                    }
-                            }
+                            // if (Point[2] - mMinZ <= (mMaxZ - mMinZ) * zStep / mNz)
+                            // {
+                            FoundZRegion = 1; // We now also have the y bin
+                        }
+                        else
+                        {
+                            zStep += 1;
                         }
                     }
                 }
-            }
-        }
-    }
-
-
-    // Also need to get bin for edges
-
-    for (typename MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SpringIterator spring_iterator = this->SpringsBegin();
-            spring_iterator != this->SpringsEnd();
-            ++spring_iterator)
-    {
-        unsigned NodeIndexA = spring_iterator.GetNodeA()->GetIndex();
-        unsigned NodeIndexB = spring_iterator.GetNodeB()->GetIndex();
-
-        c_vector<double, SPACE_DIM> MidPoint = 0.5*(this->GetNode(NodeIndexA)->rGetLocation()+this->GetNode(NodeIndexB)->rGetLocation());
-
-        for (int i=0; i<mNx+1;++i)
-        {
-            for (int j=0; j<mNy+1;++j)
-            {
-                for (int k=0; k<mNz+1;++k)
+                else
                 {
-                    double MinX = GetBinLowerX(mBinCoords[{ i,j,k }])-X ; double MaxX = GetBinUpperX(mBinCoords[{ i,j,k }])+X ;
-                    double MinY = GetBinLowerY(mBinCoords[{ i,j,k }])-Y; double MaxY = GetBinUpperY(mBinCoords[{ i,j,k }])+Y;
-                    double MinZ = GetBinLowerZ(mBinCoords[{ i,j,k }])-Z; double MaxZ = GetBinUpperZ(mBinCoords[{ i,j,k }])+Z;
-
-                    // Check if this element is in this bin (can be in multiple bins )
-                    if (MidPoint[0]>= MinX &&  MidPoint[0]<= MaxX )
-                      { if (MidPoint[1]>= MinY &&  MidPoint[1]<= MaxY )
-                         { if (MidPoint[2]>= MinZ &&  MidPoint[2]<= MaxZ )
-                            {
-                                mEdgeBin[{ i,j,k }].push_back(std::make_pair(NodeIndexA, NodeIndexB));  
-                                    CellPtr p_cell = this->GetCellUsingLocationIndex(NodeIndexA);
-                                    p_cell->GetCellData()->SetItem("Edgei", i);
-                                    p_cell->GetCellData()->SetItem("Edgej", j);
-                                    p_cell->GetCellData()->SetItem("Edgek", k);
-                                    p_cell->GetCellData()->SetItem("EdgeBIN", i+j+k);   
-
-                                    CellPtr p_cell2 = this->GetCellUsingLocationIndex(NodeIndexB);
-                                    p_cell2->GetCellData()->SetItem("Edgei", i);
-                                    p_cell2->GetCellData()->SetItem("Edgej", j);
-                                    p_cell2->GetCellData()->SetItem("Edgek", k);
-                                    p_cell2->GetCellData()->SetItem("EdgeBIN", i+j+k);  
-                            }
-                         }
-                    }
+                    yStep += 1;
                 }
             }
         }
-    }
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-std::vector<int> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBin(c_vector<double, SPACE_DIM> Location)
-{
-    assert(SPACE_DIM == 3 &&ELEMENT_DIM == 2 );
-
-    std::vector<int> Bin;
-
-    // Need to iterate over the elements and determine which bin each element centroid is in. I look for the cloesest old centeroid for each new node, so it fits that I will have the centroids sorted in the bins
-
-        for (int i=0; i<mNx+1;++i)
+        else
         {
-            for (int j=0; j<mNy+1;++j)
-            {
-                for (int k=0; k<mNz+1;++k)
-                {
-                    double MinX = GetBinLowerX(mBinCoords[{ i,j,k }]); double MaxX = GetBinUpperX(mBinCoords[{ i,j,k }]);
-                    double MinY = GetBinLowerY(mBinCoords[{ i,j,k }]); double MaxY = GetBinUpperY(mBinCoords[{ i,j,k }]);
-                    double MinZ = GetBinLowerZ(mBinCoords[{ i,j,k }]); double MaxZ = GetBinUpperZ(mBinCoords[{ i,j,k }]);
-                    // Check if this element is in this bin (can be in multiple bins )
-                    if (Location[0]>= MinX &&  Location[0]<= MaxX )
-                      {if (Location[1]>= MinY &&  Location[1]<= MaxY )
-                        { if (Location[2]>= MinZ &&  Location[2]<= MaxZ )
-                            {
-                                Bin = { i,j,k };
-                            }
-                        }
-                    }
-                }
-            }
+            xStep += 1;
         }
-        return Bin;
+    }
+
+    xStep = std::min(xStep, mNx); // if there are needed my discrtisation is probably crap
+    yStep = std::min(yStep, mNy);
+    zStep = std::min(zStep, mNz);
+    assert(xStep <= mNx && yStep <= mNy & zStep <= mNz); // If this is called, a bin has,t been found, and I need to figure out why
+    std::vector<int> Bin = { xStep, yStep, zStep };
+    // c_vector<double,3> Bin =Create_c_vector(xStep, yStep, zStep);
+    return Bin;
 }
-
-
-
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 std::set<unsigned> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetNeighbouringElements(unsigned elem_index)
@@ -648,7 +495,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMe
     TRACE("MappingAdaptedMeshToInitalGeometry")
     std::map<unsigned, c_vector<double, SPACE_DIM> > InitalPositionOfRemeshedNodes;
     SetCentroidMap();
-
     assert(SPACE_DIM == 3);
     assert(ELEMENT_DIM == 2);
 
@@ -671,136 +517,128 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMe
     mOriginalNodePositions = InitalPositionOfRemeshedNodes;
 }
 
-
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 unsigned HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
 {
     assert(SPACE_DIM == 3);
     // This method is super simple. -- Just find the closest element -- it isnt perfect,
     int ClosestElement;
-    int ContainingElement;
-    
-    double Distance1 = 10;
-    double Distance =20;
+    double distance = 30;
+    bool HaveElement = 0;
 
-    std::vector<int> Bin = GetBin(NewNodeLocation);
-    std::vector<unsigned> ElementsInDaBin= mBin[Bin];
-
-    
-    double ContainedInElements =0;
-    for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
+    for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
+         elem_iter != this->rGetMesh().GetElementIteratorEnd();
+         ++elem_iter)
     {
-        c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
-        if (norm_2(NewNodeLocation - Centroid) <= Distance1)
+        // Now need to find the cloeset element in this bin
+        unsigned elem_index = elem_iter->GetIndex();
+        c_vector<double, SPACE_DIM> Centroid = mCentroidMap[elem_index];
+
+        if (norm_2(NewNodeLocation - Centroid) <= distance)
         {
-            Distance1 = norm_2(NewNodeLocation - Centroid);
-            ClosestElement = *elem_index;
-        }
-        ContainedInElements +=PointInTriangle3D(NewNodeLocation, *elem_index);
-        if (PointInTriangle3D(NewNodeLocation, *elem_index)==1)
-        {
-            Distance = norm_2(NewNodeLocation - Centroid);
-            ContainingElement = *elem_index;
+            distance = norm_2(NewNodeLocation - Centroid);
+            ClosestElement = elem_index;
         }
     }
    
-    bool In1 = PointInTriangle2D(NewNodeLocation, ClosestElement) + PointInTriangle3D(NewNodeLocation, ClosestElement);
-    bool Accept = 1;
- 
-    if( In1==0)
+   
+    if (PointInTriangle3D(NewNodeLocation, ClosestElement))
     {
-        if (ContainedInElements!=0 && Distance < 2*Distance1)  // Not in the closest, but is in ContainingElement, and the containing element is closish, just accept i
-        { 
-            ClosestElement = ContainingElement;
-    
-        }else
+        HaveElement = 1;
+        mMapOfProbNodes[node_index] = 1;
+    }
+    HaveElement =1;
+    /// ----------------------- ////////
+    if (HaveElement == 0)
+    {
+        unsigned OrginalClosest = ClosestElement;
+        distance = 10;
+        std::pair<unsigned, unsigned> ClosestEdge;
+        c_vector<double, SPACE_DIM> ClosestEdgeNorm;
+        c_vector<double, SPACE_DIM> ClosestMidPoint;
+        for (typename MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SpringIterator spring_iterator = this->SpringsBegin();
+             spring_iterator != this->SpringsEnd();
+             ++spring_iterator)
         {
-            Accept =0;
-            double distance = 10;
-            std::pair<unsigned, unsigned> ClosestEdge;
-            std::vector< std::pair<unsigned, unsigned> > EdgesInDaBin= mEdgeBin[Bin];
-    
-            for (std::vector< std::pair<unsigned, unsigned> >::iterator Edge_iter = EdgesInDaBin.begin(); Edge_iter != EdgesInDaBin.end(); ++Edge_iter)
+            unsigned NodeIndexA = spring_iterator.GetNodeA()->GetIndex();
+            unsigned NodeIndexB = spring_iterator.GetNodeB()->GetIndex();
+
+            c_vector<double, SPACE_DIM> P1 = this->GetNode(NodeIndexA)->rGetLocation();
+            c_vector<double, SPACE_DIM> P2 = this->GetNode(NodeIndexB)->rGetLocation();
+            c_vector<double, SPACE_DIM> EdgeVector = P2 - P1;
+            EdgeVector/= norm_2(EdgeVector);
+            c_vector<double, SPACE_DIM> V = NewNodeLocation - P1;
+            // Normal to the plane containing the edge and the new node
+            c_vector<double, SPACE_DIM> PlaneNormal = VectorProduct(EdgeVector, V)/norm_2(V);
+            c_vector<double, SPACE_DIM> Norm;
+            PlaneNormal /= norm_2(PlaneNormal);
+
+            // Now can find the normal to the edge that is contaned in the plane defined by the three points
+            c_vector<double, SPACE_DIM> EdgeNormal = VectorProduct(EdgeVector, PlaneNormal);
+            EdgeNormal /= norm_2(EdgeNormal);
+            double Dist2Edge = abs(inner_prod(EdgeNormal, V));
+
+            if (Dist2Edge <= distance)
             {
-                unsigned NodeIndexA = (*Edge_iter).first;  unsigned NodeIndexB = (*Edge_iter).second;
-
-                c_vector<double, SPACE_DIM> P1 = this->GetNode(NodeIndexA)->rGetLocation(); c_vector<double, SPACE_DIM> P2 = this->GetNode(NodeIndexB)->rGetLocation();
-                c_vector<double, SPACE_DIM> EdgeVector = (P2 - P1)/norm_2(P2 - P1);
-                c_vector<double, SPACE_DIM> V = NewNodeLocation - P1;
-                
-                // Normal to the plane containing the edge and the new node
-                c_vector<double, SPACE_DIM> PlaneNormal = VectorProduct(EdgeVector, V)/norm_2(V);
-                PlaneNormal /= norm_2(PlaneNormal);
-
-                // Now can find the normal to the edge that is contaned in the plane defined by the three points
-                c_vector<double, SPACE_DIM> EdgeNormal = VectorProduct(EdgeVector, PlaneNormal);
-                EdgeNormal/=norm_2(EdgeNormal);
-                
-                double Dist2Edge = abs(inner_prod(EdgeNormal, V));
-                if (Dist2Edge <= distance)
-                {
-                    distance = Dist2Edge;
-                    ClosestEdge = *Edge_iter;
-                }
+                distance = Dist2Edge;
+                ClosestEdge = std::pair<unsigned, unsigned>(NodeIndexA, NodeIndexB);
+                ClosestEdgeNorm = EdgeNormal;
             }
-            // Get the nodes from the edge
-            c_vector<double, SPACE_DIM> P1 = this->GetNode(ClosestEdge.first)->rGetLocation(); c_vector<double, SPACE_DIM> P2 = this->GetNode(ClosestEdge.second)->rGetLocation();
-            std::set<unsigned> elements_containing_node1 = this->GetNode(ClosestEdge.first)->rGetContainingElementIndices();   std::set<unsigned> elements_containing_node3 = this->GetNode(ClosestEdge.second)->rGetContainingElementIndices();
+        }
+        c_vector<double, SPACE_DIM> P1 = this->GetNode(ClosestEdge.first)->rGetLocation();
+        c_vector<double, SPACE_DIM> P2 = this->GetNode(ClosestEdge.second)->rGetLocation();
 
-            // Get containing elements
-            std::set<unsigned> shared_elements;
-            std::set_intersection(elements_containing_node1.begin(), elements_containing_node1.end(), elements_containing_node3.begin(), elements_containing_node3.end(), std::inserter(shared_elements, shared_elements.begin()));
+        std::set<unsigned> elements_containing_node1 = this->GetNode(ClosestEdge.first)->rGetContainingElementIndices();
+        std::set<unsigned> elements_containing_node3 = this->GetNode(ClosestEdge.second)->rGetContainingElementIndices();
 
-            typename std::set<unsigned>::iterator CommonElements = shared_elements.begin();
-            unsigned Element1 = *CommonElements;
-            
-            if (shared_elements.size() == 1)// Only one common element - probably an boundary, have no choise, take this one
+        std::set<unsigned> shared_elements;
+        std::set_intersection(elements_containing_node1.begin(), elements_containing_node1.end(), elements_containing_node3.begin(), elements_containing_node3.end(), std::inserter(shared_elements, shared_elements.begin()));
+        typename std::set<unsigned>::iterator CommonElements = shared_elements.begin();
+
+        unsigned Element1 = *CommonElements;
+        if (shared_elements.size() == 1)
+        {
+            ClosestElement = Element1;
+            HaveElement = 1;
+            mMapOfProbNodes[node_index] = 2;
+        }
+        else
+        {
+            std::advance(CommonElements, 1);
+            unsigned Element2 = *CommonElements;
+            if (PointInTriangle3D(NewNodeLocation, Element1) == 1)
             {
-                // TRACE("Case 1")
                 ClosestElement = Element1;
-                Accept=1; 
+                HaveElement = 1;
+                mMapOfProbNodes[node_index] = 3;
+                // TRACE("Option 1")
             }
-            else  // In case there are two connected elememtns
+            else if (PointInTriangle3D(NewNodeLocation, Element2) == 1)
             {
-                std::advance(CommonElements, 1);
-                unsigned Element2 = *CommonElements;
-                if (PointInTriangle3D(NewNodeLocation, Element1) == 1)
-                {
-                    // TRACE("Case 2A")
-                    ClosestElement = Element1;
-                    Accept=1;
-                }
-                else if (PointInTriangle3D(NewNodeLocation, Element2) == 1)
-                {
-                    // TRACE("Case 2B")
-                    ClosestElement = Element2;
-                    Accept=1;
-                    
-                }else
-                {
-                    // // TRACE("Case 2C")
-                    // ClosestElement = WhichElement(P1, P2, NewNodeLocation, Element1, Element2);
-                    // Accept=1;
-                }
+                ClosestElement = Element2;
+                HaveElement = 1;
+
+                mMapOfProbNodes[node_index] = 3;
+                // TRACE("Option 2")
+            }
+            if (HaveElement ==0)
+            {
+                ClosestElement = WhichElement(P1, P2, NewNodeLocation, Element1, Element2);
+                // ClosestElement = Element2;
+                //  TRACE("Option 3")
             }
         }
     }
 
-    // assert(Accept ==1);
-
     double ClosestCentroidDistance = abs(norm_2(NewNodeLocation - mCentroidMap[ClosestElement]));
-    if (ClosestCentroidDistance > 2)
+    if (ClosestCentroidDistance > 1)
     {
-        assert(1==0);
         TRACE("Broken node here")
-        PRINT_2_VARIABLES(ClosestElement, ClosestCentroidDistance);
+        PRINT_VARIABLE(ClosestCentroidDistance);
     }
-    
+    // PRINT_VARIABLE(ClosestElement)
     return ClosestElement;
 }
-
-
-
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 unsigned HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::WhichElement(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> NewNodeLocation, unsigned Element1, unsigned Element2)
@@ -1157,8 +995,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
             Node<SPACE_DIM>* pNode2 = otherNodes.first; // unsigned Shared_Node_1_index = pNode2->GetIndex();
             Node<SPACE_DIM>* pNode4 = otherNodes.second; // unsigned Shared_Node_2_index = pNode4->GetIndex();
 
-            
-
             c_vector<c_vector<double, SPACE_DIM>, 4> PositionVectors;
             // Here is where all the position stuff happens and I can jump in
             PositionVectors[0] = mInitalPositionOfRemeshedNodes[pNode1->GetIndex()];
@@ -1191,11 +1027,23 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
             }
             mOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] = Angle;
 
+            if (Angle > 10)
+            {
+                CellPtr p_cell1 = this->GetCellUsingLocationIndex(pNode1->GetIndex());
+                CellPtr p_cell2 = this->GetCellUsingLocationIndex(pNode2->GetIndex());
+                CellPtr p_cell3 = this->GetCellUsingLocationIndex(pNode3->GetIndex());
+                CellPtr p_cell4 = this->GetCellUsingLocationIndex(pNode4->GetIndex());
+
+                p_cell1->GetCellData()->SetItem("Curvature", 1);
+                p_cell2->GetCellData()->SetItem("Curvature", 1);
+                p_cell3->GetCellData()->SetItem("Curvature", 1);
+                p_cell4->GetCellData()->SetItem("Curvature", 1);
+            }
+
             MeanAngle += Angle;
             counter += 1;
         }
     }
-
     MeanAngle /= counter;
     double variance = 0;
 
@@ -1217,11 +1065,8 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
     variance /= counter;
 
     double stdev = sqrt(variance);
-    double Threshold1a = MeanAngle - 1.5 * stdev;
-    double Threshold2a = MeanAngle + 1.5 * stdev;
-
-    double Threshold1b = MeanAngle - 2.5 * stdev;
-    double Threshold2b = MeanAngle + 2.5 * stdev;
+    double Threshold1 = MeanAngle - 1.5 * stdev;
+    double Threshold2 = MeanAngle + 1.5 * stdev;
     // Now go through and see what is greater than the threshold
 
     std::vector<Element<ELEMENT_DIM, SPACE_DIM>*> ElementsToRefine;
@@ -1241,7 +1086,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
         {
             double Angle = mOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())];
 
-            if (Angle < Threshold1b || Angle > Threshold2b)
+            if (Angle < Threshold1 || Angle > Threshold2)
             {
                 // TRACE("High curveature")
                 // I need this edge to be the inital edge
@@ -1256,12 +1101,13 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
                 CellPtr p_cell2 = this->GetCellUsingLocationIndex(pNode2->GetIndex());
                 CellPtr p_cell3 = this->GetCellUsingLocationIndex(pNode3->GetIndex());
                 CellPtr p_cell4 = this->GetCellUsingLocationIndex(pNode4->GetIndex());
-                p_cell1->GetCellData()->SetItem("Curvature", 2);
-                p_cell2->GetCellData()->SetItem("Curvature", 2);
-                p_cell3->GetCellData()->SetItem("Curvature", 2);
-                p_cell4->GetCellData()->SetItem("Curvature", 2);
+                p_cell1->GetCellData()->SetItem("Curvature", 1);
+                p_cell2->GetCellData()->SetItem("Curvature", 1);
+                p_cell3->GetCellData()->SetItem("Curvature", 1);
+                p_cell4->GetCellData()->SetItem("Curvature", 1);
 
                 // // Need to mark the element
+
                 std::set<unsigned> elements_containing_node1 = pNode1->rGetContainingElementIndices();
                 std::set<unsigned> elements_containing_node3 = pNode3->rGetContainingElementIndices();
 
@@ -1280,37 +1126,9 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
 
                 ElementsToRefine.push_back(pElement1);
                 ElementsToRefine.push_back(pElement2);
-            }else if(Angle < Threshold1a || Angle > Threshold2a)
-            {
-
-                // TRACE("Medium curveature")
-                // I need this edge to be the inital edge
-                Node<SPACE_DIM>* pNode1 = edge_iterator.GetNodeA(); // unsigned Node_1_index = pNode1->GetIndex();
-                Node<SPACE_DIM>* pNode3 = edge_iterator.GetNodeB(); // unsigned Node_2_index = pNode3->GetIndex();
-                Node<SPACE_DIM>* pNode2 = otherNodes.first; // unsigned Shared_Node_1_index = pNode2->GetIndex();
-                Node<SPACE_DIM>* pNode4 = otherNodes.second; // unsigned Shared_Node_2_index = pNode4->GetIndex();
-
-                // get the cell here and mark it
-
-                CellPtr p_cell1 = this->GetCellUsingLocationIndex(pNode1->GetIndex());
-                CellPtr p_cell2 = this->GetCellUsingLocationIndex(pNode2->GetIndex());
-                CellPtr p_cell3 = this->GetCellUsingLocationIndex(pNode3->GetIndex());
-                CellPtr p_cell4 = this->GetCellUsingLocationIndex(pNode4->GetIndex());
-                p_cell1->GetCellData()->SetItem("Curvature", 1);
-                p_cell2->GetCellData()->SetItem("Curvature", 1);
-                p_cell3->GetCellData()->SetItem("Curvature", 1);
-                p_cell4->GetCellData()->SetItem("Curvature", 1);
-
-
             }
         }
     }
-
-
-
-
-
-    
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -1349,6 +1167,86 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetOriginalAre
     return mArea0[elem_index];
 }
 
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningRegions()
+{
+    SetMaxDomainDimensions();
+    SetCentroidMap();
+    // Clear the map so I dont have the old elements and the new elements messing the binning up
+    mBinMap.clear();
+    // Need to iterate over the elements and determine which bin each element centroid is in. I look for the cloesest old centeroid for each new node, so it fits that I will have the centroids sorted in the bins
+    for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
+         elem_iter != this->rGetMesh().GetElementIteratorEnd();
+         ++elem_iter)
+    {
+        unsigned elem_index = elem_iter->GetIndex();
+        std::vector<int> Bin = { 1, 1, 1 };
+        mBinMap[Bin].push_back(elem_index);
+    }
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetMaxDomainDimensions()
+{
+    // std::map < std::pair<int, int>, std::vector<double>> BinMap;
+
+    // I need the maximal dimensions
+    c_vector<double, 3> Location_0 = (this->rGetMesh().GetNodeIteratorBegin())->rGetLocation();
+    mMaxX = Location_0[0];
+    mMinX = Location_0[0];
+
+    mMaxY = Location_0[1];
+    mMinY = Location_0[1];
+
+    mMaxZ = Location_0[2];
+    mMinZ = Location_0[2];
+
+    // Start by finding the max x,y,z locations
+    for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
+         node_iter != this->rGetMesh().GetNodeIteratorEnd();
+         ++node_iter)
+    {
+        unsigned node_index = node_iter->GetIndex();
+        c_vector<double, 3> Location = node_iter->rGetLocation();
+
+        if (Location[0] < mMinX)
+        {
+            mMinX = Location[0];
+        }
+        else if (Location[0] > mMaxX)
+        {
+            mMaxX = Location[0];
+        }
+        if (Location[1] < mMinY)
+        {
+            mMinY = Location[1];
+        }
+        else if (Location[1] > mMaxY)
+        {
+            mMaxY = Location[1];
+        }
+
+        if (Location[2] < mMinZ)
+        {
+            mMinZ = Location[2];
+        }
+        else if (Location[2] > mMaxZ)
+        {
+            mMaxZ = Location[2];
+        }
+    }
+
+    double Xdom = (mMaxX - mMinX) / 10;
+    double Ydom = (mMaxY - mMinY) / 10;
+    double Zdom = (mMaxZ - mMinZ) / 10;
+    mMaxX += Xdom;
+    mMaxY += Ydom;
+    mMaxZ += Zdom;
+
+    mMinX -= Xdom;
+    mMinY -= Ydom;
+    mMinZ -= Zdom;
+}
 
 // Set boundaries
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -1548,10 +1446,20 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SaveInitalCondit
     {
         unsigned node_index = node_iter->GetIndex();
         mOriginalNodePositions[node_index] = node_iter->rGetLocation();
-        mInitalPositionOfRemeshedNodes[node_index] = node_iter->rGetLocation();
     }
 }
 
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SaveInitalConditionsAtTime0()
+{
+    for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
+         node_iter != this->rGetMesh().GetNodeIteratorEnd();
+         ++node_iter)
+    {
+        unsigned node_index = node_iter->GetIndex();
+        mInitalPositionOfRemeshedNodes[node_index] = node_iter->rGetLocation();
+    }
+}
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetMaxEdgelength()
@@ -1618,19 +1526,70 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::PreAllocatedReme
     mPreAllocatedRemeshedMesh = RemeshedMesh;
 }
 
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::JiggleNodes()
+{
+
+    clock_t t = clock();
+    /// Loop over new and old mesh and find the nodes in the new mesh that are the cloest to the old mesh and put these nodes here --- this should be done in the mesh
+    // Loop over old mesh first, then new mesh
+    for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
+         node_iter != this->rGetMesh().GetNodeIteratorEnd();
+         ++node_iter)
+    {
+        unsigned node_index = node_iter->GetIndex();
+        c_vector<double, SPACE_DIM> OldNodeLocation = node_iter->rGetLocation();
+
+        // Now want to find the cloest node in the new mesh
+
+        double MinDistance = 1000000000000;
+        unsigned ClosestNewNode;
+        c_vector<double, SPACE_DIM> NewNodeLocation;
+
+        // Now want the location of the nodes in the new mesh
+
+        for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator NewN_iter = mNew_mesh.GetNodeIteratorBegin();
+             NewN_iter != mNew_mesh.GetNodeIteratorEnd();
+             ++NewN_iter)
+        {
+            NewNodeLocation = NewN_iter->rGetLocation();
+            if (norm_2(NewNodeLocation - OldNodeLocation) < MinDistance)
+            {
+                unsigned Newnode_index = NewN_iter->GetIndex();
+                MinDistance = norm_2(NewNodeLocation - OldNodeLocation);
+                ClosestNewNode = Newnode_index;
+            }
+        }
+        if (MinDistance < 0.005)
+        {
+
+            Node<SPACE_DIM>* p_node = mNew_mesh.GetNode(ClosestNewNode);
+            p_node->rGetModifiableLocation() = OldNodeLocation;
+        }
+    }
+
+    VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(mRelativePath, "RemeshedGeometry2", false);
+    mesh_writer.WriteFilesUsingMesh(mNew_mesh);
+
+    t = clock() - t;
+    std::cout << "simulation time: " << t / CLOCKS_PER_SEC << " seconds" << std::endl;
+}
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::CalculateElementNormals(std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge,
                                                                                         std::pair<c_vector<double, SPACE_DIM>, c_vector<double, SPACE_DIM> >& nonUnitNormals,
                                                                                         std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*>& otherNodes)
 {
-    assert(SPACE_DIM == 3 && ELEMENT_DIM == 2);
+    assert(SPACE_DIM == 3);
+    assert(ELEMENT_DIM == 2);
     Node<SPACE_DIM>* pNode1 = edge.first;
     Node<SPACE_DIM>* pNode3 = edge.second;
 
     /*
      *  Find common triangles
-    */
+     
+      */
+    // Find the indices of the elements owned by each node
     std::set<unsigned> elements_containing_node1 = pNode1->rGetContainingElementIndices();
     std::set<unsigned> elements_containing_node3 = pNode3->rGetContainingElementIndices();
 
@@ -1641,11 +1600,13 @@ bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::CalculateElement
                           elements_containing_node3.begin(),
                           elements_containing_node3.end(),
                           std::inserter(shared_elements, shared_elements.begin()));
-
+    // TRACE("DOnt know why im here")
+    
     // Check that the nodes have a common edge
     switch (shared_elements.size())
     {
-        case 1: // We found a boundary edge and we finish here
+        case 1:
+            // We found a boundary edge and we finish here
             return true;
         case 2:
             break;
@@ -1666,10 +1627,12 @@ bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::CalculateElement
     {
         unsigned index_for_node2 = pElement1->GetNodeGlobalIndex(local_index);
         unsigned index_for_node4 = pElement2->GetNodeGlobalIndex(local_index);
+
         if ((index_for_node2 != pNode1->GetIndex()) && (index_for_node2 != pNode3->GetIndex()))
         {
             pNode2 = pElement1->GetNode(local_index);
         }
+
         if ((index_for_node4 != pNode1->GetIndex()) && (index_for_node4 != pNode3->GetIndex()))
         {
             pNode4 = pElement2->GetNode(local_index);
@@ -1931,6 +1894,30 @@ bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::PointInTriangle3
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::PointInTriangle3D2(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement)
+{
+
+    Element<ELEMENT_DIM, SPACE_DIM>* p_element = this->rGetMesh().GetElement(ClosestElement);
+    // Collect the intial configuration of the nodes, and the deformed config, send them into the mapping function
+    c_vector<c_vector<double, SPACE_DIM>, SPACE_DIM> Triangle;
+    for (int i = 0; i < 3; ++i)
+    {
+        Triangle[i] = this->rGetMesh().GetNode(p_element->GetNodeGlobalIndex(i))->rGetLocation();
+    }
+
+    bool Answer;
+    if (SameSide(Point, Triangle[0], Triangle[1], Triangle[2]) & SameSide(Point, Triangle[1], Triangle[0], Triangle[2]) & SameSide(Point, Triangle[2], Triangle[0], Triangle[1]))
+    {
+        Answer = 1;
+    }
+    else
+    {
+        Answer = 0;
+    }
+    return Answer;
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SameSideOfPlane(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> a, c_vector<double, SPACE_DIM> b)
 {
     bool Answer;
@@ -1994,52 +1981,12 @@ bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SameSide(c_vecto
     return Answer;
 }
 
-
-
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinLowerX(std::vector<double> Bin)
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningIntervals(int nX, int nY, int nZ)
 {
-    typename std::vector<double>::iterator iter = Bin.begin();
-    return *iter;
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinUpperX(std::vector<double> Bin)
-{
-    typename std::vector<double>::iterator iter = Bin.begin();
-    std::advance(iter, 1);
-    return *iter;
-}
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinLowerY(std::vector<double> Bin)
-{
-    typename std::vector<double>::iterator iter = Bin.begin();
-    std::advance(iter, 2);
-    return *iter;
-}
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinUpperY(std::vector<double> Bin)
-{
-    typename std::vector<double>::iterator iter = Bin.begin();
-    std::advance(iter, 3);
-    return *iter;
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinLowerZ(std::vector<double> Bin)
-{
-    typename std::vector<double>::iterator iter = Bin.begin();
-    std::advance(iter, 4);
-    return *iter;
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinUpperZ(std::vector<double> Bin)
-{
-    typename std::vector<double>::iterator iter = Bin.begin();
-    std::advance(iter, 5);
-    double value = *iter;
-    return *iter;
+    mNx = nX;
+    mNy = nY;
+    mNz = nZ;
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -2049,6 +1996,14 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::OutputCellPopula
     MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::OutputCellPopulationParameters(rParamsFile);
 }
 
+// // Explicit instantiation
+// template class HistoryDepMeshBasedCellPopulation<2, 2>;
+// template class HistoryDepMeshBasedCellPopulation<2, 3>;
+// template class HistoryDepMeshBasedCellPopulation<3, 3>;
+
+// // Serialization for Boost >= 1.36
+// #include "SerializationExportWrapperForCpp.hpp"
+// EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMeshBasedCellPopulation)
 
 // Explicit instantiation
 template class HistoryDepMeshBasedCellPopulation<2, 2>;

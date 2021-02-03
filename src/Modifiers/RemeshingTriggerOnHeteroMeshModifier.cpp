@@ -29,28 +29,26 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::RemeshingTriggerOnHeteroMeshModifier()
         : AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM>()
 {
-        mGrowthMaps =  {  { 10, Create_c_vector(pow(10, -8), pow(10, -8), pow(10, -10), 1e-14) },
-        { 8, Create_c_vector(pow(10,-7.5), pow(10,-8.5),pow(10, -10) , 1e-14 ) },
-        { 6, Create_c_vector(pow(10,-7.5), pow(10,-7.5),pow(10, -6.5) , 1e-14 )},
-        {5,   Create_c_vector(pow(10, -7), pow(10, -10), pow(10, -10), 1e-14) },
-        {4,   Create_c_vector(pow(10, -7), pow(10, -7.5), pow(10, -10), 1e-14) },
-        {3, Create_c_vector(pow(10, -6.5), pow(10, -10), pow(10, -10), 1e-14) }, 
-        {2,   Create_c_vector(pow(10, -6.5), pow(10, -6.5), pow(10, -10), 1e-14) },
+    //AreaConstant           AreaDilationModulus        ShearModulus    
+        mGrowthMaps =  {  { 10, Create_c_vector(pow(10, -7), pow(10, -10), pow(10, -8), 1e-14) }, 
+        { 8, Create_c_vector(pow(10,-7), pow(10,-8),pow(10, -8.5) , 1e-14 ) },
+        { 6, Create_c_vector(pow(10,-6), pow(10,-10),pow(10, -7.5) , 1e-14 )},
+        {5, Create_c_vector(pow(10, -7), pow(10, -7.5), pow(10, -8), 1e-14) },
+        {4, Create_c_vector(pow(10, -7), pow(10, -7.5), pow(10, -7.5), 1e-14) },
+        {3, Create_c_vector(pow(10, -6), pow(10, -10), pow(10, -6.5), 1e-14) },
+        {2, Create_c_vector(pow(10, -5.500), pow(10, -7.5), pow(10, -6.5), 1e-14) },
         {1, Create_c_vector(pow(10, -5.5000), pow(10, -5.5000), pow(10, -5.5000), 1e-14)}
     };
-
-
-    // 1 5.5000    5.5000    5.5000
-    // 2 6.5000    6.5000   10.0000
-    // 3 6.5000   10.0000   10.0000
-    // 4 7.0000    7.5000   10.0000
-    // 5 7.0000   10.0000   10.0000
-    // 6 7.5000    7.5000    6.5000
-    // 7 7.5000    8.0000   10.0000
-    // 8 7.5000    8.5000   10.0000
-    // 9 7.5000   10.0000    6.5000
-    // 10 8.0000    8.0000   10.0000
-
+//    10.0000    5.5000    5.5000    5.5000
+//     9.0000    5.5000    7.5000    6.5000
+//     8.0000    6.0000    7.5000    7.0000
+//     7.0000    7.0000    7.5000    7.5000
+//     6.0000    7.0000    7.5000    8.0000
+//     5.0000    6.0000   10.0000    7.5000
+//     4.0000    7.0000    8.0000    8.0000
+//     3.0000    7.0000    8.0000    8.5000
+//     2.0000    7.0000    8.0000    9.0000
+//     1.0000    7.0000   10.0000    8.0000
 
 }
 
@@ -68,6 +66,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(Ab
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOfTimeStep(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
+  
     assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
     if(mRemeshing)
@@ -76,8 +75,11 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
         {
             pCellPopulation->ExecuteHistoryDependentRemeshing();
             UpdateCellData(rCellPopulation);
-            TRACE("Need to update the membrane strenght for the new mesh, this next method has not yet been written ")
-            SetMembraneStrenghtOnNewMesh(rCellPopulation);
+            if (mHetro) // Need to make sure that the stiffer regions get stiffer at the right step size
+             {
+                TRACE("Need to update the membrane strenght for the new mesh, this next method has not yet been written ")
+                SetMembraneStrenghtOnNewMesh(rCellPopulation);
+             }
              mExecute = 0;
         } 
         mExecute +=1;
@@ -95,7 +97,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
         }
     }
     double NumberOfIterations = 100;
-    if (mSlowIncreaseInMembraneStrength ==1)/// Membrane parameters need to slowly increase :) 
+    if (mSlowIncreaseInMembraneStrength)/// Membrane parameters need to slowly increase :) 
     {
         if ( mSteps < NumberOfIterations +1)
         {
@@ -132,11 +134,10 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
     }
 
 
-
-// source ~/.bash_profile
-// scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParameters12.hpp
-
-
+    // I want all forces on the nodes 
+    // TS_ASSERT_DELTA(rCellPopulation.GetNode(1)->rGetAppliedForce()[0], -analytical_force_magnitude, 1e-4);
+            
+      
 
 
 }
@@ -157,6 +158,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
             cell_iter != rCellPopulation.End();
             ++cell_iter)
         {
+            
             unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
             Node_location = rCellPopulation.GetNode(node_index)->rGetLocation();
 
@@ -216,11 +218,14 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
                 cell_iter->GetCellData()->SetItem("AreaConstant", mGrowthMaps[mStrength](0));
                 cell_iter->GetCellData()->SetItem("BendingConstant", mGrowthMaps[mStrength](3));
             }
+                // double Shear = cell_iter->GetCellData()->GetItem("ShearModulus");
+                // double AreaDi = cell_iter->GetCellData()->GetItem("AreaDilationModulus");
+                // double Area = cell_iter->GetCellData()->GetItem("AreaConstant");
+                // double Bend = cell_iter->GetCellData()->GetItem("BendingConstant");
             
-
-
+            // PRINT_VARIABLE(mStrength)
+            // PRINT_4_VARIABLES(Shear,AreaDi,Area,Bend)
         }
-  
 }
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetStartingParameterForSlowIncrease(double StartingParameterForSlowIncrease)
@@ -243,7 +248,24 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetMembranePr
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetMembraneStrength(double Strength)
 {
+    //    mGrowthMaps =  {  { 10, Create_c_vector(pow(10, -8), pow(10, -8), pow(10, -10), 1e-14) },
+    //     { 8, Create_c_vector(pow(10,-7.5), pow(10,-8.5),pow(10, -10) , 1e-14 ) },
+    //     { 6, Create_c_vector(pow(10,-7.5), pow(10,-7.5),pow(10, -6.5) , 1e-14 )},
+    //     {5, Create_c_vector(pow(10, -7), pow(10, -10), pow(10, -10), 1e-14) },
+    //     {4, Create_c_vector(pow(10, -7), pow(10, -7.5), pow(10, -10), 1e-14) },
+    //     {3, Create_c_vector(pow(10, -6.5), pow(10, -10), pow(10, -10), 1e-14) }, 
+    //     {2, Create_c_vector(pow(10, -6.5), pow(10, -6.5), pow(10, -10), 1e-14) },
+    //     {1, Create_c_vector(pow(10, -5.5000), pow(10, -5.5000), pow(10, -5.5000), 1e-14)}
+    // };
     mStrength = Strength;
+}
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetMembraneParameters(double AreaParameter, double DilationParameter, double DeformationParamter, double BendingParameter)
+{
+    mGrowthMaps[0] =  Create_c_vector( AreaParameter, DilationParameter, DeformationParamter,BendingParameter);
+    mStrength = 0;
 }
 
 

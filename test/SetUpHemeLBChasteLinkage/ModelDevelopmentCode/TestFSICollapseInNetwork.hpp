@@ -40,17 +40,17 @@
 class TestRemeshing  : public AbstractCellBasedTestSuite
 {
 public:
- 
-  void TestGrowToEquiIdealNetwork() throw (Exception)
+
+  void offTestGrowToEquiIdealNetwork() throw (Exception)
     {
-  
-        double EndTime = 10;
+        double startime =0;
+        double EndTime = 3;
         double scale = 1e-2;        
         std::string output_dir = "TestHemeLBOnNetwork/Archiving";
         // 
-        // std::string mesh_file = "/Users/jcrawshaw/Downloads/SimpleNetwork.vtu";
-        
-        std::string mesh_file = "/home/vascrem/MeshCollection/IdealisedNetwork/SimpleNetwork.vtu";
+        std::string mesh_file = "/Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/SimpleNetwork.vtu";
+      
+        // std::string mesh_file = "/home/vascrem/MeshCollection/IdealisedNetwork/SimpleNetwork.vtu";
           
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
@@ -65,25 +65,34 @@ public:
 
         // Create a cell population
         HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
+        cell_population.SetChasteOutputDirectory(output_dir, startime);
+        cell_population.SetInitialAnlgesAcrossMembrane();
+        cell_population.SetRelativePath(output_dir, startime);
+        cell_population.SetTargetRemeshingEdgeLength(0.05* scale); 
+        cell_population.SetPrintRemeshedIC(1);
+        // cell_population.SetTargetRemeshingIterations(10);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
+        cell_population.SetRemeshingSoftwear("CGAL");
+        // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
-  
+
         // Set up cell-based simulation
         OffLatticeSimulation<2,3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
-        simulator.SetSamplingTimestepMultiple(10000);
-        simulator.SetDt(0.00002);
+        simulator.SetSamplingTimestepMultiple(1);
+        simulator.SetDt(0.0005);
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
-        
+
         /*
         -----------------------------
         RemeshingTriggerOnHeteroMeshModifier
         ----------------------------
         */  
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
-        p_Mesh_modifier->SetMembraneStrength(4);
+        p_Mesh_modifier->SetMembraneStrength(3);
+        p_Mesh_modifier->SetRemeshingInterval(5);//
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
         /*
@@ -119,7 +128,7 @@ public:
         */
 
         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        p_ForceOut->SetPressure(-(P_blood - P_tissue));// needs to be negative for server ?? 
+        p_ForceOut->SetPressure((P_blood - P_tissue));// needs to be negative for server ?? 
         // p_ForceOut->SetInitialPosition(cell_population, 0);
         // p_ForceOut->SetRadiusThreshold(3);
         simulator.AddForce(p_ForceOut);
@@ -178,7 +187,161 @@ public:
         CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
 }
 
- void TestCollapsingIdeaNework() throw (Exception)
+ 
+  void TestGrowToEquiIdealNetwork() throw (Exception)
+    {
+        double startime =0;
+        double EndTime = 20;
+        double scale = 1e-2;        
+        std::string output_dir = "TestRemeshingEquiOnCylinder/";
+        // 
+        // std::string mesh_file = "/Users/jcrawshaw/Downloads/mesh.vtu";
+
+        double scale = 1e3;
+        double Length = 50e-6 * scale;
+        double Radius = 1e-6 * scale;
+
+
+    
+        Honeycomb3DCylinderMeshGenerator generator(40, 100, Radius, Length);
+        MutableMesh<2, 3>* p_mesh = generator.GetMesh();
+        HistoryDepMutableMesh<2, 3>* mesh= static_cast<HistoryDepMutableMesh<2, 3>*>(p_mesh);
+
+
+        // std::string mesh_file = "/Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/3_by_3/mesh.vtu";
+      
+          
+        VtkMeshReader<2, 3> mesh_reader(mesh_file);
+        MutableMesh<2, 3> mesh;
+        mesh.ConstructFromMeshReader(mesh_reader);
+        mesh.Scale(scale,scale,scale);
+
+       // Create the cells 
+        MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
+        std::vector<CellPtr> cells;
+        CellsGenerator<FixedG1GenerationalCellCycleModel, 2> cells_generator;
+        cells_generator.GenerateBasicRandom(cells, mesh.GetNumNodes(), p_differentiated_type);
+
+        // Create a cell population
+        HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
+        cell_population.SetChasteOutputDirectory(output_dir, startime);
+        // cell_population.SetInitialAnlgesAcrossMembrane(); // Dont worry about this for now, I think there is something moff
+        cell_population.SetRelativePath(output_dir, startime);
+        cell_population.SetTargetRemeshingEdgeLength(0.65* scale); 
+        cell_population.EdgeLengthVariable(1.2); 
+        cell_population.SetPrintRemeshedIC(0);
+        cell_population.SetTargetRemeshingIterations(2);
+        cell_population.SetWriteVtkAsPoints(true);
+        cell_population.SetOutputMeshInVtk(true);
+        cell_population.SetRemeshingSoftwear("CGAL");
+        // Set population to output all data to results files
+        cell_population.AddCellWriter<CellProliferativeTypesWriter>();
+
+        // Set up cell-based simulation
+        OffLatticeSimulation<2,3> simulator(cell_population);
+        simulator.SetOutputDirectory(output_dir);
+        simulator.SetSamplingTimestepMultiple(400);
+        simulator.SetDt(0.005);
+        simulator.SetUpdateCellPopulationRule(false);
+        simulator.SetEndTime(EndTime);
+
+        /*
+        -----------------------------
+        RemeshingTriggerOnHeteroMeshModifier
+        ----------------------------
+        */  
+        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
+        // p_Mesh_modifier->SetMembraneStrength(3);
+        std::map<double, c_vector<long double, 4> > GrowthMaps;
+        GrowthMaps[1] = Create_c_vector(pow(10, -7), pow(10, -7), pow(10, -10), 0);
+        //Strength , hetro, stepsize, setupsolve
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
+
+        // p_Mesh_modifier->SetRemeshingInterval(900);// I have turned this off because I need to know what will happen without remeshing, and then with remeshing
+        simulator.AddSimulationModifier(p_Mesh_modifier);
+
+        // /*
+        // -----------------------------
+        // HemeLB Force
+        // ----------------------------
+        // */        
+
+        c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0);
+        c_vector<double, 3> Point1 = Create_c_vector(20*scale,0,0);
+
+        c_vector<double, 3> PlaneNormal2 = Create_c_vector(1,0,0);
+        c_vector<double, 3> Point2 = Create_c_vector(20*scale,-0.020,0);
+
+        c_vector<double, 3> PlaneNormal3 = Create_c_vector(1,0,0);
+        c_vector<double, 3> Point3 = Create_c_vector(20*scale,0.020,0);
+
+        c_vector<double, 3> PlaneNormal4 = Create_c_vector(-1,0,0);
+        c_vector<double, 3> Point4 = Create_c_vector(162*scale,0.020,0);
+
+        c_vector<double, 3> PlaneNormal5 = Create_c_vector(-1,0,0);
+        c_vector<double, 3> Point5 = Create_c_vector(162*scale,0,0);
+
+        c_vector<double, 3> PlaneNormal6 = Create_c_vector(-1,0,0);
+        c_vector<double, 3> Point6 = Create_c_vector(162*scale,-0.020,0);
+
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
+
+        // /*
+        // -----------------------------
+        // Constant Compressive tissue pressure
+        // ----------------------------
+        // */
+
+        boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
+        p_ForceOut->SetPressure((P_blood - P_tissue));// needs to be negative for server ?? 
+        simulator.AddForce(p_ForceOut);
+
+        /*
+        -----------------------------
+        Membrane forces
+        ----------------------------
+        */
+        boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
+        simulator.AddForce(p_shear_force);
+
+        /*
+        -----------------------------
+        Boundary conditions
+        ----------------------------
+        */
+        std::vector<c_vector<double,3> > boundary_plane_points;
+        std::vector<c_vector<double,3> > boundary_plane_normals;
+
+        boundary_plane_points.push_back(Point1);
+        boundary_plane_normals.push_back(PlaneNormal1);
+
+        boundary_plane_points.push_back(Point2);
+        boundary_plane_normals.push_back(PlaneNormal2);
+        
+        boundary_plane_points.push_back(Point3);
+        boundary_plane_normals.push_back(PlaneNormal3);
+        
+        boundary_plane_points.push_back(Point4);
+        boundary_plane_normals.push_back(PlaneNormal4);
+        
+        boundary_plane_points.push_back(Point5);
+        boundary_plane_normals.push_back(PlaneNormal5);
+
+        boundary_plane_points.push_back(Point6);
+        boundary_plane_normals.push_back(PlaneNormal6);
+
+        for(unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
+        {
+          boost::shared_ptr<FixedRegionBoundaryCondition<2,3> > p_condition(new FixedRegionBoundaryCondition<2,3>(&cell_population, boundary_plane_points[boundary_id],-boundary_plane_normals[boundary_id],0.01));
+          simulator.AddCellPopulationBoundaryCondition(p_condition);
+        }
+      
+     	  simulator.Solve();
+        CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
+}
+
+ void offTestCollapsingIdeaNework() throw (Exception)
     {        
         std::string output_dir = "TestHemeLBOnNetwork/Archiving";
       

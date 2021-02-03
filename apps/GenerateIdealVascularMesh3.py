@@ -170,48 +170,25 @@ if __name__=="__main__":
     Clipped_Mesh = Directory+"MeshClippedNew.vtk"
     VTK_MeshRefined = Directory+"MeshRefinedNew.vtk"
     
-
-    # # # # Set up the points for the centerlines and write into a file to be read in cpp 
-    # print "Testing a smaller mesh to know what discretiseation i need"
-    GenerationsHeigh = 3 
-    Height =30# This needs to be even 
-    HorizonatalEdgeLength =25
-    GenerationsLong = 2
-    alpha = m.pi/4
-    MaxX = CreateIdealSkeleton(Directory, GenerationsHeigh, GenerationsLong, Height, HorizonatalEdgeLength, alpha, 0)
-    
-    # # # # # # # # read in the centerlines points into cpp to generate the centerlines.vtp file
-    # command = CPP_Centerlines_vtp_writer + ' -ofile ' + CenterLines_filename + ' -CenterlinePoints ' +Directory+ 'CenterlinePoints.txt -CenterlineEdges ' + Directory +'CenterlineEdges.txt -Radius 1' 
-    # subprocess.call(command, shell=True)
-
-    
-    # # # # #  # interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller
-    # SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ CenterLines_filename + ' -length 0.7 -ofile '+ CenterLines_filename
-    # subprocess.call(SmoothCenterlinesCommond, shell=True)
-    # # pause()
-    # print "Developing Mesh"
-    # # With the scalled radii generate a new mesh from with adapted centerlines file  -- here the discretisation dimension (i.e nunber of nodes in each axis) is currently 200 200 200, but might need changing 
-    # command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 400 400 300 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
-    # subprocess.call(command, shell=True)
-    
-    # # # # pause()
-    VTK_MeshRefined1 = Directory+"FirstRefined.vtk"
-    # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-    command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.025 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined1
-    subprocess.call(command, shell=True)
-
+    MaxX = CreateIdealSkeleton(Directory, 3, 2, 30, 25, m.pi/4, 0)
+       
+    # # # # # pause()
+    # VTK_MeshRefined1 = Directory+"FirstRefined.vtk"
+    Directory = "/home/vascrem/MeshCollection/IdealisedNetwork/Deflated3/NewFolder/"
     VTK_MeshRefined2 = Directory+"SecondRefined.vtk"
     # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-    command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined1 +' -iterations 5 -edgelength 0.04 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined2
+    command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined1 +' -iterations 5 -edgelength 0.5 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined2
     subprocess.call(command, shell=True)
     
+    # VTK_MeshRefined = Directory+"MeshRefinedNew.vtk"
+    # # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
+    # command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined2 +' -iterations 5 -edgelength 0.6 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined
+    # subprocess.call(command, shell=True)
 
-    # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-    command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined2 +' -iterations 5 -edgelength 0.05 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined
-    subprocess.call(command, shell=True)
-   
-    clip.clip_surface_with_plane(VTK_MeshRefined,(0.5,0,0), (1,0,0), Clipped_Mesh)
-    clip.clip_surface_with_plane(Clipped_Mesh,(MaxX-0.5,0,0), (-1,0,0), Clipped_Mesh)
+    input =  "/home/vascrem/MeshCollection/IdealisedNetwork/Deflated3/SecondRefined2.vtk"
+    output =  "/home/vascrem/MeshCollection/IdealisedNetwork/Deflated3/SecondRefined2CLipped.vtk"
+    clip.clip_surface_with_plane(input,(10,0,0), (1,0,0), output)
+    clip.clip_surface_with_plane(output,(MaxX-10,0,0), (-1,0,0), output)
 
     # print "-----------Converting---------------"
     # VTU_Mesh = Directory+"Mesh3.vtu"

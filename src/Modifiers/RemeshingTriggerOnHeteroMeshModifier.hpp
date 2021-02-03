@@ -159,6 +159,12 @@ public:
 
     void SetBasementMembraneStrength(double Strength);
 
+    void SetMembraneParameters(double AreaParameter, double DilationParameter, double DeformationParamter, double BendingParameter);
+
+
+
+
+
     double mBasementMembraneStrength;
 
     /**

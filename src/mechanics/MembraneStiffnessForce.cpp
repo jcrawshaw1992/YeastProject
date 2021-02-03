@@ -320,9 +320,6 @@ void MembraneStiffnessForce::AddForceContribution(AbstractCellPopulation<2,3>& r
         CellPtr p_cell3 = p_static_cast_cell_population->GetCellUsingLocationIndex(node_index3); // MembraneStiffness += p_cell3->GetCellData()->GetItem("BendingConstant");
         CellPtr p_cell4 = p_static_cast_cell_population->GetCellUsingLocationIndex(node_index4);  //MembraneStiffness += p_cell4->GetCellData()->GetItem("BendingConstant");
 
-
-
-
         c_vector<double, 3> normal_1 = nonUnitNormals.first;
         double area_1 = 0.5 * norm_2(normal_1);
         normal_1 /= norm_2(normal_1);

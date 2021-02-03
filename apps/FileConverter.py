@@ -184,12 +184,17 @@ def stlTovtu(stlFile, VTUfile):
     #     print 'Finished'
 
 if __name__=="__main__":
+    
+    Directory = "/home/vascrem/MeshCollection/IdealisedNetwork/IdealMeshWIthCentralCollapse/Nonsymmetric/"
+    # # # # Set up the points for the centerlines and write into a file to be read in cpp 
 
-    stlFile= "/⁨Users⁩/⁨jcrawshaw⁩/⁨Documents⁩/⁨CGAL-5.0.2⁩/⁨examples⁩/⁨Mesh_3⁩/⁨data/skull.inr⁩"
-    stlFile= "/Users/jcrawshaw/Documents/Projects/MeshMatlab/Meshes/skull.off" 
-    vtuFile= "/Users/jcrawshaw/Documents/Projects/MeshMatlab/Meshes/skull.vtu" 
+    Collapse = [0.9, 0.8, 0.7, 0.6, 0.5, 0.4]#, 0.3, 0.2, 0.1]
+    for i in Collapse: 
+        vtuFile=  Directory+"Mesh"+str(int(10*i))+".vtk"
+        Clipped_Mesh = Directory+"MeshClipped"+str(int(10*i))+".vtk"
 
-    stlTovtu(stlFile, vtuFile)
-    pdb.set_trace()
+        vtkTovtu(Clipped_Mesh, vtuFile)
+
+    print "Done :) "
 
 

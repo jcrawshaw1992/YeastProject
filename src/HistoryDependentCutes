@@ -1,0 +1,208 @@
+// MeanAngle /= counter;
+    // double variance = 0;
+
+    // for (typename MutableMesh<ELEMENT_DIM, SPACE_DIM>::EdgeIterator edge_iterator = this->rGetMesh().EdgesBegin();
+    //      edge_iterator != this->rGetMesh().EdgesEnd();
+    //      ++edge_iterator)
+    // {
+    //     std::pair<c_vector<double, SPACE_DIM>, c_vector<double, SPACE_DIM> > UnitNormals;
+    //     std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> otherNodes;
+
+    //     std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge = std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*>(edge_iterator.GetNodeA(), edge_iterator.GetNodeB());
+
+    //     bool boundary_edge_found = CalculateElementNormals(edge, UnitNormals, otherNodes);
+    //     if (!boundary_edge_found)
+    //     {
+    //         variance += pow(mOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] - MeanAngle, 2);
+    //     }
+    // }
+    // variance /= counter;
+
+    // double stdev = sqrt(variance);
+    // double Threshold1 = MeanAngle - 1.5 * stdev;
+    // double Threshold2 = MeanAngle + 1.5 * stdev;
+    // // Now go through and see what is greater than the threshold
+
+    // std::vector<Element<ELEMENT_DIM, SPACE_DIM>*> ElementsToRefine;
+
+    // for (typename MutableMesh<ELEMENT_DIM, SPACE_DIM>::EdgeIterator edge_iterator = this->rGetMesh().EdgesBegin();
+    //      edge_iterator != this->rGetMesh().EdgesEnd();
+    //      ++edge_iterator)
+    // {
+    //     std::pair<c_vector<double, SPACE_DIM>, c_vector<double, SPACE_DIM> > nonUnitNormals;
+    //     std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> otherNodes;
+
+    //     std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge = std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*>(edge_iterator.GetNodeA(), edge_iterator.GetNodeB());
+
+    //     bool boundary_edge_found = CalculateElementNormals(edge, nonUnitNormals, otherNodes);
+
+    //     if (!boundary_edge_found)
+    //     {
+    //         double Angle = mOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())];
+
+    //         if (Angle < Threshold1 || Angle > Threshold2)
+    //         {
+    //             // TRACE("High curveature")
+    //             // I need this edge to be the inital edge
+    //             Node<SPACE_DIM>* pNode1 = edge_iterator.GetNodeA(); // unsigned Node_1_index = pNode1->GetIndex();
+    //             Node<SPACE_DIM>* pNode3 = edge_iterator.GetNodeB(); // unsigned Node_2_index = pNode3->GetIndex();
+    //             Node<SPACE_DIM>* pNode2 = otherNodes.first; // unsigned Shared_Node_1_index = pNode2->GetIndex();
+    //             Node<SPACE_DIM>* pNode4 = otherNodes.second; // unsigned Shared_Node_2_index = pNode4->GetIndex();
+
+    //             // get the cell here and mark it
+
+    //             CellPtr p_cell1 = this->GetCellUsingLocationIndex(pNode1->GetIndex());
+    //             CellPtr p_cell2 = this->GetCellUsingLocationIndex(pNode2->GetIndex());
+    //             CellPtr p_cell3 = this->GetCellUsingLocationIndex(pNode3->GetIndex());
+    //             CellPtr p_cell4 = this->GetCellUsingLocationIndex(pNode4->GetIndex());
+    //             p_cell1->GetCellData()->SetItem("Curvature", 1);
+    //             p_cell2->GetCellData()->SetItem("Curvature", 1);
+    //             p_cell3->GetCellData()->SetItem("Curvature", 1);
+    //             p_cell4->GetCellData()->SetItem("Curvature", 1);
+
+    //             // // Need to mark the element
+
+    //             std::set<unsigned> elements_containing_node1 = pNode1->rGetContainingElementIndices();
+    //             std::set<unsigned> elements_containing_node3 = pNode3->rGetContainingElementIndices();
+
+    //             // Find common elements
+    //             std::set<unsigned> shared_elements;
+    //             std::set_intersection(elements_containing_node1.begin(),
+    //                                   elements_containing_node1.end(),
+    //                                   elements_containing_node3.begin(),
+    //                                   elements_containing_node3.end(),
+    //                                   std::inserter(shared_elements, shared_elements.begin()));
+
+    //             std::set<unsigned>::iterator set_iter = shared_elements.begin();
+    //             Element<ELEMENT_DIM, SPACE_DIM>* pElement1 = this->rGetMesh().GetElement(*set_iter);
+    //             ++set_iter;
+    //             Element<ELEMENT_DIM, SPACE_DIM>* pElement2 = this->rGetMesh().GetElement(*set_iter);
+
+    //             ElementsToRefine.push_back(pElement1);
+    //             ElementsToRefine.push_back(pElement2);
+    //         }
+    //     }
+    // }
+
+
+
+                // p_cell1->GetCellData()->SetItem("Curvature", 1);
+                // p_cell2->GetCellData()->SetItem("Curvature", 1);
+                // p_cell3->GetCellData()->SetItem("Curvature", 1);
+                // p_cell4->GetCellData()->SetItem("Curvature", 1);
+
+
+
+// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+// void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SaveInitalConditionsAtTime0()
+// {
+//     for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
+//          node_iter != this->rGetMesh().GetNodeIteratorEnd();
+//          ++node_iter)
+//     {
+//         unsigned node_index = node_iter->GetIndex();
+//         mInitalPositionOfRemeshedNodes[node_index] = node_iter->rGetLocation();
+//     }
+// }
+
+
+
+// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+// void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::DetermineDimensions()
+// {
+//     mDIM = 2;
+//     double Z = 0; //mNew_mesh.GetNodeIteratorBegin()->rGetLocation()[2];
+//     for (typename MutableMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator iter = mNew_mesh.GetNodeIteratorBegin();
+//          iter != mNew_mesh.GetNodeIteratorEnd();
+//          ++iter)
+//     {
+//         unsigned node_index = iter->GetIndex();
+//         c_vector<double, SPACE_DIM> NewNodeLocation = iter->rGetLocation();
+//         if (NewNodeLocation[2] != Z)
+//         {
+//             mDIM = 3;
+//             break;
+//         }
+//     }
+// }
+
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::JiggleNodes()
+{
+
+    clock_t t = clock();
+    /// Loop over new and old mesh and find the nodes in the new mesh that are the cloest to the old mesh and put these nodes here --- this should be done in the mesh
+    // Loop over old mesh first, then new mesh
+    for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
+         node_iter != this->rGetMesh().GetNodeIteratorEnd();
+         ++node_iter)
+    {
+        unsigned node_index = node_iter->GetIndex();
+        c_vector<double, SPACE_DIM> OldNodeLocation = node_iter->rGetLocation();
+
+        // Now want to find the cloest node in the new mesh
+
+        double MinDistance = 1000000000000;
+        unsigned ClosestNewNode;
+        c_vector<double, SPACE_DIM> NewNodeLocation;
+
+        // Now want the location of the nodes in the new mesh
+
+        for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator NewN_iter = mNew_mesh.GetNodeIteratorBegin();
+             NewN_iter != mNew_mesh.GetNodeIteratorEnd();
+             ++NewN_iter)
+        {
+            NewNodeLocation = NewN_iter->rGetLocation();
+            if (norm_2(NewNodeLocation - OldNodeLocation) < MinDistance)
+            {
+                unsigned Newnode_index = NewN_iter->GetIndex();
+                MinDistance = norm_2(NewNodeLocation - OldNodeLocation);
+                ClosestNewNode = Newnode_index;
+            }
+        }
+        if (MinDistance < 0.005)
+        {
+
+            Node<SPACE_DIM>* p_node = mNew_mesh.GetNode(ClosestNewNode);
+            p_node->rGetModifiableLocation() = OldNodeLocation;
+        }
+    }
+
+    VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(mRelativePath, "RemeshedGeometry2", false);
+    mesh_writer.WriteFilesUsingMesh(mNew_mesh);
+
+    t = clock() - t;
+    std::cout << "simulation time: " << t / CLOCKS_PER_SEC << " seconds" << std::endl;
+}
+
+
+
+ assert(SPACE_DIM == 3);
+    // This method is super simple. -- Just find the closest element -- it isnt perfect,
+    int ClosestElement;
+    double distance = 30;
+    bool HaveElement = 0;
+
+    std::vector<int> Bin = GetBin(NewNodeLocation);
+    std::vector<unsigned> ElementsInDaBin= mBin[Bin];
+
+    for (std::vector<unsigned>::iterator i = ElementsInDaBin.begin(); i != ElementsInDaBin.end(); ++i)
+    {
+    // }
+    // for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
+    //      elem_iter != this->rGetMesh().GetElementIteratorEnd();
+    //      ++elem_iter)
+    // {
+        // Now need to find the cloeset element in this bin
+        // unsigned elem_index = elem_iter->GetIndex();
+        unsigned elem_index  = *i;
+        c_vector<double, SPACE_DIM> Centroid = mCentroidMap[elem_index];
+
+        if (norm_2(NewNodeLocation - Centroid) <= distance)
+        {
+            distance = norm_2(NewNodeLocation - Centroid);
+            ClosestElement = elem_index;
+        }
+    }

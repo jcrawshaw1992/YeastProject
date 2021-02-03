@@ -11,22 +11,62 @@ from os import path
 
 
 if __name__=="__main__":
-    
-    NewFolder = "/data/vascrem/testoutput/Tissue2dVirusInfection_InfectiousPercent_S/CollectedResults/"
-    OldFolder = "/data/vascrem/testoutput/Tissue2dVirusInfection_InfectiousPercent_S/"
-    # "InitialInfec_0.05_Diffusion_0.5/6/results_from_time_0/pde_results_ext_virus_4000.vtu
-    os.mkdir(NewFolder)
-    Parameter1 = [0.05,0.1,0.01]
-    Parameter2 =[1,0.1,0.5,0.01,0.05,0.005]
-    Parameter3 = [1,2,3,4,5,6,7,8,9, 10]
 
-    for i in Parameter1:
-        for j in Parameter2:
-            for k in Parameter3:
-                Oldfile = OldFolder + "InitialInfec_" + str(i) + "_Diffusion_" + str(j) + "/" + str(k) + "/results_from_time_0/viruscelltypes.dat" 
+    # os.mkdir("/data/vascrem/testoutput/InitialInfection/")
+    NewFolder = "/data/vascrem/testoutput/InitialInfection/Uniform/"
+    OldFolder = "/data/vascrem/testoutput/VaryingInitialCovidInfection/UniformDistribtuion/"
+    # os.mkdir(NewFolder)
+    TwoVariables=1
+    ThreeVariabes =0
+
+    if TwoVariables ==1:
+        Parameter1 = [ 0.01, 0.05, 0.1 ]
+        Parameter2 = [1,2,3,4,5,6,7,8,9, 10]
+
+        for i in Parameter1:
+            for j in Parameter2:
+                Oldfile = OldFolder + "FractionInfected_" + str(i) + "/" + str(j)+ "/results_from_time_0/covid19celltypes.dat" 
                 if path.exists(Oldfile):
-                    NewFile = NewFolder + "InitialInfec_" + str(i) + "_Diffusion_" + str(j) + "_" + str(k)+"_viruscelltypes.dat" 
+                    NewFile = NewFolder + "FractionInfected_" + str(i) + "_" + str(j) + "_viruscelltypes.dat" 
                     shutil.copy(Oldfile, NewFile)
-   
+
+
+    NewFolder = "/data/vascrem/testoutput/InitialInfection/Random/"
+    OldFolder = "/data/vascrem/testoutput/VaryingInitialCovidInfection/Random/"
+    # os.mkdir(NewFolder)
+    TwoVariables=1
+    ThreeVariabes =0
+
+    if TwoVariables==1:
+        Parameter1 = [ 0.01, 0.05, 0.1 ]
+        Parameter2 = [1,2,3,4,5,6,7,8,9, 10]
+
+        for i in Parameter1:
+            for j in Parameter2:
+                Oldfile = OldFolder + "FractionInfected_" + str(i) + "/" + str(j)+ "/results_from_time_0/covid19celltypes.dat" 
+                if path.exists(Oldfile):
+                    NewFile = NewFolder + "FractionInfected_" + str(i) + "_" + str(j) + "_viruscelltypes.dat" 
+                    shutil.copy(Oldfile, NewFile)
+
+
+    NewFolder = "/data/vascrem/testoutput/InitialInfection/Clummped/"
+    OldFolder = "/data/vascrem/testoutput/VaryingInitialCovidInfection/Clummped/"
+    # os.mkdir(NewFolder)
+
+    ThreeVariabes =1
+    if ThreeVariabes==1:
+        Parameter1 = [ 0.01, 0.05, 0.1 ]
+        Parameter2 = [1,2,3]
+        Parameter3 = [1,2,3,4,5,6,7,8,9, 10]
+
+        for i in Parameter1:
+            for j in Parameter2:
+                for k in Parameter3:
+                    Oldfile = OldFolder + "FractionInfected_" + str(i) + "/ClusterDesnity_" + str(j) + "/" + str(k) + "/results_from_time_0/covid19celltypes.dat" 
+                    if path.exists(Oldfile):
+                        NewFile = NewFolder + "FractionInfected_" + str(i) + "_ClusterDesnity_" + str(j) + "_" + str(k)+"_viruscelltypes.dat" 
+                        shutil.copy(Oldfile, NewFile)
+    
+    
     print '\n ********* ------ Finished ------ ********* \n'
    

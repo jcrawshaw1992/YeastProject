@@ -38,7 +38,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestSetUpCylinderArchive() throw(Exception)
+    void TestSetUpCylinderArchive() throw(Exception)
     {
 
         double EndTime = 30;
@@ -87,6 +87,7 @@ public:
         GrowthMaps[1] = Create_c_vector(0, pow(10, -4), pow(10, -5), 0);
         //Strength , hetro, stepsize, setupsolve
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
+        p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
         /*
@@ -135,11 +136,11 @@ public:
             simulator.AddCellPopulationBoundaryCondition(p_condition);
         }
         TRACE("Set to run archiving sim")
-        // simulator.Solve();
-        // CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+        simulator.Solve();
+        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
     }
 
-    void TestParametersOverCylinder1A() throw(Exception)
+    void offTestParametersOverCylinder1A() throw(Exception)
     {
 
         double AreaParameter[2] =  {6, 6.5};//{6, 6.5, 7, 8};
@@ -219,7 +220,7 @@ public:
         }
     }
 
- void TestParametersOverCylinder1B() throw(Exception)
+ void offTestParametersOverCylinder1B() throw(Exception)
     {
 
         double AreaParameter[2] =  {6, 6.5};//{6, 6.5, 7, 8};
@@ -300,7 +301,7 @@ public:
     }
 
 
-   void TestParametersOverCylinder2A() throw(Exception)
+   void offTestParametersOverCylinder2A() throw(Exception)
     {
 
         double AreaParameter[2] =  { 7,7.5};//{6, 6.5, 7, 8};
@@ -380,7 +381,7 @@ public:
         }
     }
 
- void TestParametersOverCylinder2B() throw(Exception)
+ void offTestParametersOverCylinder2B() throw(Exception)
     {
 
         double AreaParameter[2] =  { 7,7.5};//{6, 6.5, 7, 8};
@@ -460,7 +461,7 @@ public:
         }
     }
 
-  void TestParametersOverCylinder3A() throw(Exception)
+  void offTestParametersOverCylinder3A() throw(Exception)
     {
 
         double AreaParameter[1] =  {8};//{6, 6.5, 7, 8};
@@ -539,7 +540,7 @@ public:
             }
         }
     }
- void TestParametersOverCylinder3B() throw(Exception)
+ void offTestParametersOverCylinder3B() throw(Exception)
     {
 
         double AreaParameter[1] =  {8};//{6, 6.5, 7, 8};

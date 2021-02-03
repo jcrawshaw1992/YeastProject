@@ -41,11 +41,12 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
 
             Kalpha +=p_cell->GetCellData()->GetItem("AreaDilationModulus");
             KS +=p_cell->GetCellData()->GetItem("ShearModulus");
-                
+            KA += p_cell->GetCellData()->GetItem("AreaConstant"); 
         }
         Kalpha/=3;
         KA/=3;
         KS/=3;
+        // PRINT_3_VARIABLES(Kalpha,KA,KS ) 
 
         unsigned elem_index = elem_iter->GetIndex();
 
@@ -230,15 +231,43 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
             // assert(norm_2(AverageForce) <10e10);
             // c_vector<double, 3> OldForce = MembraneForceMap[node_index]/norm_2(MembraneForceMap[node_index] );
             // c_vector<double, 3> NewForce = OldForce *norm_2(AverageForce);
-            pNode->AddAppliedForceContribution(AverageForce); // Add the new force
             cell_iter->GetCellData()->SetItem("MembraneForce",norm_2(AverageForce) );
+            if (norm_2(AverageForce) >10000)
+            {
+                PRINT_VECTOR(AverageForce)
+                    AverageForce = Create_c_vector(0,0,0);
+                     double CellArea1= rCellPopulation.GetVolumeOfCell(rCellPopulation.GetCellUsingLocationIndex(node_index));
+                PRINT_VARIABLE(CellArea1)
+                cell_iter->GetCellData()->SetItem("MembraneForce",-100);
+                    
+            }
+            // assert(norm_2(AverageForce) <10000);
+
+
+            pNode->AddAppliedForceContribution(AverageForce); // Add the new force
+            // assert(norm_2(AverageForce) <10000);
+            
 
         }
         else
         {
-        
-            pNode->AddAppliedForceContribution(MembraneForceMap[node_index] ); // Add the new force
             cell_iter->GetCellData()->SetItem("MembraneForce", norm_2(MembraneForceMap[node_index] ));
+        if (norm_2(MembraneForceMap[node_index])>10000)
+            {
+
+                double CellArea1= rCellPopulation.GetVolumeOfCell(rCellPopulation.GetCellUsingLocationIndex(node_index));
+                PRINT_VARIABLE(CellArea1)
+
+
+                PRINT_VECTOR(MembraneForceMap[node_index])
+                    MembraneForceMap[node_index] = Create_c_vector(0,0,0);
+                    cell_iter->GetCellData()->SetItem("MembraneForce", -100);
+                    
+            }
+
+            pNode->AddAppliedForceContribution(MembraneForceMap[node_index] ); // Add the new force
+            //  assert(norm_2(MembraneForceMap[node_index]) <10000);
+            
             // TRACE("Center")
             // double CellArea= rCellPopulation.GetVolumeOfCell(rCellPopulation.GetCellUsingLocationIndex(node_index));
             // PRINT_2_VARIABLES(CellArea,norm_2(MembraneForceMap[node_index] ))

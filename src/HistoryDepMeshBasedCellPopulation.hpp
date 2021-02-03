@@ -19,7 +19,6 @@
 #include <boost/serialization/set.hpp>
 #include <boost/serialization/vector.hpp>
 #include "ChasteSerialization.hpp"
-#include "MeshBasedCellPopulation.hpp"
 
 #include "CellBasedEventHandler.hpp"
 #include "CellId.hpp"
@@ -36,6 +35,13 @@
 // #include <filesystem>
 
 #include <boost/filesystem.hpp>
+
+#include <ctime>
+#include "MathsFunctions.hpp"
+#include "RandomDirectionCentreBasedDivisionRule.hpp"
+
+
+
 /**
  * A facade class encapsulating a mesh-based 'cell population'.
  *
@@ -191,13 +197,11 @@ public:
     void PreAllocatedRemeshedMesh(std::string RemeshedMesh);
     std::string mPreAllocatedRemeshedMesh;
 
-    void JiggleNodes();
     void CheckCurvature();
     void SetRemeshingSoftwear(std::string RemeshingSoftwear);
     std::string mRemeshingSoftwear = "CGAL";
 
     void SaveInitalConditions();
-    void SaveInitalConditionsAtTime0();
     std::map<unsigned, c_vector<double, SPACE_DIM> > mOriginalNodePositions;
     std::map<unsigned, c_vector<double, SPACE_DIM> > GetInitalNodePositions();
     void SetMaxEdgelength();
@@ -207,7 +211,6 @@ public:
     double ClosestPointInTriangle(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement);
     unsigned WhichElement(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> NewNodeLocation, unsigned Element1, unsigned Element2);
 
-    bool PointInTriangle3D2(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement);
     bool SameSideOfPlane(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> a, c_vector<double, SPACE_DIM> b);
     bool SameSide(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> a, c_vector<double, SPACE_DIM> b);
 
@@ -257,23 +260,51 @@ public:
     // Can manually change how many bins in each dim there are from the test
     void SetBinningIntervals(int nX, int nY, int nZ);
     void SetBinningRegions();
+
+
     std::map<std::vector<int>, std::vector<unsigned> > mBinMap;
+    // std::map<unsigned, c_vector<double, SPACE_DIM> > mBin;
+
+    // THis map provides a list of the elements in each bin, the bin being the key 
+    std::map<std::vector<int>, std::vector<unsigned > > mBin;
+    // Map for the edges in each bin -- each bin has a vector of edges, the edges are descirbed by the nodes on the edge
+    std::map<std::vector<int>, std::vector<  std::pair<unsigned, unsigned>  > > mEdgeBin;
+    std::map<std::vector<int>, std::vector<double> > mBinCoords;
+    // std::map<std::vector<int>,  std::vector<c_vector<double, SPACE_DIM> >> mBinCoords1;
 
     //Finds the bin of any given point
-    std::vector<int> DetermineBin(c_vector<double, SPACE_DIM> Point);
+    std::vector<int> GetBin(c_vector<double, SPACE_DIM> Location);
 
     // This function is called in SetBinningRegions to set the maximal dimesions of the domain, letting me determine whitch nth of the domain each point is in
-    void SetMaxDomainDimensions();
+    void SetBinningWidth();
+    void SetMeshSize();
+
+
+
+    // Makes it easier to access each of the boundaries for the bin
+    double GetBinLowerX(std::vector<double> Bin);
+    double GetBinUpperX(std::vector<double> Bin);
+    double GetBinLowerY(std::vector<double> Bin);
+    double GetBinUpperY(std::vector<double> Bin);
+    double GetBinLowerZ(std::vector<double> Bin);
+    double GetBinUpperZ(std::vector<double> Bin);
+        
+
+
+
+
+
+
+
 
     // Binning member variables
     // Set the number of intervals  -- default is 1, but can be changed with SetBinningIntervals
-    int mNx = 1;
-    int mNy = 1;
+    int mNx = 3;
+    int mNy = 2;
     int mNz = 1;
 
     // If the geometry is 2d, need to record it  with this member in
     int mDIM = 3;
-    void DetermineDimensions();
 
     // Need max dimensions of the domain
     double mMaxX;
@@ -311,6 +342,9 @@ public:
     double mTargetRemeshingEdgeLength = 1e-7;
     void SetTargetRemeshingIterations(int Iterations);
     int mIterations = 5;
+    void EdgeLengthVariable(double EdgeLengthMultiple);
+    bool mVariableEdgeLength =0;
+    double mEdgeLengthMultiple =1;
 
     void SetPrintRemeshedIC(bool PrintRemeshedIC);
     bool mPrintRemeshedIC = 0;

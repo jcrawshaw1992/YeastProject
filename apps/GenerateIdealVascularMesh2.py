@@ -194,24 +194,29 @@ if __name__=="__main__":
     # command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 400 400 300 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
     # subprocess.call(command, shell=True)
     
-    # # # # pause()
+    # # # # # pause()
+    Directory = "/home/vascrem/MeshCollection/IdealisedNetwork/Deflated3/NewFolder/"
     VTK_MeshRefined1 = Directory+"FirstRefined.vtk"
-    # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-    command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.025 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined1
-    subprocess.call(command, shell=True)
+    # # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
+    # command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.1 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined1
+    # subprocess.call(command, shell=True)
 
-    VTK_MeshRefined2 = Directory+"SecondRefined.vtk"
+    VTK_MeshRefined2 = Directory+"SecondRefined2.vtk"
     # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-    command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined1 +' -iterations 5 -edgelength 0.04 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined2
+    command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined1 +' -iterations 10 -edgelength 0.4 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined2
     subprocess.call(command, shell=True)
     
 
-    # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-    command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined2 +' -iterations 5 -edgelength 0.05 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined
+    VTK_MeshRefined3 = Directory+"ThirdRefined.vtk"
+    # # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
+    command = 'vmtksurfaceremeshing -ifile '+VTK_MeshRefined2 +' -iterations 5 -edgelength 0.5 -elementsizemode "edgelength" -ofile ' + VTK_MeshRefined3
     subprocess.call(command, shell=True)
+
+    
    
-    clip.clip_surface_with_plane(VTK_MeshRefined,(0.5,0,0), (1,0,0), Clipped_Mesh)
-    clip.clip_surface_with_plane(Clipped_Mesh,(MaxX-0.5,0,0), (-1,0,0), Clipped_Mesh)
+    Clipped_Mesh = Directory+"Clipped.vtk"
+    clip.clip_surface_with_plane(VTK_MeshRefined2,(11,0,0), (1,0,0), Clipped_Mesh)
+    clip.clip_surface_with_plane(Clipped_Mesh,(170,0,0), (-1,0,0), Clipped_Mesh)
 
     # print "-----------Converting---------------"
     # VTU_Mesh = Directory+"Mesh3.vtu"
