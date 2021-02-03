@@ -37,8 +37,8 @@ if __name__=="__main__":
 
 
 
-    ParameterSets =[1]# [1,2,3,4,5,6,7,8]
-    BendingParameters =[1]#  [1,2,3,4,5,6,7]
+    ParameterSets =[1,2,3,4,5,6,7,8]
+    BendingParameters =[1,2,3,4,5,6,7]
     
     Parallel = 1
     SleepyTime = 120
