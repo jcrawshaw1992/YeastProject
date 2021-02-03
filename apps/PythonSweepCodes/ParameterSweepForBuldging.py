@@ -38,10 +38,10 @@ if __name__=="__main__":
 
 
     ParameterSets =[1,2,3,4,5,6,7,8]
-    BendingParameters =[1,2,3,4,5,6,7]
+    BendingParameters =[1,2,3,4,5,6,7,8,9]
     
-    Parallel = 1
-    SleepyTime = 120
+    Parallel = 10
+    SleepyTime = 300
     AvaliablePaths = range(Parallel)
     print AvaliablePaths
     for i in ParameterSets:
