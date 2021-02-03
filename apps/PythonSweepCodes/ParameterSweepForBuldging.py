@@ -20,7 +20,7 @@ if __name__=="__main__":
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestSweepingForBifucationDeformation.hpp"
         subprocess.call(command, shell=True)
-    Server = 0
+    Server = 1
     if Server ==1:
         chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestSweepingForBifucationDeformationRunner '
         TerminalOutputFolder = "/data/vascrem/testoutput/TestForBuldgingInBifucation/SweepTerminalOutputs/"

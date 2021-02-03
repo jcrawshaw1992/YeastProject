@@ -187,9 +187,9 @@ public:
         Bending forces
         ----------------------------
         */
-
+       double Bendy = BendingMap[BendingParameter];
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        p_membrane_force->SetMembraneStiffness(BendingMap[BendingParameter]);
+        p_membrane_force->SetMembraneStiffness(Bendy);
         simulator.AddForce(p_membrane_force);
 
         /*
