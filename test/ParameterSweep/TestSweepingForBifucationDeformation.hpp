@@ -43,37 +43,23 @@ public:
 
   void TestParametersOnBifucation() throw (Exception)
     {
-
-
-        std::map<double, c_vector<double, 3> >  GrowthMaps = { { 1, Create_c_vector(pow(10, -5.5),pow(10, -6.5),  pow(10, -7.5)) },
-                                                            { 2, Create_c_vector(pow(10, -5.5),pow(10, -7.5),  pow(10, -6.5))  },
-                                                            { 3, Create_c_vector(pow(10, -5.5),pow(10, -8),  pow(10, -6.5)) },
-                                                            { 4, Create_c_vector(pow(10, -5.5),pow(10, -8.5),  pow(10, -6.5))},
-                                                            { 5, Create_c_vector(pow(10, -5.5 ),pow(10, -9 ),  pow(10, -6.5 )) },
-                                                            { 6, Create_c_vector(pow(10, -5.5 ),pow(10, -6.5 ),  pow(10, -10 )) }, 
-                                                            { 7, Create_c_vector(pow(10, -5.5 ),pow(10, -9.5 ),  pow(10, -6.5 ))},
-                                                            { 8,  Create_c_vector(pow(10, -5.5 ),pow(10, -10 ),  pow(10, -6.5 ))}};
-
-        std::map<double, double >  BendingMap =   { {1, pow(10, -8) },{2, pow(10, -9) },  {3, pow(10, -10) },   {4, pow(10, -11) }, {5, pow(10, -12) },   {6, pow(10, -13) },   {7, pow(10, -14) }, {8, pow(10, -15) }, {9, pow(10, -16) }};                               
-
-        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-ParameterSet"));
-
-        double PSet = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-ParameterSet");
-
-        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-BendingParameter"));
-        double BendingParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
+        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-AreaParameter"));
+        double AreaParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
+        double DilationParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
+        double ShearParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-ShearParameter");
+        double BendingParameter =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
 
         double dt= 0.0005;
          if (CommandLineArguments::Instance()->OptionExists("-dt"))
         {
             dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
         }
-        double EndTime = 100;
+        double EndTime = 200;
         if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
         {
             EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
         }
-        double SamplingTimestepMultiple = 200;
+        double SamplingTimestepMultiple = 400;
         if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
         {
             SamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SamplingTimestepMultiple");
@@ -91,12 +77,10 @@ public:
         // std::string output_dir = "FSIIdealNetwork/SimpleBifucation_NoRemeshing/";
 
         std::stringstream out;
-        out << "PSet" << PSet << "_Bending_" << BendingParameter;
+        out << "Area_" << AreaParameter<< "_Dil_" << DilationParameter << "_Shear_" << ShearParameter << "_Bend_"<< BendingParameter;
         std::string ParameterSet = out.str();
         std::string output_dir = "TestForBuldgingInBifucation/"+ParameterSet;
 
-        
-      
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
@@ -139,8 +123,9 @@ public:
         RemeshingTriggerOnHeteroMeshModifier
         ----------------------------
         */  
+
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
-        p_Mesh_modifier->SetMembraneParameters(GrowthMaps[PSet][0], GrowthMaps[PSet][1], GrowthMaps[PSet][2], BendingMap[BendingParameter]);
+        p_Mesh_modifier->SetMembraneParameters(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -ShearParameter), pow(10, -BendingParameter));
         // p_Mesh_modifier->SetRemeshingInterval(200);//
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
@@ -151,7 +136,7 @@ public:
         */        
 
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0);
-        c_vector<double, 3> Point1 = Create_c_vector(0.85,-0.28,0)*scale2;
+        c_vector<double, 3> Point1 = Create_c_vector(0.122,-0.042,0);
 
         c_vector<double, 3> PlaneNormal2 = Create_c_vector(-0.7,-0.7,0);
         c_vector<double, 3> Point2 = Create_c_vector(94,-22,-0.05)*1e-2*scale2;
@@ -187,9 +172,8 @@ public:
         Bending forces
         ----------------------------
         */
-       double Bendy = BendingMap[BendingParameter];
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        p_membrane_force->SetMembraneStiffness(Bendy);
+        p_membrane_force->SetMembraneStiffness(pow(10, -BendingParameter));
         simulator.AddForce(p_membrane_force);
 
         /*
