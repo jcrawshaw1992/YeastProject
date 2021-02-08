@@ -31,7 +31,7 @@ if __name__=="__main__":
     else:
         chaste_run_exe =  '/Users/jcrawshaw/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestSweepBlobbyRunner '
         TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/SweepOnBlobby/SweepTerminalOutputs/"
-        mesh_file = "/Users/jcrawshaw/Documents/Projects/MeshCollection/Blobby.vtu";"
+        mesh_file = "/Users/jcrawshaw/Documents/Projects/MeshCollection/Blobby.vtu"
 
 
     if path.isdir(TerminalOutputFolder)==0:
