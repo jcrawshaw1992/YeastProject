@@ -31,8 +31,8 @@
 #include "RemeshingTriggerOnHeteroMeshModifier.hpp"
 #include "FixedRegionBoundaryCondition.hpp"
 #include "MembraneDeformationForce.hpp"
-// #include "OutwardsPressureWithBreaks.hpp"
-#include "OutwardsPressure.hpp"
+// #include "RadialForceWithBreaks.hpp"
+#include "RadialForce.hpp"
 #include "MembraneBendingForce.hpp"
 #include "HemeLBForce.hpp"
 
@@ -43,48 +43,57 @@ public:
 
   void TestParametersOnBifucation() throw (Exception)
     {
-        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-AreaParameter"));
-        double AreaParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
-        double DilationParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
-        double ShearParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-ShearParameter");
+        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-BendingParameter"));
         double BendingParameter =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
 
-        double dt= 0.0005;
+        double dt= 0.005;
          if (CommandLineArguments::Instance()->OptionExists("-dt"))
         {
             dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
         }
-        double EndTime = 200;
+        double EndTime = 500;
         if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
         {
             EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
         }
-        double SamplingTimestepMultiple = 400;
+        double SamplingTimestepMultiple = 1000;
         if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
         {
             SamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SamplingTimestepMultiple");
         }
-        std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/MeshCollection/SimpleBifucation/mesh.vtu";
+        std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/MeshCollection/Blobby.vtu";
         if (CommandLineArguments::Instance()->OptionExists("-MeshFile"))
         {
             mesh_file  = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-MeshFile");
         }
 
-        //////////
-        
-        double scale = 1e1;//1e-3;  
-        double scale2 =  0.15;
-        // std::string output_dir = "FSIIdealNetwork/SimpleBifucation_NoRemeshing/";
-
         std::stringstream out;
-        out << "Area_" << AreaParameter<< "_Dil_" << DilationParameter << "_Shear_" << ShearParameter << "_Bend_"<< BendingParameter;
+        out << "_Bend_"<< BendingParameter;
         std::string ParameterSet = out.str();
-        std::string output_dir = "FullParameterSweepOnBifuction/"+ParameterSet;
+        std::string output_dir = "SweepOnBlobby/"+ParameterSet;
+
+        // std::string output_dir = "SweepOnBlobby/";
 
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
-        mesh.Scale(scale*scale2,scale*scale2,scale*scale2);
+        
+        
+        // Loop over nodes and translate
+        double MeanX = 0;
+        double MeanY = 0;
+        double MeanZ = 0;
+        for (unsigned i = 0; i < mesh.GetNumNodes(); i++)
+        {
+                c_vector<double, 3> Location = mesh.GetNode(i)->rGetLocation();
+                MeanX += Location[0];
+                MeanY += Location[1];
+                MeanZ += Location[2];
+        }
+        MeanX/=mesh.GetNumNodes();
+        MeanY/=mesh.GetNumNodes();
+        MeanZ/=mesh.GetNumNodes();
+        mesh.Translate(MeanX,MeanY, MeanZ);
 
        // Create the cells 
         MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
@@ -97,10 +106,6 @@ public:
         cell_population.SetChasteOutputDirectory(output_dir, 0);
         cell_population.SetInitialAnlgesAcrossMembrane();
         cell_population.SetRelativePath(output_dir, 0);
-        cell_population.SetTargetRemeshingEdgeLength(0.5*1e-2*scale2); //cell_population.SetTargetRemeshingEdgeLength(0.005*scale); 
-        cell_population.SetPrintRemeshedIC(1);
-        cell_population.SetTargetRemeshingIterations(10);
-        cell_population.EdgeLengthVariable(1.001); 
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
         cell_population.SetRemeshingSoftwear("CGAL");
@@ -108,9 +113,7 @@ public:
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
 
-        // Binning Functions
-        cell_population.SetBinningIntervals(2,2,1);
-        // Set up cell-based simulation
+   
         OffLatticeSimulation<2,3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
         simulator.SetSamplingTimestepMultiple(SamplingTimestepMultiple);
@@ -120,30 +123,9 @@ public:
 
         /*
         -----------------------------
-        RemeshingTriggerOnHeteroMeshModifier
-        ----------------------------
-        */  
-
-        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
-        p_Mesh_modifier->SetMembraneParameters(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -ShearParameter), pow(10, -BendingParameter));
-        // p_Mesh_modifier->SetRemeshingInterval(200);//
-        simulator.AddSimulationModifier(p_Mesh_modifier);
-
-        /*
-        -----------------------------
         HemeLB Force
         ----------------------------
         */        
-
-        c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0);
-        c_vector<double, 3> Point1 = Create_c_vector(0.122,-0.042,0);
-
-        c_vector<double, 3> PlaneNormal2 = Create_c_vector(-0.7,-0.7,0);
-        c_vector<double, 3> Point2 = Create_c_vector(94,-22,-0.05)*1e-2*scale2;
-
-        c_vector<double, 3> PlaneNormal3 = Create_c_vector(-0.7,0.7,0);
-        c_vector<double, 3> Point3 = Create_c_vector(94,-33,-0.05)*1e-2*scale2;
-
 
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
@@ -154,17 +136,11 @@ public:
         ----------------------------
         */
 
-        boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
+        boost::shared_ptr<RadialForce> p_ForceOut(new RadialForce());
         p_ForceOut->SetPressure((P_blood - P_tissue));// needs to be negative for server ?? 
+        p_ForceOut->SetRadiusThreshold(0.3);
         simulator.AddForce(p_ForceOut);
 
-        /*
-        -----------------------------
-        Membrane forces
-        ----------------------------
-        */
-        boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        simulator.AddForce(p_shear_force);
 
 
        /*
@@ -176,30 +152,7 @@ public:
         p_membrane_force->SetMembraneStiffness(pow(10, -BendingParameter));
         simulator.AddForce(p_membrane_force);
 
-        /*
-        -----------------------------
-        Boundary conditions
-        ----------------------------
-        */
-        std::vector<c_vector<double,3> > boundary_plane_points;
-        std::vector<c_vector<double,3> > boundary_plane_normals;
-
-        boundary_plane_points.push_back(Point1);
-        boundary_plane_normals.push_back(PlaneNormal1);
-
-        boundary_plane_points.push_back(Point2);
-        boundary_plane_normals.push_back(PlaneNormal2);
-        
-        boundary_plane_points.push_back(Point3);
-        boundary_plane_normals.push_back(PlaneNormal3);
-        
-
-        for(unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
-        {
-          boost::shared_ptr<FixedRegionBoundaryCondition<2,3> > p_condition(new FixedRegionBoundaryCondition<2,3>(&cell_population, boundary_plane_points[boundary_id],-boundary_plane_normals[boundary_id],0.1));
-          simulator.AddCellPopulationBoundaryCondition(p_condition);
-        }
-      
+    
      	  simulator.Solve();
         CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
 }
