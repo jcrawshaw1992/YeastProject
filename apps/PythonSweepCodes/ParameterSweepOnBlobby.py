@@ -49,6 +49,7 @@ if __name__=="__main__":
         print AvaliablePaths
         for l in BendingParameters:
             Core = AvaliablePaths[0]
+            print str(l)
             Input1 = chaste_run_exe + ' -BendingParameter '+str(l) + ' -MeshFile '+mesh_file
             
             Input2 = TerminalOutputFolder+ 'BendingParameter'+str(l)+'.txt'
