@@ -16,7 +16,7 @@ from os import path
 
 if __name__=="__main__":
     t0 = time.time()
-    GenerateRunner =1
+    GenerateRunner =0
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestSweepBlobby.hpp"
         subprocess.call(command, shell=True)
@@ -57,17 +57,17 @@ if __name__=="__main__":
             subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
             AvaliablePaths.remove(Core) 
         # # Check if all positions are taken
-        while len(AvaliablePaths) ==0:
-            time.sleep(SleepyTime)
-            # print "Awake and checking for spare cores" 
-            for P in range(Parallel):
-                OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
-                if path.exists(OutputFile):
-                    AvaliablePaths.append(P)
-                    os.remove(OutputFile)
-            if len(AvaliablePaths) >0:
-                print AvaliablePaths, "Have found a spare core or two :-) " 
-                print time.time() - t0, "seconds time"
+            while len(AvaliablePaths) ==0:
+                time.sleep(SleepyTime)
+                # print "Awake and checking for spare cores" 
+                for P in range(Parallel):
+                    OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
+                    if path.exists(OutputFile):
+                        AvaliablePaths.append(P)
+                        os.remove(OutputFile)
+                if len(AvaliablePaths) >0:
+                    print AvaliablePaths, "Have found a spare core or two :-) " 
+                    print time.time() - t0, "seconds time"
 
 
     print '\n ********* ------ Completed Sweep ------ ********* \n'
