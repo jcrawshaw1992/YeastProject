@@ -24,7 +24,7 @@ if __name__=="__main__":
     if Server ==1:
         chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestSweepBlobbyRunner '
         TerminalOutputFolder = "/data/vascrem/testoutput/SweepOnBlobby/SweepTerminalOutputs/"
-        mesh_file = "/home/vascrem/MeshCollection/Blobby.vtu";"
+        mesh_file = "/home/vascrem/MeshCollection/Blobby.vtu"
 
         if path.isdir("/data/vascrem/testoutput/SweepOnBlobby/")==0:
             os.mkdir("/data/vascrem/testoutput/SweepOnBlobby/")
