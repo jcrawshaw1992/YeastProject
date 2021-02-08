@@ -31,8 +31,8 @@
 #include "RemeshingTriggerOnHeteroMeshModifier.hpp"
 #include "FixedRegionBoundaryCondition.hpp"
 #include "MembraneDeformationForce.hpp"
-// #include "RadialForceWithBreaks.hpp"
-#include "RadialForce.hpp"
+// #include "RadialForceOnCylinderWithBreaks.hpp"
+#include "RadialForceOnCylinder.hpp"
 #include "MembraneBendingForce.hpp"
 #include "HemeLBForce.hpp"
 
@@ -51,12 +51,12 @@ public:
         {
             dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
         }
-        double EndTime = 200;
+        double EndTime = 600;
         if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
         {
             EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
         }
-        double SamplingTimestepMultiple = 500;
+        double SamplingTimestepMultiple = 100;//2000;
         if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
         {
             SamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SamplingTimestepMultiple");
@@ -66,44 +66,35 @@ public:
         {
             mesh_file  = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-MeshFile");
         }
-        double BendingParameter = 9;
+        double BendingParameter = 8;
         std::stringstream out;
         out << "_Bend_"<< BendingParameter;
         std::string ParameterSet = out.str();
-        std::string output_dir = "SweepOnBlobby/"+ParameterSet;
-        VtkMeshReader<2, 3> mesh_reader(mesh_file);
-        MutableMesh<2, 3> mesh;
-        mesh.ConstructFromMeshReader(mesh_reader);
+        std::string output_dir = "SweepOnCylinder/"+ParameterSet;
+
         
+
+        Honeycomb3DCylinderMeshGenerator generator(80, 80 *1.5, 1.5e-3, 12e-3);
+        MutableMesh<2,3>* p_mesh = generator.GetMesh();
+        // p_mesh->Translate(0,0,-6e-3);
         
         // Loop over nodes and translate
-        double MeanX = 0;
-        double MeanY = 0;
-        double MeanZ = 0;
-        for (unsigned i = 0; i < mesh.GetNumNodes(); i++)
-        {
-                c_vector<double, 3> Location = mesh.GetNode(i)->rGetLocation();
-                MeanX += Location[0];
-                MeanY += Location[1];
-                MeanZ += Location[2];
-        }
-        MeanX/=mesh.GetNumNodes();
-        MeanY/=mesh.GetNumNodes();
-        MeanZ/=mesh.GetNumNodes();
-        mesh.Translate(MeanX+0.2,MeanY, MeanZ);
-        mesh.Scale(0.02,0.02,0.02);
+        
 
        // Create the cells 
         MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
         std::vector<CellPtr> cells;
         CellsGenerator<FixedG1GenerationalCellCycleModel, 2> cells_generator;
-        cells_generator.GenerateBasicRandom(cells, mesh.GetNumNodes(), p_differentiated_type);
+        cells_generator.GenerateBasicRandom(cells, p_mesh->GetNumNodes(), p_differentiated_type);
 
         // Create a cell population
-        HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
+        HistoryDepMeshBasedCellPopulation<2, 3> cell_population(*p_mesh, cells);
+        cell_population.SetChasteOutputDirectory(output_dir, 0);
         cell_population.SetInitialAnlgesAcrossMembrane();
+        cell_population.SetRelativePath(output_dir, 0);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
+        cell_population.SetRemeshingSoftwear("CGAL");
         
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
@@ -131,15 +122,9 @@ public:
         ----------------------------
         */
 
-        boost::shared_ptr<RadialForce> p_ForceOut(new RadialForce());
+        boost::shared_ptr<RadialForceOnCylinder> p_ForceOut(new RadialForceOnCylinder());
         p_ForceOut->SetPressure((P_blood - P_tissue)/10);// needs to be negative for server ?? 
-        p_ForceOut->SetRadiusThreshold(0.01);
         simulator.AddForce(p_ForceOut);
-
-         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
-        p_Mesh_modifier->SetMembraneParameters(pow(10, -10), pow(10, -10), pow(10, -10), pow(10, -10));
-        simulator.AddSimulationModifier(p_Mesh_modifier);
-        
 
 
 
@@ -152,15 +137,36 @@ public:
         p_membrane_force->SetMembraneStiffness(pow(10, -BendingParameter));
         simulator.AddForce(p_membrane_force);
 
-       
 
-        /*
+
+       /*
         -----------------------------
-        Membrane forces
+        Boundary conditions
         ----------------------------
         */
-        boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        simulator.AddForce(p_shear_force);
+
+        c_vector<double, 3> PlaneNormal1 = Create_c_vector(0,0,1);
+        c_vector<double, 3> Point1 = Create_c_vector(0,0,0.00001);
+
+        c_vector<double, 3> PlaneNormal2 = Create_c_vector(0,-0,-1);
+        c_vector<double, 3> Point2 = Create_c_vector(0,0,0.011);
+
+
+        std::vector<c_vector<double,3> > boundary_plane_points;
+        std::vector<c_vector<double,3> > boundary_plane_normals;
+
+        boundary_plane_points.push_back(Point1);
+        boundary_plane_normals.push_back(PlaneNormal1);
+
+        boundary_plane_points.push_back(Point2);
+        boundary_plane_normals.push_back(PlaneNormal2);        
+
+        for(unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
+        {
+          boost::shared_ptr<FixedRegionBoundaryCondition<2,3> > p_condition(new FixedRegionBoundaryCondition<2,3>(&cell_population, boundary_plane_points[boundary_id],-boundary_plane_normals[boundary_id],0.1));
+          simulator.AddCellPopulationBoundaryCondition(p_condition);
+        }
+
 
     
      	  simulator.Solve();

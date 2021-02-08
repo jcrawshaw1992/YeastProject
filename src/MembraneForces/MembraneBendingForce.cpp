@@ -194,15 +194,15 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
 
         c_vector<double, 3> projection_21 = normal_2 - inner_prod(normal_1, normal_2) * normal_1;
         c_vector<double, 3> projection_12 = normal_1 - inner_prod(normal_1, normal_2) * normal_2;
-        // if (norm_2(projection_21) >1e-12)// If normals are parallel then orthogonal projections are zero.
-        // {
-        //     projection_21 /= norm_2(projection_21);// Not sure why this is here???? Its not in my calculations in the confirmation
-        // }
+        if (norm_2(projection_21) >1e-12)// If normals are parallel then orthogonal projections are zero.
+        {
+            projection_21 /= norm_2(projection_21);// Not sure why this is here???? Its not in my calculations in the confirmation
+        }
         
-        // if (norm_2(projection_12) >1e-12)
-        // {
-        //     projection_12 /= norm_2(projection_12);
-        // }
+        if (norm_2(projection_12) >1e-12)
+        {
+            projection_12 /= norm_2(projection_12);
+        }
 
         c_vector<double, 3> vector_23 = pNode2->rGetLocation() - pNode3->rGetLocation();
         c_vector<double, 3> vector_34 = pNode3->rGetLocation() - pNode4->rGetLocation();
@@ -226,7 +226,7 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         
         
         double force_coefficient = MembraneStiffness * (acos(inner_prod(normal_1, normal_2)) - OriginalAngle);
-        force_coefficient  /=sqrt(1-inner_prod(normal_1, normal_2)*inner_prod(normal_1, normal_2));
+        // force_coefficient  /=sqrt(1-inner_prod(normal_1, normal_2)*inner_prod(normal_1, normal_2));
 
 
         node1_contribution *= force_coefficient;///rCellPopulation.GetVolumeOfCell(p_cell2);
@@ -251,22 +251,21 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
             p_cell4->GetCellData()->SetItem("BendingForce", norm_2(node4_contribution));
 
 
-            if (norm_2(node1_contribution)>10000 || norm_2(node2_contribution)>10000 ||norm_2(node3_contribution)>10000 || norm_2(node4_contribution)>10000  )
+            if (norm_2(node1_contribution)>1000 || norm_2(node2_contribution)>1000 ||norm_2(node3_contribution)>1000 || norm_2(node4_contribution)>1000  )
             {
-                PRINT_VECTOR(node1_contribution)
-                PRINT_VECTOR(node2_contribution)
+                PRINT_VECTOR(node1_contribution);
+                PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
+                
 
-                PRINT_VECTOR(node3_contribution)
-                PRINT_VECTOR(node4_contribution)
-                PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
+                // PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
                     node1_contribution =Create_c_vector(0,0,0);
                     node2_contribution= Create_c_vector(0,0,0);
                     node3_contribution= Create_c_vector(0,0,0);
                     node4_contribution= Create_c_vector(0,0,0);
-            p_cell1->GetCellData()->SetItem("BendingForce", -100);
-            p_cell2->GetCellData()->SetItem("BendingForce", -100);
-            p_cell3->GetCellData()->SetItem("BendingForce", -100);
-            p_cell4->GetCellData()->SetItem("BendingForce", -100);
+                    p_cell1->GetCellData()->SetItem("BendingForce", -100);
+                    p_cell2->GetCellData()->SetItem("BendingForce", -100);
+                    p_cell3->GetCellData()->SetItem("BendingForce", -100);
+                    p_cell4->GetCellData()->SetItem("BendingForce", -100);
             }
 
             pNode1->AddAppliedForceContribution(node1_contribution);
@@ -276,7 +275,7 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
             
         }
         else{
-            p_cell1->GetCellData()->SetItem("BendingForce", 0);
+        p_cell1->GetCellData()->SetItem("BendingForce", 0);
         p_cell2->GetCellData()->SetItem("BendingForce", 0);
         p_cell3->GetCellData()->SetItem("BendingForce", 0);
         p_cell4->GetCellData()->SetItem("BendingForce", 0);

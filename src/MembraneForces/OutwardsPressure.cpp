@@ -36,7 +36,6 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
                 cell_iter != rCellPopulation.End();
                 ++cell_iter)
         {
-            cell_iter->GetCellData()->SetItem("FixedBoundary", 0);
             // if (cell_iter->GetCellData()->GetItem("Boundary") ==0)
             // {
                 unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
@@ -70,50 +69,7 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
                 ForceMap[node_index] = force;
             // }
         }
-        // for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
-        //     cell_iter != rCellPopulation.End();
-        //     ++cell_iter)
-        // {
-        //     // TRACE("PRES")
-        //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-        //     if (cell_iter->GetCellData()->GetItem("Boundary") ==1)
-        //     {
-        //         // PRINT_VARIABLE(cell_iter->GetCellData()->GetItem("Boundary"))
-        //         Node<3>* p_node = rCellPopulation.GetNode(node_index);
-        //         c_vector<double, 3> normal = p_node->rGetLocation();
-        //         double RadialPosition = sqrt(normal[0]*normal[0]+normal[1]*normal[1]);
-        //         normal[2] = 0;
-        //         normal/=RadialPosition;
-
-        //         c_vector<double, 3> ForceOnEdgeNode = Create_c_vector(0,0,0);
-        //         // c_vector<unsigned, 3>  LocalNodes = p_cell_population->GetNearestInternalNodes(node_index);
-        //         // for(int i =0 ; i<3; i++)
-        //         // {   
-        //         //     ForceOnEdgeNode += ForceMap[LocalNodes[i]];
-        //         // }
-        //         // ForceOnEdgeNode/=3;
-                
-        //         ForceOnEdgeNode/=norm_2(ForceOnEdgeNode);
-        //         ForceOnEdgeNode=normal * mStrength;    
-
-        //         if (norm_2(ForceOnEdgeNode)  >9e10)
-        //         {   
-        //             PRINT_VARIABLE(mStrength)
-        //             PRINT_VECTOR(ForceOnEdgeNode)
-
-        //         }
-            
-        //         assert(norm_2(ForceOnEdgeNode) <10e10); 
-        //         p_node->AddAppliedForceContribution(ForceOnEdgeNode);
-        //         cell_iter->GetCellData()->SetItem("OutwardForce", norm_2(ForceOnEdgeNode) );
-
-        //     }else 
-        //     {
-        //         // PRINT_VARIABLE(cell_iter->GetCellData()->GetItem("Boundary"))
-        //         rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(ForceMap[node_index]);
-        //         cell_iter->GetCellData()->SetItem("OutwardForce", norm_2(ForceMap[node_index]) );
-        //     }
-        // }
+        
 }
  
 
