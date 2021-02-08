@@ -23,14 +23,14 @@ if __name__=="__main__":
     Server = 1
     if Server ==1:
         chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestSweepingForBifucationDeformationRunner '
-        TerminalOutputFolder = "/data/vascrem/testoutput/FullParameterSweepOnBifuction/SweepTerminalOutputs/"
+        TerminalOutputFolder = "/data/vascrem/testoutput/ParameterSweepOnBifucation/SweepTerminalOutputs/"
         mesh_file = "/home/vascrem/MeshCollection/IdealisedNetwork/SimpleBifucation/mesh.vtu"
 
-        if path.isdir("/data/vascrem/testoutput/FullParameterSweepOnBifuction/")==0:
-            os.mkdir("/data/vascrem/testoutput/FullParameterSweepOnBifuction/")
+        if path.isdir("/data/vascrem/testoutput/ParameterSweepOnBifucation/")==0:
+            os.mkdir("/data/vascrem/testoutput/ParameterSweepOnBifucation/")
     else:
         chaste_run_exe =  '/Users/jcrawshaw/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestSweepingForBifucationDeformationRunner '
-        TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/FullParameterSweepOnBifuction/SweepTerminalOutputs/"
+        TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/ParameterSweepOnBifucation/SweepTerminalOutputs/"
         mesh_file = "/Users/jcrawshaw/Documents/Projects/MeshCollection/SimpleBifucation/mesh.vtu"
 
 
@@ -81,8 +81,8 @@ if __name__=="__main__":
 
     CollectResults =1
     if CollectResults ==1:
-        NewFolder = "/data/vascrem/testoutput/FullParameterSweepOnBifuction/CollectedResults2/"
-        OldFolder = "/data/vascrem/testoutput/FullParameterSweepOnBifuction/"
+        NewFolder = "/data/vascrem/testoutput/ParameterSweepOnBifucation/CollectedResults2/"
+        OldFolder = "/data/vascrem/testoutput/ParameterSweepOnBifucation/"
 
 
         if path.exists(NewFolder)==0:

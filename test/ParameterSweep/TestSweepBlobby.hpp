@@ -136,7 +136,7 @@ public:
         simulator.AddForce(p_ForceOut);
 
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
-        p_Mesh_modifier->SetMembraneParameters(pow(10, -10), pow(10, -10), pow(10, -10), pow(10, -10));
+        p_Mesh_modifier->SetMembraneParameters(pow(10, -8), pow(10, -8), pow(10, -8), pow(10, -10));
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
 
