@@ -43,8 +43,8 @@ public:
 
   void TestParametersOnBifucation() throw (Exception)
     {
-        // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-BendingParameter"));
-        // double BendingParameter =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
+        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-BendingParameter"));
+        double BendingParameter =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
 
         double dt= 0.01;
          if (CommandLineArguments::Instance()->OptionExists("-dt"))
@@ -66,7 +66,6 @@ public:
         {
             mesh_file  = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-MeshFile");
         }
-        double BendingParameter = 9;
         std::stringstream out;
         out << "_Bend_"<< BendingParameter;
         std::string ParameterSet = out.str();
@@ -136,10 +135,10 @@ public:
         p_ForceOut->SetRadiusThreshold(0.01);
         simulator.AddForce(p_ForceOut);
 
-         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
+        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
         p_Mesh_modifier->SetMembraneParameters(pow(10, -10), pow(10, -10), pow(10, -10), pow(10, -10));
         simulator.AddSimulationModifier(p_Mesh_modifier);
-        
+
 
 
 

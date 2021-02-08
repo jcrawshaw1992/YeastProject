@@ -43,8 +43,8 @@ public:
 
   void TestParametersOnBifucation() throw (Exception)
     {
-        // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-BendingParameter"));
-        // double BendingParameter =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
+        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-BendingParameter"));
+        double BendingParameter =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
 
         double dt= 0.01;
          if (CommandLineArguments::Instance()->OptionExists("-dt"))
@@ -66,7 +66,6 @@ public:
         {
             mesh_file  = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-MeshFile");
         }
-        double BendingParameter = 8;
         std::stringstream out;
         out << "_Bend_"<< BendingParameter;
         std::string ParameterSet = out.str();
