@@ -43,7 +43,7 @@ if __name__=="__main__":
 
     RunSweep = 1
     if RunSweep ==1:
-        Parallel = 10
+        Parallel = 3
         SleepyTime = 300
         AvaliablePaths = range(Parallel)
         print AvaliablePaths
