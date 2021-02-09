@@ -79,7 +79,7 @@ public:
         std::stringstream out;
         out << "Area_" << AreaParameter<< "_Dil_" << DilationParameter << "_Shear_" << ShearParameter << "_Bend_"<< BendingParameter;
         std::string ParameterSet = out.str();
-        std::string output_dir = "ParameterSweepOnBifucation/"+ParameterSet;
+        std::string output_dir = "ParameterSweepOnBifucation1/"+ParameterSet;
 
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
