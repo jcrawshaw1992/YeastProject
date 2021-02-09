@@ -39,7 +39,7 @@ if __name__=="__main__":
 
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
-    BendingParameters = [7, 8, 9, 10,11,12,13,14,15,16]
+    BendingParameters = [3,4,5,6,7, 8]
 
     RunSweep = 1
     if RunSweep ==1:
