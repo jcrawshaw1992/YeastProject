@@ -17,8 +17,7 @@ HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::HistoryDepMeshBasedCe
         RemeshGeometry();
     }
   
-    bool SetUpInitialConfigurations = 1;
-    if (SetUpInitialConfigurations == 1)
+    if (mSetUpInitialConfigurations == 1)
     {
         MarkBoundaryNodes();
         // Define all the inital configurations ... this needed to be done and the start, and whenever there is a remeshing
@@ -26,6 +25,12 @@ HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::HistoryDepMeshBasedCe
         SetInitialAnlgesAcrossMembrane();
         // SetMaxEdgelength();
     }
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetUpInitialConfig(bool SetUpInitialConfigurations)
+{
+    mSetUpInitialConfigurations = SetUpInitialConfigurations;
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>

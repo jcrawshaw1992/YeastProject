@@ -135,9 +135,19 @@ public:
      */
     virtual ~HistoryDepMeshBasedCellPopulation();
 
+    
+    // Set bool to turn off and on the initial config setup -- sometimes i will need to skip this
+    void SetUpInitialConfig(bool SetUpInitialConfigurations);
+    bool mSetUpInitialConfigurations =1;
+
+
+
+
     /*
      * Need a direction to the folder everything is savinging to  
      */
+
+    
     void SetChasteOutputDirectory(std::string ChasteOutputDirectory, double startime);
     void SetChasteOutputDirectory(std::string ChasteOutputDirectory);
 

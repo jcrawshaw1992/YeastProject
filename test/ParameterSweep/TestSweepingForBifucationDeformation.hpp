@@ -54,12 +54,12 @@ public:
         {
             dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
         }
-        double EndTime = 200;
+        double EndTime = 100;
         if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
         {
             EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
         }
-        double SamplingTimestepMultiple = 400;
+        double SamplingTimestepMultiple = 1500;
         if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
         {
             SamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SamplingTimestepMultiple");

@@ -40,7 +40,7 @@ if __name__=="__main__":
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
     
-    AreaParameter = [5, 6, 7, 8, 9, 10]
+    AreaParameter = [6, 7, 8, 9, 10]
     DilationParameter = [5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
     DeformationParamter = [5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
     BendingParameters = [7, 8, 9, 10,11,12,13,14,15,16]
