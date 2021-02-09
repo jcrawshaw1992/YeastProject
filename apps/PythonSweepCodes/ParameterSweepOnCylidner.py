@@ -40,6 +40,7 @@ if __name__=="__main__":
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
     BendingParameters = [7, 8, 9, 10,11,12,13,14,15,16]
+    BendingParameters = [ 10]
 
     RunSweep = 1
     if RunSweep ==1:
@@ -49,7 +50,7 @@ if __name__=="__main__":
         print AvaliablePaths
         for l in BendingParameters:
             Core = AvaliablePaths[0]
-            Input1 = chaste_run_exe + ' -BendingParameter '+str(l) + ' -MeshFile '+mesh_file
+            Input1 = chaste_run_exe + ' -BendingParameter '+str(l) + ' -MeshFile '+mesh_file + ' -EndTime ' + str(1000000) + ' -SamplingTimestepMultiple ' + str(2000)
             
             Input2 = TerminalOutputFolder+ 'BendingParameter'+str(l)+'.txt'
             Input3 = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
