@@ -62,18 +62,18 @@ if __name__=="__main__":
                         Input3 = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
                         subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
                         AvaliablePaths.remove(Core) 
-                    # # Check if all positions are taken
-                    while len(AvaliablePaths) ==0:
-                        time.sleep(SleepyTime)
-                        # print "Awake and checking for spare cores" 
-                        for P in range(Parallel):
-                            OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
-                            if path.exists(OutputFile):
-                                AvaliablePaths.append(P)
-                                os.remove(OutputFile)
-                        if len(AvaliablePaths) >0:
-                            print AvaliablePaths, "Have found a spare core or two :-) " 
-                            print time.time() - t0, "seconds time"
+                        # # Check if all positions are taken
+                        while len(AvaliablePaths) ==0:
+                            time.sleep(SleepyTime)
+                            # print "Awake and checking for spare cores" 
+                            for P in range(Parallel):
+                                OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
+                                if path.exists(OutputFile):
+                                    AvaliablePaths.append(P)
+                                    os.remove(OutputFile)
+                            if len(AvaliablePaths) >0:
+                                print AvaliablePaths, "Have found a spare core or two :-) " 
+                                print time.time() - t0, "seconds time"
 
 
     print '\n ********* ------ Completed Sweep ------ ********* \n'
