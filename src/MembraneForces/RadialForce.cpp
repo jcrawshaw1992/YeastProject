@@ -37,29 +37,36 @@ void RadialForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopula
                 unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
                 Node<3>* p_node = rCellPopulation.GetNode(node_index);
                 c_vector<double, 3> Position = p_node->rGetLocation();
+                Position[2]=0;
                 
                 double Radius = norm_2(Position);
                 Position /=Radius;
+                c_vector<double, 3> Force = mStrength *Position; 
+                rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(Force);
 
-                if (Radius < mRadialThreshold && mGrowthThreshold ==1)
-                {
-                    c_vector<double, 3> Force = mStrength *Position; // / norm_2(cell_location);
+
+
                 
-                    rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(Force);
-                    cell_iter->GetCellData()->SetItem("RadialForce", norm_2(Force) );
-                    cell_iter->GetCellData()->SetItem("RadialForce_X", Force[0] );
-                    cell_iter->GetCellData()->SetItem("RadialForce_Y", Force[1] );
-                    cell_iter->GetCellData()->SetItem("RadialForce_Z", Force[2] );
-                }else if (Radius > mRadialThreshold && mGrowthThreshold ==1)
-                {
-                    c_vector<double, 3> Force = -mStrength *Position; // / norm_2(cell_location);
+
+                // if (Radius < mRadialThreshold && mGrowthThreshold ==1)
+                // {
+                //     c_vector<double, 3> Force = mStrength *Position; // / norm_2(cell_location);
                 
-                    rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(Force);
-                    cell_iter->GetCellData()->SetItem("RadialForce", norm_2(Force) );
-                    cell_iter->GetCellData()->SetItem("RadialForce_X", Force[0] );
-                    cell_iter->GetCellData()->SetItem("RadialForce_Y", Force[1] );
-                    cell_iter->GetCellData()->SetItem("RadialForce_Z", Force[2] );
-                }
+                //     rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(Force);
+                //     cell_iter->GetCellData()->SetItem("RadialForce", norm_2(Force) );
+                //     cell_iter->GetCellData()->SetItem("RadialForce_X", Force[0] );
+                //     cell_iter->GetCellData()->SetItem("RadialForce_Y", Force[1] );
+                //     cell_iter->GetCellData()->SetItem("RadialForce_Z", Force[2] );
+                // }else if (Radius > mRadialThreshold && mGrowthThreshold ==1)
+                // {
+                //     c_vector<double, 3> Force = -mStrength *Position; // / norm_2(cell_location);
+                
+                //     rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(Force);
+                //     cell_iter->GetCellData()->SetItem("RadialForce", norm_2(Force) );
+                //     cell_iter->GetCellData()->SetItem("RadialForce_X", Force[0] );
+                //     cell_iter->GetCellData()->SetItem("RadialForce_Y", Force[1] );
+                //     cell_iter->GetCellData()->SetItem("RadialForce_Z", Force[2] );
+                // }
             
                 
         }

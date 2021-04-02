@@ -161,6 +161,8 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
         p_cell->GetCellData()->SetItem("MappingMethod", mMapOfProbNodes[node_iter->GetIndex()]);
     }
     this->SetBinningRegions();//Remove this later :) 
+
+    mUpdateComplete = 0;
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -225,16 +227,27 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
      * 3) Convert this stl into a .vtu so I can read it into chaste and use it  
 	 */
 
+
     // Convert the .vtu into an .off
     std::string offfile = mChasteOutputDirectory + "CurrentMesh.off";
     // TRACE("Create .off")
     // PRINT_VARIABLE(mChasteOutputDirectory)
     std::string vtu2offCommand = "meshio-convert " + mChasteOutputDirectory + "config.vtu " + offfile;
     SystemOutput = std::system(vtu2offCommand.c_str()); // system only takes char *.
-
+    // cmake -DCGAL_DIR=$HOME/CGAL-5.2.1 -DCMAKE_BUILD_TYPE=Release .
+    // make isotropic_remeshing_ForChaste
     // Now excute the CGAL command to remesh the current geometry - not the input and output within this file have to be pre-set. I will explore if I can make this more neat later, should care.... dont care
-    std::string CGALRemeshingCommand = "(cd  ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/;./isotropic_remeshing_ForChaste -input " + offfile + " -output " + mChasteOutputDirectory + "CurrentPlexusRemeshed.off -target_edge_length " + std::to_string(mTargetRemeshingEdgeLength) + " -iterations " + std::to_string(mIterations) + " )";
-    SystemOutput = std::system(CGALRemeshingCommand.c_str()); // system only takes char *
+    std::string CGALRemeshingCommand;
+    if (mServer ==1)
+    {
+        CGALRemeshingCommand = "(cd  /home/vascrem/CGAL-5.0.2/Polygon_mesh_processing/examples/Polygon_mesh_processing/;./isotropic_remeshing_ForChaste -input " + offfile + " -output " + mChasteOutputDirectory + "CurrentPlexusRemeshed.off -target_edge_length " + std::to_string(mTargetRemeshingEdgeLength) + " -iterations " + std::to_string(mIterations) + " > null)";
+        SystemOutput = std::system(CGALRemeshingCommand.c_str()); // system only takes char *
+    } 
+    else if (mServer ==0)
+    {
+        CGALRemeshingCommand = "(cd  ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/;./isotropic_remeshing_ForChaste -input " + offfile + " -output " + mChasteOutputDirectory + "CurrentPlexusRemeshed.off -target_edge_length " + std::to_string(mTargetRemeshingEdgeLength) + " -iterations " + std::to_string(mIterations) + " > null)";
+        SystemOutput = std::system(CGALRemeshingCommand.c_str()); // system only takes char *
+    } 
 
     // Now ned to convert from .off back to a .vtu
     // TRACE("Now ned to convert from .off back to a .vtu")
@@ -249,8 +262,90 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
     // Read in the new remeshsed mesh
     VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mChasteOutputDirectory + "RemeshedGeometry.vtu");
     mNew_mesh.ConstructFromMeshReader(mesh_reader);
-    // TRACE("Have the new mesh ;) ")
+
+
+
+    // double LowerAspectRatio = GetAspectRatioFromMesh();
+    // double NewIterations = mIterations;
+    // double NewTargetRemeshingEdgeLength = mTargetRemeshingEdgeLength;
+    // double counter = 1;
+    // PRINT_VARIABLE(LowerAspectRatio)
+    // while( LowerAspectRatio <0.7 )
+    // {
+    //     TRACE("Need to remesh again!")
+
+    //     NewTargetRemeshingEdgeLength*=0.95;
+    //     NewIterations +=5;
+
+    //     offfile = mChasteOutputDirectory +"CurrentPlexusRemeshed.off";
+    //     if (mServer ==1)
+    //     {
+    //         CGALRemeshingCommand = "(cd  /home/vascrem/CGAL-5.0.2/Polygon_mesh_processing/examples/Polygon_mesh_processing/;./isotropic_remeshing_ForChaste -input " + offfile + " -output " + mChasteOutputDirectory + "CurrentPlexusRemeshed.off -target_edge_length " + std::to_string(NewTargetRemeshingEdgeLength) + " -iterations " + std::to_string(NewIterations) + " ) > null";
+    //         SystemOutput = std::system(CGALRemeshingCommand.c_str()); // system only takes char *
+    //     } 
+    //     else if (mServer ==0)
+    //     {
+    //         CGALRemeshingCommand = "(cd  ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/;./isotropic_remeshing_ForChaste -input " + offfile + " -output " + mChasteOutputDirectory + "CurrentPlexusRemeshed.off -target_edge_length " + std::to_string(NewTargetRemeshingEdgeLength) + " -iterations " + std::to_string(NewIterations) + " > null) > null";
+    //         SystemOutput = std::system(CGALRemeshingCommand.c_str()); // system only takes char *
+    //     } 
+
+    //     // Now ned to convert from .off back to a .vtu
+    //     // TRACE("Now ned to convert from .off back to a .vtu")
+    //     std::string Remeshedvtu = mChasteOutputDirectory + "RemeshedGeometry.vtu";
+    //     std::string off2vtuCommand = "meshio-convert " + mChasteOutputDirectory + "CurrentPlexusRemeshed.off " + Remeshedvtu;
+    //     SystemOutput = std::system(off2vtuCommand.c_str()); // system only takes char *
+
+    //     std::stringstream outN;
+    //     outN <<  counter;
+    //     std::string MeshNumber = outN.str();
+
+    //     std::string RemeshedvtuAgain = mChasteOutputDirectory + "RemeshedGeometry"+MeshNumber+".vtu";
+    //     off2vtuCommand = "meshio-convert " + mChasteOutputDirectory + "CurrentPlexusRemeshed.off " + RemeshedvtuAgain;
+    //     SystemOutput = std::system(off2vtuCommand.c_str()); // system only takes char *
+    //     counter+=1;
+
+
+    //     LowerAspectRatio = GetAspectRatioFromMesh();
+
+    //     PRINT_2_VARIABLES(LowerAspectRatio,NewIterations)
+
+    // }
+    // TRACE("New Mesh Made")
 }
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetAspectRatioFromMesh()
+{
+   
+    assert(SPACE_DIM == 3);
+    assert(ELEMENT_DIM == 2);
+    std::vector<double> AspectRatioVector;
+    double MinAspectRatio = 100;
+    // Loop over the old map and get the centroids of the old map
+    for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = mNew_mesh.GetElementIteratorBegin();
+         elem_iter != mNew_mesh.GetElementIteratorEnd();
+         ++elem_iter)
+    {
+        unsigned elem_index = elem_iter->GetIndex();
+        Node<SPACE_DIM>* pNode0 = mNew_mesh.GetNode(elem_iter->GetNodeGlobalIndex(0));
+        Node<SPACE_DIM>* pNode1 = mNew_mesh.GetNode(elem_iter->GetNodeGlobalIndex(1));
+        Node<SPACE_DIM>* pNode2 = mNew_mesh.GetNode(elem_iter->GetNodeGlobalIndex(2));
+
+        double AspectRatio = CalculateAspectRatio(pNode0->rGetLocation(), pNode1->rGetLocation(), pNode2->rGetLocation() );
+        // PRINT_VARIABLE(AspectRatio)
+        if (AspectRatio < MinAspectRatio)
+        {
+            MinAspectRatio = AspectRatio;
+            PRINT_VARIABLE(AspectRatio)
+        }
+
+    }
+
+    return MinAspectRatio;
+}
+
+
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometryWithVMTK()
@@ -282,9 +377,11 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometryWi
     // More info for the remeshing options found at https://sourceforge.net/p/vmtk/mailman/message/29391820/ and  http://www.vmtk.org/vmtkscripts/vmtksurfaceremeshing.html
     // std::string RemeshCommand = "vmtksurfaceremeshing -ifile " + stlfile + " -iterations " + std::to_string(mIterations) + " -area " + std::to_string(mTargetRemeshingElementArea) + " -maxarea "+ std::to_string(1.2*mTargetRemeshingElementArea) +" -ofile " + Remeshedstl;
     // SystemOutput = std::system(RemeshCommand.c_str());
+
+
     std::string RemeshCommand = "vmtksurfaceremeshing -ifile " + stlfile + " -iterations " + std::to_string(mIterations) + " -elementsizemode 'edgelength' -edgelength " + std::to_string(mTargetRemeshingEdgeLength) + " -ofile " + Remeshedstl + " -elementsizemode edgelength";
     SystemOutput = std::system(RemeshCommand.c_str());
-
+ 
     //Finally conver the Remeshed stl into a vtu -- meshio is your friend
     std::string Remeshedvtu = mChasteOutputDirectory + "RemeshedGeometry.vtu";
     std::string stl2vtuCommand = " meshio-convert " + Remeshedstl + " " + Remeshedvtu;
@@ -325,6 +422,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetCentroidMap()
         Node<SPACE_DIM>* pNode0 = this->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(0));
         Node<SPACE_DIM>* pNode1 = this->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(1));
         Node<SPACE_DIM>* pNode2 = this->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(2));
+        
         mCentroidMap[elem_index] = (pNode0->rGetLocation() + pNode1->rGetLocation() + pNode2->rGetLocation()) / 3;
     }
 }
@@ -1443,6 +1541,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MarkBoundaryNode
                     }
                 }
             }
+       
             mNearestNodesMap[node_index] = NearestNodes;
         }
     }
@@ -1475,6 +1574,9 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetChasteOutputD
         directory += "/" + ChasteOutputDirectory + "/results_from_time_" + TimeStamp + "/";
     }
     mChasteOutputDirectory = directory;
+
+    SetRelativePath(ChasteOutputDirectory, startime);
+
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -1488,6 +1590,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetChasteOutputD
 
     directory += "/" + ChasteOutputDirectory;
     mChasteOutputDirectory = directory;
+    SetRelativePath(ChasteOutputDirectory);
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -1615,6 +1718,32 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetRemeshingSoft
     }
     mRemeshingSoftwear = RemeshingSoftwear;
 }
+
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetOperatingSystem(std::string OperatingSystem)
+{
+    if (OperatingSystem == "server" || OperatingSystem == "Server" || OperatingSystem == "linux" || OperatingSystem == "Linux")
+    {
+        mServer = 1;
+    }
+    else if (OperatingSystem == "mac" || OperatingSystem == "Mac" || OperatingSystem == "local" || OperatingSystem == "Local")
+    {
+        mServer = 0;
+    }
+    else 
+    {
+        EXCEPTION("OperatingSystem must be Mac or Linux");
+    }
+    
+}
+
+
+    void SetOperatingSystem( std::string OperatingSystem);
+    bool mServer =1;
+
+
 
 // Set the pathway to the mesh I need to read in
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -2046,6 +2175,201 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinUpperZ(s
     double value = *iter;
     return *iter;
 }
+
+
+// this needs fixing too 
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::CalculateAspectRatio(c_vector<double, SPACE_DIM> Node1, c_vector<double, SPACE_DIM> Node2,c_vector<double, SPACE_DIM> Node3 )
+{
+    assert(SPACE_DIM ==3);
+    c_vector<double, SPACE_DIM> vector_12 = Node2 - Node1; 
+    c_vector<double, SPACE_DIM> vector_13 = Node3 - Node1; 
+    c_vector<double, SPACE_DIM> vector_23 = Node3 - Node2; 
+
+    double l1 = norm_2(vector_12); 
+    double l2 = norm_2(vector_13); 
+    double l3 = norm_2(vector_23);
+
+    double ElementArea = 0.5*norm_2(VectorProduct(vector_12, vector_13));
+    double MaxEdgeLength = std::max( std::max(l1,l3) , std::max(l2,l3)) ; 
+
+    double AspectRatio = 4/sqrt(3) * ElementArea/(MaxEdgeLength * MaxEdgeLength);
+
+
+
+    // The second option 
+    // double MinEdgeLength = std::min( std::min(l1,l3) , std::min(l2,l3)) ; 
+    // double AR = MinEdgeLength/MaxEdgeLength;
+
+    // Thrid option
+    // c_vector<double, SPACE_DIM> MaxEdge;
+    // c_vector<double, SPACE_DIM>P1; 
+    // c_vector<double, SPACE_DIM> P2 ;
+    // c_vector<double, SPACE_DIM> P0;
+    // if (l1 == MaxEdgeLength)
+    // {
+    //     MaxEdge = vector_12;
+    //     P1 = Node1; 
+    //     P2 = Node2;
+    //     P0 = Node3;
+
+    // }else if(l2 == MaxEdgeLength)
+    // {
+    //     MaxEdge = vector_13;
+    //     P1 = Node1;
+    //     P2 = Node3;
+    //     P0 = Node2;
+    // }else if (l3 == MaxEdgeLength)
+    // {
+    //     MaxEdge = vector_23;
+    //     P1 = Node2;
+    //     P2 = Node3;
+    //     P0 = Node1;
+    // }else
+    // {
+    //     assert(0==1);
+    // }
+    // double A = P1[1]-P0[1];
+    // double B = P1[0]-P0[0];
+    // double Height = abs((P2[0]-P1[0])*A - B*(P2[1]-P1[1]) )/MaxEdgeLength;
+    // double ThirdAspectRatio = 2*ElementArea/MaxEdgeLength;
+
+    // PRINT_2_VARIABLES(ElementArea, MaxEdgeLength)
+    // PRINT_3_VARIABLES(AspectRatio, AR,ThirdAspectRatio)
+    return AspectRatio;
+}
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+std::vector<double> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MinimumElementAspectRatio()
+{
+
+     for (typename AbstractMesh<ELEMENT_DIM, SPACE_DIM>::NodeIterator node_iter = this->rGetMesh().GetNodeIteratorBegin();
+         node_iter != this->rGetMesh().GetNodeIteratorEnd();
+         ++node_iter)
+    {
+        CellPtr p_cell = this->GetCellUsingLocationIndex(node_iter->GetIndex());
+        p_cell->GetCellData()->SetItem("AspectRatio", 1.1);
+    }
+
+   
+    double MinimumAspectRatio = 100;
+    assert(SPACE_DIM == 3);
+    assert(ELEMENT_DIM == 2);
+    std::vector<double> AspectRatioVector;
+    // Loop over the old map and get the centroids of the old map
+    for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
+         elem_iter != this->rGetMesh().GetElementIteratorEnd();
+         ++elem_iter)
+    {
+
+        // I want to exclude the edge region 
+        unsigned elem_index = elem_iter->GetIndex();
+        Node<SPACE_DIM>* pNode0 = this->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(0));
+        Node<SPACE_DIM>* pNode1 = this->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(1));
+        Node<SPACE_DIM>* pNode2 = this->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(2));
+
+
+        CellPtr p_cell0 = this->GetCellUsingLocationIndex(pNode0->GetIndex());
+        CellPtr p_cell1 = this->GetCellUsingLocationIndex(pNode1->GetIndex());
+        CellPtr p_cell2 = this->GetCellUsingLocationIndex(pNode2->GetIndex());       
+        
+        
+        if( p_cell0->GetCellData()->GetItem("Boundary") == 0 && p_cell1->GetCellData()->GetItem("Boundary") == 0 && p_cell2->GetCellData()->GetItem("Boundary") == 0 )
+        {
+            // I am also going to record the element aspect ratios at this point, because might as well while I am iterating over the elements, multitask
+            double AspectRatio = CalculateAspectRatio(pNode0->rGetLocation(), pNode1->rGetLocation(), pNode2->rGetLocation() );
+
+            AspectRatioVector.push_back(AspectRatio);
+
+            double AR2 = p_cell2->GetCellData()->GetItem("AspectRatio");
+            double AR0 = p_cell0->GetCellData()->GetItem("AspectRatio");
+            double AR1 = p_cell1->GetCellData()->GetItem("AspectRatio");
+            if (AspectRatio < AR1)
+            {
+                p_cell1->GetCellData()->SetItem("AspectRatio", AspectRatio);
+            }
+            if (AspectRatio < AR0)
+            {
+                p_cell0->GetCellData()->SetItem("AspectRatio", AspectRatio);
+            }
+            if (AspectRatio < AR2)
+            {
+                p_cell2->GetCellData()->SetItem("AspectRatio", AspectRatio);
+            }
+        }
+    }
+    return AspectRatioVector;
+    // std::vector<double> quartilesNeeded = { 0.25, 0.5, 0.75};
+    // std::vector<double> quartiles = Quantile(AspectRatioVector, quartilesNeeded);
+    // PRINT_VECTOR(quartiles)
+    // double Minimum = *std::min_element( std::begin(AspectRatioVector), std::end(AspectRatioVector) );
+    // // typename std::vector<double>::iterator Iterator = quartiles.begin();
+    // // double Quartile1 = *Iterator;
+    // // std::advance(Iterator, 1);
+    // // double Med = *Iterator;
+    // // std::advance(Iterator, 1);
+    // // double Quartile3 = *Iterator;
+
+    // // c_vector<double, SPACE_DIM> AspectRatioQuatiles = Create_c_vector(Quartile1, Med, Quartile3);
+
+    // // PRINT_VECTOR(AspectRatioQuatiles)
+    // return Minimum;
+}
+
+
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+std::vector<double> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::Quantile(std::vector<double>& data, std::vector<double>& probs)
+{
+    if (data.empty())
+    {
+        return std::vector<double>();
+    }
+
+    if (1 == data.size())
+    {
+        return std::vector<double>(1, data[0]);
+    }
+
+    std::sort(data.begin(), data.end());
+    std::vector<double> quantiles;
+
+    for (size_t i = 0; i < probs.size(); ++i)
+    {
+        // double poi = Lerp<double>(-0.5, data.size() - 0.5, probs[i]);
+        double poi = (1 - probs[i]) * -0.5 + probs[i] * (data.size() - 0.5);
+
+        size_t left = std::max(int64_t(std::floor(poi)), int64_t(0));
+        size_t right = std::min(int64_t(std::ceil(poi)), int64_t(data.size() - 1));
+
+        double datLeft = data.at(left);
+        double datRight = data.at(right);
+
+        // double quantile = Lerp<double>(datLeft, datRight, poi - left);
+        double quantile =  (1 - (poi - left)) * datLeft + (poi - left) * datRight;
+
+        quantiles.push_back(quantile);
+    }
+    return quantiles;
+}
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::UpdateBoundaryConditions()
+{
+   mUpdateComplete =1;
+}
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetUpdateBoundaryConditions()
+{
+   return mUpdateComplete;
+}
+
+
+
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::OutputCellPopulationParameters(out_stream& rParamsFile)

@@ -67,6 +67,7 @@ private:
     int mRemeshingInterval = 500;
     int mExecute = 0;
     bool mRemeshing = 0;
+    int mStepsSinceLastRemesh = -100;
     std::map<unsigned, c_vector<double, 2> > mDistanceToEndothelialRegion;
 
     // std::vector<unsigned> mNodesNextToBasement;
@@ -106,6 +107,7 @@ private:
         archive& mExecute;
         archive& mRemeshing;
         archive& mDistanceToEndothelialRegion;
+        archive& mRemeshingTrigger;
     }
 
 public:
@@ -208,6 +210,14 @@ public:
     void SetSlowIncreaseInMembraneStrength(bool SlowIncreaseInMembraneStrength, double TimeStepSize);
     void SlowIncreaseInMembraneParameters(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
     double mTimeStepSize;
+
+    // These functions are all about the trigger for remeshing, which needs to be apsect ratios, unless I am being super lazy
+    void SetRemeshingTrigger(std::string RemeshingTrigger);
+    // double CalculateAspectRatio(c_vector<double, SPACE_DIM> Node1, c_vector<double, SPACE_DIM> Node2,c_vector<double, SPACE_DIM> Node3 );    
+    // double FindMinimumAspectRatioOverMesh(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
+
+ 
+    std::string mRemeshingTrigger= "AspectRatio";
 
 
 

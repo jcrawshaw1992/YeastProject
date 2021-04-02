@@ -49,17 +49,18 @@ public:
         double ShearParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-ShearParameter");
         double BendingParameter =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
 
-        double dt= 0.0005;
+        double dt= 0.000001;
          if (CommandLineArguments::Instance()->OptionExists("-dt"))
         {
             dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
         }
-        double EndTime = 100;
+        PRINT_VARIABLE(dt)
+        double EndTime = 50;
         if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
         {
             EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
         }
-        double SamplingTimestepMultiple = 1500;
+        double SamplingTimestepMultiple = 5000;
         if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
         {
             SamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SamplingTimestepMultiple");
@@ -72,14 +73,14 @@ public:
 
         //////////
         
-        double scale = 1e1;//1e-3;  
-        double scale2 =  0.15;
+        double scale = 1;//1e-3;  
+        double scale2 = 1;
         // std::string output_dir = "FSIIdealNetwork/SimpleBifucation_NoRemeshing/";
 
         std::stringstream out;
         out << "Area_" << AreaParameter<< "_Dil_" << DilationParameter << "_Shear_" << ShearParameter << "_Bend_"<< BendingParameter;
         std::string ParameterSet = out.str();
-        std::string output_dir = "ParameterSweepOnBifucation1/"+ParameterSet;
+        std::string output_dir = "BifucationSweep_Finner/"+ParameterSet;
 
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
@@ -94,22 +95,15 @@ public:
 
         // Create a cell population
         HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
-        cell_population.SetChasteOutputDirectory(output_dir, 0);
         cell_population.SetInitialAnlgesAcrossMembrane();
-        cell_population.SetRelativePath(output_dir, 0);
-        cell_population.SetTargetRemeshingEdgeLength(0.5*1e-2*scale2); //cell_population.SetTargetRemeshingEdgeLength(0.005*scale); 
-        cell_population.SetPrintRemeshedIC(1);
-        cell_population.SetTargetRemeshingIterations(10);
-        cell_population.EdgeLengthVariable(1.001); 
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
-        cell_population.SetRemeshingSoftwear("CGAL");
         
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
 
         // Binning Functions
-        cell_population.SetBinningIntervals(2,2,1);
+        // cell_population.SetBinningIntervals(2,2,1);
         // Set up cell-based simulation
         OffLatticeSimulation<2,3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
@@ -136,13 +130,13 @@ public:
         */        
 
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0);
-        c_vector<double, 3> Point1 = Create_c_vector(0.122,-0.042,0);
+        c_vector<double, 3> Point1 = Create_c_vector(0.0026368426410883503,-0.0707,0);
 
         c_vector<double, 3> PlaneNormal2 = Create_c_vector(-0.7,-0.7,0);
-        c_vector<double, 3> Point2 = Create_c_vector(94,-22,-0.05)*1e-2*scale2;
+        c_vector<double, 3> Point2 = Create_c_vector(0.08361380518549465,-0.03684463931177293,0);
 
         c_vector<double, 3> PlaneNormal3 = Create_c_vector(-0.7,0.7,0);
-        c_vector<double, 3> Point3 = Create_c_vector(94,-33,-0.05)*1e-2*scale2;
+        c_vector<double, 3> Point3 = Create_c_vector(0.08361380518549465,-0.10299085601436264,0);
 
 
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg

@@ -21,7 +21,7 @@
 #include <algorithm>
 #include "MeshBasedCellPopulation.hpp"
 #include "SmartPointers.hpp"
-
+#include <cxxtest/TestSuite.h>
 #include <math.h>
 #include "Debug.hpp"
 
@@ -61,30 +61,99 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, std::string outputDirectory)
 {
       UpdateCellData(rCellPopulation);
-
 }
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetRemeshingTrigger(std::string RemeshingTrigger)
+{
+
+    if (RemeshingTrigger == "AspectRatio" ||RemeshingTrigger == "aspectratio" || RemeshingTrigger == "aspectratio" || RemeshingTrigger == "AR" || RemeshingTrigger == "ar")
+    {
+        mRemeshingTrigger = "AspectRatio";
+    }
+    else if (RemeshingTrigger == "time"||RemeshingTrigger == "Time"||RemeshingTrigger == "T" || RemeshingTrigger == "t" )
+    {
+        mRemeshingTrigger = "Time";
+    }
+    else 
+    {
+        TRACE("Remeshing trigger must be aspect ratio or time. Please enter correct option")
+        TS_ASSERT(1==0);
+    }
+
+      
+}
+
+
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOfTimeStep(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
   
     assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+    // Here the remeshing happens
     if(mRemeshing)
     {
-        if (mExecute>=mRemeshingInterval)
+        if (mRemeshingTrigger == "AspectRatio")
         {
-            pCellPopulation->ExecuteHistoryDependentRemeshing();
-            UpdateCellData(rCellPopulation);
-            if (mHetro) // Need to make sure that the stiffer regions get stiffer at the right step size
-             {
-                TRACE("Need to update the membrane strenght for the new mesh, this next method has not yet been written ")
-                SetMembraneStrenghtOnNewMesh(rCellPopulation);
-             }
-             mExecute = 0;
-        } 
-        mExecute +=1;
+            // Check all the aspect ratios  and trigger remeshing if needed
+            // double MinimumAspectRatio = FindMinimumAspectRatioOverMesh(rCellPopulation);
+            if ( mStepsSinceLastRemesh==2)
+            {
+                std::vector<double> AspectRatioVector = pCellPopulation->MinimumElementAspectRatio();
+
+                std::vector<double> quartilesNeeded = { 0.25, 0.5, 0.75};
+                std::vector<double> quartiles = pCellPopulation->Quantile(AspectRatioVector, quartilesNeeded);
+                double MinimumAspectRatio = *std::min_element( std::begin(AspectRatioVector), std::end(AspectRatioVector) );
+
+                typename std::vector<double>::iterator Iterator = quartiles.begin();
+                double Quartile1 = *Iterator;
+ 
+                if (  MinimumAspectRatio <0.5 || Quartile1 < 0.5)
+                {
+                    PRINT_VARIABLE(MinimumAspectRatio)
+                    // TRACE(" AR is too smalle, remeshing now :) ")
+                    pCellPopulation->ExecuteHistoryDependentRemeshing();
+                    UpdateCellData(rCellPopulation);
+                    if (mHetro) // Need to make sure that the stiffer regions get stiffer at the right step size
+                    {
+                        TRACE("Need to update the membrane strenght for the new mesh, this next method has not yet been written ")
+                        SetMembraneStrenghtOnNewMesh(rCellPopulation);
+                    }
+                 }
+                 mStepsSinceLastRemesh =1;
+
+            }else
+            {
+                mStepsSinceLastRemesh +=1;
+            }
+            
+            // else{
+            //     mStepsSinceLastRemesh +=1;
+            // }
+            
+
+           
+                
+        }else
+        {
+            if (mExecute>=mRemeshingInterval)
+            {
+                pCellPopulation->ExecuteHistoryDependentRemeshing();
+                UpdateCellData(rCellPopulation);
+                if (mHetro) // Need to make sure that the stiffer regions get stiffer at the right step size
+                {
+                    TRACE("Need to update the membrane strenght for the new mesh, this next method has not yet been written ")
+                    SetMembraneStrenghtOnNewMesh(rCellPopulation);
+                }
+                mExecute = 0;
+            } 
+            mExecute +=1;
+         }
     }
 
+    // Update if hetero 
     if (mHetro) // Need to make sure that the stiffer regions get stiffer at the right step size
     {
         if (mCounter ==2000) // TODO this needs setting with a member variable
@@ -218,13 +287,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
                 cell_iter->GetCellData()->SetItem("AreaConstant", mGrowthMaps[mStrength](0));
                 cell_iter->GetCellData()->SetItem("BendingConstant", mGrowthMaps[mStrength](3));
             }
-                // double Shear = cell_iter->GetCellData()->GetItem("ShearModulus");
-                // double AreaDi = cell_iter->GetCellData()->GetItem("AreaDilationModulus");
-                // double Area = cell_iter->GetCellData()->GetItem("AreaConstant");
-                // double Bend = cell_iter->GetCellData()->GetItem("BendingConstant");
-            
-            // PRINT_VARIABLE(mStrength)
-            // PRINT_4_VARIABLES(Shear,AreaDi,Area,Bend)
+             
         }
 }
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -316,7 +379,7 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetMembraneStrenghtOnNewMesh(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
 
-
+    TRACE("Jess needs to do this!!!!");
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -521,9 +584,6 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetBendingFor
         cell_iter->GetCellData()->SetItem("BendingConstant", BendingConstant);
     }
 }
-
-
-
 
 
 

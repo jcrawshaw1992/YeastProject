@@ -7,10 +7,8 @@
 
 #include "UblasCustomFunctions.hpp"
 #include <cxxtest/TestSuite.h>
-// #include <cstdio>
-// #include <ctime>
-// #include <cmath>
-// #include <vector> 
+ #include "MembraneSurfaceForce.hpp"
+
 
 #include "Debug.hpp"
 #include "VtkMeshReader.hpp"
@@ -47,7 +45,7 @@ public:
         TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-BendingParameter"));
         double BendingParameter =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
 
-        double dt= 0.01;
+        double dt= 0.02;
          if (CommandLineArguments::Instance()->OptionExists("-dt"))
         {
             dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
@@ -67,96 +65,121 @@ public:
         {
             mesh_file  = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-MeshFile");
         }
-        std::stringstream out;
-        out << "_Bend_"<< BendingParameter;
-        std::string ParameterSet = out.str();
-        std::string output_dir = "SweepOnSphere/"+ParameterSet;
 
-        double Scale = 0.001;
-        VtkMeshReader<2, 3> mesh_reader(mesh_file);
-        MutableMesh<2, 3> mesh;
-        mesh.ConstructFromMeshReader(mesh_reader);
-        mesh.Scale(Scale,Scale,Scale);
-
-    
-       // Create the cells 
-        MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
-        std::vector<CellPtr> cells;
-        CellsGenerator<FixedG1GenerationalCellCycleModel, 2> cells_generator;
-        cells_generator.GenerateBasicRandom(cells, mesh.GetNumNodes(), p_differentiated_type);
-
-        // Create a cell population
-        HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
-        cell_population.SetChasteOutputDirectory(output_dir, 0);
-        cell_population.SetUpInitialConfig(0);
-        cell_population.SetInitialAnlgesAcrossMembrane();
-        cell_population.SetWriteVtkAsPoints(true);
-        cell_population.SetOutputMeshInVtk(true);
-        cell_population.AddPopulationWriter<ElementAnglesWriter>();
-        
-
-        // Set population to output all data to results files
-        cell_population.AddCellWriter<CellProliferativeTypesWriter>();
-
-        OffLatticeSimulation<2,3> simulator(cell_population);
-        simulator.SetOutputDirectory(output_dir);
-        simulator.SetSamplingTimestepMultiple(SamplingTimestepMultiple);
-        simulator.SetDt(dt);
-        simulator.SetUpdateCellPopulationRule(false);
-        simulator.SetEndTime(EndTime);
-
-    
-        /*
-        -----------------------------
-        Bending forces
-        ----------------------------
-        */
-        boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        p_membrane_force->SetMembraneStiffness(pow(10, -BendingParameter));
-        simulator.AddForce(p_membrane_force);
-
-
-        /*
-        -----------------------------
-        Set intitial
-        ----------------------------
-        */
-
-        double Modulo;
-        for (int i = 0; i < mesh.GetNumNodes(); i++)
+        if (CommandLineArguments::Instance()->OptionExists("-Archive"))
         {
+            std::string ArchivedDirectory = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-Archive");
+            double EndTime1 = 3000;
+            // Load and fix any settings in the simulator
+            OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(ArchivedDirectory, EndTime1);
+            p_simulator->SetEndTime(EndTime1 + 2*EndTime1);
+            p_simulator->Solve();
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+            // SimulationTime::Instance()->Destroy();
+            // SimulationTime::Instance()->SetStartTime(0.0);
 
-            c_vector<double, 3> InitalLocation = cell_population.GetNode(i)->rGetLocation();
-            Modulo = (i*3+2) % 20;
+        }else{
+
+            std::stringstream out;
+            out << "_Bend_"<< BendingParameter;
+            std::string ParameterSet = out.str();
+            std::string output_dir = "SweepOnSphereWithArea/"+ParameterSet;
+
+            double Scale = 0.005;
+            VtkMeshReader<2, 3> mesh_reader(mesh_file);
+            MutableMesh<2, 3> mesh;
+            mesh.ConstructFromMeshReader(mesh_reader);
+            mesh.Scale(Scale,Scale,Scale);
+
+        
+        // Create the cells 
+            MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
+            std::vector<CellPtr> cells;
+            CellsGenerator<FixedG1GenerationalCellCycleModel, 2> cells_generator;
+            cells_generator.GenerateBasicRandom(cells, mesh.GetNumNodes(), p_differentiated_type);
+
+            // Create a cell population
+            HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
+            cell_population.SetChasteOutputDirectory(output_dir, 0);
+            cell_population.SetUpInitialConfig(0);
+            cell_population.SetInitialAnlgesAcrossMembrane();
+            cell_population.SetWriteVtkAsPoints(true);
+            cell_population.SetOutputMeshInVtk(true);
+            cell_population.AddPopulationWriter<ElementAnglesWriter>();
+            
+
+            // Set population to output all data to results files
+            cell_population.AddCellWriter<CellProliferativeTypesWriter>();
+
+            OffLatticeSimulation<2,3> simulator(cell_population);
+            simulator.SetOutputDirectory(output_dir);
+            simulator.SetSamplingTimestepMultiple(SamplingTimestepMultiple);
+            simulator.SetDt(dt);
+            simulator.SetUpdateCellPopulationRule(false);
+            simulator.SetEndTime(EndTime);
+
+        
+            /*
+            -----------------------------
+            Bending forces
+            ----------------------------
+            */
+            boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
+            p_membrane_force->SetMembraneStiffness(pow(10, -BendingParameter));
+            simulator.AddForce(p_membrane_force);
 
 
-            double R = sqrt(InitalLocation[0] * InitalLocation[0] + InitalLocation[1] * InitalLocation[1]+ InitalLocation[2] * InitalLocation[2]);
-            double NewR = R + (RandomNumberGenerator::Instance()->ranf()-0.5)*Scale/2;//R+ (Modulo-10)*Scale/80;
+                
+            boost::shared_ptr<MembraneSurfaceForce> p_surface_force(new MembraneSurfaceForce());
+            p_surface_force->SetupInitialAreas(cell_population);
+            p_surface_force->SetMembraneStiffness(1e-6);
+            
+            simulator.AddForce(p_surface_force);
 
-            double Angle;
-            // double Scalled_R;
 
-            double theta = acos(InitalLocation[2]/R);
-            double gamma = atan(InitalLocation[1]/InitalLocation[0]);
-            if (InitalLocation[0] <0)
+
+            /*
+            -----------------------------
+            Set intitial
+            ----------------------------
+            */
+
+            double Modulo;
+            for (int i = 0; i < mesh.GetNumNodes(); i++)
             {
-                theta = -acos(InitalLocation[2]/R);
+
+                c_vector<double, 3> InitalLocation = cell_population.GetNode(i)->rGetLocation();
+                Modulo = (i*3+2) % 20;
+
+
+                double R = sqrt(InitalLocation[0] * InitalLocation[0] + InitalLocation[1] * InitalLocation[1]+ InitalLocation[2] * InitalLocation[2]);
+                double NewR = R + (RandomNumberGenerator::Instance()->ranf()-0.5)*Scale/2;//R+ (Modulo-10)*Scale/80;
+
+                double Angle;
+                // double Scalled_R;
+
+                double theta = acos(InitalLocation[2]/R);
+                double gamma = atan(InitalLocation[1]/InitalLocation[0]);
+                if (InitalLocation[0] <0)
+                {
+                    theta = -acos(InitalLocation[2]/R);
+                }
+
+                double X = NewR * sin(theta) * cos(gamma); 
+                double Y = NewR * sin(theta) * sin(gamma);
+                double Z = NewR * cos(theta);
+
+                c_vector<double, 3> DeformedLocation = Create_c_vector(X, Y, Z);
+                cell_population.GetNode(i)->rGetModifiableLocation() = DeformedLocation;
             }
 
-            double X = NewR * sin(theta) * cos(gamma); 
-            double Y = NewR * sin(theta) * sin(gamma);
-            double Z = NewR * cos(theta);
+            VtkMeshWriter<2, 3> mesh_writer1(output_dir, "DeformedOriginalMesh", false);
+            mesh_writer1.WriteFilesUsingMesh(mesh);
 
-            c_vector<double, 3> DeformedLocation = Create_c_vector(X, Y, Z);
-            cell_population.GetNode(i)->rGetModifiableLocation() = DeformedLocation;
+        
+            simulator.Solve();
+            CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
         }
-
-        VtkMeshWriter<2, 3> mesh_writer1(output_dir, "DeformedOriginalMesh", false);
-        mesh_writer1.WriteFilesUsingMesh(mesh);
-
-    
-     	  simulator.Solve();
-        CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
 }
 
 

@@ -41,6 +41,10 @@
 #include "RandomDirectionCentreBasedDivisionRule.hpp"
 
 
+#include <math.h>
+#include "Debug.hpp"
+
+
 
 /**
  * A facade class encapsulating a mesh-based 'cell population'.
@@ -95,6 +99,7 @@ private:
         archive & mNz;
         archive & mCentroidMap;
         archive & mStartTime;
+        archive & mServer;
 
     }
 
@@ -210,6 +215,8 @@ public:
     void CheckCurvature();
     void SetRemeshingSoftwear(std::string RemeshingSoftwear);
     std::string mRemeshingSoftwear = "CGAL";
+    void SetOperatingSystem( std::string OperatingSystem);
+    bool mServer =1;
 
     void SaveInitalConditions();
     std::map<unsigned, c_vector<double, SPACE_DIM> > mOriginalNodePositions;
@@ -300,18 +307,11 @@ public:
     double GetBinUpperZ(std::vector<double> Bin);
         
 
-
-
-
-
-
-
-
     // Binning member variables
     // Set the number of intervals  -- default is 1, but can be changed with SetBinningIntervals
-    int mNx = 3;
-    int mNy = 2;
-    int mNz = 1;
+    int mNx = 1;
+    int mNy = 1;
+    int mNz = 2;
 
     // If the geometry is 2d, need to record it  with this member in
     int mDIM = 3;
@@ -351,13 +351,31 @@ public:
     void SetTargetRemeshingEdgeLength(double TargetRemeshingEdgeLength);
     double mTargetRemeshingEdgeLength = 1e-7;
     void SetTargetRemeshingIterations(int Iterations);
-    int mIterations = 5;
+    int mIterations = 10;
     void EdgeLengthVariable(double EdgeLengthMultiple);
     bool mVariableEdgeLength =0;
     double mEdgeLengthMultiple =1;
 
     void SetPrintRemeshedIC(bool PrintRemeshedIC);
     bool mPrintRemeshedIC = 0;
+
+
+    double CalculateAspectRatio(c_vector<double, SPACE_DIM> Node1, c_vector<double, SPACE_DIM> Node2,c_vector<double, SPACE_DIM> Node3 );
+    std::vector<double> MinimumElementAspectRatio();
+
+    std::vector<double> Quantile(std::vector<double>& inData, std::vector<double>& probs);
+
+
+
+    void UpdateBoundaryConditions();
+    bool GetUpdateBoundaryConditions();
+    bool mUpdateComplete =1;
+    double GetAspectRatioFromMesh();
+
+
+
+
+
 
     /**
      * Overridden WriteResultsToFiles() method.

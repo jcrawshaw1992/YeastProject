@@ -54,7 +54,7 @@ public:
     void TestGenerateIdealMesh() throw (Exception)
     {
          std::string CenterlineEdgeFile; std::string CenterlinePointsFile; std::string output_file;double RadiValue;double Collapse;
-         double LeftBound;  double RightBound;
+         double LeftBound;  double RightBound; double Branch;
         if (CommandLineArguments::Instance()->OptionExists("-CenterlineEdges"))
         {
             CenterlineEdgeFile = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-CenterlineEdges"); 
@@ -64,16 +64,18 @@ public:
             Collapse = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Collapse");
             LeftBound = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-LeftBound");
             RightBound = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-RightBound");
+            Branch = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Branch");
                                                                     
         }else
         {
-            CenterlineEdgeFile = "/Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/3_by_4/CenterlineEdges.txt";
-            CenterlinePointsFile = "/Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/3_by_4/CenterlinePoints.txt";
-            output_file = "/Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/3_by_4/TestCenterlines.vtp";
+            CenterlineEdgeFile = "/home/vascrem/MeshCollection/IdealisedNetwork/CollapseOf3By3Network/CenterlineEdges.txt";
+            CenterlinePointsFile = "/home/vascrem/MeshCollection/IdealisedNetwork/CollapseOf3By3Network/CenterlinePoints.txt";
+            output_file = "/home/vascrem/MeshCollection/IdealisedNetwork/CollapseOf3By3Network/Centerlines.vtp";
             RadiValue =0.2;
             Collapse = 0.5;
             LeftBound =3.5; 
             RightBound = 4.5;
+            Branch = 0;
             
         }  
         int SPACE_DIM =2;
@@ -112,9 +114,11 @@ public:
                     }
                     i +=1;
                     double Y = atof(&line[i]);
+                    
                     points->InsertNextPoint(X,Y ,0);
-                    if (Y ==0  &&  X >LeftBound && X<RightBound)
+                    if ( (Y ==0  &&  X >LeftBound && X<RightBound  && Branch == 0)  || (Y >0 &&  X >LeftBound && X<RightBound && Branch == 1)) 
                     {
+                        
                         CollapsedRegion.push_back(counter);
                     }
                     counter +=1;

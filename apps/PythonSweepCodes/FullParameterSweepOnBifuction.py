@@ -16,15 +16,18 @@ from os import path
 
 if __name__=="__main__":
     t0 = time.time()
-    GenerateRunner =1
+    GenerateRunner = 0
     if GenerateRunner ==1:
-        command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestSweepingForBifucationDeformation.hpp"
-        subprocess.call(command, shell=True)
+       command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestSweepingForBifucationDeformation.hpp"
+       subprocess.call(command, shell=True)
     Server = 1
     if Server ==1:
         chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestSweepingForBifucationDeformationRunner '
-        TerminalOutputFolder = "/data/vascrem/testoutput/ParameterSweepOnBifucation/SweepTerminalOutputs/"
-        mesh_file = "/home/vascrem/MeshCollection/IdealisedNetwork/SimpleBifucation/mesh.vtu"
+        TerminalOutputFolder = "/data/vascrem/testoutput/BifucationSweep_FinnerOutput/"
+        if path.isdir(TerminalOutputFolder)==0:
+            os.mkdir(TerminalOutputFolder)
+        TerminalOutputFolder = TerminalOutputFolder+"SweepTerminalOutputs/"
+        mesh_file = "/data/vascrem/MeshCollection/Bifucation/meshCourse.vtu"
 
         if path.isdir("/data/vascrem/testoutput/ParameterSweepOnBifucation/")==0:
             os.mkdir("/data/vascrem/testoutput/ParameterSweepOnBifucation/")
@@ -33,7 +36,6 @@ if __name__=="__main__":
         TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/ParameterSweepOnBifucation/SweepTerminalOutputs/"
         mesh_file = "/Users/jcrawshaw/Documents/Projects/MeshCollection/SimpleBifucation/mesh.vtu"
 
-
     if path.isdir(TerminalOutputFolder)==0:
         os.mkdir(TerminalOutputFolder)
 
@@ -41,14 +43,20 @@ if __name__=="__main__":
 
     
     AreaParameter = [6, 7, 8, 9, 10]
-    DilationParameter = [5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
-    DeformationParamter = [5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
-    BendingParameters = [7, 8, 9, 10,11,12,13,14,15,16]
+    DilationParameter = [5,6, 7, 8]
+    DeformationParamter = [5,6, 7, 8, 9]
+    BendingParameters = [8,10,12]#,12,14, 16]
 
+    AreaParameter = [12]
+    DilationParameter = [ 10]
+    DeformationParamter = [10]
+    BendingParameters = [16]#,12,14, 16]
+
+    # This is 300 simulations 
     RunSweep = 1
     if RunSweep ==1:
-        Parallel = 23
-        SleepyTime = 300
+        Parallel = 15
+        SleepyTime = 200
         AvaliablePaths = range(Parallel)
         print AvaliablePaths
         for i in AreaParameter:
@@ -56,7 +64,8 @@ if __name__=="__main__":
                 for k in DeformationParamter:
                     for l in BendingParameters:
                         Core = AvaliablePaths[0]
-                        Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -ShearParameter ' +str(k)+ ' -BendingParameter '+str(l) + ' -MeshFile '+mesh_file
+                        print [i,j,k,l]
+                        Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -ShearParameter ' +str(k)+ ' -BendingParameter '+str(l) + ' -MeshFile '+mesh_file + ' -EndTime 100 -dt 0.0001 -SamplingTimestepMultiple 10'
                         
                         Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'DilationParameter'+str(j)+'ShearParameter' +str(k)+ 'BendingParameter'+str(l)+'.txt'
                         Input3 = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
@@ -65,7 +74,7 @@ if __name__=="__main__":
                         # # Check if all positions are taken
                         while len(AvaliablePaths) ==0:
                             time.sleep(SleepyTime)
-                            # print "Awake and checking for spare cores" 
+                            print "Awake and checking for spare cores" 
                             for P in range(Parallel):
                                 OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
                                 if path.exists(OutputFile):
@@ -75,30 +84,30 @@ if __name__=="__main__":
                                 print AvaliablePaths, "Have found a spare core or two :-) " 
                                 print time.time() - t0, "seconds time"
 
+    print '\n ********* ------ Finished ------ ********* \n'
+    # print '\n ********* ------ Completed Sweep ------ ********* \n'
+    # print '\n ********* ------ Collect results ------ ********* \n'
 
-    print '\n ********* ------ Completed Sweep ------ ********* \n'
-    print '\n ********* ------ Collect results ------ ********* \n'
-
-    CollectResults =1
-    if CollectResults ==1:
-        NewFolder = "/data/vascrem/testoutput/ParameterSweepOnBifucation/CollectedResults2/"
-        OldFolder = "/data/vascrem/testoutput/ParameterSweepOnBifucation/"
+    # CollectResults =1
+    # if CollectResults ==1:
+    #     NewFolder = "/data/vascrem/testoutput/ParameterSweepOnBifucation/CollectedResults2/"
+    #     OldFolder = "/data/vascrem/testoutput/ParameterSweepOnBifucation/"
 
 
-        if path.exists(NewFolder)==0:
-            os.mkdir(NewFolder)
+    #     if path.exists(NewFolder)==0:
+    #         os.mkdir(NewFolder)
 
-        for i in ParameterSets:
-            for j in BendingParameters:
-                Oldfile = OldFolder + "PSet" + str(i) + "_Bending_" + str(j) + "/results_from_time_0/mesh_154000.vtu" 
+    #     for i in ParameterSets:
+    #         for j in BendingParameters:
+    #             Oldfile = OldFolder + "PSet" + str(i) + "_Bending_" + str(j) + "/results_from_time_0/mesh_154000.vtu" 
 
-                print Oldfile
-                print path.exists(Oldfile)
-                # Oldfile = OldFolder + "PSet" + str(i) + "_Bending_" + str(j) + "/results_from_time_30/results.viznodes" 
-                if path.exists(Oldfile):
-                    NewFile = NewFolder + "PSet" + str(i) + "_Bending_" + str(j) + ".mesh.vtu"
-                    shutil.copy(Oldfile, NewFile)
+    #             print Oldfile
+    #             print path.exists(Oldfile)
+    #             # Oldfile = OldFolder + "PSet" + str(i) + "_Bending_" + str(j) + "/results_from_time_30/results.viznodes" 
+    #             if path.exists(Oldfile):
+    #                 NewFile = NewFolder + "PSet" + str(i) + "_Bending_" + str(j) + ".mesh.vtu"
+    #                 shutil.copy(Oldfile, NewFile)
 
-        print '\n ********* ------ Finished ------ ********* \n'
+        #  print '\n ********* ------ Finished ------ ********* \n'
    
 

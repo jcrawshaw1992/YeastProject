@@ -45,9 +45,9 @@ extract_surface_filter = vtk.vtkDataSetSurfaceFilter()
 extract_surface_filter.AddInputConnection(vtu_reader.GetOutputPort())
 
 # Write out the data in unstructured grid format
-stl_writer = vtk.vtkSTLWriter()
+stl_writer = vtk.vtkVTUWriter()
 stl_writer.SetInputConnection(extract_surface_filter.GetOutputPort())
-stl_writer.SetFileName(working_directory + 'ScalledMesh.stl')
+stl_writer.SetFileName(working_directory + 'ScalledMesh.vtu')
 stl_writer.Write()
 print "  Doneies    "
 

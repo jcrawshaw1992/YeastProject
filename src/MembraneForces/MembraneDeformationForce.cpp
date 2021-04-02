@@ -190,18 +190,20 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
             CellArea= rCellPopulation.GetVolumeOfCell(rCellPopulation.GetCellUsingLocationIndex(node_index));
 
             ForceOnNode[i] /= CellArea;
-            MembraneForceMap[node_index] += ForceOnNode[i];    
+            MembraneForceMap[node_index] += ForceOnNode[i];  
+            assert(norm_2(MembraneForceMap[node_index]) <10e5);
+
         }
        
 
-        pNode0->AddAppliedForceContribution(ForceOnNode[0]);
-        pNode1->AddAppliedForceContribution(ForceOnNode[1]);
-        pNode2->AddAppliedForceContribution(ForceOnNode[2]);
+        // pNode0->AddAppliedForceContribution(ForceOnNode[0]);
+        // pNode1->AddAppliedForceContribution(ForceOnNode[1]);
+        // pNode2->AddAppliedForceContribution(ForceOnNode[2]);
         
        
     }
 
-    // // THis bit takes care of the edges ...
+    // THis bit takes care of the edges ...
     for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
             cell_iter != rCellPopulation.End();
             ++cell_iter)
@@ -213,41 +215,26 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
         {
             c_vector<double, 3> AverageForce = Create_c_vector(0,0,0);
             c_vector<unsigned, 3> NearestNodes =  p_cell_population->GetNearestInternalNodes(node_index);
+
+
             for ( int i = 0; i <3; i++)
             {  
                 AverageForce += MembraneForceMap[NearestNodes[i]];
-                //  if( norm_2(MembraneForceMap[NearestNodes[i]]) >10e10  )
-                // {
-                //     PRINT_VECTOR( MembraneForceMap[NearestNodes[i]])
-                // }
+               
             }
-            // PRINT_VARIABLE(NearestNodes.size())
             AverageForce/=3;
-        
-            // if( norm_2(AverageForce) >10e10  )
-            // {
-            //     PRINT_VECTOR( AverageForce)
-            // }
-            // assert(norm_2(AverageForce) <10e10);
-            // c_vector<double, 3> OldForce = MembraneForceMap[node_index]/norm_2(MembraneForceMap[node_index] );
-            // c_vector<double, 3> NewForce = OldForce *norm_2(AverageForce);
+    
             cell_iter->GetCellData()->SetItem("MembraneForce",norm_2(AverageForce) );
             if (norm_2(AverageForce) >10000)
             {
                 PRINT_VECTOR(AverageForce)
-                    AverageForce = Create_c_vector(0,0,0);
-                     double CellArea1= rCellPopulation.GetVolumeOfCell(rCellPopulation.GetCellUsingLocationIndex(node_index));
+                AverageForce = Create_c_vector(0,0,0);
+                double CellArea1= rCellPopulation.GetVolumeOfCell(rCellPopulation.GetCellUsingLocationIndex(node_index));
                 PRINT_VARIABLE(CellArea1)
                 cell_iter->GetCellData()->SetItem("MembraneForce",-100);
                     
             }
-            // assert(norm_2(AverageForce) <10000);
-
-
             pNode->AddAppliedForceContribution(AverageForce); // Add the new force
-            // assert(norm_2(AverageForce) <10000);
-            
-
         }
         else
         {

@@ -49,7 +49,7 @@ public:
         unsigned N_D = 40;
         unsigned N_Z = 100;
 
-        std::string output_dir = "ParameterSweep/Cylinder/";
+        std::string output_dir = "ParameterSweepWithRemeshing/Cylinder/";
 
         Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, Radius, Length);
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();

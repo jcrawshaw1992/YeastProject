@@ -17,14 +17,16 @@ from os import path
 if __name__=="__main__":
     t0 = time.time()
     GenerateRunner =1
+    
+    print "A"
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestBendingForceOnSphere.hpp"
         subprocess.call(command, shell=True)
     Server = 1
     if Server ==1:
         chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestBendingForceOnSphereRunner '
-        TerminalOutputFolder = "/data/vascrem/testoutput/SweepOnSphere/SweepTerminalOutputs/"
-        mesh_file = "/home/vascrem/MeshCollection/Sphere.vtu"
+        TerminalOutputFolder = "/data/vascrem/testoutput/SweepOnSphereWithArea/SweepTerminalOutputs/"
+        mesh_file = "/data/vascrem/MeshCollection/Sphere.vtu"
 
         if path.isdir("/data/vascrem/testoutput/SweepOnSphere/")==0:
             os.mkdir("/data/vascrem/testoutput/SweepOnSphere/")
@@ -33,24 +35,27 @@ if __name__=="__main__":
         TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/SweepOnSphere/SweepTerminalOutputs/"
         mesh_file = "/Users/jcrawshaw/Documents/Projects/MeshCollection/Sphere.vtu"
 
-
+    print "B"
     if path.isdir(TerminalOutputFolder)==0:
         os.mkdir(TerminalOutputFolder)
 
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
-    BendingParameters = [5,6,7, 8, 9, 10,11,12,13,14,15]
-
+    BendingParameters = [ 7,8, 9,10,11,12,13]
+    print "C"
     RunSweep = 1
     if RunSweep ==1:
-        Parallel = 7
+        Parallel = 9
         SleepyTime = 300
         AvaliablePaths = range(Parallel)
         print AvaliablePaths
         for l in BendingParameters:
+            print "D"
             Core = AvaliablePaths[0]
-            Input1 = chaste_run_exe + ' -BendingParameter '+str(l) + ' -MeshFile '+mesh_file
-            
+            # ArchieveFile = "SweepOnSphereWithArea/"
+            Input1 = chaste_run_exe + ' -BendingParameter '+str(l) + ' -MeshFile '+mesh_file + ' -EndTime 50000'#-Archive '+ArchieveFile
+            print Input1
+            print "E"
             Input2 = TerminalOutputFolder+ 'BendingParameter'+str(l)+'.txt'
             Input3 = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
             subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])

@@ -1,0 +1,7 @@
+#!/bin/bash
+# chmod 700 RunChaste
+echo 'GenerateFlowVtus'
+$1
+echo 'HemeLB simulation complete' > $2
+echo "HemeLB simulation complete"
+exit

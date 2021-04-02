@@ -69,7 +69,7 @@ def write_pr2(outputDirectory, SimulationDuration, MinRadii):
 
     V = 4 #Kinematic viscosity -- 4 mm^2/s  V = eta/rho
     deltaX = MinRadii
-    deltaT = float(0.1 * deltaX * deltaX/V)
+    deltaT = 0.1# float(0.1 * deltaX * deltaX/V)
     print ("DeltaX: " , deltaX , "DeltaT: ", deltaT)
 
     InletPressure = 0.001
@@ -120,29 +120,34 @@ if __name__=="__main__":
     # Currently this code does not generate pr2 or xml files :S 
     # subprocess.call("chmod 700 RunHemeLBCollapse", shell=True)
     mHemeLBDirectory = '/data/vascrem/testoutput/HemeLBSweep/Check/'
-    i = '9'
 
-    mHemeLBDirectory = mHemeLBDirectory
-   # command = 'mv ' + MeshFile +' ' + mHemeLBDirectory + 'config.stl'
-    # subprocess.call(command, shell=True)
+    TerminalOutputFolder = '/data/vascrem/testoutput/HemeLBSweep/FlowThrough3X3Collapse/TestDiscretisation/'
+    MeshDirectory = "/data/vascrem/MeshCollection/IdealisedNetwork/CollapseOf3By3Network/UpperBranch/"
+   
 
-    dX = 0.2/15
-    # write_pr2(mHemeLBDirectory, 1001, dX)
-    # run_hemelb_setup(mHemeLBDirectory )
+    i = '5'
+    MeshFile = MeshDirectory+"ClippedAndScaledMesh."+i+".stl"
+    mHemeLBDirectory = TerminalOutputFolder+i+'/'
+    command = 'cp ' + MeshFile +' ' + mHemeLBDirectory + 'config.stl'
+    subprocess.call(command, shell=True)
 
-    # # Update the xml file
+    dX = 0.08/20
+    write_pr2(mHemeLBDirectory, 1001, dX)
+    run_hemelb_setup(mHemeLBDirectory )
+
+    # Update the xml file
     # update_xml_file(int(1001*0.8), mHemeLBDirectory)
 
-    # # Run HemeLB
-    RunHemeLB = 'mpirun -np 6 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
-    TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
+    # # # Run HemeLB
+    # RunHemeLB = 'mpirun -np 6 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
+    # TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
     # # Generate the new config.vtu
-    GmyUnstructuredGridReader ="python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
-    # Generate the flow vtus
-    GenerateFlowVtus = "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "Results/Extracted/surface-pressure.xtr "
-    # Generate waitFile
-    WaitFileGeneration = mHemeLBDirectory+'WaitFile'+str(1)+'.txt'
-    subprocess.Popen(['./RunHemeLBSweepBash', RunHemeLB, TerminalOutput, GmyUnstructuredGridReader, GenerateFlowVtus, WaitFileGeneration ])
+    # GmyUnstructuredGridReader ="python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
+    # # Generate the flow vtus
+    # GenerateFlowVtus = "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "Results/Extracted/surface-pressure.xtr "
+    # # Generate waitFile
+    # WaitFileGeneration = mHemeLBDirectory+'WaitFile'+str(1)+'.txt'
+    # subprocess.Popen(['./RunHemeLBSweepBash', RunHemeLB, TerminalOutput, GmyUnstructuredGridReader, GenerateFlowVtus, WaitFileGeneration ])
 
     # python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py  /data/vascrem/testoutput/HemeLBSweep/FlowThroughNonSymmetricCollapse/10/config.xml
     # python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py  /data/vascrem/testoutput/HemeLBSweep/FlowThroughNonSymmetricCollapse/10/config.vtu /data/vascrem/testoutput/HemeLBSweep/FlowThroughNonSymmetricCollapse/10/Results2/Extracted/surface-pressure.xtr 

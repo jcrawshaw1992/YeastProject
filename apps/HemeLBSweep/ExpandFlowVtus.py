@@ -21,8 +21,9 @@ if __name__=="__main__":
     # chmod 700 RunFlowvtuBash
     # Currently this code does not generate pr2 or xml files :S 
     # subprocess.call("chmod 700 RunHemeLBCollapse", shell=True)
-    TerminalOutputFolder = '/data/vascrem/testoutput/HemeLBSweep/FlowThroughNonSymetricCollapse/'
-    Collapse = ['1']
+    TerminalOutputFolder = '/data/vascrem/testoutput/HemeLBSweep/FlowThrough3X3Collapse/UpperBranchFolder/'
+
+    Collapse = ['6']
     Parallel = 2
     # SleepyTime = 60
     AvaliablePaths = range(Parallel)
@@ -35,13 +36,12 @@ if __name__=="__main__":
         # subprocess.call(GmyUnstructuredGridReader, shell=True)
 
         # Generate the flow vtus
-        GenerateFlowVtus = "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "Results3/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "Results3/Extracted/wholegeometry-velocity.xtr"
+        GenerateFlowVtus = "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "Results2/Extracted/wholegeometry-velocity.xtr"
         subprocess.call(GenerateFlowVtus, shell=True)
-
-'/data/vascrem/testoutput/HemeLBSweep/FlowThroughNonSymmetricGrowth/'
         
-        GenerateFlowVtus = "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py /data/vascrem/testoutput/HemeLBSweep/FlowThroughNonSymmetricGrowth/10/config.vtu /data/vascrem/testoutput/HemeLBSweep/FlowThroughNonSymmetricGrowth/10/Results3/Extracted/surface-pressure.xtr /data/vascrem/testoutput/HemeLBSweep/FlowThroughNonSymmetricGrowth/10/Results3/Extracted/wholegeometry-velocity.xtr"
-        subprocess.call(GenerateFlowVtus, shell=True)
+        
+        # GenerateFlowVtus = "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "Results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "Results/Extracted/wholegeometry-velocity.xtr"
+        # subprocess.call(GenerateFlowVtus, shell=True)
 
 
         # Generate waitFile
