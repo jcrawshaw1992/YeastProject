@@ -53,7 +53,7 @@ public:
         double Length = 10e-6 * scale/2;
         double Radius = 1e-6 * scale;
 
-        Honeycomb3DCylinderMeshGenerator generator(40, 30, Radius, Length);
+        Honeycomb3DCylinderMeshGenerator generator(20, 30, Radius, Length);
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
         HistoryDepMutableMesh<2, 3>* mesh= static_cast<HistoryDepMutableMesh<2, 3>*>(p_mesh);
     
@@ -68,13 +68,13 @@ public:
         cell_population.SetChasteOutputDirectory(output_dir, startime);
         // cell_population.SetInitialAnlgesAcrossMembrane(); // Dont worry about this for now, I think there is something moff
         cell_population.SetRelativePath(output_dir, startime);
-        cell_population.SetTargetRemeshingEdgeLength(0.2e-6 * scale); 
+        cell_population.SetTargetRemeshingEdgeLength(0.6e-6 * scale); 
         // cell_population.EdgeLengthVariable(1.2); 
-        cell_population.SetPrintRemeshedIC(0);
-        cell_population.SetTargetRemeshingIterations(3);
+        cell_population.SetPrintRemeshedIC(1);
+        cell_population.SetTargetRemeshingIterations(10);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
-        cell_population.SetRemeshingSoftwear("VMTK");
+        cell_population.SetRemeshingSoftwear("CGAL");
         cell_population.SetOperatingSystem("mac");
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
@@ -82,7 +82,7 @@ public:
         // Set up cell-based simulation
         OffLatticeSimulation<2,3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
-        simulator.SetSamplingTimestepMultiple(10);
+        simulator.SetSamplingTimestepMultiple(100);
         simulator.SetDt(0.005);
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);

@@ -176,7 +176,7 @@ public:
 
     // Function to find the cloeset element in last mesh
     
-    unsigned GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
+    c_vector<double, 3> GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
 
 
     std::map<unsigned, unsigned> mMapOfProbNodes;
@@ -193,6 +193,8 @@ public:
      * Goal is to get the inital position for this remeshed node
      */
 
+    
+    c_vector<double, 3> NewNodeInInitalConfigurationFromClosestEdge(unsigned EdgeNode1, unsigned EdgeNode2, c_vector<double, SPACE_DIM> NewNode,unsigned NodeIndex);
     c_vector<double, 3> NewNodeInInitalConfigurationFromChangeOfBasis(unsigned ClosestElement_OldMeshIndex, c_vector<double, SPACE_DIM> NewNode);
     std::map<unsigned, c_vector<double, SPACE_DIM> > mInitalPositionOfRemeshedNodes;
     int mNumberOfChanges = 1;
@@ -371,6 +373,8 @@ public:
     bool GetUpdateBoundaryConditions();
     bool mUpdateComplete =1;
     double GetAspectRatioFromMesh();
+
+    double GetDistanceToLine( c_vector<double, SPACE_DIM> NewNode, c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM>  P2);
 
 
 

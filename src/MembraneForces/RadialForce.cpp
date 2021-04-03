@@ -45,9 +45,6 @@ void RadialForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopula
                 rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(Force);
 
 
-
-                
-
                 // if (Radius < mRadialThreshold && mGrowthThreshold ==1)
                 // {
                 //     c_vector<double, 3> Force = mStrength *Position; // / norm_2(cell_location);
