@@ -63,7 +63,7 @@ public:
         {
             SecondSamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SecondSamplingTimestepMultiple");
         }
-        std::string OperatingSystem = "Mac";
+        std::string OperatingSystem = "Server";
         if (CommandLineArguments::Instance()->OptionExists("-OperatingSystem"))
         {
             OperatingSystem = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-OperatingSystem");
@@ -74,7 +74,7 @@ public:
             TargetRemeshingIterations = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-TargetRemeshingIterations");
         }
         double scale = 1e3;
-         double EdgeLength = 0.2e-6 * scale;
+        double EdgeLength = 0.2e-6 * scale;
         if (CommandLineArguments::Instance()->OptionExists("-EdgeLength"))
         {
             EdgeLength = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EdgeLength") *1e-6 * scale;
@@ -91,14 +91,14 @@ public:
         std::stringstream out;
         out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter1;
         std::string ParameterSet = out.str();
-        std::string output_dir = "ParameterSweepWithRemeshing/Cylinder2/"+ParameterSet;
+        std::string output_dir = "ParameterSweepWithRemeshing/Cylinder/"+ParameterSet;
 
         
-        double Length = 50e-6 * scale/8;
+        double Length = 50e-6 * scale;
         double Radius = 1e-6 * scale; // I want this to grow to 10
 
         // unsigned N_D = 15; //50
-        unsigned N_Z = N_D;//*2;//*5;//
+        unsigned N_Z = N_D*2*5;//
 
         Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, Radius, Length);
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
@@ -215,7 +215,7 @@ public:
             std::string output_dir = "ParameterSweepWithRemeshing/Cylinder2/"+ParameterSetN;
 
             startime = EndTime;
-            EndTime = EndTime +10;
+            EndTime = EndTime +15;
             cell_population.SetChasteOutputDirectory(output_dir, startime);
 
             simulator.SetOutputDirectory(output_dir);

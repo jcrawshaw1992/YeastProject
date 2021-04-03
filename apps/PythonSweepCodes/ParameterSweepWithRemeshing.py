@@ -20,13 +20,13 @@ if __name__=="__main__":
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUp.hpp"
         subprocess.call(command, shell=True)
-    Server = 0
+    Server = 1
     if Server ==1:
         chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUpRunner '
         TerminalOutputFolder = "/data/vascrem/testoutput/ParameterSweepWithRemeshing/Cylinder/SweepTerminalOutputs/"
     else:
         chaste_run_exe =  '/Users/jcrawshaw/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUpRunner '
-        TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/ParameterSweepWithRemeshing/Cylinder2/SweepTerminalOutputs/"
+        TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/ParameterSweepWithRemeshing/Cylinder/SweepTerminalOutputs/"
 
     # if path.isdir(TerminalOutputFolder)==0:
     #     os.mkdir(TerminalOutputFolder)
@@ -42,13 +42,13 @@ if __name__=="__main__":
     # SamplingTimestepMultiple = ' -SamplingTimestepMultiple 2000'
     Parallel = 15
     SleepyTime = 200
-    EndTime =100
+    EndTime =50
     dt = 0.005
-    TargetRemeshingIterations = 15
+    TargetRemeshingIterations = 10
     SamplingTimestepMultiple = 100
     SecondSamplingTimestepMultiple = 10
-    EdgeLength = 0.5
-    ND =40
+    EdgeLength = 0.3
+    ND =30
     AvaliablePaths = range(Parallel)
     for i in AreaParameter:
         for j in DilationParameter:
