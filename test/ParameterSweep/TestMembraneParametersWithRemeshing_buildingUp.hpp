@@ -37,10 +37,10 @@ public:
     {
 
         // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-AreaParameter"));
-        double AreaParameter = 10;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
+        double AreaParameter = 6;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
 
         // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-DilationParameter"));
-        double DilationParameter =10;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
+        double DilationParameter =6;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
 
         double dt= 0.01;
         // if (CommandLineArguments::Instance()->OptionExists("-dt"))
@@ -88,7 +88,7 @@ public:
 // vmtksurfaceremeshing -ifile CurrentMesh.stl -ofile CurretMesh3.stl -connectivityiterations 10 -maxarea 0.0000001 -elementsizemode area -relaxation 4
 
 
-        double DeformationParamter1 = 15.5;
+        double DeformationParamter1 = 6;
         std::stringstream out;
         out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter1;
         std::string ParameterSet = out.str();

@@ -377,7 +377,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometryWi
     // Convert the .vtu into an .off
     std::string stlfile = mChasteOutputDirectory + "CurrentMesh.stl";
     // TRACE("Create .stl")
-    std::string vtu2stlCommand = "meshio-convert " + mChasteOutputDirectory + "config.vtu " + stlfile;
+    std::string vtu2stlCommand = "meshio-convert " + mChasteOutputDirectory + "config.vtu " + stlfile  + " > null";
     SystemOutput = std::system(vtu2stlCommand.c_str()); // system only takes char *.
 
     // Remesh the .stl
@@ -389,14 +389,14 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometryWi
     // SystemOutput = std::system(RemeshCommand.c_str());
 
 
-    std::string RemeshCommand = "vmtksurfaceremeshing -ifile " + stlfile + " -iterations " + std::to_string(mIterations) + " -edgelength " + std::to_string(mTargetRemeshingEdgeLength) + " -ofile " + Remeshedstl + " -elementsizemode edgelength -internalangletolerance 0.3 -relaxation 0.6";
+    std::string RemeshCommand = "vmtksurfaceremeshing -ifile " + stlfile + " -iterations " + std::to_string(mIterations) + " -edgelength " + std::to_string(mTargetRemeshingEdgeLength) + " -ofile " + Remeshedstl + " -elementsizemode edgelength -internalangletolerance 0.3 -relaxation 0.6 > null";
     SystemOutput = std::system(RemeshCommand.c_str());
 
-    PRINT_VARIABLE(RemeshCommand)
+
 
     //Finally conver the Remeshed stl into a vtu -- meshio is your friend
     std::string Remeshedvtu = mChasteOutputDirectory + "RemeshedGeometry.vtu";
-    std::string stl2vtuCommand = " meshio-convert " + Remeshedstl + " " + Remeshedvtu;
+    std::string stl2vtuCommand = " meshio-convert " + Remeshedstl + " " + Remeshedvtu + " > null";
     SystemOutput = std::system(stl2vtuCommand.c_str());
 
     // Read in the new mesh
