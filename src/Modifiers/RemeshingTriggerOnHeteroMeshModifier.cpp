@@ -112,10 +112,12 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                 // PRINT_3_VARIABLES(MinimumAspectRatio,Quartile1, mStepsSinceLastRemesh)
 
 
-            if (mStepsSinceLastRemesh>200) 
+            // if (mStepsSinceLastRemesh>200) 
+            if (mStepsSinceLastRemesh>10) 
             {
                 
-                if (  MinimumAspectRatio <0.2 || Quartile1 < 0.5)
+                // if (  MinimumAspectRatio <0.2 || Quartile1 < 0.5)
+                if (  MinimumAspectRatio <0.2 || Quartile1 < 0.8)
                 {
                     
                     // TRACE(" AR is too smalle, remeshing now :) ")

@@ -779,6 +779,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMe
         c_vector<double, SPACE_DIM> NewNodeLocation = iter->rGetLocation();
 
         c_vector<double, 3> ClosestElementOrEdge = GetClosestElementInOldMesh(node_index, NewNodeLocation);
+    
         if (ClosestElementOrEdge[0]==0)/* Closest thing is a element */
         {
             double ClosestElement = ClosestElementOrEdge[1];
@@ -804,51 +805,11 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMe
 
 
 
-// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-// c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh2(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
-// {
-
-    
-//     assert(SPACE_DIM == 3);
-//     // This method is super simple. -- Just find the closest element -- it isnt perfect,
-//     int ClosestElement;
-//     int ContainingElement;
-
-    
-//     double ClosestElementDistance = 10;
-
-//     std::vector<int> Bin = GetBin(NewNodeLocation);
-//     std::vector<unsigned> ElementsInDaBin= mBin[Bin];
-
-//     // ELement is 0 and Edge is 1
-//     double ElementIdentifier = 0;
-//     c_vector<double, 3>  LocalElementOrEdge;
-    
-//     double ContainedInElements =0;
-//     for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
-//     {
-//         // c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
-//         double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, *elem_index) ;
-//         if (abs(DistanceFromContainingElement)<= ClosestElementDistance)
-//         {
-//             ClosestElementDistance = abs(DistanceFromContainingElement);
-//             ClosestElement = *elem_index;
-//         }
-//     }
-    
-//     LocalElementOrEdge = Create_c_vector(ElementIdentifier,ClosestElement,0);
-//     return LocalElementOrEdge;
-//   }
-
-
-
-
-
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
 {
 
-    bool Accept =0;
+    
     assert(SPACE_DIM == 3);
     // This method is super simple. -- Just find the closest element -- it isnt perfect,
     int ClosestElement;
@@ -856,182 +817,254 @@ c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::G
 
     
     double ClosestElementDistance = 10;
-    double ContainingElementDistance =20;
 
     std::vector<int> Bin = GetBin(NewNodeLocation);
     std::vector<unsigned> ElementsInDaBin= mBin[Bin];
 
     // ELement is 0 and Edge is 1
     double ElementIdentifier = 0;
-    double EdgeIdentifier =1;
     c_vector<double, 3>  LocalElementOrEdge;
     
     double ContainedInElements =0;
     for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
     {
-
-        std::pair<double, c_vector<double, SPACE_DIM> >  ProjectionToTheElement = ProjectPointToPlane(NewNodeLocation, *elem_index);
-        
-
-        bool IsInElement = PointInTriangle2D(ProjectionToTheElement.second, *elem_index);
-        if (IsInElement)// we have the element, and want to move to the next
+        // c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
+        double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, *elem_index) ;
+        if (abs(DistanceFromContainingElement)<= ClosestElementDistance)
         {
-            LocalElementOrEdge = Create_c_vector(ElementIdentifier,*elem_index,0);
-            Accept = 1;
-            return LocalElementOrEdge;
-        }
-        else if (PointInTriangle3D(NewNodeLocation, *elem_index)==1 && abs(ProjectionToTheElement.first) < ContainingElementDistance)
-        {
-            ContainingElementDistance = abs(ProjectionToTheElement.first);
-            ContainingElement = *elem_index;
-        }
-        if (abs(ProjectionToTheElement.first) < ClosestElementDistance)
-        {
-            ClosestElementDistance = abs(ProjectionToTheElement.first);
+            ClosestElementDistance = abs(DistanceFromContainingElement);
             ClosestElement = *elem_index;
         }
     }
-
-
-/////
-
-    bool ClosetElementIsContained = PointInTriangle2D(NewNodeLocation, ClosestElement) + PointInTriangle3D(NewNodeLocation, ClosestElement);
     
-    if( ClosetElementIsContained>0)
-    {
-        /*
-         ---------------------------------------------------------------------
-                    The closest element is the containing element 
-
-                 We accept this, and we are very happy. 
-         ----------------------------------------------------------------------
-        */
-
-        LocalElementOrEdge = Create_c_vector(ElementIdentifier,ClosestElement,0);
-        Accept = 1;
-
-        assert(abs(norm_2(NewNodeLocation - mCentroidMap[ClosestElement])) < 2);
-
-
-    }
-    else if ( ClosetElementIsContained==0)
-    {
-
-        double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, ContainingElement) ;
-        PRINT_3_VARIABLES(ContainingElementDistance, ClosestElementDistance, DistanceFromContainingElement)
-        
-        if (ContainedInElements!=0 && ContainingElementDistance < 2*ClosestElementDistance)  // Not in the closest, but is in ContainingElement, and the containing element is closish, just accept i
-        { 
-            /*
-            ---------------------------------------------------------------------------------------------------
-                The containing element is pretty close, close than two times the distance of the closes
-
-                            We accept this, I am happy for now, but might revisit. 
-            ----------------------------------------------------------------------------------------------------
-            */
-
-            LocalElementOrEdge = Create_c_vector(ElementIdentifier,ContainingElement,0);
-            Accept = 1;
-
-            double ClosestCentroidDistance = abs(norm_2(NewNodeLocation - mCentroidMap[ClosestElement]));
-            assert(ClosestCentroidDistance < 2);
-            
-        }
-        else 
-        {
-            /*
-            -----------------------------------------------------------------
-                        The closest thing is probably an edge. 
-
-                The containing element is not anywhere near the new node 
-
-                       Going to need to iterate over all the edges
-            ------------------------------------------------------------------
-            */
-            double DistanceToNearestEdge = 10; std::pair<unsigned, unsigned> ClosestEdge;
-
-            /* Iterate over the local bin --- Might remove this, dependeing on how things go ... I think things are okay with this */
-            std::vector< std::pair<unsigned, unsigned> > EdgesInDaBin= mEdgeBin[Bin];
-            for (std::vector< std::pair<unsigned, unsigned> >::iterator Edge_iter = EdgesInDaBin.begin(); Edge_iter != EdgesInDaBin.end(); ++Edge_iter)
-            { 
-                double  DistanceToEdge = ProjectPointToLine((*Edge_iter),  NewNodeLocation);
-                if (DistanceToEdge <= DistanceToNearestEdge)
-                {
-                    DistanceToNearestEdge = DistanceToEdge;
-                    ClosestEdge = *Edge_iter;
-                }
-            }
-
-            /*  Get the nodes from the edge */
-            c_vector<double, SPACE_DIM> P1 = this->GetNode(ClosestEdge.first)->rGetLocation(); c_vector<double, SPACE_DIM> P2 = this->GetNode(ClosestEdge.second)->rGetLocation();
-            std::set<unsigned> elements_containing_node1 = this->GetNode(ClosestEdge.first)->rGetContainingElementIndices();   std::set<unsigned> elements_containing_node3 = this->GetNode(ClosestEdge.second)->rGetContainingElementIndices();
-
-            /* Get containing elements */
-            std::set<unsigned> shared_elements;
-            std::set_intersection(elements_containing_node1.begin(), elements_containing_node1.end(), elements_containing_node3.begin(), elements_containing_node3.end(), std::inserter(shared_elements, shared_elements.begin()));
-
-            if (shared_elements.size() == 1)
-            {
-                 /*
-                -----------------------------------------------------------------
-                    We have a boundary node -- We need to mark that this is a boundary, 
-                    and ensure that the new node is on the boundary 
-                ------------------------------------------------------------------
-                */
-
-                LocalElementOrEdge = Create_c_vector(EdgeIdentifier,ClosestEdge.first, ClosestEdge.second);
-                Accept=1; 
-            }
-            else  // In case there are two connected elememtns
-            {
-                typename std::set<unsigned>::iterator CommonElements = shared_elements.begin();
-                unsigned Element1 = *CommonElements;
-                std::advance(CommonElements, 1);
-                unsigned Element2 = *CommonElements;
-  
-                
-                double DistanceToElement1 = DistanceBetweenPointAndElement(NewNodeLocation, Element1, DistanceToNearestEdge);
-                double DistanceToElement2 = DistanceBetweenPointAndElement(NewNodeLocation, Element2, DistanceToNearestEdge);
-                if (DistanceToElement1 < DistanceToElement2)
-                {
-                    /*  --- AcceptElement1  ----  */
-
-                    ClosestElement = Element1;
-                    LocalElementOrEdge = Create_c_vector(ElementIdentifier,ContainingElement,0);
-                    Accept=1; 
-
-                }
-                else if (DistanceToElement2 < DistanceToElement1)
-                {
-                    /*  --- AcceptElement2  ----  */
-
-                    ClosestElement = Element2;
-                    LocalElementOrEdge = Create_c_vector(ElementIdentifier,ContainingElement,0);
-                    Accept=1; 
-                    
-                }else if (DistanceToElement2 == DistanceToElement1)
-                {
-                    /*
-                    ---------------------------------------------------------------
-                        Closest thing is the edge, not either of the elements 
-                    ---------------------------------------------------------------
-                    */
-
-                    LocalElementOrEdge = Create_c_vector(EdgeIdentifier,ClosestEdge.first, ClosestEdge.second);
-                    Accept=1; 
-                        
-                }
-            }
-    
-        }
-    
-        
-    }
-
-    assert(Accept ==1);
-   
+    LocalElementOrEdge = Create_c_vector(ElementIdentifier,ClosestElement,0);
     return LocalElementOrEdge;
   }
+
+
+
+// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+// c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh2(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
+// {
+
+//     bool Accept =0;
+//     assert(SPACE_DIM == 3);
+//     // This method is super simple. -- Just find the closest element -- it isnt perfect,
+//     int ClosestElement;
+//     int ContainingElement;
+
+    
+//     double ClosestElementDistance = 10;
+//     double ContainingElementDistance =20;
+
+//     std::vector<int> Bin = GetBin(NewNodeLocation);
+//     std::vector<unsigned> ElementsInDaBin= mBin[Bin];
+
+//     // ELement is 0 and Edge is 1
+//     double ElementIdentifier = 0;
+//     double EdgeIdentifier =1;
+//     c_vector<double, 3>  LocalElementOrEdge;
+    
+//     double ContainedInElements =0;
+//     for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
+//     {
+
+//         // PRINT_VARIABLE(*elem_index)
+//         std::pair<double, c_vector<double, SPACE_DIM> >  ProjectionToTheElement = ProjectPointToPlane(NewNodeLocation, *elem_index);
+ 
+//         bool IsInElement = PointInTriangle2D(ProjectionToTheElement.second, *elem_index); 
+//         // PRINT_3_VARIABLES(*elem_index,IsInElement, ProjectionToTheElement.first )
+//         if (IsInElement)// we have the element, and want to move to the next
+//         {
+//             LocalElementOrEdge = Create_c_vector(ElementIdentifier,*elem_index,0);
+//             Accept = 1;
+//             return LocalElementOrEdge;
+//         }
+
+//          c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
+//         if (( PointInTriangle3D(NewNodeLocation, *elem_index)==1 || PointInTriangle2D(NewNodeLocation, *elem_index)==1) && norm_2(NewNodeLocation - Centroid) < ContainingElementDistance)
+//         {
+//             ContainingElementDistance = norm_2(NewNodeLocation - Centroid);
+//             ContainingElement = *elem_index;
+//         }
+//         if (norm_2(NewNodeLocation - Centroid)< ClosestElementDistance)
+//         {
+//             ClosestElementDistance = norm_2(NewNodeLocation - Centroid);
+//             ClosestElement = *elem_index;
+//         }
+//     }
+
+//     bool ClosetElementIsContained = PointInTriangle2D(NewNodeLocation, ClosestElement) + PointInTriangle3D(NewNodeLocation, ClosestElement);
+//     PRINT_VARIABLE(ClosetElementIsContained)
+//     if( ClosetElementIsContained>0)
+//     {
+//         /*
+
+//          ---------------------------------------------------------------------
+//                     The closest element is the containing element 
+
+//                  We accept this, and we are very happy. 
+//          ----------------------------------------------------------------------
+//         */
+
+//         LocalElementOrEdge = Create_c_vector(ElementIdentifier,ClosestElement,0);
+//         TRACE("Jess shouldnt get to here")
+
+//         // PRINT_VECTOR(LocalElementOrEdge)
+//         return LocalElementOrEdge;
+//         Accept = 1;
+
+//         assert(abs(norm_2(NewNodeLocation - mCentroidMap[ClosestElement])) < 2);
+        
+
+
+//     }
+//     else if ( ClosetElementIsContained==0)
+//     {
+   
+//         double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, ContainingElement) ;
+
+//         if (ContainedInElements!=0 && ContainingElementDistance < 2*ClosestElementDistance)  // Not in the closest, but is in ContainingElement, and the containing element is closish, just accept i
+//         { 
+//             /*
+//             ---------------------------------------------------------------------------------------------------
+//                 The containing element is pretty close, close than two times the distance of the closes
+
+//                             We accept this, I am happy for now, but might revisit. 
+//             ----------------------------------------------------------------------------------------------------
+//             */
+
+//             LocalElementOrEdge = Create_c_vector(ElementIdentifier,ContainingElement,0);
+//             Accept = 1;
+
+
+//             double ClosestCentroidDistance = abs(norm_2(NewNodeLocation - mCentroidMap[ClosestElement]));
+//             assert(ClosestCentroidDistance < 2);
+ 
+//             // TRACE("ContainedInElements!=0 && ContainingElementDistance < 2*ClosestElementDistance")
+//             TRACE("Jess really shouldnt get to here")
+//             // PRINT_VECTOR(LocalElementOrEdge)
+//             return LocalElementOrEdge;
+            
+//         }
+//         else 
+//         {
+//             /*
+//             -----------------------------------------------------------------
+//                         The closest thing is probably an edge. 
+
+//                 The containing element is not anywhere near the new node 
+
+//                        Going to need to iterate over all the edges
+//             ------------------------------------------------------------------
+//             */
+//             double DistanceToNearestEdge = 10; std::pair<unsigned, unsigned> ClosestEdge;
+
+//             /* Iterate over the local bin --- Might remove this, dependeing on how things go ... I think things are okay with this */
+//             std::vector< std::pair<unsigned, unsigned> > EdgesInDaBin= mEdgeBin[Bin];
+//             for (std::vector< std::pair<unsigned, unsigned> >::iterator Edge_iter = EdgesInDaBin.begin(); Edge_iter != EdgesInDaBin.end(); ++Edge_iter)
+//             { 
+//                 double  DistanceToEdge = ProjectPointToLine((*Edge_iter),  NewNodeLocation);
+//                 if (DistanceToEdge <= DistanceToNearestEdge)
+//                 {
+//                     DistanceToNearestEdge = DistanceToEdge;
+//                     ClosestEdge = *Edge_iter;
+//                 }
+//             }
+//             /*  Get the nodes from the edge */
+//             c_vector<double, SPACE_DIM> P1 = this->GetNode(ClosestEdge.first)->rGetLocation(); c_vector<double, SPACE_DIM> P2 = this->GetNode(ClosestEdge.second)->rGetLocation();
+//             std::set<unsigned> elements_containing_node1 = this->GetNode(ClosestEdge.first)->rGetContainingElementIndices();   std::set<unsigned> elements_containing_node3 = this->GetNode(ClosestEdge.second)->rGetContainingElementIndices();
+
+//             /* Get containing elements */
+//             std::set<unsigned> shared_elements;
+//             std::set_intersection(elements_containing_node1.begin(), elements_containing_node1.end(), elements_containing_node3.begin(), elements_containing_node3.end(), std::inserter(shared_elements, shared_elements.begin()));
+
+//             if (shared_elements.size() == 1)
+//             {
+//                  /*
+//                 -----------------------------------------------------------------
+//                     We have a boundary node -- We need to mark that this is a boundary, 
+//                     and ensure that the new node is on the boundary 
+//                 ------------------------------------------------------------------
+//                 */
+
+//                 LocalElementOrEdge = Create_c_vector(EdgeIdentifier,ClosestEdge.first, ClosestEdge.second);
+//                 Accept=1; 
+
+//                 TRACE(" On the edge edge")
+//                 // PRINT_VECTOR(LocalElementOrEdge)
+//                 return LocalElementOrEdge;
+
+
+//             }
+//             else  // In case there are two connected elememtns
+//             {
+//                 TRACE("NOT on the edge")
+//                 typename std::set<unsigned>::iterator CommonElements = shared_elements.begin();
+//                 unsigned Element1 = *CommonElements;
+//                 std::advance(CommonElements, 1);
+//                 unsigned Element2 = *CommonElements;
+  
+                
+//                 double DistanceToElement1 = DistanceBetweenPointAndElement(NewNodeLocation, Element1, DistanceToNearestEdge);
+//                 double DistanceToElement2 = DistanceBetweenPointAndElement(NewNodeLocation, Element2, DistanceToNearestEdge);
+//                 if (DistanceToElement1 < DistanceToElement2)
+//                 {
+//                     /*  --- AcceptElement1  ----  */
+
+//                     ClosestElement = Element1;
+//                     LocalElementOrEdge = Create_c_vector(ElementIdentifier,ContainingElement,0);
+//                     Accept=1; 
+
+
+//                 TRACE("Closest to Element 1")
+//                 // PRINT_VECTOR(LocalElementOrEdge)
+//                 return LocalElementOrEdge;
+
+
+
+//                 }
+//                 else if (DistanceToElement2 < DistanceToElement1)
+//                 {
+//                     /*  --- AcceptElement2  ----  */
+
+//                     ClosestElement = Element2;
+//                     LocalElementOrEdge = Create_c_vector(ElementIdentifier,ContainingElement,0);
+//                     Accept=1; 
+
+//                     TRACE("Closest to Element 2")
+//                     // PRINT_VECTOR(LocalElementOrEdge)
+//                     return LocalElementOrEdge;
+
+                    
+//                 }else if (DistanceToElement2 == DistanceToElement1)
+//                 {
+//                     /*
+//                     ---------------------------------------------------------------
+//                         Closest thing is the edge, not either of the elements 
+//                     ---------------------------------------------------------------
+//                     */
+
+//                     LocalElementOrEdge = Create_c_vector(EdgeIdentifier,ClosestEdge.first, ClosestEdge.second);
+//                     Accept=1; 
+
+
+//                     TRACE("DistanceToElement2 == DistanceToElement1")
+//                     // PRINT_VECTOR(LocalElementOrEdge)
+//                     return LocalElementOrEdge;
+                        
+//                 }
+//             }
+    
+//         }
+    
+        
+//     }
+
+//     assert(Accept ==1);
+//     TRACE("I shouldnt get to here ")
+//     return LocalElementOrEdge;
+//   }
 
 
 
@@ -1594,8 +1627,11 @@ c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::N
 
     c_vector<double, SPACE_DIM> InitalPoint_Translated = C1 * vector_12_0 + C2 * vector_13_0 + C3 * z_basis_0;
     c_vector<double, SPACE_DIM> P_0 = InitalPoint_Translated + Element_0[0];
-   
-    assert(norm_2(P_0) <10);
+    // if (norm_2(P_0) > 10)
+    // {
+    //     PRINT_VECTOR(P_0)
+    // }
+    // assert(norm_2(P_0) <10);
     return P_0;
 }
 

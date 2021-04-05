@@ -74,7 +74,7 @@ public:
         //     TargetRemeshingIterations = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-TargetRemeshingIterations");
         // }
         double scale = 1e3;
-        double EdgeLength = 0.8e-6 * scale;
+        double EdgeLength = 0.5e-6 * scale;
         // if (CommandLineArguments::Instance()->OptionExists("-EdgeLength"))
         // {
         //     EdgeLength = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EdgeLength") *1e-6 * scale;
@@ -95,11 +95,11 @@ public:
         std::string output_dir = "ParameterSweepWithRemeshing/Cylinder/Remeshsed"+ParameterSet;
 
         
-        double Length = 50e-6 * scale;
+        double Length = 50e-6 * scale/5;
         double Radius = 1e-6 * scale; // I want this to grow to 10
 
         // unsigned N_D = 15; //50
-        unsigned N_Z = N_D*2*4;//
+        unsigned N_Z = N_D*2*4/5;//
 
         Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, Radius, Length);
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
