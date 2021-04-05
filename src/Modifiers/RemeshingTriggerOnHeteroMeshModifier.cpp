@@ -109,7 +109,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                 typename std::vector<double>::iterator Iterator = quartiles.begin();
                 double Quartile1 = *Iterator;
 
-                PRINT_3_VARIABLES(MinimumAspectRatio,Quartile1, mStepsSinceLastRemesh)
+                // PRINT_3_VARIABLES(MinimumAspectRatio,Quartile1, mStepsSinceLastRemesh)
 
 
             if (mStepsSinceLastRemesh>200) 

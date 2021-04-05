@@ -37,10 +37,10 @@ public:
     {
 
         // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-AreaParameter"));
-        double AreaParameter = 6;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
+        double AreaParameter = 9;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
 
         // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-DilationParameter"));
-        double DilationParameter =6;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
+        double DilationParameter =9;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
 
         double dt= 0.01;
         // if (CommandLineArguments::Instance()->OptionExists("-dt"))
