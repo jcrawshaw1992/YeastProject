@@ -74,7 +74,7 @@ public:
         //     TargetRemeshingIterations = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-TargetRemeshingIterations");
         // }
         double scale = 1e3;
-        double EdgeLength = 0.5e-6 * scale;
+        double EdgeLength = 0.3e-6 * scale;
         // if (CommandLineArguments::Instance()->OptionExists("-EdgeLength"))
         // {
         //     EdgeLength = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EdgeLength") *1e-6 * scale;
