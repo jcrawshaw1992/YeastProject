@@ -176,7 +176,8 @@ public:
 
     // Function to find the cloeset element in last mesh
     
-    c_vector<double, 3> GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
+    // c_vector<double, 3> GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
+     double GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
 
 
 

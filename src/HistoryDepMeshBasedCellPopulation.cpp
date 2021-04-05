@@ -73,15 +73,13 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
     {
         this->TakeInPreAllocatedRemeshGeometry();
     }
-    // TRACE("SetBinningRegions")
-    // this->SetBinningRegions();
-    // TRACE("MappingAdaptedMeshToInitalGeometry")
+
+    this->SetBinningRegions();
     this->MappingAdaptedMeshToInitalGeometry();
     if (mPrintRemeshedIC)
     {
         WriteOutMappedInitalConfig();
     }
-    
 
 
     VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(mRelativePath, "RemeshedGeometryAdjusted", false);
@@ -738,7 +736,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMe
     std::map<unsigned, c_vector<double, SPACE_DIM> > InitalPositionOfRemeshedNodes;
     mInitalPositionOfRemeshedNodes.clear();
     
-    SetCentroidMap();
+    // SetCentroidMap();
 
     assert(SPACE_DIM == 3);
     assert(ELEMENT_DIM == 2);
@@ -753,24 +751,26 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMe
         unsigned node_index = iter->GetIndex();
         c_vector<double, SPACE_DIM> NewNodeLocation = iter->rGetLocation();
 
-        c_vector<double, 3> ClosestElementOrEdge = GetClosestElementInOldMesh(node_index, NewNodeLocation);
-    
-        if (ClosestElementOrEdge[0]==0)/* Closest thing is a element */
-        {
-            double ClosestElement = ClosestElementOrEdge[1];
-            InitalPositionOfRemeshedNodes[node_index] = NewNodeInInitalConfigurationFromChangeOfBasis(ClosestElement, NewNodeLocation);
-        }else if (ClosestElementOrEdge[0]==1)/* Closest thing is a edge */
-        {
-            double EdgeNode1 = ClosestElementOrEdge[1];
-            double EdgeNode2 = ClosestElementOrEdge[2];
-            InitalPositionOfRemeshedNodes[node_index] = NewNodeInInitalConfigurationFromClosestEdge(EdgeNode1, EdgeNode2, NewNodeLocation, node_index);
-        }
-        else
-        {
-            /* Should Not be triggered */
-            assert(ClosestElementOrEdge[0]==1 || ClosestElementOrEdge[0]==0);
+        // c_vector<double, 3> ClosestElementOrEdge = GetClosestElementInOldMesh(node_index, NewNodeLocation);
+        double ClosestElement = GetClosestElementInOldMesh(node_index, NewNodeLocation);
+        InitalPositionOfRemeshedNodes[node_index] = NewNodeInInitalConfigurationFromChangeOfBasis(ClosestElement, NewNodeLocation);
 
-        }
+        // if (ClosestElementOrEdge[0]==0)/* Closest thing is a element */
+        // {
+        //     double ClosestElement = ClosestElementOrEdge[1];
+        //     InitalPositionOfRemeshedNodes[node_index] = NewNodeInInitalConfigurationFromChangeOfBasis(ClosestElement, NewNodeLocation);
+        // }else if (ClosestElementOrEdge[0]==1)/* Closest thing is a edge */
+        // {
+        //     double EdgeNode1 = ClosestElementOrEdge[1];
+        //     double EdgeNode2 = ClosestElementOrEdge[2];
+        //     InitalPositionOfRemeshedNodes[node_index] = NewNodeInInitalConfigurationFromClosestEdge(EdgeNode1, EdgeNode2, NewNodeLocation, node_index);
+        // }
+        // else
+        // {
+        //     /* Should Not be triggered */
+        //     assert(ClosestElementOrEdge[0]==1 || ClosestElementOrEdge[0]==0);
+
+        // }
         
     }
     mInitalPositionOfRemeshedNodes = InitalPositionOfRemeshedNodes;
@@ -781,9 +781,10 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMe
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
+// c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
+// {
+double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
 {
-
     
     assert(SPACE_DIM == 3);
     // This method is super simple. -- Just find the closest element -- it isnt perfect,
@@ -813,7 +814,7 @@ c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::G
     }
     
     LocalElementOrEdge = Create_c_vector(ElementIdentifier,ClosestElement,0);
-    return LocalElementOrEdge;
+    return ClosestElement;//LocalElementOrEdge;
   }
 
 
