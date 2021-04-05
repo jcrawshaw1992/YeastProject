@@ -800,7 +800,6 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElem
     elem_iter != this->rGetMesh().GetElementIteratorEnd();
     ++elem_iter)
     {
-
         // c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
         unsigned elem_index = elem_iter->GetIndex();
         double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, elem_index) ;
