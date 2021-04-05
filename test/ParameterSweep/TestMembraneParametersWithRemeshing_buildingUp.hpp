@@ -213,7 +213,7 @@ public:
             std::stringstream outN;
             outN << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter[D_index];
             std::string ParameterSetN = outN.str();
-            std::string output_dir = "ParameterSweepWithRemeshing/Cylinder2/"+ParameterSetN;
+            std::string output_dir = "ParameterSweepWithRemeshing/Cylinder/"+ParameterSetN;
 
             startime = EndTime;
             EndTime = EndTime +15;
