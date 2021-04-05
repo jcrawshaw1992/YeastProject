@@ -980,8 +980,11 @@ c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::G
                     TRACE("HERE WE HAVE PROBLEMMMMMMMM!!!!!!!")
                     // assert(1==0);
                     ClosestElement = WhichElement(P1, P2, NewNodeLocation, Element1, Element2);
+                    PRINT_VARIABLE(ClosestElement)
                     LocalElementOrEdge = Create_c_vector(ElementIdentifier,ClosestElement,0);
+                    PRINT_VECTOR(LocalElementOrEdge)
                     Accept=1;
+
                 }
             }
         }

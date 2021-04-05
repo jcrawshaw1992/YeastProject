@@ -99,7 +99,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
         {
             // Check all the aspect ratios  and trigger remeshing if needed
             // double MinimumAspectRatio = FindMinimumAspectRatioOverMesh(rCellPopulation);
-            if ( mStepsSinceLastRemesh==50)
+            if ( mStepsSinceLastRemesh==500)
             {
                 std::vector<double> AspectRatioVector = pCellPopulation->MinimumElementAspectRatio();
 
@@ -110,9 +110,9 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                 typename std::vector<double>::iterator Iterator = quartiles.begin();
                 double Quartile1 = *Iterator;
  
-                if (  MinimumAspectRatio <0.2 || Quartile1 < 0.5)
+                if (  MinimumAspectRatio <0.2 || Quartile1 < 0.4)
                 {
-                    PRINT_VARIABLE(MinimumAspectRatio)
+                    PRINT_2_VARIABLES(MinimumAspectRatio,Quartile1)
                     // TRACE(" AR is too smalle, remeshing now :) ")
                     pCellPopulation->ExecuteHistoryDependentRemeshing();
                     UpdateCellData(rCellPopulation);
