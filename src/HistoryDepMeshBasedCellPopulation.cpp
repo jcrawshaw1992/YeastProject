@@ -805,7 +805,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMe
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
+c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh2(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
 {
 
     
@@ -825,38 +825,23 @@ c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::G
     c_vector<double, 3>  LocalElementOrEdge;
     
     double ContainedInElements =0;
-      for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
-         elem_iter != this->rGetMesh().GetElementIteratorEnd();
-         ++elem_iter)
+    for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
     {
-        unsigned elem_index = elem_iter->GetIndex();
         // c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
-        double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, elem_index) ;
+        double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, *elem_index) ;
         if (abs(DistanceFromContainingElement)<= ClosestElementDistance)
         {
             ClosestElementDistance = abs(DistanceFromContainingElement);
-            ClosestElement = elem_index;
+            ClosestElement = *elem_index;
         }
-
     }
-    
-    // for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
-    // {
-    //     // c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
-    //     double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, *elem_index) ;
-    //     if (abs(DistanceFromContainingElement)<= ClosestElementDistance)
-    //     {
-    //         ClosestElementDistance = abs(DistanceFromContainingElement);
-    //         ClosestElement = *elem_index;
-    //     }
-    // }
     
     LocalElementOrEdge = Create_c_vector(ElementIdentifier,ClosestElement,0);
     return LocalElementOrEdge;
   }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh2(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
+c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
 {
 
     

@@ -48,17 +48,17 @@ public:
         //     dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
         // }
         double startime = 0;
-        double EndTime = 40;
+        double EndTime = 10;
         // if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
         // {
         //     EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
         // }
-        double SamplingTimestepMultiple = 100;
+        double SamplingTimestepMultiple = 10;
         // if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
         // {
         //     SamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SamplingTimestepMultiple");
         // }
-        double SecondSamplingTimestepMultiple = 20;
+        double SecondSamplingTimestepMultiple = 10;
         // if (CommandLineArguments::Instance()->OptionExists("-SecondSamplingTimestepMultiple"))
         // {
         //     SecondSamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SecondSamplingTimestepMultiple");
@@ -216,7 +216,7 @@ public:
         //     std::string output_dir = "ParameterSweepWithRemeshing/Cylinder/"+ParameterSetN;
 
         //     startime = EndTime;
-        //     EndTime = EndTime +15;
+        //     EndTime = EndTime +5;
         //     cell_population.SetChasteOutputDirectory(output_dir, startime);
 
         //     simulator.SetOutputDirectory(output_dir);
