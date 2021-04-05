@@ -63,7 +63,7 @@ public:
         // {
         //     SecondSamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SecondSamplingTimestepMultiple");
         // }
-        std::string OperatingSystem = "Mac";
+        std::string OperatingSystem = "Server";
         // if (CommandLineArguments::Instance()->OptionExists("-OperatingSystem"))
         // {
         //     OperatingSystem = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-OperatingSystem");
@@ -74,7 +74,7 @@ public:
         //     TargetRemeshingIterations = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-TargetRemeshingIterations");
         // }
         double scale = 1e3;
-        double EdgeLength = 0.2e-6 * scale;
+        double EdgeLength = 0.4e-6 * scale;
         // if (CommandLineArguments::Instance()->OptionExists("-EdgeLength"))
         // {
         //     EdgeLength = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EdgeLength") *1e-6 * scale;
@@ -119,7 +119,7 @@ public:
         cell_population.SetPrintRemeshedIC(1);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
-        cell_population.SetRemeshingSoftwear("CGAL");
+        cell_population.SetRemeshingSoftwear("VMTK");
         cell_population.SetOperatingSystem(OperatingSystem);
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
