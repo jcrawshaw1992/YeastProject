@@ -902,8 +902,8 @@ c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::G
     else if ( ClosetElementIsContained==0)
     {
 
-        double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, ContainingElement) ;
-        PRINT_3_VARIABLES(ContainingElementDistance, ClosestElementDistance, DistanceFromContainingElement)
+        // double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, ContainingElement) ;
+        // PRINT_3_VARIABLES(ContainingElementDistance, ClosestElementDistance, DistanceFromContainingElement)
         
         if (ContainedInElements!=0 && ContainingElementDistance < 2*ClosestElementDistance)  // Not in the closest, but is in ContainingElement, and the containing element is closish, just accept i
         { 
