@@ -63,7 +63,7 @@ public:
         // {
         //     SecondSamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SecondSamplingTimestepMultiple");
         // }
-        std::string OperatingSystem = "Mac";
+        std::string OperatingSystem = "Server";
         // if (CommandLineArguments::Instance()->OptionExists("-OperatingSystem"))
         // {
         //     OperatingSystem = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-OperatingSystem");
