@@ -35,14 +35,15 @@ if __name__=="__main__":
 
     AreaParameter = [6, 8, 10]
     DilationParameter = [  6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
+    DilationParameter = [  8, 8.5, 9, 9.5, 10]
 
     # SamplingTimestepMultiple = ' -SamplingTimestepMultiple 2000'
     Parallel = 15
     SleepyTime = 200
     EndTime =50
-    dt = 0.005
+    dt = 0.001
     TargetRemeshingIterations = 10
-    SamplingTimestepMultiple = 100
+    SamplingTimestepMultiple = 1
     SecondSamplingTimestepMultiple = 10
     EdgeLength = 0.3
     ND =30
