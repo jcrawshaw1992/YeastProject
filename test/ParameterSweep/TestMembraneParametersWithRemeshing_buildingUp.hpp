@@ -37,10 +37,10 @@ public:
     {
 
         // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-AreaParameter"));
-        double AreaParameter = 9;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
+        double AreaParameter = 10;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
 
         // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-DilationParameter"));
-        double DilationParameter =9;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
+        double DilationParameter =10;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
 
         double dt= 0.01;
         // if (CommandLineArguments::Instance()->OptionExists("-dt"))
@@ -48,7 +48,7 @@ public:
         //     dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
         // }
         double startime = 0;
-        double EndTime = 50;
+        double EndTime = 40;
         // if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
         // {
         //     EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
