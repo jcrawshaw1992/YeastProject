@@ -67,7 +67,7 @@ private:
     int mRemeshingInterval = 500;
     int mExecute = 0;
     bool mRemeshing = 0;
-    int mStepsSinceLastRemesh = -100;
+    int mStepsSinceLastRemesh = 1;
     std::map<unsigned, c_vector<double, 2> > mDistanceToEndothelialRegion;
 
     // std::vector<unsigned> mNodesNextToBasement;

@@ -63,7 +63,7 @@ public:
         // {
         //     SecondSamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SecondSamplingTimestepMultiple");
         // }
-        std::string OperatingSystem = "Mac";
+        std::string OperatingSystem = "Server";
         // if (CommandLineArguments::Instance()->OptionExists("-OperatingSystem"))
         // {
         //     OperatingSystem = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-OperatingSystem");
@@ -119,7 +119,7 @@ public:
         cell_population.SetPrintRemeshedIC(1);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
-        cell_population.SetRemeshingSoftwear("CGAL");
+        cell_population.SetRemeshingSoftwear("VMTK");
         cell_population.SetOperatingSystem(OperatingSystem);
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();

@@ -99,9 +99,8 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
         {
             // Check all the aspect ratios  and trigger remeshing if needed
             // double MinimumAspectRatio = FindMinimumAspectRatioOverMesh(rCellPopulation);
-            if ( mStepsSinceLastRemesh==500)
-            {
-                std::vector<double> AspectRatioVector = pCellPopulation->MinimumElementAspectRatio();
+
+            std::vector<double> AspectRatioVector = pCellPopulation->MinimumElementAspectRatio();
 
                 std::vector<double> quartilesNeeded = { 0.25, 0.5, 0.75};
                 std::vector<double> quartiles = pCellPopulation->Quantile(AspectRatioVector, quartilesNeeded);
@@ -109,10 +108,16 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
 
                 typename std::vector<double>::iterator Iterator = quartiles.begin();
                 double Quartile1 = *Iterator;
- 
-                if (  MinimumAspectRatio <0.2 || Quartile1 < 0.4)
+
+                PRINT_3_VARIABLES(MinimumAspectRatio,Quartile1, mStepsSinceLastRemesh)
+
+
+            if (mStepsSinceLastRemesh>200) 
+            {
+                
+                if (  MinimumAspectRatio <0.2 || Quartile1 < 0.5)
                 {
-                    PRINT_2_VARIABLES(MinimumAspectRatio,Quartile1)
+                    
                     // TRACE(" AR is too smalle, remeshing now :) ")
                     pCellPopulation->ExecuteHistoryDependentRemeshing();
                     UpdateCellData(rCellPopulation);
@@ -121,8 +126,9 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                         TRACE("Need to update the membrane strenght for the new mesh, this next method has not yet been written ")
                         SetMembraneStrenghtOnNewMesh(rCellPopulation);
                     }
+                    mStepsSinceLastRemesh =1;
                  }
-                 mStepsSinceLastRemesh =1;
+                 
 
             }else
             {

@@ -179,6 +179,11 @@ public:
     c_vector<double, 3> GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
 
 
+        // Function to find the cloeset element in last mesh
+    
+    c_vector<double, 3> GetClosestElementInOldMesh2(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
+
+
     std::map<unsigned, unsigned> mMapOfProbNodes;
 
     // When I get a population of new cells, I need to be able to give these new cells the same CellData as the Precious cells, this is particullary important for the
@@ -376,9 +381,13 @@ public:
 
     double GetDistanceToLine( c_vector<double, SPACE_DIM> NewNode, c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM>  P2);
 
+    double DistanceBetweenPointAndElement( c_vector<double, SPACE_DIM>  NewPoint, unsigned Element, double DistanceToNearestLine);
+    double DistanceBetweenPointAndElement( c_vector<double, SPACE_DIM>  NewPoint, unsigned OldElement);
 
-
-
+    // Returns the distance and the nearest point 
+    std::pair<double, c_vector<double, SPACE_DIM> >  ProjectPointToPlane( c_vector<double, SPACE_DIM>  NewPoint, unsigned Element);
+    double ProjectPointToLine(c_vector<double, SPACE_DIM> x1, c_vector<double, SPACE_DIM> x2, c_vector<double, SPACE_DIM>  NewPoint);
+    double ProjectPointToLine(std::pair<unsigned, unsigned> edgeIndex , c_vector<double, SPACE_DIM>  NewPoint);
 
 
     /**
