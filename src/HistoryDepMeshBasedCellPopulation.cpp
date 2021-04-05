@@ -829,12 +829,13 @@ c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::G
          elem_iter != this->rGetMesh().GetElementIteratorEnd();
          ++elem_iter)
     {
+        unsigned elem_index = elem_iter->GetIndex();
         // c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
-        double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, *elem_iter) ;
+        double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, elem_index) ;
         if (abs(DistanceFromContainingElement)<= ClosestElementDistance)
         {
             ClosestElementDistance = abs(DistanceFromContainingElement);
-            ClosestElement = *elem_index;
+            ClosestElement = elem_index;
         }
 
     }
