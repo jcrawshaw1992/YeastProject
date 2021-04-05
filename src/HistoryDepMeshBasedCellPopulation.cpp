@@ -788,32 +788,30 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElem
     
     assert(SPACE_DIM == 3);
     // This method is super simple. -- Just find the closest element -- it isnt perfect,
-    int ClosestElement;
-    int ContainingElement;
-
-    
-    double ClosestElementDistance = 10;
+    int ClosestElement; double ClosestElementDistance = 10;
 
     std::vector<int> Bin = GetBin(NewNodeLocation);
     std::vector<unsigned> ElementsInDaBin= mBin[Bin];
 
-    // ELement is 0 and Edge is 1
-    double ElementIdentifier = 0;
-    c_vector<double, 3>  LocalElementOrEdge;
-    
-    double ContainedInElements =0;
-    for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
+    // for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
+    // {
+
+    for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
+    elem_iter != this->rGetMesh().GetElementIteratorEnd();
+    ++elem_iter)
     {
+
         // c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
-        double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, *elem_index) ;
-        if (abs(DistanceFromContainingElement)<= ClosestElementDistance)
+        unsigned elem_index = elem_iter->GetIndex();
+        double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, elem_index) ;
+        if (abs(DistanceFromContainingElement) < ClosestElementDistance)
         {
             ClosestElementDistance = abs(DistanceFromContainingElement);
-            ClosestElement = *elem_index;
+            ClosestElement = elem_index;
         }
     }
     
-    LocalElementOrEdge = Create_c_vector(ElementIdentifier,ClosestElement,0);
+    // LocalElementOrEdge = Create_c_vector(ElementIdentifier,ClosestElement,0);
     return ClosestElement;//LocalElementOrEdge;
   }
 
