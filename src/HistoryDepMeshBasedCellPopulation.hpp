@@ -179,10 +179,6 @@ public:
     c_vector<double, 3> GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
 
 
-        // Function to find the cloeset element in last mesh
-    
-    c_vector<double, 3> GetClosestElementInOldMesh2(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation);
-
 
     std::map<unsigned, unsigned> mMapOfProbNodes;
 
