@@ -407,7 +407,7 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::TakeInPreAllocatedRemeshGeometry()
 {
     // std::string Remeshedvtu = mChasteOutputDirectory + "RemeshedGeometry.vtu";
-     std::string Remeshedvtu = "/data/vascrem/RemeshedGeometry.vtu";
+    mPreAllocatedRemeshedMesh = "/data/vascrem/RemeshedGeometry.vtu";
 
     // PRINT_VARIABLE(mChasteOutputDirectory)
     // bool copy_file(mPreAllocatedRemeshedMesh.c_str(), Remeshedvtu.c_str(), NULL, COPYFILE_DATA | COPYFILE_XATTR);
