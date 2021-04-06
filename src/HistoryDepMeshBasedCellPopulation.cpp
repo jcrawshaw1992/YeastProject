@@ -82,8 +82,16 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
     }
 
 
-    VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(mRelativePath, "RemeshedGeometryAdjusted", false);
-    mesh_writer.WriteFilesUsingMesh(mNew_mesh);//mNew_mesh
+
+
+    // std::stringstream outN;
+    // outN << mCounter;
+    // std::string Counter = outN.str();
+
+    // VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(mRelativePath, "RemeshedGeometry"+Counter, false);
+    // mesh_writer.WriteFilesUsingMesh(mNew_mesh);//mNew_mesh
+
+    // mCounter +=1;
 
 
     /*
@@ -413,14 +421,19 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::TakeInPreAllocat
     // bool copy_file(mPreAllocatedRemeshedMesh.c_str(), Remeshedvtu.c_str(), NULL, COPYFILE_DATA | COPYFILE_XATTR);
     // boost::filesystem::copy_file(mPreAllocatedRemeshedMesh.c_str(), Remeshedvtu.c_str()); // This was changed so the code could work on linux and mac -- doesnt, dont know why
     // TRACE("Read in the new mesh")
-    VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mPreAllocatedRemeshedMesh);
+
+    std::stringstream outN;
+    outN << mCounter;
+    std::string Counter = outN.str();
+
+    VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mPreAllocatedRemeshedMesh+Counter+".vtu");
     mNew_mesh.ConstructFromMeshReader(mesh_reader);
 
 
-    VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(mRelativePath, "RemeshedGeometry", false);
+    VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(mRelativePath, "RemeshedGeometry"+Counter, false);
     mesh_writer.WriteFilesUsingMesh(mNew_mesh);//mNew_mesh
 
-
+    mCounter +=1;
     // TRACE("Have the new mesh ;) ");
 }
 
