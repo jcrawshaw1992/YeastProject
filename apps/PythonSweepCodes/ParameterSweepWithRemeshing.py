@@ -39,7 +39,7 @@ if __name__=="__main__":
     Parallel = 15
     SleepyTime = 200
     EndTime =10
-    dt = 0.01
+    dt = 0.001
     TargetRemeshingIterations = 3
     SamplingTimestepMultiple = 100
     SecondSamplingTimestepMultiple = 100

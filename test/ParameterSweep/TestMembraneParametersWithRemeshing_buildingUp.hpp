@@ -44,7 +44,7 @@ public:
         double AreaParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
 
         TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-DilationParameter"));
-        double DilationParameter =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
+        double DilationParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
 
         double dt= 0.01;
         if (CommandLineArguments::Instance()->OptionExists("-dt"))
@@ -72,7 +72,7 @@ public:
         {
             OperatingSystem = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-OperatingSystem");
         }
-        double TargetRemeshingIterations = 3;
+        double TargetRemeshingIterations = 10;
         if (CommandLineArguments::Instance()->OptionExists("-TargetRemeshingIterations"))
         {
             TargetRemeshingIterations = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-TargetRemeshingIterations");
@@ -123,7 +123,7 @@ public:
         cell_population.SetPrintRemeshedIC(1);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
-        cell_population.SetRemeshingSoftwear("CGAL");
+        cell_population.SetRemeshingSoftwear("VMTK");
         cell_population.SetOperatingSystem(OperatingSystem);
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
