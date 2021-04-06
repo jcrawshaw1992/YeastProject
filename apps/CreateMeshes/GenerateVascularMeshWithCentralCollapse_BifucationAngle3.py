@@ -278,10 +278,10 @@ if __name__=="__main__":
             # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
             if i == 0.1:
                 # VTK_Mesh= Directory+"MeshClipped1Cource.vtk"
-                command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
+                command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.02 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
                 subprocess.call(command, shell=True)
             elif i < 0.35:
-                command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.01 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
+                command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.02 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
                 subprocess.call(command, shell=True)
             else:
                 command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
