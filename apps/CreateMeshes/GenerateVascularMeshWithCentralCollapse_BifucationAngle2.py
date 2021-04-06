@@ -224,9 +224,8 @@ if __name__=="__main__":
 
     print "I love Jessie"
     #    --- 
-    Alpha = [m.pi/6, m.pi/3, m.pi/2.2] 
-    FileLabels = ['/PI_6/', '/PI_3/', '/PI_2.2/'] 
-    FileLabels = ['/PI_6/'] 
+    Alpha = [m.pi/3] 
+    FileLabels = ['/PI_3/'] 
     counter = -1
     for alpha in Alpha:
         counter = counter+1
@@ -246,7 +245,7 @@ if __name__=="__main__":
     
         # // need to get the right collapse points here matlabd 
         # Collapse = [0, 0.1227, 0.2248, 0.3178, 0.4170]
-        Collapse = [ 0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000]
+        Collapse = [ 0, 0.1227, 0.2248, 0.3178, 0.4170, 0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000]
         for i in Collapse:
             CenterLines_filename = AngleDirectory + "Centerlines_"+str(i)+".vtp"
 

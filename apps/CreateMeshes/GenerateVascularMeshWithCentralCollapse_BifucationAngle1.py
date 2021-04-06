@@ -225,6 +225,7 @@ if __name__=="__main__":
     print "I love Jessie"
     #    --- 
     Alpha = [m.pi/6, m.pi/3, m.pi/2.2] 
+    Alpha = [m.pi/6] 
     FileLabels = ['/PI_6/', '/PI_3/', '/PI_2.2/'] 
     FileLabels = ['/PI_6/'] 
     counter = -1
