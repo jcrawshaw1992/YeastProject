@@ -28,6 +28,7 @@
 #include "RemeshingTriggerOnHeteroMeshModifier.hpp"
 #include "FixedRegionBoundaryCondition.hpp"
 #include "MembraneDeformationForce.hpp"
+
 #include "RadialForceOnCylinder.hpp"
 #include "MembraneBendingForce.hpp"
 #include "HemeLBForce.hpp"
@@ -83,9 +84,9 @@ public:
             std::stringstream out;
             out << "_Bend_"<< BendingParameter;
             std::string ParameterSet = out.str();
-            std::string output_dir = "SweepOnSphereWithArea/"+ParameterSet;
+            std::string output_dir = "SweepOnSphereWithHyperelastic/"+ParameterSet;
 
-            double Scale = 0.005;
+            double Scale = 0.001;
             VtkMeshReader<2, 3> mesh_reader(mesh_file);
             MutableMesh<2, 3> mesh;
             mesh.ConstructFromMeshReader(mesh_reader);
@@ -118,6 +119,14 @@ public:
             simulator.SetUpdateCellPopulationRule(false);
             simulator.SetEndTime(EndTime);
 
+            boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
+            std::map<double, c_vector<long double, 4> > GrowthMaps;
+            GrowthMaps[1] = Create_c_vector(pow(10, -9), pow(10, -11), pow(10, -12), 0);
+            //Strength , hetro, stepsize, setupsolve
+            p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
+            simulator.AddSimulationModifier(p_Mesh_modifier);
+
+
         
             /*
             -----------------------------
@@ -130,12 +139,14 @@ public:
 
 
                 
-            boost::shared_ptr<MembraneSurfaceForce> p_surface_force(new MembraneSurfaceForce());
-            p_surface_force->SetupInitialAreas(cell_population);
-            p_surface_force->SetMembraneStiffness(1e-6);
-            
-            simulator.AddForce(p_surface_force);
-
+            /*
+            -----------------------------
+            Membrane forces
+            ----------------------------
+            */
+            boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
+            simulator.AddForce(p_shear_force);
+        
 
 
             /*

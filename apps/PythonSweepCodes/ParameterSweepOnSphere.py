@@ -45,7 +45,7 @@ if __name__=="__main__":
     print "C"
     RunSweep = 1
     if RunSweep ==1:
-        Parallel = 9
+        Parallel = 5
         SleepyTime = 300
         AvaliablePaths = range(Parallel)
         print AvaliablePaths
@@ -53,7 +53,7 @@ if __name__=="__main__":
             print "D"
             Core = AvaliablePaths[0]
             # ArchieveFile = "SweepOnSphereWithArea/"
-            Input1 = chaste_run_exe + ' -BendingParameter '+str(l) + ' -MeshFile '+mesh_file + ' -EndTime 50000'#-Archive '+ArchieveFile
+            Input1 = chaste_run_exe + ' -BendingParameter '+str(l) + ' -MeshFile '+mesh_file + ' -EndTime 20000'#-Archive '+ArchieveFile
             print Input1
             print "E"
             Input2 = TerminalOutputFolder+ 'BendingParameter'+str(l)+'.txt'
