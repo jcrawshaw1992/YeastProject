@@ -52,7 +52,7 @@ public:
         //     dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
         // }
         double startime = 0;
-        double EndTime = 2;
+        double EndTime = 10;
         // if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
         // {
         //     EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
