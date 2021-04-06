@@ -197,7 +197,7 @@ public:
 
     
     c_vector<double, 3> NewNodeInInitalConfigurationFromClosestEdge(unsigned EdgeNode1, unsigned EdgeNode2, c_vector<double, SPACE_DIM> NewNode,unsigned NodeIndex);
-    c_vector<double, 3> NewNodeInInitalConfigurationFromChangeOfBasis(unsigned ClosestElement_OldMeshIndex, c_vector<double, SPACE_DIM> NewNode);
+    c_vector<double, 3> NewNodeInInitalConfigurationFromChangeOfBasis(unsigned ClosestElement_OldMeshIndex, c_vector<double, SPACE_DIM> NewNode, unsigned NodeIndex);
     std::map<unsigned, c_vector<double, SPACE_DIM> > mInitalPositionOfRemeshedNodes;
     int mNumberOfChanges = 1;
 
@@ -251,6 +251,51 @@ public:
 
     void SetupMembraneConfiguration();
     std::map<unsigned, c_vector<c_vector<double, 2>, 3> > mInitalVectors;
+
+
+    // Mapping the new nodes to the old elements; am recording this for debugging purposes
+    std::map<unsigned,double > mNewNodeToOldElementMap;
+
+    // Bunch of members and methods to store and later save data for debugging
+
+    std::map<unsigned,double >  GetNodeToOldElementMap();
+    std::map<unsigned,double > GetNewNodeToOldElementDistanceMap();
+
+    std::map<unsigned,double >  mNewNodeToOldElementDistanceMap;
+
+
+    std::map<unsigned,c_vector<double,2> > GetMappingVariables_a_b( );
+    std::map<unsigned,c_vector<double,2> > mMappingVariables_a_b;
+
+    std::map<unsigned, double > GetMappingVariables_alpha( );
+    std::map<unsigned, double > mMappingVariables_alpha;
+
+    std::map<unsigned,c_vector<double,3> > GetMappingVariables_z_basis( );
+    std::map<unsigned,c_vector<double,3> > mMappingVariables_z_basis;
+
+
+    std::map<unsigned,c_vector<double,3> > GetMappingVariables_PointInNewRef( );
+    std::map<unsigned,c_vector<double,3> > mMappingVariables_PointInNewRef;
+
+    std::map<unsigned,c_vector<double,3> > GetMappingVariables_Difference( );
+    std::map<unsigned,c_vector<double,3> > mMappingVariables_Difference;
+
+
+    std::map<unsigned,c_vector<double,3> > GetMappingVariables_P_Translated( );
+    std::map<unsigned,c_vector<double,3> > mMappingVariables_P_Translated;
+
+    std::map<unsigned,c_vector<double,3> > GetMappingVariables_Cs( );
+    std::map<unsigned,c_vector<double,3> > mMappingVariables_Cs;
+
+
+
+
+
+
+
+    ///////
+
+
     // Map to the inital aCoefficients for each element
     std::map<unsigned, c_vector<double, 3> > mACoefficients;
     // Map to the inital aCoefficients for each element
@@ -284,6 +329,9 @@ public:
 
 
     std::map<std::vector<int>, std::vector<unsigned> > mBinMap;
+
+    std::map<std::vector<int>, std::vector<unsigned> > GetAllBins();
+
     // std::map<unsigned, c_vector<double, SPACE_DIM> > mBin;
 
     // THis map provides a list of the elements in each bin, the bin being the key 

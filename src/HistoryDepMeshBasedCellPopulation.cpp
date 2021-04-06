@@ -673,6 +673,13 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningRegion
     }
 }
 
+
+
+ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+std::map<std::vector<int>, std::vector<unsigned> > HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetAllBins()
+{
+    return mBin;
+}
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 std::vector<int> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBin(c_vector<double, SPACE_DIM> Location)
 {
@@ -730,11 +737,28 @@ c_vector<double, SPACE_DIM> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE
     return Normal;
 }
 
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+std::map<unsigned,double > HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetNodeToOldElementMap()
+{
+    return mNewNodeToOldElementMap;
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+std::map<unsigned,double > HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetNewNodeToOldElementDistanceMap()
+{
+    return mNewNodeToOldElementDistanceMap;
+}
+
+
+
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMeshToInitalGeometry()
 {
     std::map<unsigned, c_vector<double, SPACE_DIM> > InitalPositionOfRemeshedNodes;
     mInitalPositionOfRemeshedNodes.clear();
+    mNewNodeToOldElementMap.clear();
     
     // SetCentroidMap();
 
@@ -753,7 +777,8 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMe
 
         // c_vector<double, 3> ClosestElementOrEdge = GetClosestElementInOldMesh(node_index, NewNodeLocation);
         double ClosestElement = GetClosestElementInOldMesh(node_index, NewNodeLocation);
-        InitalPositionOfRemeshedNodes[node_index] = NewNodeInInitalConfigurationFromChangeOfBasis(ClosestElement, NewNodeLocation);
+        mNewNodeToOldElementMap[node_index] = ClosestElement;
+        InitalPositionOfRemeshedNodes[node_index] = NewNodeInInitalConfigurationFromChangeOfBasis(ClosestElement, NewNodeLocation, node_index);
 
         // if (ClosestElementOrEdge[0]==0)/* Closest thing is a element */
         // {
@@ -809,7 +834,7 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElem
             ClosestElement = elem_index;
         }
     }
-    
+    mNewNodeToOldElementDistanceMap[node_index] = ClosestElementDistance;
     // LocalElementOrEdge = Create_c_vector(ElementIdentifier,ClosestElement,0);
     return ClosestElement;//LocalElementOrEdge;
   }
@@ -883,11 +908,6 @@ double  HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::DistanceBetwe
 
     return ClosestPoint;
 }
-
-
-
-
-
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -1039,7 +1059,7 @@ c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::N
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::NewNodeInInitalConfigurationFromChangeOfBasis(unsigned ClosestElement_OldMeshIndex, c_vector<double, SPACE_DIM> NewNode)
+c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::NewNodeInInitalConfigurationFromChangeOfBasis(unsigned ClosestElement_OldMeshIndex, c_vector<double, SPACE_DIM> NewNode, unsigned NodeIndex)
 {
     
     assert(SPACE_DIM == 3);
@@ -1092,6 +1112,7 @@ c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::N
     double y3 = z_basis[1];
     double z3 = z_basis[2];
 
+
     double p1 = P_translated[0];
     double p2 = P_translated[1];
     double p3 = P_translated[2];
@@ -1111,6 +1132,18 @@ c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::N
 
     c_vector<double, SPACE_DIM> InitalPoint_Translated = C1 * vector_12_0 + C2 * vector_13_0 + C3 * z_basis_0;
     c_vector<double, SPACE_DIM> P_0 = InitalPoint_Translated + Element_0[0];
+
+
+
+    mMappingVariables_P_Translated[NodeIndex] = P_translated;
+    mMappingVariables_Cs[NodeIndex] = Create_c_vector(C1,C2,C3);
+    mMappingVariables_PointInNewRef[NodeIndex] = PointInNewRef;
+    mMappingVariables_Difference[NodeIndex] = Difference;
+    mMappingVariables_alpha[NodeIndex] = alpha;
+    mMappingVariables_z_basis[NodeIndex] = z_basis;
+    mMappingVariables_a_b[NodeIndex] = Create_c_vector(a,b);
+
+
     // if (norm_2(P_0) > 10)
     // {
     //     PRINT_VECTOR(P_0)
@@ -1118,6 +1151,54 @@ c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::N
     // assert(norm_2(P_0) <10);
     return P_0;
 }
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+std::map<unsigned,c_vector<double,2> > HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetMappingVariables_a_b( )
+{
+    return mMappingVariables_a_b;
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+std::map<unsigned, double > HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetMappingVariables_alpha( )
+{
+    return mMappingVariables_alpha;
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+std::map<unsigned,c_vector<double,3> > HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetMappingVariables_z_basis( )
+{
+    return mMappingVariables_z_basis;
+}
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+std::map<unsigned,c_vector<double,3> > HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetMappingVariables_PointInNewRef( )
+{
+    return mMappingVariables_PointInNewRef;
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+std::map<unsigned,c_vector<double,3> > HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetMappingVariables_Difference( )
+{
+    return mMappingVariables_Difference;
+}
+
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+std::map<unsigned,c_vector<double,3> > HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetMappingVariables_P_Translated( )
+{
+    return mMappingVariables_P_Translated;
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+std::map<unsigned,c_vector<double,3> > HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetMappingVariables_Cs( )
+{
+    return mMappingVariables_Cs;
+}
+
+
+
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>

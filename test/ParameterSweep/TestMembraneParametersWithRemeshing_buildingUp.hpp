@@ -29,6 +29,10 @@
 #include "RadialForce.hpp"
 #include "RemeshingTriggerOnHeteroMeshModifier.hpp"
 #include "FixedRegionBoundaryConditionWithRemeshing.hpp"
+// #include "RemeshingPopulationWriter.hpp"
+#include "RemeshingPopulationDataWriter.hpp"
+
+#include "RemeshingPopulationDataWriter.hpp"
 
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
@@ -48,7 +52,7 @@ public:
         //     dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
         // }
         double startime = 0;
-        double EndTime = 10;
+        double EndTime = 2;
         // if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
         // {
         //     EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
@@ -119,10 +123,13 @@ public:
         cell_population.SetPrintRemeshedIC(1);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
-        cell_population.SetRemeshingSoftwear("CGAL");
+        cell_population.SetRemeshingSoftwear("PreAllocatedMatlabMesh");
         cell_population.SetOperatingSystem(OperatingSystem);
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
+        cell_population.AddPopulationWriter<RemeshingPopulationDataWriter>();
+
+
 
         // Set up cell-based simulation
         OffLatticeSimulation<2,3> simulator(cell_population);
