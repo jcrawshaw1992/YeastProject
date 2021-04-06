@@ -407,14 +407,20 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::TakeInPreAllocatedRemeshGeometry()
 {
     // std::string Remeshedvtu = mChasteOutputDirectory + "RemeshedGeometry.vtu";
-    mPreAllocatedRemeshedMesh = "/data/vascrem/RemeshedGeometry.vtu";
+    // mPreAllocatedRemeshedMesh = "/data/vascrem/RemeshedGeometry.vtu";
 
     // PRINT_VARIABLE(mChasteOutputDirectory)
     // bool copy_file(mPreAllocatedRemeshedMesh.c_str(), Remeshedvtu.c_str(), NULL, COPYFILE_DATA | COPYFILE_XATTR);
-    // boost::filesystem::copy_file(mPreAllocatedRemeshedMesh.c_str(), Remeshedvtu.c_str()); // This was changed so the code could work on linux and mac
+    // boost::filesystem::copy_file(mPreAllocatedRemeshedMesh.c_str(), Remeshedvtu.c_str()); // This was changed so the code could work on linux and mac -- doesnt, dont know why
     // TRACE("Read in the new mesh")
     VtkMeshReader<ELEMENT_DIM, SPACE_DIM> mesh_reader(mPreAllocatedRemeshedMesh);
     mNew_mesh.ConstructFromMeshReader(mesh_reader);
+
+
+    VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(mRelativePath, "RemeshedGeometry", false);
+    mesh_writer.WriteFilesUsingMesh(mNew_mesh);//mNew_mesh
+
+
     // TRACE("Have the new mesh ;) ");
 }
 

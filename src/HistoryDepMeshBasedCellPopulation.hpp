@@ -214,7 +214,7 @@ public:
     void RemeshGeometryWithVMTK();
     void TakeInPreAllocatedRemeshGeometry();
     void PreAllocatedRemeshedMesh(std::string RemeshedMesh);
-    std::string mPreAllocatedRemeshedMesh;
+    std::string mPreAllocatedRemeshedMesh ="/data/vascrem/RemeshedGeometry.vtu" ;
 
     void CheckCurvature();
     void SetRemeshingSoftwear(std::string RemeshingSoftwear);
