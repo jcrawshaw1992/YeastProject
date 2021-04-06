@@ -244,8 +244,8 @@ if __name__=="__main__":
     # scp ~/Chaste/projects/VascularRemodelling/apps/GenerateVascularMeshWithCentralCollapse_BifucationAngle.py vascrem@6200rs-osborne-l.science.unimelb.edu.au:///home/vascrem//Chaste/projects/VascularRemodelling/apps/GenerateVascularMeshWithCentralCollapse_BifucationAngle.py
     
         # // need to get the right collapse points here matlabd 
-         
-        Collapse = [0, 0.1227, 0.2248, 0.3178, 0.4170, 0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000]
+        Collapse = [0, 0.1227, 0.2248, 0.3178, 0.4170]
+        # Collapse = [0, 0.1227, 0.2248, 0.3178, 0.4170, 0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000]
         for i in Collapse:
             CenterLines_filename = AngleDirectory + "Centerlines_"+str(i)+".vtp"
 
@@ -268,38 +268,35 @@ if __name__=="__main__":
         
             # # ----  Generate a mesh from the centerlines file -------------# 
         
-            if i == 0.1 or i ==  0.2 or i ==  0.3:
-                command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 210 200 200 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
-                subprocess.call(command, shell=True)
-            else:
-                command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 130 130 130 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
-                subprocess.call(command, shell=True)
+            # if i == 0.1 or i ==  0.2 or i ==  0.3:
+            #     command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 210 200 200 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
+            #     subprocess.call(command, shell=True)
+            # else:
+            #     command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 130 130 130 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
+            #     subprocess.call(command, shell=True)
 
-            # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-            if i == 0.1:
-                # VTK_Mesh= Directory+"MeshClipped1Cource.vtk"
-                command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
-                subprocess.call(command, shell=True)
-            elif i < 0.35:
-                command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.01 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
-                subprocess.call(command, shell=True)
-            else:
-                command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
-                subprocess.call(command, shell=True)
+            # # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
+            # if i == 0.1:
+            #     # VTK_Mesh= Directory+"MeshClipped1Cource.vtk"
+            #     command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
+            #     subprocess.call(command, shell=True)
+            # elif i < 0.35:
+            #     command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.01 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
+            #     subprocess.call(command, shell=True)
+            # else:
+            #     command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
+            #     subprocess.call(command, shell=True)
 
             # ----  Clip Edges -------------# 
             print "Jess is good"
-            print Clipped_Mesh
-            clip.clip_surface_with_plane(VTK_Meshremeshed,(ends[0],0,0), (1,0,0), Clipped_Mesh)
-            clip.clip_surface_with_plane(Clipped_Mesh,(ends[1],0,0), (-1,0,0), Clipped_Mesh)
+            # print Clipped_Mesh
+            # clip.clip_surface_with_plane(VTK_Meshremeshed,(ends[0],0,0), (1,0,0), Clipped_Mesh)
+            # clip.clip_surface_with_plane(Clipped_Mesh,(ends[1],0,0), (-1,0,0), Clipped_Mesh)
             print 'about to convert'
             # ----  Convert files vtk to stl :)   -------------#    
-            VTK_Meshremeshed = AngleDirectory+"Mesh_"+str(i)+".vtk"
-            
 
             Outputstl = AngleDirectory+"Mesh_PreScale"+str(i)+".stl"
-            command = 'meshio-convert  ' + Clipped_Mesh + ' ' +Outputstl
-            subprocess.call(command, shell=True)
+            ConvertVTKtoSTL.convert(Clipped_Mesh, Outputstl)
 
 
             Outputvtu = AngleDirectory+"Mesh_PreScale"+str(i)+".vtu"
