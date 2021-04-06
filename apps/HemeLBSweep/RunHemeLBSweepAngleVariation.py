@@ -162,7 +162,7 @@ if __name__=="__main__":
     # subprocess.call("chmod 700 RunHemeLBSweepBash", shell=True)
     
     TerminalOutputFolder = '/data/vascrem/testoutput/HemeLBSweep/FlowThrough3X3Collapse/AngleVariation_3X3Network/'
-    MeshDirectory = "/data/vascrem/MeshCollection/IdealisedNetwork/AngleVariation_3X3Network/"
+    MeshDirectory = "/data/vascrem/MeshCollection/IdealisedNetwork/AngleVariation_3X3NetworkExtended/"
     if path.isdir(TerminalOutputFolder)==0:
         os.mkdir(TerminalOutputFolder)
 
