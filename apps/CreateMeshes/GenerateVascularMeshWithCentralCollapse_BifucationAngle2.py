@@ -313,17 +313,6 @@ if __name__=="__main__":
             subprocess.call(convert, shell=True)
             print "Done one"
         
-
-
-            print 'Scale'
-            # ----  Scale files  -------------# 
-            Scale = 'vmtkmeshscaling -ifile '+ Outputvtu + ' -scale 0.20  --pipe vmtkmeshwriter -entityidsarray CellEntityIds -ofile '+ ScaledMesh
-            subprocess.call(Scale, shell=True)
-
-            # ----  Convert files  -------------# 
-            convert = 'meshio-convert '+ ScaledMesh +'  '+ ScaledMeshstl
-            subprocess.call(convert, shell=True)
-
     print " Finished Creating files "
         
         
