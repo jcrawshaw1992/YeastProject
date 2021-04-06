@@ -852,9 +852,9 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElem
         // c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
         unsigned elem_index = elem_iter->GetIndex();
         double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, elem_index) ;
-        if (abs(DistanceFromContainingElement) < ClosestElementDistance)
+        if (std::abs(DistanceFromContainingElement) < ClosestElementDistance)
         {
-            ClosestElementDistance = abs(DistanceFromContainingElement);
+            ClosestElementDistance = std::abs(DistanceFromContainingElement);
             ClosestElement = elem_index;
         }
     }
@@ -955,14 +955,14 @@ std::pair<double, c_vector<double, SPACE_DIM> >  HistoryDepMeshBasedCellPopulati
     // a is the vector between the first point of the element and the new point
     c_vector<double, SPACE_DIM> a = NewPoint - x[0];
 
-    double Distance = abs(inner_prod(NormalToPlane, a));
-    double AltDistance = abs(inner_prod(-NormalToPlane, a));
+    double Distance = std::abs(inner_prod(NormalToPlane, a));
+    double AltDistance = std::abs(inner_prod(-NormalToPlane, a));
     if (AltDistance <= Distance)
     { 
         Distance =AltDistance;
         
     }
-    c_vector<double, SPACE_DIM> NearestPointInThePlane = NewPoint -abs(Distance) * NormalToPlane;
+    c_vector<double, SPACE_DIM> NearestPointInThePlane = NewPoint -std::abs(Distance) * NormalToPlane;
     std::pair<double, c_vector<double, SPACE_DIM> > ProjectionToTheElement = std::pair<double , c_vector<double, SPACE_DIM> >(Distance, NearestPointInThePlane);
   
     return ProjectionToTheElement;
@@ -1030,7 +1030,7 @@ c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::N
             c_vector<double, SPACE_DIM> EdgeNormal = VectorProduct(EdgeVector, PlaneNormal);
             EdgeNormal/=norm_2(EdgeNormal);
     
-            double DistanceToEdge = abs(inner_prod(EdgeNormal, V));   
+            double DistanceToEdge = std::abs(inner_prod(EdgeNormal, V));   
             c_vector<double, SPACE_DIM> ProjectToEdge= DistanceToEdge * EdgeNormal; // DOnt know if this will be pushing in the right direction 
 
 
@@ -1242,7 +1242,7 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetDistanceToL
         c_vector<double, SPACE_DIM> EdgeNormal = VectorProduct(EdgeVector, PlaneNormal);
         EdgeNormal/=norm_2(EdgeNormal);
 
-        double DistanceToEdge = abs(inner_prod(EdgeNormal, V));
+        double DistanceToEdge = std::abs(inner_prod(EdgeNormal, V));
      
   
         return DistanceToEdge;
@@ -1880,9 +1880,9 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetMaxEdgelength
         c_vector<double, SPACE_DIM> A_location = this->GetNode(nodeA_global_index)->rGetLocation();
         c_vector<double, SPACE_DIM> B_location = this->GetNode(nodeB_global_index)->rGetLocation();
 
-        if (abs(norm_2(A_location - B_location)) > mMaxEdgelength)
+        if (std::abs(norm_2(A_location - B_location)) > mMaxEdgelength)
         {
-            mMaxEdgelength = abs(norm_2(A_location - B_location));
+            mMaxEdgelength = std::abs(norm_2(A_location - B_location));
         }
     }
 }
@@ -2177,9 +2177,9 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ClosestPointIn
         c_vector<double, SPACE_DIM> Normal3 = VectorProduct(Line3, ElementNormal);
         Normal3 /= norm_2(Normal3);
 
-        double dist1 = abs(inner_prod(Normal1, (projected_point - Triangle[1])));
-        double dist2 = abs(inner_prod(Normal2, (projected_point - Triangle[2])));
-        double dist3 = abs(inner_prod(Normal3, (projected_point - Triangle[2])));
+        double dist1 = std::abs(inner_prod(Normal1, (projected_point - Triangle[1])));
+        double dist2 = std::abs(inner_prod(Normal2, (projected_point - Triangle[2])));
+        double dist3 = std::abs(inner_prod(Normal3, (projected_point - Triangle[2])));
         // Find the smallest distance
 
         double MinDistane = std::min(dist1, std::min(dist2, dist3));
