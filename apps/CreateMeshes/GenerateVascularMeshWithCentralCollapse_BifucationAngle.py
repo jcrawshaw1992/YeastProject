@@ -245,7 +245,7 @@ if __name__=="__main__":
     
         # // need to get the right collapse points here matlabd 
          
-        Collapse = [0    0.1227    0.2248    0.3178    0.4170    0.5124    0.6119    0.7080    0.8059    0.9032    1.0000]
+        Collapse = [0, 0.1227, 0.2248, 0.3178, 0.4170, 0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000]
         for i in Collapse:
             CenterLines_filename = AngleDirectory + "Centerlines_"+str(i)+".vtp"
 
