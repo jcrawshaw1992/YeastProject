@@ -434,6 +434,9 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::TakeInPreAllocat
     mesh_writer.WriteFilesUsingMesh(mNew_mesh);//mNew_mesh
 
     mCounter +=1;
+
+    VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer2(mRelativePath, "RemeshedGeometry", false);
+    mesh_writer2.WriteFilesUsingMesh(mNew_mesh);//mNew_mesh
     // TRACE("Have the new mesh ;) ");
 }
 
