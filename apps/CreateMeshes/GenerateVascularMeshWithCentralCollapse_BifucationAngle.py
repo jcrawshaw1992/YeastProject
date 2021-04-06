@@ -268,53 +268,53 @@ if __name__=="__main__":
         
             # # # ----  Generate a mesh from the centerlines file -------------# 
         
-            if i == 0.1 or i ==  0.2 or i ==  0.3:
-                command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 210 200 200 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
-                subprocess.call(command, shell=True)
-            else:
-                command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 130 130 130 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
-                subprocess.call(command, shell=True)
+            # if i == 0.1 or i ==  0.2 or i ==  0.3:
+            #     command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 210 200 200 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
+            #     subprocess.call(command, shell=True)
+            # else:
+            #     command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 130 130 130 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
+            #     subprocess.call(command, shell=True)
 
-            # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-            if i == 0.1:
-                # VTK_Mesh= Directory+"MeshClipped1Cource.vtk"
-                command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
-                subprocess.call(command, shell=True)
-            elif i < 0.35:
-                command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.01 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
-                subprocess.call(command, shell=True)
-            else:
-                command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
-                subprocess.call(command, shell=True)
+            # # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
+            # if i == 0.1:
+            #     # VTK_Mesh= Directory+"MeshClipped1Cource.vtk"
+            #     command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
+            #     subprocess.call(command, shell=True)
+            # elif i < 0.35:
+            #     command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.01 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
+            #     subprocess.call(command, shell=True)
+            # else:
+            #     command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
+            #     subprocess.call(command, shell=True)
 
-            # ----  Clip Edges -------------# 
-            print "Jess is good"
-            print Clipped_Mesh
-            clip.clip_surface_with_plane(VTK_Meshremeshed,(ends[0],0,0), (1,0,0), Clipped_Mesh)
-            clip.clip_surface_with_plane(Clipped_Mesh,(ends[1],0,0), (-1,0,0), Clipped_Mesh)
-            print 'about to convert'
-            # ----  Convert files vtk to stl :)   -------------#    
-            VTK_Meshremeshed = AngleDirectory+"Mesh_"+str(i)+".vtk"
+            # # ----  Clip Edges -------------# 
+            # print "Jess is good"
+            # print Clipped_Mesh
+            # clip.clip_surface_with_plane(VTK_Meshremeshed,(ends[0],0,0), (1,0,0), Clipped_Mesh)
+            # clip.clip_surface_with_plane(Clipped_Mesh,(ends[1],0,0), (-1,0,0), Clipped_Mesh)
+            # print 'about to convert'
+            # # ----  Convert files vtk to stl :)   -------------#    
+            # VTK_Meshremeshed = AngleDirectory+"Mesh_"+str(i)+".vtk"
             
 
-            Outputstl = AngleDirectory+"Mesh_PreScale"+str(i)+".stl"
-            command = 'meshio-convert  ' + Clipped_Mesh + ' ' +Outputstl
-            subprocess.call(command, shell=True)
+            # Outputstl = AngleDirectory+"Mesh_PreScale"+str(i)+".stl"
+            # command = 'meshio-convert  ' + Clipped_Mesh + ' ' +Outputstl
+            # subprocess.call(command, shell=True)
 
 
-            Outputvtu = AngleDirectory+"Mesh_PreScale"+str(i)+".vtu"
-            command = 'meshio-convert  ' + Outputstl + ' ' +Outputvtu
-            subprocess.call(command, shell=True)
+            # Outputvtu = AngleDirectory+"Mesh_PreScale"+str(i)+".vtu"
+            # command = 'meshio-convert  ' + Outputstl + ' ' +Outputvtu
+            # subprocess.call(command, shell=True)
 
-            ScaledMesh = AngleDirectory+"Mesh_Scaled"+str(i)+".vtu"
-            # # ---- Interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller -------------# 
-            Scale = 'vmtkmeshscaling -ifile '+ Outputvtu + ' -scale 0.20  --pipe vmtkmeshwriter -entityidsarray CellEntityIds -ofile '+ ScaledMesh
-            subprocess.call(Scale, shell=True)
+            # ScaledMesh = AngleDirectory+"Mesh_Scaled"+str(i)+".vtu"
+            # # # ---- Interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller -------------# 
+            # Scale = 'vmtkmeshscaling -ifile '+ Outputvtu + ' -scale 0.20  --pipe vmtkmeshwriter -entityidsarray CellEntityIds -ofile '+ ScaledMesh
+            # subprocess.call(Scale, shell=True)
 
-            ScaledMeshstl = AngleDirectory+"ScaledMesh."+str(i)+".stl"
-            convert = 'meshio-convert '+ ScaledMesh +'  '+ ScaledMeshstl
-            subprocess.call(convert, shell=True)
-            print "Done one"
+            # ScaledMeshstl = AngleDirectory+"ScaledMesh."+str(i)+".stl"
+            # convert = 'meshio-convert '+ ScaledMesh +'  '+ ScaledMeshstl
+            # subprocess.call(convert, shell=True)
+            # print "Done one"
         
 
 
