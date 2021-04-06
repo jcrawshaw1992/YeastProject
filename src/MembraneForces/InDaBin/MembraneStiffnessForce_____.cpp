@@ -397,7 +397,7 @@ void MembraneStiffnessForce::AddForceContribution(AbstractCellPopulation<2, 3>& 
             angle = 0;
         }
         double On = 0;
-        if (abs(GetOriginalAngle(edge) - angle) < 1e-10)
+        if (std::abs(GetOriginalAngle(edge) - angle) < 1e-10)
         {
             On = 1;
             continue;
@@ -469,19 +469,19 @@ void MembraneStiffnessForce::AddForceContribution(AbstractCellPopulation<2, 3>& 
 
 
 
-        if (abs(norm_2(node1_contribution)) > 1000 || std::isnan(norm_2(node1_contribution)))
+        if (std::abs(norm_2(node1_contribution)) > 1000 || std::isnan(norm_2(node1_contribution)))
         {
             node1_contribution = Create_c_vector(0, 0, 0);
         }
-        if (abs(norm_2(node2_contribution)) > 1000 || std::isnan(norm_2(node2_contribution)))
+        if (std::abs(norm_2(node2_contribution)) > 1000 || std::isnan(norm_2(node2_contribution)))
         {
             node2_contribution = Create_c_vector(0, 0, 0);
         }
-        if (abs(norm_2(node3_contribution)) > 1000 || std::isnan(norm_2(node3_contribution)))
+        if (std::abs(norm_2(node3_contribution)) > 1000 || std::isnan(norm_2(node3_contribution)))
         {
             node3_contribution = Create_c_vector(0, 0, 0);
         }
-        if (abs(norm_2(node4_contribution)) > 1000 || std::isnan(norm_2(node4_contribution)))
+        if (std::abs(norm_2(node4_contribution)) > 1000 || std::isnan(norm_2(node4_contribution)))
         {
             node4_contribution = Create_c_vector(0, 0, 0);
         }

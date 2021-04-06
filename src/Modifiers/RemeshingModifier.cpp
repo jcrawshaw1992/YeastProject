@@ -183,10 +183,10 @@ void RemeshingModifier<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMeshToInitalGeomet
             Centroid_iter != CentroidMap.end();
             ++Centroid_iter)
         {
-            if ( abs(norm_2(Location - Centroid_iter->second )) < distance)
+            if ( std::abs(norm_2(Location - Centroid_iter->second )) < distance)
             {
                 ClosestElement = Centroid_iter->first;
-                distance  =  abs(norm_2(Location - Centroid_iter->second ));
+                distance  =  std::abs(norm_2(Location - Centroid_iter->second ));
             }
         }
 

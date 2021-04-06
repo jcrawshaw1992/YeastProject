@@ -185,7 +185,7 @@ CHASTE_CLASS_EXPORT(EdgeCorrectionForce)
 
 // PRINT_VARIABLE(NodeLocation[1]);
 
-// if (abs(NodeLocation[0]) < 1e-20) // along the y axis of the unit circle
+// if (std::abs(NodeLocation[0]) < 1e-20) // along the y axis of the unit circle
 // {
 //     PRINT_VARIABLE(theta_0 );
 //     if (NodeLocation[1] >0)
@@ -197,7 +197,7 @@ CHASTE_CLASS_EXPORT(EdgeCorrectionForce)
 //     }
 //     // TRACE("NodeLocation[0]) ==0");
 //     // theta_0 = 10;//; M_PI/2;//std::copysignf(1.0, NodeLocation[1])* M_PI/2; //std::copysignf(1.0, NodeLocation[1]) returns the sign of NodeLocation
-// } else if (abs(NodeLocation[1]) <1e-19) //  along the x axis of the unit circle
+// } else if (std::abs(NodeLocation[1]) <1e-19) //  along the x axis of the unit circle
 // {
 //     TRACE("NodeLocation[1] ==0");
 //     theta_0 = signbit(NodeLocation[0])* M_PI; // signbit returns 0 for positive numbers and 1 for negative numbers

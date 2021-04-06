@@ -98,26 +98,20 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
         if (mRemeshingTrigger == "AspectRatio")
         {
             // Check all the aspect ratios  and trigger remeshing if needed
-            // double MinimumAspectRatio = FindMinimumAspectRatioOverMesh(rCellPopulation);
-
             std::vector<double> AspectRatioVector = pCellPopulation->MinimumElementAspectRatio();
 
-                std::vector<double> quartilesNeeded = { 0.25, 0.5, 0.75};
-                std::vector<double> quartiles = pCellPopulation->Quantile(AspectRatioVector, quartilesNeeded);
-                double MinimumAspectRatio = *std::min_element( std::begin(AspectRatioVector), std::end(AspectRatioVector) );
+            std::vector<double> quartilesNeeded = { 0.25, 0.5, 0.75};
+            std::vector<double> quartiles = pCellPopulation->Quantile(AspectRatioVector, quartilesNeeded);
+            double MinimumAspectRatio = *std::min_element( std::begin(AspectRatioVector), std::end(AspectRatioVector) );
 
-                typename std::vector<double>::iterator Iterator = quartiles.begin();
-                double Quartile1 = *Iterator;
+            typename std::vector<double>::iterator Iterator = quartiles.begin();
+            double Quartile1 = *Iterator;
 
-                // PRINT_3_VARIABLES(MinimumAspectRatio,Quartile1, mStepsSinceLastRemesh)
-
-
-            // if (mStepsSinceLastRemesh>200) 
-            if (mStepsSinceLastRemesh>10) 
+            if (mStepsSinceLastRemesh>200) 
             {
                 
                 // if (  MinimumAspectRatio <0.2 || Quartile1 < 0.5)
-                if (  MinimumAspectRatio <0.2 || Quartile1 < 0.8)
+                if (  MinimumAspectRatio <0.2 || Quartile1 < 0.5)
                 {
                     
                     // TRACE(" AR is too smalle, remeshing now :) ")
@@ -136,13 +130,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
             {
                 mStepsSinceLastRemesh +=1;
             }
-            
-            // else{
-            //     mStepsSinceLastRemesh +=1;
-            // }
-            
-
-           
+        
                 
         }else
         {

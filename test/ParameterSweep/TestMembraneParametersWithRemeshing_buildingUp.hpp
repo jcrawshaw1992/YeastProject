@@ -40,70 +40,70 @@ public:
     void TestParametersOverCylinder() throw(Exception)
     {
 
-        // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-AreaParameter"));
-        double AreaParameter = 10;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
+        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-AreaParameter"));
+        double AreaParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
 
-        // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-DilationParameter"));
-        double DilationParameter =10;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
+        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-DilationParameter"));
+        double DilationParameter =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
 
         double dt= 0.01;
-        // if (CommandLineArguments::Instance()->OptionExists("-dt"))
-        // {
-        //     dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
-        // }
+        if (CommandLineArguments::Instance()->OptionExists("-dt"))
+        {
+            dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
+        }
         double startime = 0;
         double EndTime = 10;
-        // if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
-        // {
-        //     EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
-        // }
+        if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
+        {
+            EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
+        }
         double SamplingTimestepMultiple = 10;
-        // if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
-        // {
-        //     SamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SamplingTimestepMultiple");
-        // }
+        if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
+        {
+            SamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SamplingTimestepMultiple");
+        }
         double SecondSamplingTimestepMultiple = 10;
-        // if (CommandLineArguments::Instance()->OptionExists("-SecondSamplingTimestepMultiple"))
-        // {
-        //     SecondSamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SecondSamplingTimestepMultiple");
-        // }
+        if (CommandLineArguments::Instance()->OptionExists("-SecondSamplingTimestepMultiple"))
+        {
+            SecondSamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SecondSamplingTimestepMultiple");
+        }
         std::string OperatingSystem = "Server";
-        // if (CommandLineArguments::Instance()->OptionExists("-OperatingSystem"))
-        // {
-        //     OperatingSystem = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-OperatingSystem");
-        // }
+        if (CommandLineArguments::Instance()->OptionExists("-OperatingSystem"))
+        {
+            OperatingSystem = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-OperatingSystem");
+        }
         double TargetRemeshingIterations = 3;
-        // if (CommandLineArguments::Instance()->OptionExists("-TargetRemeshingIterations"))
-        // {
-        //     TargetRemeshingIterations = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-TargetRemeshingIterations");
-        // }
+        if (CommandLineArguments::Instance()->OptionExists("-TargetRemeshingIterations"))
+        {
+            TargetRemeshingIterations = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-TargetRemeshingIterations");
+        }
         double scale = 1e3;
         double EdgeLength = 0.3e-6 * scale;
-        // if (CommandLineArguments::Instance()->OptionExists("-EdgeLength"))
-        // {
-        //     EdgeLength = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EdgeLength") *1e-6 * scale;
-        // }
+        if (CommandLineArguments::Instance()->OptionExists("-EdgeLength"))
+        {
+            EdgeLength = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EdgeLength") *1e-6 * scale;
+        }
         double N_D = 20;
-        // if (CommandLineArguments::Instance()->OptionExists("-N_D"))
-        // {
-        //     N_D = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-N_D");
-        // }
+        if (CommandLineArguments::Instance()->OptionExists("-N_D"))
+        {
+            N_D = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-N_D");
+        }
 
 // vmtksurfaceremeshing -ifile CurrentMesh.stl -ofile CurretMesh3.stl -connectivityiterations 10 -maxarea 0.0000001 -elementsizemode area -relaxation 4
 
 
-        double DeformationParamter1 = 16;
+        double DeformationParamter1 = 6;
         std::stringstream out;
         out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter1;
         std::string ParameterSet = out.str();
         std::string output_dir = "ParameterSweepWithRemeshing/Cylinder/Remeshsed"+ParameterSet;
 
         
-        double Length = 50e-6 * scale/5;
+        double Length = 50e-6 * scale;
         double Radius = 1e-6 * scale; // I want this to grow to 10
 
         // unsigned N_D = 15; //50
-        unsigned N_Z = N_D*2*4/5;//
+        unsigned N_Z = N_D*2*4;//
 
         Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, Radius, Length);
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
@@ -127,7 +127,6 @@ public:
         cell_population.SetOperatingSystem(OperatingSystem);
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
-        cell_population.AddPopulationWriter<RemeshingPopulationDataWriter>();
 
 
 
@@ -207,37 +206,37 @@ public:
 
         // Now I have done the first one, going to iterate over all the others
 
-        // double DeformationParamter[9] = {6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10};
-        // for (unsigned D_index = 0; D_index < 9; D_index++)
-        // {
-        //     PRINT_VARIABLE(DeformationParamter[D_index])
-        //     std::map<double, c_vector<long double, 4> > GrowthMaps;
-        //     GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter[D_index]), 0);
-        //     //                                 Strength,hetro,stepsize, setupsolve
-        //     p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
+        double DeformationParamter[8] = {6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10};
+        for (unsigned D_index = 0; D_index <8; D_index++)
+        {
+            PRINT_VARIABLE(DeformationParamter[D_index])
+            std::map<double, c_vector<long double, 4> > GrowthMaps;
+            GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter[D_index]), 0);
+            //                                 Strength,hetro,stepsize, setupsolve
+            p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
             
 
-        //     std::stringstream outN;
-        //     outN << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter[D_index];
-        //     std::string ParameterSetN = outN.str();
-        //     std::string output_dir = "ParameterSweepWithRemeshing/Cylinder/"+ParameterSetN;
+            std::stringstream outN;
+            outN << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter[D_index];
+            std::string ParameterSetN = outN.str();
+            std::string output_dir = "ParameterSweepWithRemeshing/Cylinder/"+ParameterSetN;
 
-        //     startime = EndTime;
-        //     EndTime = EndTime +5;
-        //     cell_population.SetChasteOutputDirectory(output_dir, startime);
+            startime = EndTime;
+            EndTime = EndTime +5;
+            cell_population.SetChasteOutputDirectory(output_dir, startime);
 
-        //     simulator.SetOutputDirectory(output_dir);
-        //     // simulator.SetSamplingTimestepMultiple(1);//100);
+            simulator.SetOutputDirectory(output_dir);
+            // simulator.SetSamplingTimestepMultiple(1);//100);
 
-        //     simulator.SetSamplingTimestepMultiple(SecondSamplingTimestepMultiple);//100);
-        //     simulator.SetDt(dt); // 0.008
-        //     simulator.SetUpdateCellPopulationRule(false);
-        //     simulator.SetEndTime(EndTime);
+            simulator.SetSamplingTimestepMultiple(SecondSamplingTimestepMultiple);//100);
+            simulator.SetDt(dt); // 0.008
+            simulator.SetUpdateCellPopulationRule(false);
+            simulator.SetEndTime(EndTime);
 
-        //     simulator.Solve();
-        //     CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+            simulator.Solve();
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
 
-        // }
+        }
 
     
     }

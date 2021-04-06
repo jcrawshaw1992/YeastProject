@@ -179,7 +179,7 @@ void MembraneSurfaceForce::SetupInitialAreas(AbstractCellPopulation<2, 3>& rCell
          mMembraneSurfaceMaps[elem_index]  = mMembraneSurface;
 
 
-        //  if (abs(PositionVector[0][2]) < 1.6e-3 || abs(PositionVector[1][2]) < 1.5e-3 || abs(PositionVector[2][2]) < 1.5e-3 )
+        //  if (std::abs(PositionVector[0][2]) < 1.6e-3 || std::abs(PositionVector[1][2]) < 1.5e-3 || std::abs(PositionVector[2][2]) < 1.5e-3 )
         // {
         //     mMembraneSurfaceMaps[elem_index]  = mMembraneSurface*10;
         // }else 

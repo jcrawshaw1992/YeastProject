@@ -81,7 +81,7 @@ void MembraneHetroModifier<ELEMENT_DIM, SPACE_DIM>::SetAConstantHetrogenaity(Abs
         c_vector<double, 3> EdgeNormal  = Create_c_vector(-0.7752270779441546, -0.6178870924813352,-0.131295539022199 );
         c_vector<double, 3> EdgePoint =  Create_c_vector(0.10660370304382119,0.18311312173972846, -0.0019649382624181404);  
 
-        mDistanceBetweenPlanes = abs(norm_2(BasementPoint - EdgePoint ));
+        mDistanceBetweenPlanes = std::abs(norm_2(BasementPoint - EdgePoint ));
         PRINT_VARIABLE(norm_2(BasementPoint - EdgePoint ));
         double Ks = mGrowthMaps[mStrength](2);  double Ka = mGrowthMaps[mStrength](1); double KA = mGrowthMaps[mStrength](0);  double d = mDistanceBetweenPlanes;
         double Kbs =  (double)mGrowthMaps[1.1](2); double Kba =  (double)mGrowthMaps[1.1](1); double KbA =  (double)mGrowthMaps[1.1](0);   
@@ -144,7 +144,7 @@ void MembraneHetroModifier<ELEMENT_DIM, SPACE_DIM>::SetAConstantHetrogenaity(Abs
                     MutantNodeIndices.insert(node_index);
                     cell_iter->GetCellData()->SetItem("NodeIndex",  node_index);
                     //DistanceFromBasement  
-                    // double D =  abs(A*X[0]+B*X[1]+C*X[2])/sqrt(A*A+B*B+C*C);
+                    // double D =  std::abs(A*X[0]+B*X[1]+C*X[2])/sqrt(A*A+B*B+C*C);
 
                     c_vector<double, 3> DistanceFromCentroid =  X -  BasementPoint;
                     // DitanceToPlane
@@ -210,9 +210,9 @@ void MembraneHetroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopul
     {
         unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
         P = rCellPopulation.GetNode(node_index)->rGetLocation();
-        DistanceFromPlane = abs(A*P[0] + B*P[1] + C*P[2])/sqrt(A*A+B*B+C*C);
+        DistanceFromPlane = std::abs(A*P[0] + B*P[1] + C*P[2])/sqrt(A*A+B*B+C*C);
         
-        double DistanceToPoint = abs(norm_2(P - mBoundaryPoint));
+        double DistanceToPoint = std::abs(norm_2(P - mBoundaryPoint));
         if (DistanceFromPlane < Distance)   
         {
             cell_iter->SetMutationState(p_Basement);
@@ -308,7 +308,7 @@ void MembraneHetroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopul
              ++iter)
         {   
                 c_vector<double, 3> VectorB = EdgeCentroid  - rCellPopulation.GetNode(*iter)->rGetLocation(); 
-                double Angle = abs(acos(inner_prod(VectorA,VectorB )/(norm_2(VectorA)*norm_2(VectorB)) )) ;
+                double Angle = std::abs(acos(inner_prod(VectorA,VectorB )/(norm_2(VectorA)*norm_2(VectorB)) )) ;
                 if (Angle > 3*M_PI/4)
                 {
                     double distance = norm_2(VectorB);
@@ -581,7 +581,7 @@ void MembraneHetroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopul
         for (std::set<unsigned>::iterator iter = EdgeNeighboursBoundary.begin(); iter != EdgeNeighboursBoundary.end(); ++iter)
         {
                 c_vector<long double, 3> Vector2 = BEdgeCentroid  - rCellPopulation.GetNode(*iter)->rGetLocation();
-                double Angle = abs(acos(inner_prod( Vector1, Vector2)/(norm_2(Vector1)*norm_2(Vector2)) ));
+                double Angle = std::abs(acos(inner_prod( Vector1, Vector2)/(norm_2(Vector1)*norm_2(Vector2)) ));
                 // How about finding the largest angle??
                 // if (Angle > AngleMax)
                 // {
@@ -833,7 +833,7 @@ void MembraneHetroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolveBasedOnGivenRegion
              ++iter)
         {   
                 c_vector<double, 3> VectorB = EdgeCentroid  - rCellPopulation.GetNode(*iter)->rGetLocation(); 
-                double Angle = abs(acos(inner_prod(VectorA,VectorB )/(norm_2(VectorA)*norm_2(VectorB)) )) ;
+                double Angle = std::abs(acos(inner_prod(VectorA,VectorB )/(norm_2(VectorA)*norm_2(VectorB)) )) ;
                 if (Angle > 3*M_PI/4)
                 {
                     double distance = norm_2(VectorB);
@@ -1138,7 +1138,7 @@ void MembraneHetroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolveBasedOnGivenRegion
         // for (std::set<unsigned>::iterator iter = EdgeNeighboursBoundary.begin(); iter != EdgeNeighboursBoundary.end(); ++iter)
         // {
         //         c_vector<long double, 3> Vector2 = BEdgeCentroid  - rCellPopulation.GetNode(*iter)->rGetLocation();
-        //         double Angle = abs(acos(inner_prod( Vector1, Vector2)/(norm_2(Vector1)*norm_2(Vector2)) ));
+        //         double Angle = std::abs(acos(inner_prod( Vector1, Vector2)/(norm_2(Vector1)*norm_2(Vector2)) ));
         //         // How about finding the largest angle??
         //         if (Angle > AngleMax)
         //         {

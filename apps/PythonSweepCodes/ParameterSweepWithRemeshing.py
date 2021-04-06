@@ -28,25 +28,23 @@ if __name__=="__main__":
         chaste_run_exe =  '/Users/jcrawshaw/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUpRunner '
         TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/ParameterSweepWithRemeshing/Cylinder/SweepTerminalOutputs/"
 
-    # if path.isdir(TerminalOutputFolder)==0:
-    #     os.mkdir(TerminalOutputFolder)
+    if path.isdir(TerminalOutputFolder)==0:
+        os.mkdir(TerminalOutputFolder)
 
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
     AreaParameter = [10, 8, 6]
-    # DilationParameter = [  6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
     DilationParameter = [10,9.5, 9, 8.5, 8,7.5,7,6.5,6  ]
 
-    # SamplingTimestepMultiple = ' -SamplingTimestepMultiple 2000'
-    Parallel = 35
+    Parallel = 15
     SleepyTime = 200
-    EndTime =50
-    dt = 0.005
-    TargetRemeshingIterations = 10
+    EndTime =10
+    dt = 0.01
+    TargetRemeshingIterations = 3
     SamplingTimestepMultiple = 100
     SecondSamplingTimestepMultiple = 100
     EdgeLength = 0.3
-    ND =50
+    ND =30
     AvaliablePaths = range(Parallel)
     for i in AreaParameter:
         for j in DilationParameter:

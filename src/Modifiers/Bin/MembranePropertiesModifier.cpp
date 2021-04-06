@@ -69,7 +69,7 @@ void MembranePropertiesModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCell
     {
         unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
         Node_location = rCellPopulation.GetNode(node_index)->rGetLocation();
-        if (abs(Node_location[2]) < MinZ) // These are the nodes along the lower edge and need to be marked as mutated
+        if (std::abs(Node_location[2]) < MinZ) // These are the nodes along the lower edge and need to be marked as mutated
         {
             cell_iter->SetMutationState(p_Basement);
             MutantNodeIndices.insert(node_index);

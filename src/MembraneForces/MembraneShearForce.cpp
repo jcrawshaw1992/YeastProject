@@ -525,7 +525,7 @@ void MembraneShearForce::SetupMembraneConfiguration(AbstractCellPopulation<2, 3>
         mACoefficients[elem_index] = aVector;
         mBCoefficients[elem_index] = bVector;
 
-        // if (abs(PositionVector[0][2]) < 1.6e-3 || abs(PositionVector[1][2]) < 1.5e-3 || abs(PositionVector[2][2]) < 1.5e-3 )
+        // if (std::abs(PositionVector[0][2]) < 1.6e-3 || std::abs(PositionVector[1][2]) < 1.5e-3 || std::abs(PositionVector[2][2]) < 1.5e-3 )
         // {
         //     mElasticShearModulusMap[elem_index] = mElasticShearModulus*40;
         //     mAreaDilationModulusMap[elem_index] = mAreaDilationModulus*20;
@@ -957,7 +957,7 @@ CHASTE_CLASS_EXPORT(MembraneShearForce)
 
 // PRINT_VARIABLE(NodeLocation[1]);
 
-// if (abs(NodeLocation[0]) < 1e-20) // along the y axis of the unit circle
+// if (std::abs(NodeLocation[0]) < 1e-20) // along the y axis of the unit circle
 // {
 //     PRINT_VARIABLE(theta_0 );
 //     if (NodeLocation[1] >0)
@@ -969,7 +969,7 @@ CHASTE_CLASS_EXPORT(MembraneShearForce)
 //     }
 //     // TRACE("NodeLocation[0]) ==0");
 //     // theta_0 = 10;//; M_PI/2;//std::copysignf(1.0, NodeLocation[1])* M_PI/2; //std::copysignf(1.0, NodeLocation[1]) returns the sign of NodeLocation
-// } else if (abs(NodeLocation[1]) <1e-19) //  along the x axis of the unit circle
+// } else if (std::abs(NodeLocation[1]) <1e-19) //  along the x axis of the unit circle
 // {
 //     TRACE("NodeLocation[1] ==0");
 //     theta_0 = signbit(NodeLocation[0])* M_PI; // signbit returns 0 for positive numbers and 1 for negative numbers

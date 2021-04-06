@@ -527,7 +527,7 @@ public:
 
         //         double R = norm_2(Vector01) / (2 * sin(angle / 2));
         //         //    PRINT_VARIABLE(R);
-        //         if (abs(angle) > 0.02) // edge is too small and the angle between the normals of the two nodes are nearly parallell
+        //         if (std::abs(angle) > 0.02) // edge is too small and the angle between the normals of the two nodes are nearly parallell
         //         {
         //             InitalAverageR += R;
         //             NumberOfNeighbours += 1;
@@ -748,7 +748,7 @@ public:
 
         //     // Need to walk backward into the mesh by the scalling factor
 
-        //     // if (abs(LocalAverageRadius[node_index] - MaxRadius) < 0.001 || abs(LocalAverageRadius[node_index] - MinRadius) < 0.001)
+        //     // if (std::abs(LocalAverageRadius[node_index] - MaxRadius) < 0.001 || std::abs(LocalAverageRadius[node_index] - MinRadius) < 0.001)
         //     // {
         //     //     LocalAverageRadius[node_index] = TotalAverageRadius;
         //     // }
