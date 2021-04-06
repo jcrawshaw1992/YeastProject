@@ -207,7 +207,7 @@ if __name__=="__main__":
     CPP_Centerlines_vtp_writer = "/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/GenerateIdealVascularMesh/Test_VTP_writer_WithCollapseRunner"
 
     Directory = "/Users/jcrawshaw/docker-polnet-master/"
-    Directory = "/data/vascrem/MeshCollection/IdealisedNetwork/AngleVariation_3X3Network/"
+    Directory = "/data/vascrem/MeshCollection/IdealisedNetwork/AngleVariation_3X3NetworkExtended/"
     if path.isdir(Directory)==0:
         os.mkdir(Directory)
         
@@ -243,8 +243,9 @@ if __name__=="__main__":
         ends = [0.4,7.4]
     # scp ~/Chaste/projects/VascularRemodelling/apps/GenerateVascularMeshWithCentralCollapse_BifucationAngle.py vascrem@6200rs-osborne-l.science.unimelb.edu.au:///home/vascrem//Chaste/projects/VascularRemodelling/apps/GenerateVascularMeshWithCentralCollapse_BifucationAngle.py
     
-        
-        Collapse = [0.55,0.56,0.57,0.58,0.59,0.6,0.61,0.62,0.63,0.64,0.65]
+        # // need to get the right collapse points here matlabd 
+         
+        Collapse = [0    0.1227    0.2248    0.3178    0.4170    0.5124    0.6119    0.7080    0.8059    0.9032    1.0000]
         for i in Collapse:
             CenterLines_filename = AngleDirectory + "Centerlines_"+str(i)+".vtp"
 
@@ -274,10 +275,7 @@ if __name__=="__main__":
                 command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 130 130 130 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
                 subprocess.call(command, shell=True)
 
-
-            # ----  Need in this file format to be read into chaste -------------# 
             # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-
             if i == 0.1:
                 # VTK_Mesh= Directory+"MeshClipped1Cource.vtk"
                 command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
@@ -295,8 +293,30 @@ if __name__=="__main__":
             clip.clip_surface_with_plane(VTK_Meshremeshed,(ends[0],0,0), (1,0,0), Clipped_Mesh)
             clip.clip_surface_with_plane(Clipped_Mesh,(ends[1],0,0), (-1,0,0), Clipped_Mesh)
             print 'about to convert'
-            # ----  Convert files vtk to stl :)   -------------# 
-            ConvertVTKtoSTL.convert(Clipped_Mesh, Outputstl)
+            # ----  Convert files vtk to stl :)   -------------#    
+            VTK_Meshremeshed = AngleDirectory+"Mesh_"+str(i)+".vtk"
+            
+
+            Outputstl = AngleDirectory+"Mesh_PreScale"+str(i)+".stl"
+            command = 'meshio-convert  ' + Clipped_Mesh + ' ' +Outputstl
+            subprocess.call(command, shell=True)
+
+
+            Outputvtu = AngleDirectory+"Mesh_PreScale"+str(i)+".vtu"
+            command = 'meshio-convert  ' + Outputstl + ' ' +Outputvtu
+            subprocess.call(command, shell=True)
+
+            ScaledMesh = AngleDirectory+"Mesh_Scaled"+str(i)+".vtu"
+            # # ---- Interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller -------------# 
+            Scale = 'vmtkmeshscaling -ifile '+ Outputvtu + ' -scale 0.20  --pipe vmtkmeshwriter -entityidsarray CellEntityIds -ofile '+ ScaledMesh
+            subprocess.call(Scale, shell=True)
+
+            ScaledMeshstl = AngleDirectory+"ScaledMesh."+str(i)+".stl"
+            convert = 'meshio-convert '+ ScaledMesh +'  '+ ScaledMeshstl
+            subprocess.call(convert, shell=True)
+            print "Done one"
+        
+
 
             # print 'Scale'
             # # ----  Scale files  -------------# 

@@ -725,10 +725,10 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetPerimeterOfCoupledElements(u
         c_vector<double, SPACE_DIM> NeighbourLocation = p_node2->rGetLocation();
 
         
-        // double Distance1 =abs(LatticeLocation[0] - Center);
-        // double Distance2 =abs(NeighbourLocation[0] - Center);
+        // double Distance1 =std::abs(LatticeLocation[0] - Center);
+        // double Distance2 =std::abs(NeighbourLocation[0] - Center);
 
-        if (abs(LatticeLocation[0] - Center) < 5*UnitStep || abs(NeighbourLocation[0] - Center) <  5*UnitStep) // We also need to consider the zip edge here!!!!!
+        if (std::abs(LatticeLocation[0] - Center) < 5*UnitStep || std::abs(NeighbourLocation[0] - Center) <  5*UnitStep) // We also need to consider the zip edge here!!!!!
         {   //Might want to put this back to 2* UnitStep 
 
             potts_element_surface -= (2 * mLengthOfLatticeEdge[*NodePair]);
@@ -760,7 +760,7 @@ bool PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::IsNodeNearCenter(unsigned Lattice
 
     // Need to write a function giving ditance to center
     Node<SPACE_DIM>* pNode = mpDelaunayMesh->GetNode(LatticeIndex);
-    double DistanceToCenter = abs(Center - pNode->rGetLocation()[0]);
+    double DistanceToCenter = std::abs(Center - pNode->rGetLocation()[0]);
 
     if (DistanceToCenter > 4.5 * mLatticeSpaceing && DistanceToCenter != NAN)
     {
@@ -1430,7 +1430,7 @@ double PottsArbitrarySurfaceIn3DMesh<SPACE_DIM>::GetAspectRatio(unsigned pottsEl
     double Theta_check = atan((eig_max - variance_x) / covariance_xy);
 
     double Theta_check5 = Theta_check;
-    if (!(abs(abs(Theta) - abs(Theta_check)) < 0.15 || abs(abs(Theta) - abs(Theta_check - M_PI / 2)) < 0.15 || abs(abs(Theta) - abs(Theta_check - M_PI)) < 0.15 || abs(abs(Theta) - abs(Theta_check + M_PI / 2)) < 0.15 || abs(abs(Theta) - abs(Theta_check + M_PI)) < 0.15 || covariance_xy == 0))
+    if (!(std::abs(std::abs(Theta) - std::abs(Theta_check)) < 0.15 || std::abs(std::abs(Theta) - std::abs(Theta_check - M_PI / 2)) < 0.15 || std::abs(std::abs(Theta) - std::abs(Theta_check - M_PI)) < 0.15 || std::abs(std::abs(Theta) - std::abs(Theta_check + M_PI / 2)) < 0.15 || std::abs(std::abs(Theta) - std::abs(Theta_check + M_PI)) < 0.15 || covariance_xy == 0))
     {
         // TRACE("Did not Passed")
         PRINT_2_VARIABLES(Theta, Theta_check)
