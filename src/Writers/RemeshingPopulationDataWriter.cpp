@@ -52,7 +52,8 @@ RemeshingPopulationDataWriter<ELEMENT_DIM, SPACE_DIM>::RemeshingPopulationDataWr
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingPopulationDataWriter<ELEMENT_DIM, SPACE_DIM>::Visit(MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation)
 {
-    TRACE("At least it works")
+
+    assert(SPACE_DIM == 3 && ELEMENT_DIM == 2 );
 
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(pCellPopulation);
    
