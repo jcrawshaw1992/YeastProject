@@ -199,17 +199,20 @@ if __name__=="__main__":
             if path.isdir(mHemeLBDirectory+'Results/')==1:
                 os.rename(mHemeLBDirectory+'Results/',mHemeLBDirectory+'Results_PriorRun/')
 
-            MeshFile = MeshDirectory+angle+"ScaledMesh."+i+".stl"
-            shutil.copyfile(MeshFile, mHemeLBDirectory + 'config.stl')
-           
-            dX = 0.08/41.0
+            if str(i)> 0.69: 
+                MeshFile = MeshDirectory+angle+"ScaledMesh."+i+".stl"
+                shutil.copyfile(MeshFile, mHemeLBDirectory + 'config.stl')
+            
+                dX = 0.08/41.0
 
-            write_pr2(mHemeLBDirectory, 4001, dX,  Seeds[counter])
+                write_pr2(mHemeLBDirectory, 4001, dX,  Seeds[counter])
 
-            run_hemelb_setup(mHemeLBDirectory)
+                run_hemelb_setup(mHemeLBDirectory)
 
-            # Update the xml file
-            update_xml_file(int(4001*0.9), mHemeLBDirectory)
+                # Update the xml file
+                update_xml_file(int(4001*0.9), mHemeLBDirectory)
+
+                
 
             # # Run HemeLB
             RunHemeLB = 'mpirun -np 5 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
