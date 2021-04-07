@@ -40,11 +40,11 @@ if __name__=="__main__":
 
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
-    BendingParameters = [ 7,8, 9,10,11,12,13]
+    BendingParameters = [ 7,12,13]
     RunSweep = 1
     if RunSweep ==1:
-        Parallel = 10
-        SleepyTime = 300
+        Parallel = 3
+        # SleepyTime = 100
         AvaliablePaths = range(Parallel)
         print AvaliablePaths
         for l in BendingParameters:
@@ -57,17 +57,17 @@ if __name__=="__main__":
             subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
             AvaliablePaths.remove(Core) 
         # # Check if all positions are taken
-            while len(AvaliablePaths) ==0:
-                time.sleep(SleepyTime)
-                # print "Awake and checking for spare cores" 
-                for P in range(Parallel):
-                    OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
-                    if path.exists(OutputFile):
-                        AvaliablePaths.append(P)
-                        os.remove(OutputFile)
-                if len(AvaliablePaths) >0:
-                    print AvaliablePaths, "Have found a spare core or two :-) " 
-                    print time.time() - t0, "seconds time"
+            # while len(AvaliablePaths) ==0:
+            #     time.sleep(SleepyTime)
+            #     # print "Awake and checking for spare cores" 
+            #     for P in range(Parallel):
+            #         OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
+            #         if path.exists(OutputFile):
+            #             AvaliablePaths.append(P)
+            #             os.remove(OutputFile)
+            #     if len(AvaliablePaths) >0:
+            #         print AvaliablePaths, "Have found a spare core or two :-) " 
+            #         print time.time() - t0, "seconds time"
 
 
     print '\n ********* ------ Completed Sweep ------ ********* \n'
