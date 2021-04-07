@@ -46,7 +46,7 @@ public:
         TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-BendingParameter"));
         double BendingParameter =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
 
-        double dt= 0.02;
+        double dt= 0.002;
          if (CommandLineArguments::Instance()->OptionExists("-dt"))
         {
             dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
@@ -56,7 +56,7 @@ public:
         {
             EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
         }
-        double SamplingTimestepMultiple = 500;//2000;
+        double SamplingTimestepMultiple = 10000;//2000;
         if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
         {
             SamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SamplingTimestepMultiple");

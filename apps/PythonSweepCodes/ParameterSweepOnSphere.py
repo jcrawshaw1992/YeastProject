@@ -35,27 +35,23 @@ if __name__=="__main__":
         TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/SweepOnSphere/SweepTerminalOutputs/"
         mesh_file = "/Users/jcrawshaw/Documents/Projects/MeshCollection/Sphere.vtu"
 
-    print "B"
     if path.isdir(TerminalOutputFolder)==0:
         os.mkdir(TerminalOutputFolder)
 
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
     BendingParameters = [ 7,8, 9,10,11,12,13]
-    print "C"
     RunSweep = 1
     if RunSweep ==1:
-        Parallel = 5
+        Parallel = 10
         SleepyTime = 300
         AvaliablePaths = range(Parallel)
         print AvaliablePaths
         for l in BendingParameters:
-            print "D"
             Core = AvaliablePaths[0]
             # ArchieveFile = "SweepOnSphereWithArea/"
-            Input1 = chaste_run_exe + ' -BendingParameter '+str(l) + ' -MeshFile '+mesh_file + ' -EndTime 20000'#-Archive '+ArchieveFile
-            print Input1
-            print "E"
+            Input1 = chaste_run_exe + ' -BendingParameter '+str(l) + ' -MeshFile '+mesh_file + ' -EndTime 5000'#-Archive '+ArchieveFile
+
             Input2 = TerminalOutputFolder+ 'BendingParameter'+str(l)+'.txt'
             Input3 = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
             subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
