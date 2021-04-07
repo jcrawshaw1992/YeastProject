@@ -199,7 +199,7 @@ if __name__=="__main__":
             if path.isdir(mHemeLBDirectory+'Results/')==1:
                 os.rename(mHemeLBDirectory+'Results/',mHemeLBDirectory+'Results_PriorRun/')
 
-            if str(i)> 0.69: 
+            if str(float(i))>0.69: 
                 print i
                 MeshFile = MeshDirectory+angle+"ScaledMesh."+i+".stl"
                 shutil.copyfile(MeshFile, mHemeLBDirectory + 'config.stl')
