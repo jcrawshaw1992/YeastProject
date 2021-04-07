@@ -169,7 +169,7 @@ if __name__=="__main__":
 
     # pkill -9 hemelb
     # Collapse = ['0.6','0.55','0.56','0.57','0.58','0.59','0.61','0.62','0.63','0.64','0.65']
-    Collapse = [ '0.5124', '0.6119']#//%, '0.708', '0.8059', '0.9032', '1.0']
+    Collapse = [ '0.5124', '0.6119', '0.708', '0.8059', '0.9032', '1.0']
     counter = -1
     BifucationAngles = [ 'PI_6/','PI_2.2/','PI_3/' ] 
     Seeds = [[2.11408*0.2, 2.11277*0.2, 0.199536*0.2] , [2.19658*0.2, 1.97595*0.2, -0.155648*0.2],[2.05519*0.2, 1.98863*0.2, 0.165396*0.2] ]
@@ -199,19 +199,18 @@ if __name__=="__main__":
             if path.isdir(mHemeLBDirectory+'Results/')==1:
                 os.rename(mHemeLBDirectory+'Results/',mHemeLBDirectory+'Results_PriorRun/')
 
-            # if str(float(i))>0.69: 
-            #     print i
-            #     MeshFile = MeshDirectory+angle+"ScaledMesh."+i+".stl"
-            #     shutil.copyfile(MeshFile, mHemeLBDirectory + 'config.stl')
-            
-            #     dX = 0.08/41.0
+            print i
+            MeshFile = MeshDirectory+angle+"ScaledMesh."+i+".stl"
+            shutil.copyfile(MeshFile, mHemeLBDirectory + 'config.stl')
+        
+            dX = 0.08/41.0
 
-            #     write_pr2(mHemeLBDirectory, 4001, dX,  Seeds[counter])
+            write_pr2(mHemeLBDirectory, 4001, dX,  Seeds[counter])
 
-            #     run_hemelb_setup(mHemeLBDirectory)
+            run_hemelb_setup(mHemeLBDirectory)
 
-            #     # Update the xml file
-            #     update_xml_file(int(4001*0.9), mHemeLBDirectory)
+            # Update the xml file
+            update_xml_file(int(4001*0.9), mHemeLBDirectory)
 
                 
 
