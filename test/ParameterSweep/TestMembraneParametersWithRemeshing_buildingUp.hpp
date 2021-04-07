@@ -96,7 +96,7 @@ public:
         std::stringstream out;
         out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter1;
         std::string ParameterSet = out.str();
-        std::string output_dir = "ParameterSweepWithRemeshing/Cylinder/Remeshsed"+ParameterSet;
+        std::string output_dir = "ParameterSweepWithRemeshing/Cylinder2/"+ParameterSet;
 
         
         double Length = 50e-6 * scale;
@@ -222,7 +222,7 @@ public:
             std::string output_dir = "ParameterSweepWithRemeshing/Cylinder/"+ParameterSetN;
 
             startime = EndTime;
-            EndTime = EndTime +5;
+            EndTime = EndTime +EndTime;
             cell_population.SetChasteOutputDirectory(output_dir, startime);
 
             simulator.SetOutputDirectory(output_dir);

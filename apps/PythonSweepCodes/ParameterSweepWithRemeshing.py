@@ -23,10 +23,10 @@ if __name__=="__main__":
     Server = 1
     if Server ==1:
         chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUpRunner '
-        TerminalOutputFolder = "/data/vascrem/testoutput/ParameterSweepWithRemeshing/Cylinder/SweepTerminalOutputs/"
+        TerminalOutputFolder = "/data/vascrem/testoutput/ParameterSweepWithRemeshing/Cylinder2/SweepTerminalOutputs/"
     else:
         chaste_run_exe =  '/Users/jcrawshaw/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUpRunner '
-        TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/ParameterSweepWithRemeshing/Cylinder/SweepTerminalOutputs/"
+        TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/ParameterSweepWithRemeshing/Cylinder2/SweepTerminalOutputs/"
 
     if path.isdir(TerminalOutputFolder)==0:
         os.mkdir(TerminalOutputFolder)
@@ -41,10 +41,10 @@ if __name__=="__main__":
     EndTime =10
     dt = 0.0001
     TargetRemeshingIterations = 3
-    SamplingTimestepMultiple = 100
-    SecondSamplingTimestepMultiple = 100
-    EdgeLength = 0.3
-    ND =30
+    SamplingTimestepMultiple = 300
+    SecondSamplingTimestepMultiple = 300
+    EdgeLength = 0.5
+    ND =20
     AvaliablePaths = range(Parallel)
     for i in AreaParameter:
         for j in DilationParameter:
