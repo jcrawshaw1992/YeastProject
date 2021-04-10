@@ -85,8 +85,9 @@ public:
                 {
                     if (AspectRatio[j] == 1.5 & ( N_C[i] == 10 | N_C[i] == 20))
                     {
-                        continue
-                    }else
+                        continue;
+                    }
+                    else
                     {
                     
                     std::stringstream out;
