@@ -46,7 +46,7 @@ public:
         // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-BendingParameter"));
         double BendingParameter = 8; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
 
-        double dt = 0.0001; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer 
+        double dt = 0.0005; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer 
         if (CommandLineArguments::Instance()->OptionExists("-dt"))
         {
             dt = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
@@ -56,7 +56,7 @@ public:
         {
             EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
         }
-        double SamplingTimestepMultiple = 500; //2000;
+        double SamplingTimestepMultiple = 1000; //2000;
         if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
         {
             SamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SamplingTimestepMultiple");
