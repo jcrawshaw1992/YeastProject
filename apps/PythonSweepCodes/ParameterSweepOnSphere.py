@@ -40,7 +40,7 @@ if __name__=="__main__":
 
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
-    BendingParameters = [ 7,12,13]
+    BendingParameters = [ 7]
     RunSweep = 1
     if RunSweep ==1:
         Parallel = 3
