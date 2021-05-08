@@ -19,38 +19,6 @@ from stl import mesh
 from datetime import datetime
 
 
-
-
-def EditTimeStep(working_directory):
-
-    print "update_xml_file"
-    # Load automatically generated XML file
-    filename = working_directory + 'config.xml'
-
-    # Edit the initial condition to my satisfaction
-
-    file = open(filename).readlines()
-    #Create temp file
-    file_path = filename
-   
-    pattern = '<step_length units="s" value="9.51814396193e-08" />'
-    subst = '<step_length units="s" value="9.51814396193e-09" />'
-
-    fh, abs_path = tempfile.mkstemp()
-    with os.fdopen(fh,'w') as new_file:
-        with open(file_path) as old_file:
-            for line in old_file:
-                new_file.write(line.replace(pattern, subst))
-    #Copy the file permissions from the old file to the new file
-    shutil.copymode(file_path, abs_path)
-    #Remove original file
-    os.remove(file_path)
-    #Move new file
-    shutil.move(abs_path, file_path)
-
-
-
-
 def update_xml_file(period, working_directory):
 
   
@@ -163,7 +131,7 @@ def write_pr2(outputDirectory, SimulationDuration, MinRadii, Seed, Boundaries):
 
     V =  4 #Kinematic viscosity -- 4 X 10^-6 m^2/s  V = eta/rho Here v needs to be in the same dims as the input file!!!
     deltaX = MinRadii
-    deltaT = float(0.01 * deltaX * deltaX/V)
+    deltaT = float(0.1 * deltaX * deltaX/V)
     print ('DeltaX: ' , deltaX , 'DeltaT: ', deltaT, ' eta: ', V )
 
     InletPressure = 100
@@ -173,42 +141,73 @@ def write_pr2(outputDirectory, SimulationDuration, MinRadii, Seed, Boundaries):
     f.write("DurationSeconds: "+ str(Duration) +"\n")
     f.write("Iolets:\n"+ \
     # ------Inlets ----
-    "- Centre: {x: "+str(Boundaries[0])+", y: 0.000000, z: 0.000000}\n"+ \
+    "- Centre: {x: 1.1726394763150514, y: 0.42078411438729246, z: 0.000000}\n"+ \
     "  Name: Inlet1\n"+ \
     "  Normal: {x: 1.000000, y: 0.000000, z: 0.000000}\n"+ \
     "  Pressure: {x: "+str(InletPressure)+", y: 0.0, z: 0.0}\n"+ \
     "  Radius: 0.5\n"+ \
     "  Type: Inlet\n"+ \
     # ------
-    "- Centre: {x: "+str(Boundaries[0])+", y: -0.27, z: 0.000000}\n"+ \
+    "- Centre: {x: 1.1726394763150514, y: 0.15425831508812696, z: 0.000000}\n"+ \
     "  Name: Inlet2\n"+ \
     "  Normal: {x: 1.000000, y: 0.000000, z: 0.000000}\n"+ \
     "  Pressure: {x: "+str(InletPressure)+", y: 0.0, z: 0.0}\n"+ \
     "  Radius: 0.5\n"+ \
     "  Type: Inlet\n"+ \
     # ------
-    "- Centre: {x: "+str(Boundaries[0])+", y: 0.27, z: 0.000000}\n"+ \
+    "- Centre: {x: 1.1726394763150514, y: -0.06720626570158304, z: 0.000000}\n"+ \
     "  Name: Inlet3\n"+ \
     "  Normal: {x: 1.000000, y: 0.000000, z: 0.000000}\n"+ \
     "  Pressure: {x: "+str(InletPressure)+", y: 0.0, z: 0.0}\n"+ \
     "  Radius: 0.5\n"+ \
     "  Type: Inlet\n"+ \
+    # ------
+    "- Centre: {x: 1.1726394763150514, y: -0.41482524677753957, z: 0.000000}\n"+ \
+    "  Name: Inlet3\n"+ \
+    "  Normal: {x: 1.000000, y: 0.000000, z: 0.000000}\n"+ \
+    "  Pressure: {x: "+str(InletPressure)+", y: 0.0, z: 0.0}\n"+ \
+    "  Radius: 0.5\n"+ \
+    "  Type: Inlet\n"+ \
+    # ------
+    "- Centre: {x: 1.1726394763150514, y: -0.6814949875202828, z: 0.000000}\n"+ \
+    "  Name: Inlet3\n"+ \
+    "  Normal: {x: 1.000000, y: 0.000000, z: 0.000000}\n"+ \
+    "  Pressure: {x: "+str(InletPressure)+", y: 0.0, z: 0.0}\n"+ \
+    "  Radius: 0.5\n"+ \
+    "  Type: Inlet\n"+ \
+
+
+
     # -----Outlets -----
-    "- Centre: {x: "+str(Boundaries[1])+", y: -0.27, z: 0.000000}\n"+ \
+    "- Centre: {x: 1.7842593865063605, y: 0.42078411438729246, z: 0.000000}\n"+ \
     "  Name: Outlet1\n"+ \
     "  Normal: {x: -1.000000, y: 0.000000, z: 0.000000}\n"+ \
     "  Pressure: {x: "+str(OutletPressure)+", y: 0.0, z: 0.0}\n"+ \
     "  Radius: 0.5\n"+ \
     "  Type: Outlet\n"+ \
     # -----Outlets -----
-    "- Centre: {x: "+str(Boundaries[1])+", y: 0, z: 0.000000}\n"+ \
+    "- Centre: {x: 1.7842593865063605, y: 0.15425831508812696, z: 0.000000}\n"+ \
     "  Name: Outlet2\n"+ \
     "  Normal: {x: -1.000000, y: 0.000000, z: 0.000000}\n"+ \
     "  Pressure: {x: "+str(OutletPressure)+", y: 0.0, z: 0.0}\n"+ \
     "  Radius: 0.5\n"+ \
     "  Type: Outlet\n"+ \
     # ------
-    "- Centre: {x: "+str(Boundaries[1])+", y: 0.270, z: 0.000000}\n"+ \
+    "- Centre: {x: 1.7842593865063605, y: -0.06720626570158304, z: 0.000000}\n"+ \
+    "  Name: Outlet3\n"+ \
+    "  Normal: {x: -1.000000, y: 0.000000, z: 0.000000}\n"+ \
+    "  Pressure: {x: "+str(OutletPressure)+", y: 0.0, z: 0.0}\n"+ \
+    "  Radius: 0.5\n"+ \
+    "  Type: Outlet\n"+ \
+    # ------
+    "- Centre: {x: 1.7842593865063605, y: -0.41482524677753957, z: 0.000000}\n"+ \
+    "  Name: Outlet3\n"+ \
+    "  Normal: {x: -1.000000, y: 0.000000, z: 0.000000}\n"+ \
+    "  Pressure: {x: "+str(OutletPressure)+", y: 0.0, z: 0.0}\n"+ \
+    "  Radius: 0.5\n"+ \
+    "  Type: Outlet\n"+ \
+    # ------
+    "- Centre: {x: 1.7842593865063605, y: -0.6814949875202828, z: 0.000000}\n"+ \
     "  Name: Outlet3\n"+ \
     "  Normal: {x: -1.000000, y: 0.000000, z: 0.000000}\n"+ \
     "  Pressure: {x: "+str(OutletPressure)+", y: 0.0, z: 0.0}\n"+ \
@@ -224,77 +223,64 @@ def write_pr2(outputDirectory, SimulationDuration, MinRadii, Seed, Boundaries):
 
 
 
-
 if __name__=="__main__":
     t0 = time.time()
 
-
-    # chmod 700 RunHemeLBSweepBash
-    # subprocess.call("chmod 700 RunHemeLBSweepBash", shell=True)
     
-    TerminalOutputFolder = '/data/vascrem/testoutput/HemeLBSweep/AngleVariation_3X3Network/'
-    MeshDirectory = "/data/vascrem/MeshCollection/IdealisedNetwork/AngleVariation_3X3NetworkExtended/"
+    TerminalOutputFolder = '/data/vascrem/testoutput/HemeLBSweep/VascularDensity/'
+    MeshDirectory = "/data/vascrem/MeshCollection/IdealisedNetwork/VascularDensity/Clipped.stl"
     if path.isdir(TerminalOutputFolder)==0:
         os.mkdir(TerminalOutputFolder)
 
 
-    # pkill -9 hemelb
-    Collapse2 = [ '1', '2', '3', '4','5', '6', '7', '8', '9', '10','0']
-    # Collapse = ['0.6','0.55','0.56','0.57','0.58','0.59','0.61','0.62','0.63','0.64','0.65']
-    Collapse = [ '0', '0.3178', '0.417','0.5124', '0.6119', '0.708', '0.8059', '0.9032' , '0.1227', '0.2248'  , '1.0' ]
-    
-    BifucationAngles = [ 'PI_6/']#,'PI_5/','PI_6/'] 
+    mHemeLBDirectory = TerminalOutputFolder
+    print mHemeLBDirectory
+    if path.isdir(mHemeLBDirectory+'Results/')==1:
+        now = datetime.now()
+        current_time = now.strftime("%H:%M:%S")
+        os.rename(mHemeLBDirectory+'Results/',mHemeLBDirectory+'Results_'+str(current_time)+'/')
 
-    Parallel = 3
-    
-    SleepyTime = 100
-    AvaliablePaths = range(Parallel)
-    print AvaliablePaths
-    for angle in BifucationAngles:
-        # if path.isdir(TerminalOutputFolder+angle)==0:
-        #         os.mkdir(TerminalOutputFolder+angle)
-        for i in Collapse:
-            print [angle, i]
-            Core = AvaliablePaths[0] 
-            mHemeLBDirectory = TerminalOutputFolder+angle+i+'/'
-            # if path.isdir(mHemeLBDirectory)==0:
-            #     os.mkdir(mHemeLBDirectory)
-            print mHemeLBDirectory
-            if path.isdir(mHemeLBDirectory+'Results/')==1:
-                os.rename(mHemeLBDirectory+'Results/',mHemeLBDirectory+'Results_PriorRun3/')
-
-        
-            Copiedxml = '/data/vascrem/testoutput/HemeLBSweep/AngleVariation_3X3Network/PI_2.2/0.708/config.xml'
-            NewXml  =mHemeLBDirectory+ 'config.xml'
-            mv =  'cp ' +Copiedxml +' '+NewXml
-            subprocess.call(mv, shell=True)
-
-
-            update_xml_file(int(20000*0.5), mHemeLBDirectory)
-
+    MeshFile = MeshDirectory
+    shutil.copyfile(MeshFile, mHemeLBDirectory + 'config.stl')
+    MeshData = GetTheDetailsOfTheMesh(MeshFile)
+    Boundaries =  MeshData[0:2]
+    Seed = MeshData[2:5]
             
-            RunHemeLB = 'mpirun -np 11 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
-            TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
-            # # Generate the new config.vtu
-            GmyUnstructuredGridReader ="python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
-            # Generate the flow vtus
-            GenerateFlowVtus = "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "Results/Extracted/wholegeometry-velocity.xtr "  + mHemeLBDirectory + "Results/Extracted/surface-traction.xtr "
-            # Generate waitFile
-            WaitFileGeneration = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
-            # subprocess.Popen(['./RunHemeLBSweepBash', RunHemeLB, TerminalOutput, GmyUnstructuredGridReader, GenerateFlowVtus, WaitFileGeneration ])
-            subprocess.Popen(['./RunHemeLBSweepBash', RunHemeLB, TerminalOutput, GmyUnstructuredGridReader, GenerateFlowVtus, WaitFileGeneration ])
+    # print "boundaries", Boundaries 
+    # print "seed", Seed
+    dX = 0.08/41.0
+    write_pr2(mHemeLBDirectory, 1000, dX, Seed, Boundaries)
+
+    run_hemelb_setup(mHemeLBDirectory)
+
+    # Update the xml file
+    update_xml_file(int(1000*0.2), mHemeLBDirectory)
+
         
-            AvaliablePaths.remove(Core) 
-            # Check if all positions are taken
-            while len(AvaliablePaths) ==0:
-                time.sleep(SleepyTime)
-                # print "Awake and checking for spare cores" 
-                print "Sleep Time"
-                for P in range(Parallel):
-                    OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
-                    if path.exists(OutputFile):
-                        AvaliablePaths.append(P)
-                        os.remove(OutputFile)
-                if len(AvaliablePaths) >0:
-                    print AvaliablePaths, "Have found a spare core or two :-) " 
-                    print time.time() - t0, "seconds time"
+
+    # # Run HemeLB
+    RunHemeLB = 'mpirun -np 3 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
+    TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
+    # # Generate the new config.vtu
+    GmyUnstructuredGridReader ="python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
+    # Generate the flow vtus
+    GenerateFlowVtus = "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "Results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "Results/Extracted/wholegeometry-velocity.xtr "
+    # Generate waitFile
+    WaitFileGeneration = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
+    subprocess.Popen(['./RunHemeLBSweepBash', RunHemeLB, TerminalOutput, GmyUnstructuredGridReader, GenerateFlowVtus, WaitFileGeneration ])
+        
+
+    # AvaliablePaths.remove(1) 
+    # # Check if all positions are taken
+    # while len(AvaliablePaths) ==0:
+    #     time.sleep(SleepyTime)
+    #     # print "Awake and checking for spare cores" 
+    #     print "Sleep Time"
+    #     for P in range(Parallel):
+    #         OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
+    #         if path.exists(OutputFile):
+    #             AvaliablePaths.append(P)
+    #             os.remove(OutputFile)
+    #     if len(AvaliablePaths) >0:
+    #         print AvaliablePaths, "Have found a spare core or two :-) " 
+    #         print time.time() - t0, "seconds time"

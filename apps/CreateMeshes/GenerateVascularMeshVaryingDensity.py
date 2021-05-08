@@ -142,7 +142,10 @@ def CreateIdealSkeleton(Directory, Generations,GenerationsX,Height,HorizonatalEd
         NewNodes = [[X_0,i*y], [X_0+L,i*y]] # Horizontal compotent on left
         Nodes,Edges = UpdateNodesAndEdges(NewNodes,Nodes,Edges)
     MaxX = X_0+L
-  
+
+    LeftCollpaseBoundary = 0
+    RightCollpaseBoundary = 1
+
     # for i in range(1,len(Nodes)):
     #     Nodes[i] += [0,7.0]
     LeftBound = 3.0
@@ -159,30 +162,30 @@ def CreateIdealSkeleton(Directory, Generations,GenerationsX,Height,HorizonatalEd
                 if (i[1] == 0 and  i[0]>LeftBound and i[0]< RightBound):
  
                     Branch.append(counter)
-    Edges.remove(Branch)
-    
-    NumbNewNodes = 3
-    NewNodes1 =  np.array(Nodes[Branch[0]]) + (np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
-    LeftCollpaseBoundary = NewNodes1[0]
-    Nodes.append(NewNodes1)
-    N1 = NumberOfNodes
-    NewNodes2 =  np.array(Nodes[Branch[0]]) + 2*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
-    Nodes.append(NewNodes2)
-    N2 = NumberOfNodes+1
-    NewNodes3 =  np.array(Nodes[Branch[0]]) + 3*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
-    Nodes.append(NewNodes3)
-    N3 = NumberOfNodes+2
-    NewNodes4 =  np.array(Nodes[Branch[0]]) + 4*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
-    Nodes.append(NewNodes4)
-    N4 = NumberOfNodes+3
-    NewNodes5 =  np.array(Nodes[Branch[0]]) + 5*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
-    RightCollpaseBoundary = NewNodes5[0]
-    Nodes.append(NewNodes5)
-    N5 = NumberOfNodes+4
-    NewEdges = [[Branch[0],N1], [N1,N2],  [N2,N3], [N3,N4], [N4,N5], [N5,Branch[1] ]]
+        Edges.remove(Branch)
+        
+        NumbNewNodes = 3
+        NewNodes1 =  np.array(Nodes[Branch[0]]) + (np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
+        LeftCollpaseBoundary = NewNodes1[0]
+        Nodes.append(NewNodes1)
+        N1 = NumberOfNodes
+        NewNodes2 =  np.array(Nodes[Branch[0]]) + 2*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
+        Nodes.append(NewNodes2)
+        N2 = NumberOfNodes+1
+        NewNodes3 =  np.array(Nodes[Branch[0]]) + 3*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
+        Nodes.append(NewNodes3)
+        N3 = NumberOfNodes+2
+        NewNodes4 =  np.array(Nodes[Branch[0]]) + 4*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
+        Nodes.append(NewNodes4)
+        N4 = NumberOfNodes+3
+        NewNodes5 =  np.array(Nodes[Branch[0]]) + 5*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
+        RightCollpaseBoundary = NewNodes5[0]
+        Nodes.append(NewNodes5)
+        N5 = NumberOfNodes+4
+        NewEdges = [[Branch[0],N1], [N1,N2],  [N2,N3], [N3,N4], [N4,N5], [N5,Branch[1] ]]
 
-    for j in NewEdges:
-        Edges.append(j)
+        for j in NewEdges:
+            Edges.append(j)
 
 
 
@@ -198,30 +201,30 @@ def CreateIdealSkeleton(Directory, Generations,GenerationsX,Height,HorizonatalEd
                 if (i[1] == 1.4 and  i[0]>LeftBound and i[0]< RightBound):
  
                     Branch.append(counter)
-    Edges.remove(Branch)
-    
-    NumbNewNodes = 3
-    NewNodes1 =  np.array(Nodes[Branch[0]]) + (np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
-    LeftCollpaseBoundary = NewNodes1[0]
-    Nodes.append(NewNodes1)
-    N1 = NumberOfNodes
-    NewNodes2 =  np.array(Nodes[Branch[0]]) + 2*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
-    Nodes.append(NewNodes2)
-    N2 = NumberOfNodes+1
-    NewNodes3 =  np.array(Nodes[Branch[0]]) + 3*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
-    Nodes.append(NewNodes3)
-    N3 = NumberOfNodes+2
-    NewNodes4 =  np.array(Nodes[Branch[0]]) + 4*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
-    Nodes.append(NewNodes4)
-    N4 = NumberOfNodes+3
-    NewNodes5 =  np.array(Nodes[Branch[0]]) + 5*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
-    RightCollpaseBoundary = NewNodes5[0]
-    Nodes.append(NewNodes5)
-    N5 = NumberOfNodes+4
-    NewEdges = [[Branch[0],N1], [N1,N2],  [N2,N3], [N3,N4], [N4,N5], [N5,Branch[1] ]]
+        Edges.remove(Branch)
+        
+        NumbNewNodes = 3
+        NewNodes1 =  np.array(Nodes[Branch[0]]) + (np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
+        LeftCollpaseBoundary = NewNodes1[0]
+        Nodes.append(NewNodes1)
+        N1 = NumberOfNodes
+        NewNodes2 =  np.array(Nodes[Branch[0]]) + 2*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
+        Nodes.append(NewNodes2)
+        N2 = NumberOfNodes+1
+        NewNodes3 =  np.array(Nodes[Branch[0]]) + 3*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
+        Nodes.append(NewNodes3)
+        N3 = NumberOfNodes+2
+        NewNodes4 =  np.array(Nodes[Branch[0]]) + 4*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
+        Nodes.append(NewNodes4)
+        N4 = NumberOfNodes+3
+        NewNodes5 =  np.array(Nodes[Branch[0]]) + 5*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/6
+        RightCollpaseBoundary = NewNodes5[0]
+        Nodes.append(NewNodes5)
+        N5 = NumberOfNodes+4
+        NewEdges = [[Branch[0],N1], [N1,N2],  [N2,N3], [N3,N4], [N4,N5], [N5,Branch[1] ]]
 
-    for j in NewEdges:
-        Edges.append(j)
+        for j in NewEdges:
+            Edges.append(j)
 
 
     Boundaryies  = [LeftCollpaseBoundary, RightCollpaseBoundary]
@@ -243,32 +246,22 @@ if __name__=="__main__":
 
     Directory = "/Users/jcrawshaw/docker-polnet-master/"
     # /Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/IdealMeshWIthCentralCollapse/Nonsymmetric/"
-    Directory = "/data/vascrem/MeshCollection/IdealisedNetwork/CollapseOf3By3Network/SampleNetworkForThesis/"
-    
+    Directory = "/data/vascrem/MeshCollection/IdealisedNetwork/CollapseOf3By3Network/AlteringDensity/"
+
+    # os.mkdir(Directory)
+
     # # # # Set up the points for the centerlines and write into a file to be read in cpp 
 
-    GenerationsHeigh = 3
+    Density = 1
+    GenerationsHeigh = 2
     Height =1.4
     HorizonatalEdgeLength =1
     GenerationsLong = 2
     alpha = m.pi/4
-    CollapseBranch =1
+    CollapseBranch =0
 
 
     Boundaries = CreateIdealSkeleton(Directory, GenerationsHeigh, GenerationsLong, Height, HorizonatalEdgeLength, alpha, 0, CollapseBranch)
-    # Collapse = [0.585,0.595,0.615,0.605]#[0.55,0.56,0.57,0.58,0.59,0.61,0.62,0.63,0.64,0.65]
-    # Collapse = [ 0.5962, 0.6092 , 0.6105 ,  0.6110, 0.6112, 0.6113, 0.6118, 0.6119, 0.6124, 0.6125, 0.6127, 0.6131, 0.6136, 0.6142,   0.6147]
-    Collapse = [0.5961, 0.5971,  0.6098, 0.6117, 0.6119, 0.6127, 0.6137, 0.6146]
-    #  HemeLB equivilant = [0.5906, 0.5920 , 0.5933, 0.5987, 0.6004, 0.6014, 0.6067, 0.6093
-    Collapse = [ 0.5815, 0.5824 ,   0.5932 ,   0.5941,    0.5951 ]
-    # HemeLB equivilant = [0.5783, 0.5810 , 0.5824, 0.5852, 0.5879 ]
-    Collapse = [0.59243]
-    # HemeLB equivilant = [0.5815 ]
-
-    # Haves
-
-     #  HemeLB equivilant = [0.5783, 0.5810 , Here need several 0.5815 , 0.5824, 0.5852, 0.5879 , 0.5906, 0.5920 , 0.5933, 0.5987, 0.6004, 0.6014, 0.6067, 0.6093]
-
     
     Collapse = [0.3]
     B=1
@@ -303,6 +296,7 @@ if __name__=="__main__":
         # ----  Clip Edges -------------# 
         print "Jess is good"
         print Clipped_Mesh
+        Clipped_Mesh = Directory+"ClippedMesh"+str(i)+".vtk"
         clip.clip_surface_with_plane(VTK_Meshremeshed,(ends[0],0,0), (1,0,0), Clipped_Mesh)
         clip.clip_surface_with_plane(Clipped_Mesh,(ends[1],0,0), (-1,0,0), Clipped_Mesh)
         print 'about to convert'

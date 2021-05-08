@@ -35,9 +35,19 @@ def run(args):
     convertFiles(args.indir, args.outdir)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="VTK to STL converter")
-    parser.add_argument('indir', help="Path to input directory.")
-    parser.add_argument('--outdir', '-o', default='output', help="Path to output directory.")
-    parser.set_defaults(func=run)
-    args = parser.parse_args()
-    ret = args.func(args)
+    # parser = argparse.ArgumentParser(description="VTK to STL converter")
+    # parser.add_argument('indir', help="Path to input directory.")
+    # parser.add_argument('--outdir', '-o', default='output', help="Path to output directory.")
+    # parser.set_defaults(func=run)
+    # args = parser.parse_args()
+    # ret = args.func(args)
+
+    Directory = '/data/vascrem/MeshCollection/IdealisedNetwork/VascularDensity/IncreasingMeshDensity/4/NewFolder'
+    # File = Directory+'combined.stl'
+    VTKFile= Directory+'mesh_1.0.vtu'
+    vtkMesh = Directory +'mesh_1.0.vtk'
+    # Clipped = Directory +'NewClippedMesh_.vtk'
+
+    # command = 'meshio-convert  ' + VTKFile + ' ' +vtkMesh
+    # subprocess.call(command, shell=True)
+    convertFiles(Directory,Directory )

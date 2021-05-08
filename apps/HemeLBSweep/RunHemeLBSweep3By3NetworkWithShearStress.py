@@ -67,9 +67,13 @@ def update_xml_file(period, working_directory):
     extr = ElementTree.SubElement(root, 'properties')
 
  
-    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(period), 'file': 'surface-traction.xtr'})
+    surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(period), 'file': 'surface-shearstress.xtr'})
     ElementTree.SubElement(surface, 'geometry', type='surface')
-    ElementTree.SubElement(surface, 'field', type='traction') 
+    ElementTree.SubElement(surface, 'field', type='shearstress') # vonmisesstress
+
+    # surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(period), 'file': 'surface-vonmisesstress.xtr'})
+    # ElementTree.SubElement(surface, 'geometry', type='surface')
+    # ElementTree.SubElement(surface, 'field', type='vonmisesstress')
 
     surface = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(period), 'file': 'surface-pressure.xtr'})
     ElementTree.SubElement(surface, 'geometry', type='surface')
@@ -78,6 +82,8 @@ def update_xml_file(period, working_directory):
     wholegeometry = ElementTree.SubElement(extr, 'propertyoutput', {'period': str(period), 'file': 'wholegeometry-velocity.xtr'})
     ElementTree.SubElement(wholegeometry, 'geometry', type='whole')
     ElementTree.SubElement(wholegeometry, 'field', type='velocity')
+
+
 
     # Save XML file to disk
     tree.write(filename)
@@ -196,8 +202,8 @@ def EditRunTime(working_directory):
     #Create temp file
     file_path = filename
    
-    pattern = '<steps units="lattice" value="4000" />'
-    subst = '<steps units="lattice" value="10000" />'
+    pattern = '<steps units="lattice" value="8000" />'
+    subst = '<steps units="lattice" value="7000" />'
 
     fh, abs_path = tempfile.mkstemp()
     with os.fdopen(fh,'w') as new_file:
@@ -227,7 +233,7 @@ if __name__=="__main__":
 
     # chmod 700 RunHemeLBSweepBash
     # subprocess.call("chmod 700 RunHemeLBCollapse", shell=True)
-    TerminalOutputFolder = '/data/vascrem/testoutput/HemeLBSweep/FlowThrough3X3Collapse/'
+    TerminalOutputFolder = '/data/vascrem/testoutput/HemeLBSweep/FlowThrough3X3CollapseWithShearStress/'
     Collapse =['0.5924' ]#, '0.5941', '0.5951' , '0.5961','0.5971' , '0.6098' , '0.6117', '0.6119', '0.6127', '0.6137', '0.6146']
  
     UpperBranchFolder = TerminalOutputFolder + 'UpperBranchFolder/AroundUpperBranchAround6/'
@@ -320,11 +326,12 @@ if __name__=="__main__":
 
 
 # -----------------------------------------------------------------------------
-
-    UpperBranchFolder = TerminalOutputFolder + 'UpperBranchFolder/'
-    Collapse = ['1','2','3','4','5','6','7','8','9','10','0','5.9','6','6.1','5.5','5.6','5.7','5.8','6.2','6.3','6.4','6.5']
+    TerminalOutputFolder = '/data/vascrem/testoutput/HemeLBSweep/FlowThrough3X3CollapseWithShearStress/'
     
-    Parallel = 3
+    UpperBranchFolder = TerminalOutputFolder + 'UpperBranchFolder/'
+    Collapse = ['1']#'4','2','3','5','6','7','8','9','10','0','5.9','6','6.1','5.5','5.6','5.7','5.8','6.2','6.3','6.4','6.5']
+    
+    Parallel = 1
     SleepyTime = 100
     AvaliablePaths = range(Parallel)
     print AvaliablePaths
@@ -334,113 +341,104 @@ if __name__=="__main__":
         if path.isdir(mHemeLBDirectory)==0:
             os.mkdir(mHemeLBDirectory)
         if path.isdir(mHemeLBDirectory+'Results/')==1:
-            now = datetime.now()
-            current_time = now.strftime("%H:%M:%S")
-            os.rename(mHemeLBDirectory+'Results/',mHemeLBDirectory+'Results_'+str(current_time)+'/')
-              
-        # dX = 0.08/41.0
+            # shutil.rmtree(mHemeLBDirectory+'Results/', ignore_errors=False, onerror=None)
+            # now = datetime.now()
+            # current_time = now.strftime("%H:%M:%S")
+            # os.rename(mHemeLBDirectory+'Results/',mHemeLBDirectory+'Results_'+current_time+'/')
 
-        # write_pr2(mHemeLBDirectory, 10001, dX)
-        # run_hemelb_setup(mHemeLBDirectory)
-
-        # Update the xml file
-        update_xml_file(int( 10000*0.95), mHemeLBDirectory)
-        EditRunTime(mHemeLBDirectory)
-
-        # EditTimeStep(mHemeLBDirectory)
         # EditRunTime(mHemeLBDirectory)
-        # print "About to run HemeLB"
+
+        # update_xml_file(7000*0.99, mHemeLBDirectory)
+
+        print "About to run HemeLB"
         # # Run HemeLB
-        RunHemeLB = 'mpirun -np 10 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
+        # Copiedxml = '/data/vascrem/testoutput/HemeLBSweep/FlowThrough3X3CollapseWithShearStress/UpperBranchFolder/1/config.xml'
+        # NewXml  =mHemeLBDirectory+ 'config.xml'
+        # mv =  'cp ' +Copiedxml +' '+NewXml
+        # subprocess.call(mv, shell=True)
+
+        RunHemeLB = 'mpirun -np 31 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
         
- 
         TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
         # # Generate the new config.vtu
-        GmyUnstructuredGridReader ="python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
-        # Generate the flow vtus
-        GenerateFlowVtus = "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "Results/Extracted/surface-traction.xtr " + mHemeLBDirectory + "Results/Extracted/wholegeometry-velocity.xtr "
+        GmyUnstructuredGridReader =" " #python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
+        # Generate the flow vtus                                                                                                                                                                           surface-shearstress.xtr                                                     
+        GenerateFlowVtus = "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "Results/Extracted/surface-shearstress.xtr " + mHemeLBDirectory + "Results/Extracted/wholegeometry-velocity.xtr "
   
   
         WaitFileGeneration = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
         subprocess.Popen(['./RunHemeLBSweepBash', RunHemeLB, TerminalOutput, GmyUnstructuredGridReader, GenerateFlowVtus, WaitFileGeneration ])
     
     
-        AvaliablePaths.remove(Core) 
-        # Check if all positions are taken
-        while len(AvaliablePaths) ==0:
-            time.sleep(SleepyTime)
-            # print "Awake and checking for spare cores" 
-            print "Sleep Time"
-            for P in range(Parallel):
-                OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
-                if path.exists(OutputFile):
-                    AvaliablePaths.append(P)
-                    os.remove(OutputFile)
-            if len(AvaliablePaths) >0:
-                print AvaliablePaths, "Have found a spare core or two :-) " 
-                print len(AvaliablePaths)
-                print time.time() - t0, "seconds time"
+        # AvaliablePaths.remove(Core) 
+        # # Check if all positions are taken
+        # while len(AvaliablePaths) ==0:
+        #     time.sleep(SleepyTime)
+        #     # print "Awake and checking for spare cores" 
+        #     print "Sleep Time"
+        #     for P in range(Parallel):
+        #         OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
+        #         if path.exists(OutputFile):
+        #             AvaliablePaths.append(P)
+        #             os.remove(OutputFile)
+        #     if len(AvaliablePaths) >0:
+        #         print AvaliablePaths, "Have found a spare core or two :-) " 
+        #         print len(AvaliablePaths)
+        #         print time.time() - t0, "seconds time"
 
 # -----------------------------------------------------------------------------
 
-    MiddleBranchFolder = TerminalOutputFolder + 'MiddleBranchFolder/'
-    Collapse = ['1','2','3','4','5','6','7','8','9','10','0','5.9','6','6.1','5.5','5.6','5.7','5.8','6.2','6.3','6.4','6.5']
+    # MiddleBranchFolder = TerminalOutputFolder + 'MiddleBranchFolder/'
+    # Collapse = ['1','2','3','4','5','6','7','8','9','10','0','5.9','6','6.1','5.5','5.6','5.7','5.8','6.2','6.3','6.4','6.5']
     
-    Parallel = 10
-    SleepyTime = 100
-    AvaliablePaths = range(Parallel)
-    print AvaliablePaths
-    for i in Collapse:
-        Core = AvaliablePaths[0] 
-        mHemeLBDirectory = MiddleBranchFolder+i+'/'
-        if path.isdir(mHemeLBDirectory)==0:
-            os.mkdir(mHemeLBDirectory)
-        if path.isdir(mHemeLBDirectory+'Results/')==1:
-            now = datetime.now()
-            current_time = now.strftime("%H:%M:%S")
-            os.rename(mHemeLBDirectory+'Results/',mHemeLBDirectory+'Results_'+str(current_time)+'/')
-              
-        # dX = 0.08/41.0
-    
-        # write_pr2(mHemeLBDirectory, 4001, dX)
-        # run_hemelb_setup(mHemeLBDirectory)
+    # Parallel = 10
+    # SleepyTime = 100
+    # AvaliablePaths = range(Parallel)
+    # print AvaliablePaths
+    # for i in Collapse:
+    #     Core = AvaliablePaths[0] 
+    #     mHemeLBDirectory = MiddleBranchFolder+i+'/'
+    #     if path.isdir(mHemeLBDirectory)==0:
+    #         os.mkdir(mHemeLBDirectory)
+    #     if path.isdir(mHemeLBDirectory+'Results/')==1:
+    #         # now = datetime.now()
+    #         # current_time = now.strftime("%H:%M:%S")
+    #         os.rename(mHemeLBDirectory+'Results/',mHemeLBDirectory+'Results_WallShearStress/')
 
-        # Update the xml file
-        # update_xml_file(int( 4001*0.95), mHemeLBDirectory)
 
-        # Update the xml file
-        update_xml_file(int( 10000*0.95), mHemeLBDirectory)
-        EditRunTime(mHemeLBDirectory)
+    #     Copiedxml = '/data/vascrem/testoutput/HemeLBSweep/FlowThrough3X3CollapseWithShearStress/UpperBranchFolder/1/config.xml'
+    #     NewXml  =mHemeLBDirectory+ 'config.xml'
+    #     mv =  'cp ' +Copiedxml +' '+NewXml
+    #     subprocess.call(mv, shell=True)
 
-        print "About to run HemeLB"
-        # Run HemeLB
-        # EditRunTime(mHemeLBDirectory)
-        RunHemeLB = 'mpirun -np 3 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
+
+    #     print "About to run HemeLB"
+       
+    #     RunHemeLB = 'mpirun -np 3 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
         
  
-        TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
-        # # Generate the new config.vtu
-        GmyUnstructuredGridReader ="python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
-        # Generate the flow vtus
-        GenerateFlowVtus = "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "Results/Extracted/surface-traction.xtr " + mHemeLBDirectory + "Results/Extracted/wholegeometry-velocity.xtr " 
-  
-  
-        WaitFileGeneration = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
-        subprocess.Popen(['./RunHemeLBSweepBash', RunHemeLB, TerminalOutput, GmyUnstructuredGridReader, GenerateFlowVtus, WaitFileGeneration ])
+    #     TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
+    #     # # Generate the new config.vtu
+    #     GmyUnstructuredGridReader =" " #python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
+    #     # Generate the flow vtus
+    #     GenerateFlowVtus = "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "Results/Extracted/surface-shearstress.xtr " + mHemeLBDirectory + "Results/Extracted/wholegeometry-velocity.xtr "
+    
+    #     WaitFileGeneration = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
+    #     subprocess.Popen(['./RunHemeLBSweepBash', RunHemeLB, TerminalOutput, GmyUnstructuredGridReader, GenerateFlowVtus, WaitFileGeneration ])
     
     
-        AvaliablePaths.remove(Core) 
-        # Check if all positions are taken
-        while len(AvaliablePaths) ==0:
-            time.sleep(SleepyTime)
-            # print "Awake and checking for spare cores" 
-            print "Sleep Time"
-            for P in range(Parallel):
-                OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
-                if path.exists(OutputFile):
-                    AvaliablePaths.append(P)
-                    os.remove(OutputFile)
-            if len(AvaliablePaths) >0:
-                print AvaliablePaths, "Have found a spare core or two :-) " 
-                print len(AvaliablePaths)
-                print time.time() - t0, "seconds time"
+    #     AvaliablePaths.remove(Core) 
+    #     # Check if all positions are taken
+    #     while len(AvaliablePaths) ==0:
+    #         time.sleep(SleepyTime)
+    #         # print "Awake and checking for spare cores" 
+    #         print "Sleep Time"
+    #         for P in range(Parallel):
+    #             OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
+    #             if path.exists(OutputFile):
+    #                 AvaliablePaths.append(P)
+    #                 os.remove(OutputFile)
+    #         if len(AvaliablePaths) >0:
+    #             print AvaliablePaths, "Have found a spare core or two :-) " 
+    #             print len(AvaliablePaths)
+    #             print time.time() - t0, "seconds time"

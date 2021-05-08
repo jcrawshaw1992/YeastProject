@@ -153,7 +153,7 @@ def CreateIdealSkeleton(Directory, Generations,GenerationsX,Height,HorizonatalEd
         for i in Nodes:
             if len(i)>1:
                 counter =  counter +1
-                if (i[1] ==1.4 and  i[0]>LeftBound-0.01 and i[0]< RightBound+0.01):
+                if (i[1] ==1.4 and  i[0]>LeftBound-0.1 and i[0]< RightBound+0.1):
                     Branch.append(counter)
     # pdb.set_trace()
     Edges.remove(Branch)
@@ -161,7 +161,7 @@ def CreateIdealSkeleton(Directory, Generations,GenerationsX,Height,HorizonatalEd
 
     RightCollpaseBoundary =  Nodes[Branch[1]][0]
     LeftCollpaseBoundary = Nodes[Branch[0]][0]
-    NumberOfIntervals = 100
+    NumberOfIntervals = 10
     for k in range(1, NumberOfIntervals):
 
         # NewNodes =  np.array(Nodes[Branch[0]]) + k*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/NumberOfIntervals
@@ -224,10 +224,8 @@ if __name__=="__main__":
 
     print "I love Jessie"
     #    --- 
-    Alpha = [m.pi/6, m.pi/3, m.pi/2.2] 
-    FileLabels = ['/PI_6/', '/PI_3/', '/PI_2.2/'] 
-    FileLabels = ['/PI_4/'] 
-    Alpha = [m.pi/4] 
+    Alpha = [m.pi/3] 
+    FileLabels = ['/PI_3/'] 
     counter = -1
     for alpha in Alpha:
         counter = counter+1
@@ -240,22 +238,23 @@ if __name__=="__main__":
 
         Bound1  = 2* HorizonatalEdgeLength+2*xia 
         Bound2  = 3* HorizonatalEdgeLength+2*xia 
+
         Bounds = [Bound1, Bound2]
         print Bounds
         ends = [0.4,7.4]
-    # scp ~/Chaste/projects/VascularRemodelling/apps/CreateMeshes/GenerateVascularMeshWithCentralCollapse_BifucationAngle2.py vascrem@6200rs-osborne-l.science.unimelb.edu.au:///home/vascrem//Chaste/projects/VascularRemodelling/apps/CreateMeshes/GenerateVascularMeshWithCentralCollapse_BifucationAngle2.py
+    # scp ~/Chaste/projects/VascularRemodelling/apps/GenerateVascularMeshWithCentralCollapse_BifucationAngle.py vascrem@6200rs-osborne-l.science.unimelb.edu.au:///home/vascrem//Chaste/projects/VascularRemodelling/apps/GenerateVascularMeshWithCentralCollapse_BifucationAngle.py
     
         # // need to get the right collapse points here matlabd 
         # Collapse = [0, 0.1227, 0.2248, 0.3178, 0.4170]
-        Collapse = [  0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000 ]# 0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000]
-        # Collapse = [ 0, 0.1227, 0.2248, 0.3178, 0.4170 , 0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000]
+        Collapse = [ 0, 0.1227, 0.2248, 0.3178, 0.4170, 0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000]
+        Collapse = [  0.2248,0.1227]
         for i in Collapse:
             CenterLines_filename = AngleDirectory + "Centerlines_"+str(i)+".vtp"
 
             Boundaries = CreateIdealSkeleton(AngleDirectory, GenerationsHeigh, GenerationsLong, Height, HorizonatalEdgeLength, alpha, 0, 1, Bounds)
-            
+
             # ---- Read points into the vtp writer to generate a centerlines.vtp file -------------# 
-            command = CPP_Centerlines_vtp_writer + ' -ofile ' + CenterLines_filename + ' -CenterlinePoints ' +AngleDirectory+ 'CenterlinePoints.txt -CenterlineEdges ' + AngleDirectory +'CenterlineEdges.txt -Radius 0.2 -LeftBound '+str(Boundaries[0])+' -RightBound '+str(Boundaries[1])+' -Collapse ' + str(i) + ' -Branch ' + str(1)
+            command = CPP_Centerlines_vtp_writer + ' -ofile ' + CenterLines_filename + ' -CenterlinePoints ' +AngleDirectory+ 'CenterlinePoints.txt -CenterlineEdges ' + AngleDirectory +'CenterlineEdges.txt -Radius 0.2 -LeftBound '+str(Boundaries[0]+0.00001)+' -RightBound '+str(Boundaries[1]-0.0001)+' -Collapse ' + str(i) + ' -Branch ' + str(1)
             subprocess.call(command, shell=True)
 
 
@@ -265,13 +264,13 @@ if __name__=="__main__":
             
             Outputstl = AngleDirectory+"Mesh_"+str(i)+".stl" 
 
-            # ---- Interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller -------------# 
-            SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ CenterLines_filename + ' -length 0.01 -ofile '+ CenterLines_filename
-            subprocess.call(SmoothCenterlinesCommond, shell=True)
+            # # ---- Interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller -------------# 
+            # SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ CenterLines_filename + ' -length 0.01 -ofile '+ CenterLines_filename
+            # subprocess.call(SmoothCenterlinesCommond, shell=True)
         
             # # ----  Generate a mesh from the centerlines file -------------# 
         
-            if i == 0.1 or i ==  0.2 or i ==  0.3:
+            if i < 0.3:
                 command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 210 200 200 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
                 subprocess.call(command, shell=True)
             else:
@@ -279,11 +278,7 @@ if __name__=="__main__":
                 subprocess.call(command, shell=True)
 
             # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-            if i == 0.1:
-                # VTK_Mesh= Directory+"MeshClipped1Cource.vtk"
-                command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
-                subprocess.call(command, shell=True)
-            elif i < 0.35:
+            if i < 0.35:
                 command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.01 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
                 subprocess.call(command, shell=True)
             else:
@@ -316,17 +311,6 @@ if __name__=="__main__":
             subprocess.call(convert, shell=True)
             print "Done one"
         
-
-
-            print 'Scale'
-            # ----  Scale files  -------------# 
-            Scale = 'vmtkmeshscaling -ifile '+ Outputvtu + ' -scale 0.20  --pipe vmtkmeshwriter -entityidsarray CellEntityIds -ofile '+ ScaledMesh
-            subprocess.call(Scale, shell=True)
-
-            # ----  Convert files  -------------# 
-            convert = 'meshio-convert '+ ScaledMesh +'  '+ ScaledMeshstl
-            subprocess.call(convert, shell=True)
-
     print " Finished Creating files "
         
         

@@ -226,8 +226,8 @@ if __name__=="__main__":
     #    --- 
     Alpha = [m.pi/6, m.pi/3, m.pi/2.2] 
     FileLabels = ['/PI_6/', '/PI_3/', '/PI_2.2/'] 
-    FileLabels = ['/PI_2.2/'] 
-    Alpha = [m.pi/2.2] 
+    FileLabels = ['/PI_4/'] 
+    Alpha = [m.pi/4] 
     counter = -1
     for alpha in Alpha:
         counter = counter+1
@@ -243,11 +243,12 @@ if __name__=="__main__":
         Bounds = [Bound1, Bound2]
         print Bounds
         ends = [0.4,7.4]
-    # scp ~/Chaste/projects/VascularRemodelling/apps/GenerateVascularMeshWithCentralCollapse_BifucationAngle.py vascrem@6200rs-osborne-l.science.unimelb.edu.au:///home/vascrem//Chaste/projects/VascularRemodelling/apps/GenerateVascularMeshWithCentralCollapse_BifucationAngle.py
+    # scp ~/Chaste/projects/VascularRemodelling/apps/CreateMeshes/GenerateVascularMeshWithCentralCollapse_BifucationAngle.py vascrem@6200rs-osborne-l.science.unimelb.edu.au:///home/vascrem//Chaste/projects/VascularRemodelling/apps/CreateMeshes/GenerateVascularMeshWithCentralCollapse_BifucationAngle.py
     
         # // need to get the right collapse points here matlabd 
         # Collapse = [0, 0.1227, 0.2248, 0.3178, 0.4170]
-        Collapse = [ 0, 0.1227, 0.2248, 0.3178, 0.4170 , 0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000]
+        Collapse = [ 0, 0.1227, 0.2248, 0.3178, 0.4170 ]# 0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000]
+        # Collapse = [ 0, 0.1227, 0.2248, 0.3178, 0.4170 , 0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000]
         for i in Collapse:
             CenterLines_filename = AngleDirectory + "Centerlines_"+str(i)+".vtp"
 
