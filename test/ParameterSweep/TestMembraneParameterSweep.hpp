@@ -177,9 +177,9 @@ public:
         }
         else
         {
-            DilationParameter =pow(10,-10);
-            AreaParameter=pow(10,-10);
-            DeformationParamter=pow(10,-10);
+            DilationParameter =10;
+            AreaParameter=10;
+            DeformationParamter=10;
 
         }
 
