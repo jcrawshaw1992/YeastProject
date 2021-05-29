@@ -222,7 +222,7 @@ public:
         std::string ParameterSet = out.str();
         std::string output_dir = ArchivedDirectory + "/Parameters/";
 
-        Load and fix any settings in the simulator
+        // Load and fix any settings in the simulator
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(ArchivedDirectory, 10);
 
         /* Update the ouput directory for the population  */
