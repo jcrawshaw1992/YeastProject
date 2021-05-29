@@ -170,6 +170,7 @@ public:
         // Load and fix any settings in the simulator
         std::string ArchivedDirectory = "MembraneParameterSweep/Cylinder";
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(ArchivedDirectory, 10);
+        p_simulator->SetEndTime(20);
         p_simulator->Solve();
 
     }
