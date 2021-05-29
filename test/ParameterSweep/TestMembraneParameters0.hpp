@@ -36,14 +36,14 @@
 #include "OutwardsPressureWithBreaks.hpp"
 #include "RemeshingTriggerOnHeteroMeshModifier.hpp"
 #include "CylinderOutwardsPressure.hpp"
-// #include "CylinderOutwardsPressure.hpp"
+#include "CylinderOutwardsPressure.hpp"
 
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
     void TestSetUpCylinderArchive() throw(Exception)
     {
-        double EndTime = 15;
+        double EndTime = 10;
         double scale = 1e3;
         double Length = 20e-6 * scale;
         // double Radius = 1e-6 * scale; // I want this to grow to 10
@@ -166,7 +166,8 @@ public:
 
         // Load and fix any settings in the simulator
         std::string ArchivedDirectory = "MembraneParameterSweep/Cylinder";
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(ArchivedDirectory, 15);
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(ArchivedDirectory, 10);
+        p_simulator->Solve();
 
     }
 
