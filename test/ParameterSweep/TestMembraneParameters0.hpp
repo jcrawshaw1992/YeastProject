@@ -7,7 +7,7 @@
 
 #include <cxxtest/TestSuite.h>
 #include "UblasCustomFunctions.hpp"
-#include "Timer.hpp"
+
 // #include <cstdio>
 // #include <ctime>
 // #include <cmath>
@@ -43,7 +43,6 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
     void TestSetUpCylinderArchive() throw(Exception)
     {
-        Timer::Reset();
         double EndTime = 30;
         double scale = 1e3;
         double Length = 20e-6 * scale;
@@ -161,8 +160,6 @@ public:
         TRACE("Set to run archiving sim")
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
-
-        Timer::PrintAndReset("CG");
     }
 
     void offTestParametersOverCylinder1A() throw(Exception)
