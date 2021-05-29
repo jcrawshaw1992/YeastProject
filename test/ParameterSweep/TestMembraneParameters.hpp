@@ -33,7 +33,7 @@
 #include "MembraneDeformationForce.hpp"
 // #include "OutwardsPressure.hpp"
 // #include "OutwardsPressureWithBreaks.hpp"
-#include "CylinderOutwardsPressure.hpp"
+// #include "CylinderOutwardsPressure.hpp"
 #include "RemeshingTriggerOnHeteroMeshModifier.hpp"
 
 class TestRemeshing : public AbstractCellBasedTestSuite
