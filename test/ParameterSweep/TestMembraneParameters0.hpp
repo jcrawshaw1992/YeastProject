@@ -32,10 +32,8 @@
 #include "FixedRegionBoundaryCondition.hpp"
 #include "HemeLBForce.hpp"
 #include "MembraneDeformationForce.hpp"
-#include "OutwardsPressure.hpp"
 #include "OutwardsPressureWithBreaks.hpp"
 #include "RemeshingTriggerOnHeteroMeshModifier.hpp"
-#include "CylinderOutwardsPressure.hpp"
 #include "CylinderOutwardsPressure.hpp"
 
 class TestRemeshing : public AbstractCellBasedTestSuite
