@@ -43,10 +43,10 @@ if __name__=="__main__":
     t0 = time.time()
     GenerateRunner =0
     if GenerateRunner ==1:
-        command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParameters.hpp"
+        command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParameterSweep.hpp"
         subprocess.call(command, shell=True)
 
-    chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersRunner '
+    chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParameterSweepRunner '
     TerminalOutputFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/SweepTerminalOutputs/"
 
     # if path.isdir("MembraneParameterSweep/Cylinder/")==0:
@@ -58,9 +58,9 @@ if __name__=="__main__":
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
     # AreaParameter = [5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10]
-    AreaParameter = [ 10]#, 9, 8,7,6,  5] 
-    DilationParameter = [ 9.5]#, 10, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9]
-    DeformationParamter = [ 9.5]#, 10 , 5 , 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9]
+    AreaParameter = [ 10, 9, 8,7,6,  5] 
+    DilationParameter = [ 9.5, 10, 5, 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9]
+    DeformationParamter = [ 9.5, 10 , 5 , 5.5, 6, 6.5, 7, 7.5, 8, 8.5, 9]
 
     # AreaParameter = [8,9, 10]
     # DilationParameter = [ 8, 8.5, 9, 9.5, 10]
@@ -75,8 +75,15 @@ if __name__=="__main__":
         for j in DilationParameter:
             for k in DeformationParamter:
                 Core = AvaliablePaths[0]
+                if i <5.5 and j<5.5 and k<5.5:
+                    SimulationTime = ' 5'
+                elif i <7.3 and j<7.3 and k<7.3:
+                    SimulationTime = ' 10'
+                else:
+                    SimulationTime = ' 30'
+
                 # Input1 = chaste_run_exe +' -ArchivedDirectory ParameterSweep/Cylinder/Area_' + str(i) + '_Dil_' + str(j) + '_Def_' + str(k) 
-                Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt 0.00002 -NewEndTime 30 '
+                Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt 0.0001 -NewEndTime'+SimulationTime
                 Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
                 Input3 = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
                 subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])

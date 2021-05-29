@@ -268,11 +268,11 @@ public:
         //                                          Strength,hetro,stepsize, setupsolve
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
 
-        // if (AreaParameter < (double)7 || DilationParameter < (double)7 || DeformationParamter < (double)7)
-        // {
-        //     p_Mesh_modifier->SetStartingParameterForSlowIncrease(StartingParameterForSlowIncrease);
-        //     p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
-        // }
+        if (AreaParameter < (double)7 || DilationParameter < (double)7 || DeformationParamter < (double)7)
+        {
+            p_Mesh_modifier->SetStartingParameterForSlowIncrease(StartingParameterForSlowIncrease);
+            p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
+        }
         p_simulator->Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
         SimulationTime::Instance()->Destroy();
