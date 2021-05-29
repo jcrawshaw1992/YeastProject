@@ -157,9 +157,17 @@ public:
             boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.005));
             simulator.AddCellPopulationBoundaryCondition(p_condition);
         }
-        
+
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+        SimulationTime::Instance()->Destroy();
+        SimulationTime::Instance()->SetStartTime(0.0);
+
+
+        // Load and fix any settings in the simulator
+        std::string ArchivedDirectory = "MembraneParameterSweep/Cylinder";
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(ArchivedDirectory, 15);
+
     }
 
     void offTestParametersOverCylinder1A() throw(Exception)
