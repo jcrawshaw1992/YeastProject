@@ -184,7 +184,7 @@ public:
         }
 
         PRINT_3_VARIABLES(AreaParameter, DilationParameter, DeformationParamter)
-        double dt= 0.0001;
+        double dt= 0.0005;
          if (CommandLineArguments::Instance()->OptionExists("-dt"))
         {
             dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
