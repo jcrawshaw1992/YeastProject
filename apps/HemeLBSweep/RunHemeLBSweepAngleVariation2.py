@@ -390,6 +390,8 @@ if __name__=="__main__":
     #             GmyUnstructuredGridReader =" " #python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
     #             GenerateFlowVtus = " " #python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu "  + mHemeLBDirectory + "Results/Extracted/surface-traction.xtr "  + mHemeLBDirectory + "Results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "Results/Extracted/wholegeometry-velocity.xtr "
         
+
+python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu "  + mHemeLBDirectory + "Results/Extracted/surface-traction.xtr "  + mHemeLBDirectory + "Results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "Results/Extracted/wholegeometry-velocity.xtr 
     #             subprocess.Popen(['./RunHemeLBSweepBash', RunHemeLB, TerminalOutput, GmyUnstructuredGridReader,GenerateFlowVtus, WaitFileGeneration ])
  
 

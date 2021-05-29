@@ -31,27 +31,31 @@ void OutwardsPressureWithBreaks::SetRadiusThreshold(double RadialThreshold)
 void OutwardsPressureWithBreaks::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
     double Growth =0;
+    double CurrentRadius =0;
     if (mGrowthThreshold!=0)
     {
          Node<3>* p_node = rCellPopulation.GetNode(mNode);
         c_vector<double, 3> Position = p_node->rGetLocation(); 
+        Position[2] = 0;
+        CurrentRadius = sqrt(Position[0]* Position[0]+Position[1]*Position[0]);
+  
         
-        // Growth = norm_2(Position-mInitialPosition);
-        bool Cylinder =0;
-        if (Cylinder ==1)
-        {
-             Growth = norm_2(Position)/norm_2(mInitialPosition);
-        }  
-        else // Network     
-        {
-            Growth = abs(Position[2]/mInitialPosition[2]);
-            PRINT_4_VARIABLES(Position[2], mInitialPosition[2],Growth, mRadialThreshold)
+        // // Growth = norm_2(Position-Position);
+        // bool Cylinder =1;
+        // if (Cylinder ==1)
+        // {
+        //      Growth = norm_2(Position)/norm_2(mInitialPosition);
+        // }  
+        // else // Network     
+        // {
+        //     Growth = abs(Position[2]/mInitialPosition[2]);
+        //     // PRINT_4_VARIABLES(Position[2], mInitialPosition[2],Growth, mRadialThreshold)
     
-        } 
+        // } 
 
     }
     
-     if (Growth < mRadialThreshold && mGrowthThreshold !=0)
+     if (CurrentRadius < mRadialThreshold * mInitalRadius && mGrowthThreshold !=0)
      {  
         // TRACE("RUNNING")
         HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);        
@@ -60,30 +64,35 @@ void OutwardsPressureWithBreaks::AddForceContribution(AbstractCellPopulation<2, 
                 cell_iter != rCellPopulation.End();
                 ++cell_iter)
         {
-            cell_iter->GetCellData()->SetItem("FixedBoundary", 0);
+            // cell_iter->GetCellData()->SetItem("FixedBoundary", 0);
             unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
             Node<3>* p_node = rCellPopulation.GetNode(node_index);
+            c_vector<double, 3> Normal = p_node->rGetLocation();
+            Normal[2] = 0;
 
-            c_vector<double, 3> Normal = zero_vector<double>(3);
+            // Turned off for the sake of speed
 
-            std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
+            // c_vector<double, 3> Normal = zero_vector<double>(3);
 
-            assert(containing_elements.size() > 0);
-            for (std::set<unsigned>::iterator iter = containing_elements.begin();
-                    iter != containing_elements.end();
-                    ++iter)
-            {
-                Node<3>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
-                Node<3>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
-                Node<3>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
+            // std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
 
-                c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
-                c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
+            // assert(containing_elements.size() > 0);
+            // for (std::set<unsigned>::iterator iter = containing_elements.begin();
+            //         iter != containing_elements.end();
+            //         ++iter)
+            // {
+            //     Node<3>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
+            //     Node<3>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
+            //     Node<3>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
 
-                c_vector<double, 3> normalVector = VectorProduct(vector_12, vector_13);
-                Normal += normalVector;
-            }
+            //     c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
+            //     c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
+
+            //     c_vector<double, 3> normalVector = VectorProduct(vector_12, vector_13);
+            //     Normal += normalVector;
+            // }
             Normal /=norm_2(Normal);
+     
         
             c_vector<double, 3> force = mStrength *Normal; // / norm_2(cell_location);
             
@@ -94,7 +103,7 @@ void OutwardsPressureWithBreaks::AddForceContribution(AbstractCellPopulation<2, 
     }else
     {
         TRACE("Have max radius")
-        PRINT_VARIABLE(Growth)
+        // PRINT_VARIABLE(Growth)
         mGrowthThreshold =1;
     }
     
@@ -106,6 +115,8 @@ void OutwardsPressureWithBreaks::SetInitialPosition(AbstractCellPopulation<2, 3>
 {
     Node<3>* p_node = rCellPopulation.GetNode(node);
     mInitialPosition = p_node->rGetLocation(); 
+    mInitialPosition[2]=0;
+    mInitalRadius = sqrt(mInitialPosition[0]* mInitialPosition[0]+mInitialPosition[1]*mInitialPosition[0]);
     mNode = node;
     mGrowthThreshold =1;
 }

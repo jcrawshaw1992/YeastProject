@@ -207,13 +207,15 @@ if __name__=="__main__":
     CPP_Centerlines_vtp_writer = "/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/GenerateIdealVascularMesh/Test_VTP_writer_WithCollapseRunner"
 
     Directory = "/Users/jcrawshaw/docker-polnet-master/"
-    Directory = "/data/vascrem/MeshCollection/IdealisedNetwork/AngleVariation_3X3NetworkExtended/"
+    Directory = "/data/vascrem/MeshCollection/IdealisedNetwork/TestDirectory/"
     if path.isdir(Directory)==0:
         os.mkdir(Directory)
         
     
     # # # # Set up the points for the centerlines and write into a file to be read in cpp 
     L = 7.8 # Total length of network
+
+    # [0.846,1.004,1.163,1.3215,0.7/0.2,1.638,1.797, ]
     GenerationsHeigh = 3
     Height =1.4
     OldHorizonatalEdgeLength =1
@@ -235,7 +237,10 @@ if __name__=="__main__":
         if path.isdir(AngleDirectory)==0:
             os.mkdir(AngleDirectory)
 
-        HorizonatalEdgeLength = 0.2*(L - 4*y/m.tan(alpha))
+        # HorizonatalEdgeLength = 0.2*(L - 4*y/m.tan(alpha))
+
+
+        HorizonatalEdgeLength =2
         xia = y/m.tan(alpha)
 
         Bound1  = 2* HorizonatalEdgeLength+2*xia 
@@ -247,7 +252,7 @@ if __name__=="__main__":
     
         # // need to get the right collapse points here matlabd 
         # Collapse = [0, 0.1227, 0.2248, 0.3178, 0.4170]
-        Collapse = [ 0, 0.1227, 0.2248, 0.3178, 0.4170 ]# 0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000]
+        Collapse = [ 0]#, 0.1227, 0.2248, 0.3178, 0.4170 ]# 0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000]
         # Collapse = [ 0, 0.1227, 0.2248, 0.3178, 0.4170 , 0.5124, 0.6119, 0.7080, 0.8059, 0.9032, 1.0000]
         for i in Collapse:
             CenterLines_filename = AngleDirectory + "Centerlines_"+str(i)+".vtp"

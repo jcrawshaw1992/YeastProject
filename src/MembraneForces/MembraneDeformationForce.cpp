@@ -17,35 +17,45 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
 {
    HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
 
-    std::map<unsigned, c_vector<double, 3> > MembraneForceMap;
-    for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
-        cell_iter != rCellPopulation.End();
-        ++cell_iter)
-    {
-        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-        MembraneForceMap[node_index] = Create_c_vector(0,0,0);
-    }
+    // std::map<unsigned, c_vector<double, 3> > MembraneForceMap;
+    // for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
+    //     cell_iter != rCellPopulation.End();
+    //     ++cell_iter)
+    // {
+    //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+    //     MembraneForceMap[node_index] = Create_c_vector(0,0,0);
+    // }
+
+
+    CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(100);
+
+    double Kalpha =p_cell->GetCellData()->GetItem("AreaDilationModulus");
+    double KS =p_cell->GetCellData()->GetItem("ShearModulus");
+    double KA = p_cell->GetCellData()->GetItem("AreaConstant"); 
+      
+
+
 
     for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
          elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
          ++elem_iter)
     {
+        // THis will be needed later -- going to need to figure out how to stream line this later 
+        // double Kalpha = 0;
+        // double KA = 0;
+        // double KS = 0;
+        // for (int i = 0; i < 3; i++)
+        // {
+        //     unsigned node_index = elem_iter->GetNodeGlobalIndex(i);
+        //     CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
 
-        double Kalpha = 0;
-        double KA = 0;
-        double KS = 0;
-        for (int i = 0; i < 3; i++)
-        {
-            unsigned node_index = elem_iter->GetNodeGlobalIndex(i);
-            CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
-
-            Kalpha +=p_cell->GetCellData()->GetItem("AreaDilationModulus");
-            KS +=p_cell->GetCellData()->GetItem("ShearModulus");
-            KA += p_cell->GetCellData()->GetItem("AreaConstant"); 
-        }
-        Kalpha/=3;
-        KA/=3;
-        KS/=3;
+        //     Kalpha +=p_cell->GetCellData()->GetItem("AreaDilationModulus");
+        //     KS +=p_cell->GetCellData()->GetItem("ShearModulus");
+        //     KA += p_cell->GetCellData()->GetItem("AreaConstant"); 
+        // }
+        // Kalpha/=3;
+        // KA/=3;
+        // KS/=3;
         // PRINT_3_VARIABLES(Kalpha,KA,KS ) 
 
         unsigned elem_index = elem_iter->GetIndex();
@@ -54,17 +64,18 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
         Node<3>* pNode1 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(1));
         Node<3>* pNode2 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(2));
 
-        c_vector<double, 3> Vector1 = pNode1->rGetLocation();
-        c_vector<double, 3> Vector2 = pNode2->rGetLocation();
-        c_vector<double, 3> Vector0 = pNode0->rGetLocation();
+        // c_vector<double, 3> Vector1 = pNode1->rGetLocation();
+        // c_vector<double, 3> Vector2 = pNode2->rGetLocation();
+        // c_vector<double, 3> Vector0 = pNode0->rGetLocation();
         // PRINT_VECTOR(Vector0 );
 
         c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
         c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 33);
         
 
+
         unsigned node_index;
-        CellPtr p_cell;
+        // CellPtr p_cell;
 
         // Get side lengths and angle to create an equal triangle at the origin
         double a = norm_2(vector_12); // Lenght a -> edge connecting P0 and P1
@@ -111,7 +122,7 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
 
 
         c_vector<c_vector<double, 3>, 3> RotatedForceOnNode;
-        c_vector<double, 3> RotatedMag;
+        // c_vector<double, 3> RotatedMag;
     
         double dedvX;
         double dedvY;
@@ -121,15 +132,13 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
             dedvX = KS * (I1 + 1) * (Dxx * a_i[i] + Dxy * b_i[i]) + (-KS + Kalpha * I2) * ((Dxx * Dyy * Dyy - Dxy * Dyx * Dyy) * a_i[i] + (Dxy * Dyx * Dyx - Dxx * Dyx * Dyy) * b_i[i]);
             dedvY = KS * (I1 + 1) * (Dyx * a_i[i] + Dyy * b_i[i]) + (-KS + Kalpha * I2) * ((Dxx * Dxx * Dyy - Dxx * Dxy * Dyx) * b_i[i] + (Dyx * Dxy * Dxy - Dxx * Dxy * Dyy) * a_i[i]);
             RotatedForceOnNode[i] = -Area0 / 3 * Create_c_vector(dedvX, dedvY, 0);
-            RotatedMag[i] = norm_2(RotatedForceOnNode[i]);
+            // RotatedMag[i] = norm_2(RotatedForceOnNode[i]);
             // This is the force for each node  for the triangle situated at the origin
             // Matrix with each row containing the force on the corresponding element
         }
 
         c_vector<c_vector<double, 3>, 3> X;
-        c_vector<c_vector<double, 3>, 3> F_rp;
         c_vector<c_vector<double, 3>, 3> ForceOnNode;
-        c_vector<c_vector<double, 3>, 3> AreaForceOnNode_TEMP;
 
         X[0] = Create_c_vector(a, 0, 0);
         X[1] = Create_c_vector(b * cos(alpha), b * sin(alpha), 0);
@@ -148,17 +157,8 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
         ForceOnNode[2] = F2_rp[0] * vector_12 + F2_rp[1] * vector_13 + F2_rp[2] * X[2];
         
 
-        //   for (int i = 0; i < 3; i++)
-        // {
-        //     node_index = elem_iter->GetNodeGlobalIndex(i);
-        //     p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
-        //     // double ShearMode = norm_2(ForceOnNode[i]) +  p_cell->GetCellData()->GetItem("ShearMod");
-        //     // p_cell->GetCellData()->SetItem("ShearMod",ShearMode );
-                
-        // }
-
         // Area force
-        // Calculate the edge vectors of this element
+        
         c_vector<double, 3> vector_A = pNode0->rGetLocation() - pNode2->rGetLocation();
         c_vector<double, 3> vector_B = pNode1->rGetLocation() - pNode2->rGetLocation();
 
@@ -188,19 +188,17 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
         {
             node_index = elem_iter->GetNodeGlobalIndex(i);
             CellArea= rCellPopulation.GetVolumeOfCell(rCellPopulation.GetCellUsingLocationIndex(node_index));
-
             ForceOnNode[i] /= CellArea;
-            MembraneForceMap[node_index] += ForceOnNode[i];  
-            CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
-            p_cell->GetCellData()->SetItem("CellArea",CellArea);
+            // MembraneForceMap[node_index] += ForceOnNode[i];  
+            // CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
+            // p_cell->GetCellData()->SetItem("CellArea",CellArea);
 
-            if (norm_2(MembraneForceMap[node_index]) >10e5)
-            {
-                PRINT_VARIABLE(CellArea)
-                PRINT_VECTOR(MembraneForceMap[node_index])
-                MembraneForceMap[node_index] = Create_c_vector(0,0,0);
-                // assert(norm_2(MembraneForceMap[node_index]) <10e5);
-            }
+            // if (norm_2(ForceOnNode[i]) >10e5)
+            // {
+            //     PRINT_VECTOR(ForceOnNode[i])
+            //     ForceOnNode[i] = Create_c_vector(0,0,0);
+            //     // assert(norm_2(MembraneForceMap[node_index]) <10e5);
+            // }
             
 
 

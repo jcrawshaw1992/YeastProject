@@ -587,13 +587,17 @@ if __name__=="__main__":
     Scalling = ['2','3','4']     
     Collapse = ['0','0.1227','0.2248', '0.3178', '0.417', '0.5124', '0.6119', '0.708', '0.8059', '0.9032', '1.0']
 
+    Scalling = ['3']     
+    Collapse = [ '0.8059', '0.9032', '1.0']
+
+
     dX1 = 0.08*0.75/41
     dX2 = 0.08*0.7/41
 
     dX3 = 0.08*0.51/41
     dX4 = 0.08*0.45/41
 
-    Parallel = 3
+    Parallel = 1
     SleepyTime = 200
     AvaliablePaths = range(Parallel)
     for Level in Scalling:
@@ -607,41 +611,41 @@ if __name__=="__main__":
                 continue
             
             mHemeLBDirectory = TerminalOutputFolder+'Density_'+Level+'/'+i+'/'
-            if path.isdir(mHemeLBDirectory)==0:
-                os.mkdir(mHemeLBDirectory)
-            print mHemeLBDirectory
-            if path.isdir(mHemeLBDirectory+'Results/')==1:
-                now = datetime.now()
-                current_time = now.strftime("%H:%M:%S")
-                os.rename(mHemeLBDirectory+'Results/',mHemeLBDirectory+'Results_'+str(current_time)+'/')
-            ScaledMeshstl = LevelsDirectory+"/ScalledMesh"+str(i)+".stl"
-            MeshFile = mHemeLBDirectory + 'config.stl' #MeshDirectory+""+Level+"/ScalledMesh"+i+".stl"
-              #shutil.copyfile(ScaledMeshstl, mHemeLBDirectory + 'config.stl')
-            MeshData = GetTheDetailsOfTheMesh(MeshFile)
-            Boundaries =  MeshData[0:2]
-            Seed = MeshData[2:5]
+            # if path.isdir(mHemeLBDirectory)==0:
+            #     os.mkdir(mHemeLBDirectory)
+            # print mHemeLBDirectory
+            # if path.isdir(mHemeLBDirectory+'Results/')==1:
+            #     now = datetime.now()
+            #     current_time = now.strftime("%H:%M:%S")
+            #     os.rename(mHemeLBDirectory+'Results/',mHemeLBDirectory+'Results_'+str(current_time)+'/')
+            # ScaledMeshstl = LevelsDirectory+"/ScalledMesh"+str(i)+".stl"
+            # MeshFile = MeshDirectory+""+Level+"/ScalledMesh"+i+".stl"
+            # shutil.copyfile(ScaledMeshstl, mHemeLBDirectory + 'config.stl')
+            # MeshData = GetTheDetailsOfTheMesh(MeshFile)
+            # Boundaries =  MeshData[0:2]
+            # Seed = MeshData[2:5]
             
-            if Level =='1':
-                write_pr21(mHemeLBDirectory, 15001, dX1, Seed, Boundaries)
-            elif Level =='2':
-                write_pr22(mHemeLBDirectory, 15001, dX2, Seed, Boundaries)
-            elif Level =='3':
-                write_pr23(mHemeLBDirectory, 15001, dX3, Seed, Boundaries)
-            elif Level =='4':
-                write_pr24(mHemeLBDirectory, 15001, dX4, Seed, Boundaries)
+            # if Level =='1':
+            #     write_pr21(mHemeLBDirectory, 15001, dX1, Seed, Boundaries)
+            # elif Level =='2':
+            #     write_pr22(mHemeLBDirectory, 15001, dX2, Seed, Boundaries)
+            # elif Level =='3':
+            #     write_pr23(mHemeLBDirectory, 15001, dX3, Seed, Boundaries)
+            # elif Level =='4':
+            #     write_pr24(mHemeLBDirectory, 15001, dX4, Seed, Boundaries)
 
 
-            run_hemelb_setup(mHemeLBDirectory)
+            # run_hemelb_setup(mHemeLBDirectory)
 
-            # Update the xml file
-            update_xml_file(int(15001*0.2), mHemeLBDirectory)
-            # EditRunTime(mHemeLBDirectory)
+            # # Update the xml file
+            # update_xml_file(int(15001*0.2), mHemeLBDirectory)
+            # # EditRunTime(mHemeLBDirectory)
 
             # # Run HemeLB
-            RunHemeLB = 'mpirun -np 10 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
+            RunHemeLB = ' ' # mpirun -np 2 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
             TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
             # # Generate the new config.vtu
-            GmyUnstructuredGridReader ="python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
+            GmyUnstructuredGridReader =" " #python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
             # Generate the flow vtus
             GenerateFlowVtus = "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "Results/Extracted/surface-traction.xtr " + mHemeLBDirectory + "Results/Extracted/wholegeometry-velocity.xtr "
             # Generate waitFile

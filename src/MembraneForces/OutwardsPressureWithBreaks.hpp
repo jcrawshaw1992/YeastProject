@@ -49,6 +49,7 @@ private:
 public:
 
     double mStrength;
+    double mInitalRadius;
     /**
      * Constructor.
      */

@@ -9,7 +9,7 @@ HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::HistoryDepMeshBasedCe
         : MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>(rMesh, rCells, locationIndices, deleteMesh, validate)
 {
     SaveInitalConditions();
-    this->SetBinningRegions();
+    // this->SetBinningRegions();
     // SetBinningIntervals(1, 1, 1);
     bool InitialRemesh =0;
     if (InitialRemesh)
@@ -19,10 +19,10 @@ HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::HistoryDepMeshBasedCe
   
     if (mSetUpInitialConfigurations == 1)
     {
-        MarkBoundaryNodes();
+        // MarkBoundaryNodes();
         // Define all the inital configurations ... this needed to be done and the start, and whenever there is a remeshing
         SetupMembraneConfiguration();
-        SetInitialAnlgesAcrossMembrane();
+        // SetInitialAnlgesAcrossMembrane();
     }
 }
 
@@ -1256,15 +1256,22 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetupMembraneCon
 {
     MathsFunctions M;
     assert(SPACE_DIM == 3);
-    double Kalpha = pow(10, -6.8124);
-    double KA = 0;
-    double KS = pow(10, -7);
+    // double Kalpha = pow(10, -6.8124);
+    // double KA = 0;
+    // double KS = pow(10, -7);
 
-    std::map<unsigned, c_vector<double, 3> > MembraneForceMap;
+    // std::map<unsigned, c_vector<double, 3> > MembraneForceMap;
+    // for (std::list<CellPtr>::iterator cell_iter = this->mCells.begin(); cell_iter != this->mCells.end(); ++cell_iter)
+    // {
+    //     // unsigned node_index = this->GetLocationIndexUsingCell(*cell_iter);
+    //     // MembraneForceMap[node_index] = Create_c_vector(0, 0, 0);
+        
+    // }
+
     for (std::list<CellPtr>::iterator cell_iter = this->mCells.begin(); cell_iter != this->mCells.end(); ++cell_iter)
     {
-        unsigned node_index = this->GetLocationIndexUsingCell(*cell_iter);
-        MembraneForceMap[node_index] = Create_c_vector(0, 0, 0);
+        //find the distance to the nearest neighbour
+        (*cell_iter)->GetCellData()->SetItem("FixedBoundary", 0);
     }
 
     for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
@@ -1321,112 +1328,113 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetupMembraneCon
         mACoefficients[elem_index] = aVector;
         mBCoefficients[elem_index] = bVector;
 
-        // Now go through and set the inital strain over the mesh
-        vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
-        vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 33);
+        // // Now go through and set the inital strain over the mesh
+        // vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
+        // vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 33);
 
-        unsigned node_index;
+        // unsigned node_index;
         // CellPtr p_cell;
+        // 
 
-        // Get side lengths and angle to create an equal triangle at the origin
-        a = norm_2(vector_12); // Lenght a -> edge connecting P0 and P1
-        b = norm_2(vector_13); // Lenght b -> edge connecting P0 and P2
-        alpha = acos(inner_prod(vector_12, vector_13) / (a * b));
+        // // Get side lengths and angle to create an equal triangle at the origin
+        // a = norm_2(vector_12); // Lenght a -> edge connecting P0 and P1
+        // b = norm_2(vector_13); // Lenght b -> edge connecting P0 and P2
+        // alpha = acos(inner_prod(vector_12, vector_13) / (a * b));
 
-        // This will create an equal triangle at the origin
-        x1 = Create_c_vector(0, 0);
-        x2 = Create_c_vector(a, 0);
-        x3 = Create_c_vector(b * cos(alpha), b * sin(alpha));
+        // // This will create an equal triangle at the origin
+        // x1 = Create_c_vector(0, 0);
+        // x2 = Create_c_vector(a, 0);
+        // x3 = Create_c_vector(b * cos(alpha), b * sin(alpha));
 
-        // Get the original triangle
-        //Displacement vectors.
-        c_vector<double, 2> V1 = x1 - mInitalVectors[elem_index][0];
-        c_vector<double, 2> V2 = x2 - mInitalVectors[elem_index][1];
-        c_vector<double, 2> V3 = x3 - mInitalVectors[elem_index][2];
+        // // Get the original triangle
+        // //Displacement vectors.
+        // c_vector<double, 2> V1 = x1 - mInitalVectors[elem_index][0];
+        // c_vector<double, 2> V2 = x2 - mInitalVectors[elem_index][1];
+        // c_vector<double, 2> V3 = x3 - mInitalVectors[elem_index][2];
 
-        // Get the shape function coefficents for this element
-        double Area0 = mArea0[elem_index];
+        // // Get the shape function coefficents for this element
+        // double Area0 = mArea0[elem_index];
 
-        // Deformation tensor
-        double Dxx = 1 + aVector[0] * V1[0] + aVector[1] * V2[0] + aVector[2] * V3[0];
-        double Dxy = bVector[0] * V1[0] + bVector[1] * V2[0] + bVector[2] * V3[0];
-        double Dyx = aVector[0] * V1[1] + aVector[1] * V2[1] + aVector[2] * V3[1];
-        double Dyy = 1 + bVector[0] * V1[1] + bVector[1] * V2[1] + bVector[2] * V3[1];
+        // // Deformation tensor
+        // double Dxx = 1 + aVector[0] * V1[0] + aVector[1] * V2[0] + aVector[2] * V3[0];
+        // double Dxy = bVector[0] * V1[0] + bVector[1] * V2[0] + bVector[2] * V3[0];
+        // double Dyx = aVector[0] * V1[1] + aVector[1] * V2[1] + aVector[2] * V3[1];
+        // double Dyy = 1 + bVector[0] * V1[1] + bVector[1] * V2[1] + bVector[2] * V3[1];
 
-        c_vector<c_vector<double, 2>, 2> G;
+        // c_vector<c_vector<double, 2>, 2> G;
 
-        // G =DTD  -- Caughy green
-        G[0][0] = Dxx * Dxx + Dyx * Dyx;
-        G[0][1] = Dxx * Dxy + Dyx * Dyy;
-        G[1][0] = Dxx * Dxy + Dyy * Dyx;
-        G[1][1] = Dxy * Dxy + Dyy * Dyy;
+        // // G =DTD  -- Caughy green
+        // G[0][0] = Dxx * Dxx + Dyx * Dyx;
+        // G[0][1] = Dxx * Dxy + Dyx * Dyy;
+        // G[1][0] = Dxx * Dxy + Dyy * Dyx;
+        // G[1][1] = Dxy * Dxy + Dyy * Dyy;
 
-        // Strain invarients
-        double I1 = M.tr(G) - 2;
-        double I2 = M.det(G) - 1;
+        // // Strain invarients
+        // double I1 = M.tr(G) - 2;
+        // double I2 = M.det(G) - 1;
 
-        c_vector<c_vector<double, 3>, 3> RotatedForceOnNode;
-        c_vector<double, 3> RotatedMag;
+        // c_vector<c_vector<double, 3>, 3> RotatedForceOnNode;
+        // c_vector<double, 3> RotatedMag;
 
-        double dedvX;
-        double dedvY;
+        // double dedvX;
+        // double dedvY;
 
-        c_vector<c_vector<double, 3>, 3> X;
+        // c_vector<c_vector<double, 3>, 3> X;
 
-        X[0] = Create_c_vector(a, 0, 0);
-        X[1] = Create_c_vector(b * cos(alpha), b * sin(alpha), 0);
-        X[2] = Create_c_vector(0, 0, 1);
-        X = M.MatrixTranspose(X);
+        // X[0] = Create_c_vector(a, 0, 0);
+        // X[1] = Create_c_vector(b * cos(alpha), b * sin(alpha), 0);
+        // X[2] = Create_c_vector(0, 0, 1);
+        // X = M.MatrixTranspose(X);
 
-        c_vector<c_vector<double, 3>, 3> F_rp;
-        c_vector<c_vector<double, 3>, 3> ForceOnNode;
+        // c_vector<c_vector<double, 3>, 3> F_rp;
+        // c_vector<c_vector<double, 3>, 3> ForceOnNode;
 
-        for (int i = 0; i < 3; i++)
-        {
-            dedvX = KS * (I1 + 1) * (Dxx * aVector[i] + Dxy * bVector[i]) + (-KS + Kalpha * I2) * ((Dxx * Dyy * Dyy - Dxy * Dyx * Dyy) * aVector[i] + (Dxy * Dyx * Dyx - Dxx * Dyx * Dyy) * bVector[i]);
-            dedvY = KS * (I1 + 1) * (Dyx * aVector[i] + Dyy * bVector[i]) + (-KS + Kalpha * I2) * ((Dxx * Dxx * Dyy - Dxx * Dxy * Dyx) * bVector[i] + (Dyx * Dxy * Dxy - Dxx * Dxy * Dyy) * aVector[i]);
-            RotatedForceOnNode[i] = -Area0 / 3 * Create_c_vector(dedvX, dedvY, 0);
-            F_rp[i] = M.MatrixMultiplication(M.Inverse(X), RotatedForceOnNode[i]);
+        // for (int i = 0; i < 3; i++)
+        // {
+        //     dedvX = KS * (I1 + 1) * (Dxx * aVector[i] + Dxy * bVector[i]) + (-KS + Kalpha * I2) * ((Dxx * Dyy * Dyy - Dxy * Dyx * Dyy) * aVector[i] + (Dxy * Dyx * Dyx - Dxx * Dyx * Dyy) * bVector[i]);
+        //     dedvY = KS * (I1 + 1) * (Dyx * aVector[i] + Dyy * bVector[i]) + (-KS + Kalpha * I2) * ((Dxx * Dxx * Dyy - Dxx * Dxy * Dyx) * bVector[i] + (Dyx * Dxy * Dxy - Dxx * Dxy * Dyy) * aVector[i]);
+        //     RotatedForceOnNode[i] = -Area0 / 3 * Create_c_vector(dedvX, dedvY, 0);
+        //     F_rp[i] = M.MatrixMultiplication(M.Inverse(X), RotatedForceOnNode[i]);
 
-            // Rotate the force to the original configuretion
-            ForceOnNode[i] = F_rp[i][0] * vector_12 + F_rp[i][1] * vector_13 + F_rp[i][2] * X[2];
-            // This is the force for each node  for the triangle situated at the origin
-            // Matrix with each row containing the force on the corresponding element
+        //     // Rotate the force to the original configuretion
+        //     ForceOnNode[i] = F_rp[i][0] * vector_12 + F_rp[i][1] * vector_13 + F_rp[i][2] * X[2];
+        //     // This is the force for each node  for the triangle situated at the origin
+        //     // Matrix with each row containing the force on the corresponding element
 
-            node_index = elem_iter->GetNodeGlobalIndex(i);
-            double CellArea = this->GetVolumeOfCell(this->GetCellUsingLocationIndex(node_index));
-            // ForceOnNode[i] /= CellArea;
-            MembraneForceMap[node_index] += ForceOnNode[i] / CellArea;
-        }
+        //     node_index = elem_iter->GetNodeGlobalIndex(i);
+        //     double CellArea = this->GetVolumeOfCell(this->GetCellUsingLocationIndex(node_index));
+        //     // ForceOnNode[i] /= CellArea;
+        //     MembraneForceMap[node_index] += ForceOnNode[i] / CellArea;
+        // }
 
-        // // Rotate the force to the original configuretion
+        // // // Rotate the force to the original configuretion
         // ForceOnNode[0] = F_rp[0][0] * vector_12 + F_rp[0][1] * vector_13 + F_rp[0][2] * X[2];
         // ForceOnNode[1] = F_rp[1][0] * vector_12 + F_rp[1][1] * vector_13 + F_rp[1][2] * X[2];
         // ForceOnNode[2] = F_rp[2][0] * vector_12 + F_rp[2][1] * vector_13 + F_rp[2][2] * X[2];
     }
 
-    for (std::list<CellPtr>::iterator cell_iter = this->mCells.begin(); cell_iter != this->mCells.end(); ++cell_iter)
-    {
-        unsigned node_index = this->GetLocationIndexUsingCell(*cell_iter);
-        Node<SPACE_DIM>* pNode = this->rGetMesh().GetNode(node_index);
-        // (*cell_iter)->GetCellData()->SetItem("AreaDilationModulus" , 1);
+    // for (std::list<CellPtr>::iterator cell_iter = this->mCells.begin(); cell_iter != this->mCells.end(); ++cell_iter)
+    // {
+    //     unsigned node_index = this->GetLocationIndexUsingCell(*cell_iter);
+    //     Node<SPACE_DIM>* pNode = this->rGetMesh().GetNode(node_index);
+    //     // (*cell_iter)->GetCellData()->SetItem("AreaDilationModulus" , 1);
 
-        if ((*cell_iter)->GetCellData()->GetItem("Boundary") == 1)
-        {
-            c_vector<double, 3> AverageForce = Create_c_vector(0, 0, 0);
-            c_vector<unsigned, 3> NearestNodes = this->GetNearestInternalNodes(node_index);
-            for (int i = 0; i < 3; i++)
-            {
-                AverageForce += MembraneForceMap[NearestNodes[i]];
-            }
+    //     // if ((*cell_iter)->GetCellData()->GetItem("Boundary") == 1)
+    //     // {
+    //     //     c_vector<double, 3> AverageForce = Create_c_vector(0, 0, 0);
+    //     //     c_vector<unsigned, 3> NearestNodes = this->GetNearestInternalNodes(node_index);
+    //     //     for (int i = 0; i < 3; i++)
+    //     //     {
+    //     //         AverageForce += MembraneForceMap[NearestNodes[i]];
+    //     //     }
 
-            (*cell_iter)->GetCellData()->SetItem("MembraneForce", norm_2(AverageForce / 3));
-        }
-        else
-        {
-            (*cell_iter)->GetCellData()->SetItem("MembraneForce", norm_2(MembraneForceMap[node_index]));
-        }
-    }
+    //     //     (*cell_iter)->GetCellData()->SetItem("MembraneForce", norm_2(AverageForce / 3));
+    //     // }
+    //     // else
+    //     // {
+    //         (*cell_iter)->GetCellData()->SetItem("MembraneForce", norm_2(MembraneForceMap[node_index]));
+    //     // }
+    // }
 }
 
 // For the bending force

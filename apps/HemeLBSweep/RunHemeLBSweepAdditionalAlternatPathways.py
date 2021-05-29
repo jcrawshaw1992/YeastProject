@@ -211,41 +211,33 @@ if __name__=="__main__":
     Collapse = [ '0', '0.417', '0.1227' , '0.2248', '0.3178',  '0.5124', '0.6119', '0.708', '0.8059', '0.9032', '1.0']
     
 
-    Scalling = ['4','6','7']  
-    Collapse = ['0.417',  '0.5124', '0.3178']
+    Scalling = ['4']  
 
- 
-    Parallel = 1
+
     SleepyTime = 200
-    AvaliablePaths = range(Parallel-1)
-
-    Parallel = 4
+    
+    Parallel = 3
     SleepyTime = 200
     AvaliablePaths = range(Parallel-1)
     for Level in Scalling:
         for i in Collapse:
             mHemeLBDirectory = TerminalOutputFolder+'Levels_'+Level+'/'+i+'/'
-            Core = AvaliablePaths[0] 
+            # Core = AvaliablePaths[0] 
             if path.isdir(mHemeLBDirectory+'Results/')==1:
                     now = datetime.now()
                     current_time = now.strftime("%H:%M:%S")
                     os.rename(mHemeLBDirectory+'Results/',mHemeLBDirectory+'Results_'+str(current_time)+'/')
 
-            if [Level, i] != [ '4', '0.417']:
-
-                
-                MeshFile = mHemeLBDirectory + 'config.stl'
-                MeshData = GetTheDetailsOfTheMesh(MeshFile)
-                Boundaries =  MeshData[0:2]
-                Seed = MeshData[2:5]
-                
-                dX = 0.08/41.0
-                write_pr2(mHemeLBDirectory,10000, dX, Seed, Boundaries, Level)
-                run_hemelb_setup(mHemeLBDirectory)
-                
+            MeshFile = mHemeLBDirectory + 'config.stl'
+            MeshData = GetTheDetailsOfTheMesh(MeshFile)
+            Boundaries =  MeshData[0:2]
+            Seed = MeshData[2:5]
             
-
-            update_xml_file(int(10000*0.5), mHemeLBDirectory)
+            dX = 0.08/41.0
+            write_pr2(mHemeLBDirectory,10000, dX, Seed, Boundaries, Level)
+            run_hemelb_setup(mHemeLBDirectory)
+                
+            update_xml_file(int(10000*0.95), mHemeLBDirectory)
             RunHemeLB = 'mpirun -np 10 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
             GmyUnstructuredGridReader ="python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
             # Generate the flow vtus
@@ -253,25 +245,25 @@ if __name__=="__main__":
             # Generate waitFile
 
             TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
-            WaitFileGeneration = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
+            WaitFileGeneration = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
             
             subprocess.Popen(['./RunHemeLBSweepBash', RunHemeLB, TerminalOutput,GmyUnstructuredGridReader,GenerateFlowVtus, WaitFileGeneration ])
             print mHemeLBDirectory
         
-            AvaliablePaths.remove(Core) 
-            # Check if all positions are taken
-            while len(AvaliablePaths) ==0:
-                time.sleep(SleepyTime)
-                # print "Awake and checking for spare cores" 
-                print "Sleep Time"
-                for P in range(Parallel):
-                    OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
-                    if path.exists(OutputFile):
-                        AvaliablePaths.append(P)
-                        os.remove(OutputFile)
-                if len(AvaliablePaths) >0:
-                    print AvaliablePaths, "Have found a spare core or two :-) " 
-                    print time.time() - t0, "seconds time"
+            # AvaliablePaths.remove(Core) 
+            # # Check if all positions are taken
+            # while len(AvaliablePaths) ==0:
+            #     time.sleep(SleepyTime)
+            #     # print "Awake and checking for spare cores" 
+            #     print "Sleep Time"
+            #     for P in range(Parallel):
+            #         OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
+            #         if path.exists(OutputFile):
+            #             AvaliablePaths.append(P)
+            #             os.remove(OutputFile)
+            #     if len(AvaliablePaths) >0:
+            #         print AvaliablePaths, "Have found a spare core or two :-) " 
+            #         print time.time() - t0, "seconds time"
 
 
 

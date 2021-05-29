@@ -16,47 +16,40 @@ from os import path
 
 
 if __name__=="__main__":
+    TerminalOutputFolder = '/data/vascrem/testoutput/HemeLBSweep/IncreasingDensityWithUnchangingRadius/'
 
-    TerminalOutputFolder = '/data/vascrem/testoutput/HemeLBSweep/Length_Variation/'
-    # Scalling = ['PI_2.2',]   
-    Scalling = ['1.2', '1.4', '1.6', '1.8', '2', '2.2', '2.4', '2.6', '2.8', '3']   
-    Scalling = ['2.8']   
-    Collapse = [ '0','1','2', '3','4','5', '6', '7','8','9','10']
-    Collapse = [ '0', '0.3178', '0.417','0.5124', '0.6119', '0.708', '0.8059', '0.9032' , '0.1227', '0.2248'  , '1.0' ]
-    
-    # NewNumbering = [ '0','1','2', '3','4','5', '6', '7','8','9','10']
-    Scalling = ['PI_6']
-    # Collapse = [ '0','1','9','10']
+    Scalling = ['1','2']   
+    Collapse = [ '0', '0.1227','0.2248','0.3178', '0.417','0.5124', '0.6119', '0.708', '0.8059', '0.9032' , '1.0' ]
+    NewNumbering = [ '0','1','2', '3','4','5', '6', '7','8','9','10']
+
     HeadNewPath = TerminalOutputFolder+'CollectedFlow/'
     if path.isdir(HeadNewPath)==0:
         os.mkdir(HeadNewPath)
             
     for j in Scalling:
-        NewPath = HeadNewPath+"HorizontalLength_" +j
+        NewPath = HeadNewPath+"Density_" +j
         if path.isdir(NewPath)==0:
             os.mkdir(NewPath)
         counter =-1
         for i in Collapse:
             counter = counter+1
             print counter
-            Pressure = TerminalOutputFolder+"HorizontalLength_"+j+'/'+i+'/Results/Extracted/surface-pressure_21600.vtu'
-            Velocity = TerminalOutputFolder+"HorizontalLength_"+j+'/'+ i+'/Results/Extracted/wholegeometry-velocity_21600.vtu'
+            # Pressure = TerminalOutputFolder+"Density_"+j+'/'+i+'/Results/Extracted/surface-pressure_21600.vtu'
+            Velocity = TerminalOutputFolder+"Density_"+j+'/'+ i+'/Results/Extracted/wholegeometry-velocity_21600.vtu'
             # Traction = TerminalOutputFolder+j+'/'+ i+'/Results/Extracted/surface-traction_25000.vtu'
-            Mesh = TerminalOutputFolder+"HorizontalLength_"+j+'/'+ i+'/config.stl'
+            # Mesh = TerminalOutputFolder+"HorizontalLength_"+j+'/'+ i+'/config.stl'
 
-            NewPressure = NewPath+'/surface-pressure_'+i+'.vtu'
-            NewVelocity = NewPath+'/wholegeometry-velocity_'+i+'.vtu'
+            # NewPressure = NewPath+'/surface-pressure_'+i+'.vtu'
+            NewVelocity = NewPath+'/wholegeometry-velocity_'+NewNumbering[counter]+'.vtu'
             # NewTraction = NewPath+'/surface-traction_'+i+'.vtu'
-            NewMesh = NewPath+'/mesh_'+i+'.vtu'
+            # NewMesh = NewPath+'/mesh_'+i+'.vtu'
 
-            mv =  'cp ' +Pressure +' '+NewPressure
-            subprocess.call(mv, shell=True)
 
             mv =  'cp ' +Velocity +' '+NewVelocity
             subprocess.call(mv, shell=True)
 
-            mv =  'cp ' +Mesh +' '+NewMesh
-            subprocess.call(mv, shell=True)
+            # mv =  'cp ' +Mesh +' '+NewMesh
+            # subprocess.call(mv, shell=True)
 
             # mv =  'cp ' +Traction +' '+NewTraction
             # subprocess.call(mv, shell=True)

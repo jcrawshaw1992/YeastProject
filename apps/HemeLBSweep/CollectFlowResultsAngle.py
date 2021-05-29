@@ -25,7 +25,7 @@ if __name__=="__main__":
     # Collapse = [ '1.227', '2.248', '3.178', '4.17', '5.124', '6.119', '7.08', '8.059', '9.032', '10.0']
     
     NewNumbering = [ '0','1','2', '3','4','5', '6', '7','8','9','10']
-    Scalling = ['PI_2.2/','PI_3/','PI_5/']
+    Scalling = ['PI_6/']
     NewPathTop = '/data/vascrem/testoutput/HemeLBSweep/AngleVariation_3X3Network/AngleCollected/'
     if path.isdir(NewPathTop)==0:
         os.mkdir(NewPathTop)
@@ -38,21 +38,21 @@ if __name__=="__main__":
         counter =-1
         for i in Collapse:
             counter = counter+1
-            print counter        
-            # Pressure = TerminalOutputFolder +j+i+'/Results/Extracted/surface-pressure_20000.vtu'
+            print counter                                             
+            Pressure = TerminalOutputFolder +j+i+'/Results/Extracted/surface-pressure_9500.vtu'
             
             # Traction = TerminalOutputFolder +j+i+'/Results/Extracted/surface-traction_20000.vtu'
             # Velocity = TerminalOutputFolder +j+i+'/Results/Extracted/wholegeometry-velocity_20000.vtu'
             Mesh = TerminalOutputFolder +j+i+'/config.stl'
             I = str(float(i)/100)
             
-            # # NewPressure = NewPath+'surface-pressure_'+NewNumbering[counter]+'.vtu'
+            NewPressure = NewPath+'surface-pressure_'+NewNumbering[counter]+'.vtu'
             # NewVelocity = NewPath+'wholegeometry-velocity_'+NewNumbering[counter]+'.vtu'
             # NewTraction = NewPath+'surface-traction_'+NewNumbering[counter]+'.vtu'
             NewMesh = NewPath+'mesh.'+NewNumbering[counter]+'.vtu'
 
-            # mv =  'cp ' +Pressure +' '+NewPressure
-            # # subprocess.call(mv, shell=True)
+            mv =  'cp ' +Pressure +' '+NewPressure
+            subprocess.call(mv, shell=True)
 
             # mv =  'cp ' +Velocity +' '+NewVelocity
             # subprocess.call(mv, shell=True)
