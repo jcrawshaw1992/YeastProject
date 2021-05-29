@@ -41,6 +41,7 @@ private:
     {
         archive& boost::serialization::base_object<AbstractForce<2, 3> >(*this);
         archive & mStrength;
+        archive & mInitalRadius;
     }
 
 
