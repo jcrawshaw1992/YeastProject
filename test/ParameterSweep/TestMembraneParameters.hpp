@@ -72,63 +72,63 @@ public:
     // }
 
 
-       void TestParametersOverCylinder() throw(Exception)
+    void TestParametersOverCylinder() throw(Exception)
     {
         TRACE("Jess is best")
-        double DilationParameter;
-        double AreaParameter;
-        double DeformationParamter;
-        if (CommandLineArguments::Instance()->OptionExists("-AreaParameter"))
-        {
-            AreaParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
-            DilationParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
-            DeformationParamter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DeformationParamter");
-        }
-        else
-        {
-            DilationParameter =pow(10,-10);
-            AreaParameter=pow(10,-10);
-            DeformationParamter=pow(10,-10);
+        // double DilationParameter;
+        // double AreaParameter;
+        // double DeformationParamter;
+        // if (CommandLineArguments::Instance()->OptionExists("-AreaParameter"))
+        // {
+        //     AreaParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
+        //     DilationParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
+        //     DeformationParamter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DeformationParamter");
+        // }
+        // else
+        // {
+        //     DilationParameter =pow(10,-10);
+        //     AreaParameter=pow(10,-10);
+        //     DeformationParamter=pow(10,-10);
 
-        }
+        // }
 
-        PRINT_3_VARIABLES(AreaParameter, DilationParameter, DeformationParamter)
-        double dt= 0.0005;
-         if (CommandLineArguments::Instance()->OptionExists("-dt"))
-        {
-            dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
-        }
-        double NewEndTime = 30;
-        if (CommandLineArguments::Instance()->OptionExists("-NewEndTime"))
-        {
-            NewEndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-NewEndTime");
-        }
-        double EndTime = 30;
-        if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
-        {
-            EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
-        }
-        double SamplingTimestepMultiple = 5000;
-        if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
-        {
-            SamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SamplingTimestepMultiple");
-        }
+        // PRINT_3_VARIABLES(AreaParameter, DilationParameter, DeformationParamter)
+        // double dt= 0.0005;
+        //  if (CommandLineArguments::Instance()->OptionExists("-dt"))
+        // {
+        //     dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
+        // }
+        // double NewEndTime = 30;
+        // if (CommandLineArguments::Instance()->OptionExists("-NewEndTime"))
+        // {
+        //     NewEndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-NewEndTime");
+        // }
+        // double EndTime = 30;
+        // if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
+        // {
+        //     EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
+        // }
+        // double SamplingTimestepMultiple = 5000;
+        // if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
+        // {
+        //     SamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SamplingTimestepMultiple");
+        // }
 
-        std::string ArchivedDirectory = "MembraneParameterSweep/Cylinder";
-        if (CommandLineArguments::Instance()->OptionExists("-ArchivedDirectory"))
-        {
-            ArchivedDirectory  = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-ArchivedDirectory");
-        }
+        // std::string ArchivedDirectory = "MembraneParameterSweep/Cylinder";
+        // if (CommandLineArguments::Instance()->OptionExists("-ArchivedDirectory"))
+        // {
+        //     ArchivedDirectory  = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-ArchivedDirectory");
+        // }
         
-         double StartingParameterForSlowIncrease = 1e-8;
-        if (CommandLineArguments::Instance()->OptionExists("-StartingParameterForSlowIncrease"))
-        {
-            StartingParameterForSlowIncrease= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-StartingParameterForSlowIncrease");
-        }
-        // PRINT_4_VARIABLES(dt, NewEndTime,EndTime, SamplingTimestepMultiple)
-        std::stringstream out;
-        out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter;
-        std::string ParameterSet = out.str();
+        //  double StartingParameterForSlowIncrease = 1e-8;
+        // if (CommandLineArguments::Instance()->OptionExists("-StartingParameterForSlowIncrease"))
+        // {
+        //     StartingParameterForSlowIncrease= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-StartingParameterForSlowIncrease");
+        // }
+        // // PRINT_4_VARIABLES(dt, NewEndTime,EndTime, SamplingTimestepMultiple)
+        // std::stringstream out;
+        // out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter;
+        // std::string ParameterSet = out.str();
         std::string output_dir = ArchivedDirectory + "/Parameters/";
 
         // Load and fix any settings in the simulator
