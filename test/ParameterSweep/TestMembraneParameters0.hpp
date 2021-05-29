@@ -162,7 +162,10 @@ public:
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
         SimulationTime::Instance()->Destroy();
         SimulationTime::Instance()->SetStartTime(0.0);
+}
 
+    void TestRunningArchieve() throw(Exception)
+    {
 
         // Load and fix any settings in the simulator
         std::string ArchivedDirectory = "MembraneParameterSweep/Cylinder";
