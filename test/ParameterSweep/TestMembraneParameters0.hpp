@@ -43,7 +43,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
     void TestSetUpCylinderArchive() throw(Exception)
     {
-        double EndTime = 30;
+        double EndTime = 15;
         double scale = 1e3;
         double Length = 20e-6 * scale;
         // double Radius = 1e-6 * scale; // I want this to grow to 10
@@ -90,7 +90,7 @@ public:
         GrowthMaps[1] = Create_c_vector(pow(10,-8), pow(10,-8),pow(10,-8), 0);
         //Strength , hetro, stepsize, setupsolve
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
-        // p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
+        p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
         /*
@@ -157,7 +157,7 @@ public:
             boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.005));
             simulator.AddCellPopulationBoundaryCondition(p_condition);
         }
-        TRACE("Set to run archiving sim")
+        
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
     }
