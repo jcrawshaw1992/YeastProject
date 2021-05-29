@@ -63,8 +63,6 @@ public:
     void AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation);
     void SetInitialPosition(AbstractCellPopulation<2, 3>& rCellPopulation, unsigned node);
 
-    void SetNearestNeighboursMap(std::map<unsigned, c_vector<unsigned, 2> > NearestNodesMap);
-    std::map<unsigned, c_vector<unsigned, 2> > mNearestNodesMap;
 
     void SetRadiusThreshold(double RadialThreshold);
 

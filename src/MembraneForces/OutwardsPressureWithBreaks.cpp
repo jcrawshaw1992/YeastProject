@@ -15,10 +15,6 @@ void OutwardsPressureWithBreaks::SetPressure(double Pressure)
       mStrength =  Pressure;
 }
 
-void OutwardsPressureWithBreaks::SetNearestNeighboursMap(std::map<unsigned, c_vector<unsigned, 2> > NearestNodesMap)
-{
-    mNearestNodesMap = NearestNodesMap;
-}
 
 void OutwardsPressureWithBreaks::SetRadiusThreshold(double RadialThreshold)
 {
