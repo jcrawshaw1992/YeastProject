@@ -54,7 +54,7 @@ if __name__=="__main__":
                 dt = ' 0.0005'
                 if i <5.5 or j<5.5 or k<5.5:
                     SimulationTime = ' 5'
-                    dt = ' 0.00005'
+                    dt = ' 0.00001'
                 elif i <7.3 or j<7.3 or k<7.3:
                     SimulationTime = ' 20'
                     dt = ' 0.0001'
