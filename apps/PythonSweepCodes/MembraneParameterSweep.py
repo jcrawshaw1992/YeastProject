@@ -16,30 +16,6 @@ from os import path
 
 if __name__=="__main__":
 
-
-
-    # # COllect the folders I need 
-    # AreaParameter = [ 8, 8.5, 9, 9.5, 10]
-    # DilationParameter = [ 8, 8.5, 9, 9.5, 10]
-    # DeformationParamter = [ 8, 8.5, 9, 9.5, 10]
-    # OldFolder = "/Volumes/Hardrive/VASCREM_server/ParameterSweep/Cylinder/Parameteres3/"
-    # NewFolderTop = "/Volumes/Hardrive/VASCREM_server/ParameterSweep/Cylinder/ArchiveFolders/"
-
-    # for i in AreaParameter:
-    #     for j in DilationParameter:
-    #         for k in DeformationParamter:
-    #             Oldfile = OldFolder + "Param_" + str(i) + "_DilationParam_" + str(j) + "_DeformationParam_"+ str(k) + "/archive/" 
-    #             NewFolder = NewFolderTop + "Area_" + str(i) + "_Dil_" + str(j) + "_Def_" + str(k)+ "/archive/" 
-    #             if path.exists(NewFolder) ==0:
-        
-    #                 NewFolder = NewFolderTop + "Area_" + str(i) + "_Dil_" + str(j) + "_Def_" + str(k)+ "/archive/" 
-    #                 os.mkdir(  NewFolderTop + "Area_" + str(i) + "_Dil_" + str(j) + "_Def_" + str(k))
-    #                 shutil.copytree(Oldfile, NewFolder)
-    #                 print NewFolder
-    #                 # shutil.copy(Oldfile, NewFile)
-
-
-
     t0 = time.time()
     GenerateRunner =0
     if GenerateRunner ==1:
@@ -75,15 +51,16 @@ if __name__=="__main__":
         for j in DilationParameter:
             for k in DeformationParamter:
                 Core = AvaliablePaths[0]
+                dt = ' 0.0001'
                 if i <5.5 and j<5.5 and k<5.5:
                     SimulationTime = ' 5'
+                     dt = ' 0.00005'
                 elif i <7.3 and j<7.3 and k<7.3:
                     SimulationTime = ' 10'
                 else:
                     SimulationTime = ' 30'
-
-                # Input1 = chaste_run_exe +' -ArchivedDirectory ParameterSweep/Cylinder/Area_' + str(i) + '_Dil_' + str(j) + '_Def_' + str(k) 
-                Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt 0.0001 -NewEndTime'+SimulationTime
+                    
+                Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
                 Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
                 Input3 = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
                 subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
