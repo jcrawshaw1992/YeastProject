@@ -211,7 +211,7 @@ public:
             ArchivedDirectory  = CommandLineArguments::Instance()->GetStringCorrespondingToOption("-ArchivedDirectory");
         }
         
-         double StartingParameterForSlowIncrease = 1e-8;
+         double StartingParameterForSlowIncrease = 1e-9;
         if (CommandLineArguments::Instance()->OptionExists("-StartingParameterForSlowIncrease"))
         {
             StartingParameterForSlowIncrease= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-StartingParameterForSlowIncrease");
@@ -265,7 +265,8 @@ public:
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
         std::map<double, c_vector<long double, 4> > GrowthMaps;
         GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter), 0);
-        //                                          Strength,hetro,stepsize, setupsolve
+        //                                    Strength,hetro,stepsize, setupsolve
+                                            // GrowthMaps, Strength, Hetrogeneous,  StepSize,SetupSolve
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
 
         if (AreaParameter < (double)7 || DilationParameter < (double)7 || DeformationParamter < (double)7)

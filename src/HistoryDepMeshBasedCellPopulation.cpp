@@ -19,7 +19,7 @@ HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::HistoryDepMeshBasedCe
   
     if (mSetUpInitialConfigurations == 1)
     {
-        // MarkBoundaryNodes();
+        MarkBoundaryNodes();
         // Define all the inital configurations ... this needed to be done and the start, and whenever there is a remeshing
         SetupMembraneConfiguration();
         // SetInitialAnlgesAcrossMembrane();
