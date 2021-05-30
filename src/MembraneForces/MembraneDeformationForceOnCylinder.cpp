@@ -122,7 +122,7 @@ void MembraneDeformationForceOnCylinder::AddForceContribution(AbstractCellPopula
         
         // Calculate the normal, unit normal and |normal|.
         c_vector<double, 3> UnitNormal = VectorProduct(vector_A, vector_B);
-        UnitNormal = /norm_2(UnitNormal);
+        UnitNormal /=norm_2(UnitNormal);
       
         // Calculate the area of the element
         double Area = 0.5 * NormNormal;
