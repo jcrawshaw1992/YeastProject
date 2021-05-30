@@ -88,7 +88,6 @@ void MembraneDeformationForceOnCylinder::AddForceContribution(AbstractCellPopula
         double I1 = tr(G) - 2;
         double I2 = det(G) - 1;
 
-
         c_vector<c_vector<double, 3>, 3> RotatedForceOnNode;
  
         double dedvX;
@@ -100,7 +99,6 @@ void MembraneDeformationForceOnCylinder::AddForceContribution(AbstractCellPopula
             dedvY = KS * (I1 + 1) * (Dyx * a_i[i] + Dyy * b_i[i]) + (-KS + Kalpha * I2) * ((Dxx * Dxx * Dyy - Dxx * Dxy * Dyx) * b_i[i] + (Dyx * Dxy * Dxy - Dxx * Dxy * Dyy) * a_i[i]);
             RotatedForceOnNode[i] = -Area0 / 3 * Create_c_vector(dedvX, dedvY, 0);
         }
-
         c_vector<c_vector<double, 3>, 3> X;
         c_vector<c_vector<double, 3>, 3> ForceOnNode;
 
@@ -117,30 +115,22 @@ void MembraneDeformationForceOnCylinder::AddForceContribution(AbstractCellPopula
         ForceOnNode[0] = F0_rp[0] * vector_12 + F0_rp[1] * vector_13 + F0_rp[2] * X[2];
         ForceOnNode[1] = F1_rp[0] * vector_12 + F1_rp[1] * vector_13 + F1_rp[2] * X[2];
         ForceOnNode[2] = F2_rp[0] * vector_12 + F2_rp[1] * vector_13 + F2_rp[2] * X[2];
-        
-
+    
         // Area force
         c_vector<double, 3> vector_A = pNode0->rGetLocation() - pNode2->rGetLocation();
         c_vector<double, 3> vector_B = pNode1->rGetLocation() - pNode2->rGetLocation();
         
         // Calculate the normal, unit normal and |normal|.
-        c_vector<double, 3> normal = VectorProduct(vector_A, vector_B);
-        double NormNormal = norm_2(normal);
-        c_vector<double, 3> UnitNormal = normal / NormNormal;
+        c_vector<double, 3> UnitNormal = VectorProduct(vector_A, vector_B);
+        UnitNormal = /norm_2(UnitNormal);
       
         // Calculate the area of the element
         double Area = 0.5 * NormNormal;
         double AreaDiff = (Area - Area0)/Area0;
         
-        // Force on Node 0
         ForceOnNode[0] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, -vector_B);
-        // Force on Node 1
-        ForceOnNode[1] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, -vector_13);
-        
-        // Force on Node 2
+        ForceOnNode[1] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, -vector_13);        
         ForceOnNode[2] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, vector_12);
-
-
 
         double CellArea;
         unsigned node_index;
@@ -154,18 +144,17 @@ void MembraneDeformationForceOnCylinder::AddForceContribution(AbstractCellPopula
         }       
     }
     double Nc = 50;
-    // // THis bit takes care of the edges ...
+    // THis bit takes care of the edges ...
     for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
             cell_iter != rCellPopulation.End();
             ++cell_iter)
     {
         unsigned ReferenceNode = 0;
+        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+        Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
+
         if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
         {     
-            unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-            Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
-
-            // PRINT_2_VARIABLES(counter, node_index);
             if (node_index < Nc + 1) // if on lower edge
             {
                 ReferenceNode = node_index + (2 * Nc); // select node from two rows up
@@ -183,7 +172,7 @@ void MembraneDeformationForceOnCylinder::AddForceContribution(AbstractCellPopula
             cell_iter->GetCellData()->SetItem("MembraneForce", norm_2(MembraneForceMap[node_index] ));
             pNode->AddAppliedForceContribution(MembraneForceMap[node_index] ); // Add the new force
         }
-        
+
         c_vector<double, 3> Normal = pNode->rGetLocation();
         Normal[2] = 0;
         Normal /=norm_2(Normal);
