@@ -129,8 +129,8 @@ void MembraneDeformationForceOnCylinder::AddForceContribution(AbstractCellPopula
         double Area = 0.5 * NormNormal;
         double AreaDiff = (Area - Area0)/Area0;
         
-        ForceOnNode[0] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, -vector_B);
-        ForceOnNode[1] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, -vector_13);        
+        ForceOnNode[0] -= 0.5 * KA * AreaDiff * -VectorProduct(UnitNormal, vector_B);
+        ForceOnNode[1] -= 0.5 * KA * AreaDiff * -VectorProduct(UnitNormal, vector_13);        
         ForceOnNode[2] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, vector_12);
 
         double CellArea;
