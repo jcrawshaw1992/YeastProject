@@ -119,10 +119,11 @@ void MembraneDeformationForceOnCylinder::AddForceContribution(AbstractCellPopula
         // Area force
         c_vector<double, 3> vector_A = pNode0->rGetLocation() - pNode2->rGetLocation();
         c_vector<double, 3> vector_B = pNode1->rGetLocation() - pNode2->rGetLocation();
-        
+    
         // Calculate the normal, unit normal and |normal|.
-        c_vector<double, 3> UnitNormal = VectorProduct(vector_A, vector_B);
-        UnitNormal /=norm_2(UnitNormal);
+        c_vector<double, 3> normal = VectorProduct(vector_A, vector_B);
+        double NormNormal = norm_2(normal);
+        c_vector<double, 3> UnitNormal = normal / NormNormal;
       
         // Calculate the area of the element
         double Area = 0.5 * NormNormal;
