@@ -54,12 +54,12 @@ if __name__=="__main__":
                 dt = ' 0.0001'
                 if i <5.5 and j<5.5 and k<5.5:
                     SimulationTime = ' 5'
-                     dt = ' 0.00005'
+                    dt = ' 0.00005'
                 elif i <7.3 and j<7.3 and k<7.3:
                     SimulationTime = ' 10'
                 else:
                     SimulationTime = ' 30'
-                    
+
                 Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
                 Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
                 Input3 = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
