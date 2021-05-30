@@ -51,15 +51,13 @@ if __name__=="__main__":
         for j in DilationParameter:
             for k in DeformationParamter:
                 Core = AvaliablePaths[0]
-                dt = ' 0.001'
-                if i <5.5 and j<5.5 and k<5.5:
+                dt = ' 0.0005'
+                if i <5.5 or j<5.5 or k<5.5:
                     SimulationTime = ' 5'
                     dt = ' 0.00005'
-                elif i <7.3 and j<7.3 and k<7.3:
+                elif i <7.3 or j<7.3 or k<7.3:
                     SimulationTime = ' 20'
                     dt = ' 0.0001'
-                elif i <7.3 and j<7.3 and k<7.3:
-                    dt = ' 0.0005'
                 else:
                     SimulationTime = ' 30'
 
