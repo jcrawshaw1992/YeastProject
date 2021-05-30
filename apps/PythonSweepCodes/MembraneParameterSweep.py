@@ -43,20 +43,23 @@ if __name__=="__main__":
     # DeformationParamter = [ 8, 8.5, 9, 9.5, 10]
 
 
-    Parallel = 31
-    SleepyTime = 120
+    Parallel = 28
+    SleepyTime = 220
     AvaliablePaths = range(Parallel)
 
     for i in AreaParameter:
         for j in DilationParameter:
             for k in DeformationParamter:
                 Core = AvaliablePaths[0]
-                dt = ' 0.0001'
+                dt = ' 0.001'
                 if i <5.5 and j<5.5 and k<5.5:
                     SimulationTime = ' 5'
                     dt = ' 0.00005'
                 elif i <7.3 and j<7.3 and k<7.3:
-                    SimulationTime = ' 10'
+                    SimulationTime = ' 20'
+                    dt = ' 0.0001'
+                elif i <7.3 and j<7.3 and k<7.3:
+                    dt = ' 0.0005'
                 else:
                     SimulationTime = ' 30'
 
