@@ -153,7 +153,7 @@ void MembraneDeformationForceOnCylinder::AddForceContribution(AbstractCellPopula
             MembraneForceMap[node_index] += ForceOnNode[i]; 
         }       
     }
-    double Nc = 50
+    double Nc = 50;
     // // THis bit takes care of the edges ...
     for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
             cell_iter != rCellPopulation.End();
