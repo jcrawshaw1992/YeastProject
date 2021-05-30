@@ -203,8 +203,7 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
 
 
         }
-       
-        MembraneForceMap[node_index] 
+    
         pNode0->AddAppliedForceContribution(ForceOnNode[0]);
         pNode1->AddAppliedForceContribution(ForceOnNode[1]);
         pNode2->AddAppliedForceContribution(ForceOnNode[2]);
