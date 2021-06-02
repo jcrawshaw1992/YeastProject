@@ -137,7 +137,7 @@ public:
 
 }
 
-    void TestRunningArchieve() throw(Exception)
+    void offTestRunningArchieve() throw(Exception)
     {
 
         std::string Archieved = "HetroCylinderExampleThird";
@@ -211,6 +211,26 @@ public:
     void TestIntroduceHetro() throw(Exception)
     {
 
+
+        TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-a"));
+        double a =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-a");
+
+        double b =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-b");
+
+        double p =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-p");   
+        double dt= 0.0001;
+         if (CommandLineArguments::Instance()->OptionExists("-dt"))
+        {
+            dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
+        }  
+
+
+        std::stringstream out;
+        out << "A_"<< a << "_B_" <<b<< "_P_"<<p;
+        std::string ParameterSet = out.str();
+        std::string output_dir = "HetroCylinderParameters/"+ParameterSet;
+
+
         std::string Archieved = "HetroCylinderExampleThird/";
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 25);
         // Load and fix any settings in the simulator
@@ -226,13 +246,10 @@ public:
         double AreaParameter=7.5;
         double DeformationParamter=8.3;
 
-     
-        double dt= 0.001;
-        double NewEndTime = 100;
+        double NewEndTime = 50;
         double EndTime = 25;
         
-        double SamplingTimestepMultiple = 1000;
-        std::string output_dir = "HetroCylinder_a/8/";
+        double SamplingTimestepMultiple = 10000;
         
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
@@ -255,10 +272,10 @@ public:
         GrowthMaps[0] = Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -5), 0);
         // Strength,hetro,stepsize, setupsolve
         // GrowthMaps, Strength, Hetrogeneous,  StepSize,SetupSolve
-        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 1, 1e-10, 1);
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 1, pow(10,-P), 1);
         p_Mesh_modifier->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
         p_Mesh_modifier->SetBasementMembraneStrength(0);
-        p_Mesh_modifier->SetPlateauParameters(8, 2);
+        p_Mesh_modifier->SetPlateauParameters(a, b);
 
         p_simulator->Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
