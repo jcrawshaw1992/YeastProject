@@ -31,7 +31,7 @@ if __name__=="__main__":
         subprocess.call(command, shell=True)
 
 
-    chaste_run_exe =  '/home/vascrem/Chaste/projects//VascularRemodelling/test/ParameterSweep/TestHetroCylinderExampleParameterTestingRunner '
+    chaste_run_exe =  '/home/vascrem/Chaste/projects//VascularRemodelling/build/optimised/ParameterSweep/TestHetroCylinderExampleParameterTestingRunner '
     TerminalOutputFolder = "/data/vascrem/testoutput/HetroCylinderParameters/SweepTerminalOutputs/"
 
     if path.isdir("/data/vascrem/testoutput/HetroCylinderParameters")==0:
