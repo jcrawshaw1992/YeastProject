@@ -33,9 +33,9 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestSetUpCylinderArchive() throw(Exception)
+    void TestSetUpCylinderArchive() throw(Exception)
     {
-        double EndTime = 10;
+        double EndTime = 2;
         double scale = 1e3;
         double Length = 40e-6 * scale;
         // double Radius = 1e-6 * scale; // I want this to grow to 10
@@ -137,11 +137,11 @@ public:
 
 }
 
-    void offTestRunningArchieve() throw(Exception)
+    void TestRunningArchieve() throw(Exception)
     {
 
         std::string Archieved = "HetroCylinderExampleThird";
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 10);
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 2);
         // Load and fix any settings in the simulator
 
         double scale = 1e3;
@@ -158,8 +158,8 @@ public:
         double DeformationParamter=8.3;
      
         double dt= 0.002;
-        double NewEndTime = 15;
-        double EndTime = 10;
+        double NewEndTime = 5;
+        double EndTime = 2;
         
         double SamplingTimestepMultiple = 10000;
         std::string output_dir = "HetroCylinderExampleThird/";
@@ -208,7 +208,7 @@ public:
     }
 
 
-    void TestIntroduceHetro() throw(Exception)
+    void offTestIntroduceHetro() throw(Exception)
     {
 
 
@@ -232,7 +232,7 @@ public:
 
 
         std::string Archieved = "HetroCylinderExampleThird/";
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 25);
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 7);
         // Load and fix any settings in the simulator
 
         double scale = 1e3;
@@ -247,7 +247,7 @@ public:
         double DeformationParamter=8.3;
 
         double NewEndTime = 50;
-        double EndTime = 25;
+        double EndTime = 7;
         
         double SamplingTimestepMultiple = 10000;
         

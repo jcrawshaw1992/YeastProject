@@ -18,7 +18,7 @@ def RunTheCode(a,b,p):
 
     Input1 = chaste_run_exe +' -a '+str(a)+' -b '+str(b)+' -p ' +str(p) 
     Input2 = TerminalOutputFolder+'a_'+str(a)+'_b_'+str(b)+'p_' +str(p)+'.txt'
-    Input3 = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
+    Input3 = TerminalOutputFolder+'WaitFile'+str(a+b+p)+'.txt'
     subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
 
 
@@ -51,7 +51,6 @@ if __name__=="__main__":
     RunTheCode(8,2,10)
     RunTheCode(8,0.5,12)
     RunTheCode(8,4,14)
-
 
     # Altering A
     RunTheCode(8,2,10)
