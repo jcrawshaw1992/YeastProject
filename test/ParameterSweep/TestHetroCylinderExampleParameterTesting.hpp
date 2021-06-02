@@ -35,7 +35,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
     void TestSetUpCylinderArchive() throw(Exception)
     {
-        double EndTime = 2;
+        double EndTime = 4;
         double scale = 1e3;
         double Length = 40e-6 * scale;
         // double Radius = 1e-6 * scale; // I want this to grow to 10
@@ -141,7 +141,7 @@ public:
     {
 
         std::string Archieved = "HetroCylinderExampleThird";
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 2);
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 4);
         // Load and fix any settings in the simulator
 
         double scale = 1e3;
@@ -159,7 +159,7 @@ public:
      
         double dt= 0.002;
         double NewEndTime = 5;
-        double EndTime = 2;
+        double EndTime = 4;
         
         double SamplingTimestepMultiple = 10000;
         std::string output_dir = "HetroCylinderExampleThird/";
@@ -232,7 +232,7 @@ public:
 
 
         std::string Archieved = "HetroCylinderExampleThird/";
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 7);
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 9);
         // Load and fix any settings in the simulator
 
         double scale = 1e3;
@@ -247,7 +247,7 @@ public:
         double DeformationParamter=8.3;
 
         double NewEndTime = 50;
-        double EndTime = 7;
+        double EndTime = 9;
         
         double SamplingTimestepMultiple = 10000;
         
