@@ -25,7 +25,7 @@ def RunTheCode(a,b,p):
 if __name__=="__main__":
 
     t0 = time.time()
-    GenerateRunner =0
+    GenerateRunner =1
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestHetroCylinderExampleParameterTesting.hpp"
         subprocess.call(command, shell=True)
