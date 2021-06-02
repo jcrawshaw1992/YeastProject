@@ -161,7 +161,7 @@ public:
         double NewEndTime = 15;
         double EndTime = 10;
         
-        double SamplingTimestepMultiple = 100;
+        double SamplingTimestepMultiple = 10000;
         std::string output_dir = "HetroCylinderExampleThird/";
         
         /* Update the ouput directory for the population  */
