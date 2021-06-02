@@ -137,7 +137,7 @@ public:
 
 }
 
-    void offTestRunningArchieve() throw(Exception)
+    void TestRunningArchieve() throw(Exception)
     {
 
         std::string Archieved = "HetroCylinderExampleThird";
@@ -157,7 +157,7 @@ public:
         double AreaParameter=7.5;
         double DeformationParamter=8.3;
      
-        double dt= 0.001;
+        double dt= 0.002;
         double NewEndTime = 15;
         double EndTime = 10;
         
@@ -208,7 +208,7 @@ public:
     }
 
 
-    void offTestIntroduceHetro() throw(Exception)
+    void TestIntroduceHetro() throw(Exception)
     {
 
         std::string Archieved = "HetroCylinderExampleThird/";
