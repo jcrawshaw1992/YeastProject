@@ -61,6 +61,17 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, std::string outputDirectory)
 {
       UpdateCellData(rCellPopulation);
+
+      
+
+    for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+            cell_iter != rCellPopulation.End();
+            ++cell_iter)
+        {
+                cell_iter->GetCellData()->SetItem("CollpasingRegion", 0);
+        }
+
+      
 }
 
 
@@ -152,7 +163,9 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
     // Update if hetero 
     if (mHetro) // Need to make sure that the stiffer regions get stiffer at the right step size
     {
-        if (mCounter ==2000) // TODO this needs setting with a member variable
+        // TRACE("ABout to change")
+        // PRINT_VARIABLE(mCounter)
+        if (mCounter ==10) // TODO this needs setting with a member variable
         {
             StepChange(rCellPopulation);
             mCounter =0;
@@ -228,7 +241,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
             Node_location = rCellPopulation.GetNode(node_index)->rGetLocation();
 
             cell_iter->SetMutationState(p_EC);
-
+            cell_iter->GetCellData()->SetItem("MembraneState", 0);
             // Need to loop over the given boundaries, and see which planes these are defined within --> std::vector<std::vector<  c_vector<double, 3> > > mBoundaries;
             if (mHetro)
             {
@@ -248,15 +261,13 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
                     double DotToUpperPlane = inner_prod(NodeToUpperPlane,UpperPlane );
                     double DotToLowerPlane = inner_prod(NodeToLowerPlane,LowerPlane );
     
-                    double radius = 0.003; // XXX TODO Radius threshold needs fixing
+                    double radius = 1;//0.005; // XXX TODO Radius threshold needs fixing
+
                     if (DotToLowerPlane >= 0 && DotToUpperPlane >= 0)
                     {
-                        // PRINT_VARIABLE((norm_2(NodeToUpperPlane)) )
-                        // PRINT_VECTOR(NodeToUpperPlane)
-
                         if (norm_2(NodeToUpperPlane) <radius ||  norm_2(NodeToLowerPlane)<radius  )
                         {
-                          
+                            cell_iter->GetCellData()->SetItem("MembraneState", 10);
                             cell_iter->SetMutationState(p_Basement);
                             mBasementNodes.push_back(node_index);
                             mSamplebasementNode = node_index;
@@ -302,6 +313,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetMembranePr
     mHetro = Hetrogeneous;
     mStepSize = StepSize;
     mOn =  Hetrogeneous;
+    mCounter = 9;
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -356,8 +368,9 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::Boundaries(c_
 
 
     mHetro = 1;
-    mStepSize = 1e-7;//1e-10;
+    // mStepSize = 1e-7;//1e-10;
     mOn =  1;
+    TRACE("GOt here")
     
 }
 
@@ -383,7 +396,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetSlowIncrea
 {
     mSlowIncreaseInMembraneStrength = SlowIncreaseInMembraneStrength;
     mTimeStepSize = 1e-6;//TimeStepSize;
-    mCounter =100;
+    mCounter =0;
     mSteps = 1;
 }
   
@@ -415,7 +428,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
     double c_bs = mGrowthMaps[mStrength](2);
     double c_ba =  mGrowthMaps[mStrength](1);
     double c_bA =  mGrowthMaps[mStrength](0);
-
+    PRINT_VARIABLE(mStepSize)
     CellPtr p_Sample_Basement_cell = rCellPopulation.GetCellUsingLocationIndex(mSamplebasementNode);
     double Step_Kbs = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus") + mStepSize;
     double Step_Kba = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus") + mStepSize; // 1e-15;
@@ -428,6 +441,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
 
     for (unsigned i = 0; i<mBoundaries.size(); i++)
     {   
+        TRACE("Doing A step Change")
         c_vector<double, 3> X1 = mBoundaries[i][1]; // UpperPoint -> Upstream 
         c_vector<double, 3> X2 = mBoundaries[i][3]; //LowerPoint -> Downstreamc_vector<double, 3>
         c_vector<double, 3> MidPoint = (X1+X2)/2;
@@ -461,6 +475,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
             cell_iter->GetCellData()->SetItem("ShearModulus", ShearModulus);
             cell_iter->GetCellData()->SetItem("AreaDilationModulus", AreaDilationModulus);
             cell_iter->GetCellData()->SetItem("AreaConstant", AreaModulus);
+            cell_iter->GetCellData()->SetItem("CollpasingRegion", 1);
         }
     }
     
@@ -517,8 +532,8 @@ c_vector<c_vector<double, 3>, 2> RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DI
     double K_AreaDilationMod = Basement_AreaDilationMod- Endo_AreaDilationMod;
     double K_AreaMod = Basement_AreaMod - Endo_AreaMod;
 
-    double a = 8; // The larger a is, the stepper the increase is 
-    double b = 2/Length *std::log(1/0.01 -1)/std::log(a*2);
+    double a = 8; // The larger a is, the steaper the increase is 
+    double b = 2/(1.5*Length) *std::log(1/0.01 -1)/std::log(a*2);// Update this to be 2/L --- it is the same thing, just rounded for the thesis :) 
     
     c_vector<c_vector<double, 3>, 2> SpatialFuncitonCoefficents;
     SpatialFuncitonCoefficents[0]=Create_c_vector(K_ShearMod, K_AreaDilationMod, K_AreaMod);

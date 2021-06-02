@@ -60,7 +60,7 @@ private:
     double mStrength = 2.5;
     bool mHetro = 0;
     double mStepSize = 1e-10;
-    double mCounter = 500;
+    double mCounter = 0;
     unsigned mSteps =1;
     double mThreshold = 100;
     // double mSetupSolve;
