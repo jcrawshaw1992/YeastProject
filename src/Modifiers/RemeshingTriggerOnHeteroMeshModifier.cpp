@@ -305,6 +305,17 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetPlateauPar
     mB = B;
 }
 
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetUpdateFrequency(double MaxCounter)
+{
+    mMaxCounter = MaxCounter ;
+    mCounter = MaxCounter-1;
+}
+
+
+
+
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetStartingParameterForSlowIncrease(double StartingParameterForSlowIncrease)
 {
@@ -441,17 +452,17 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
     double Step_Kbs = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus") + mStepSize;
     double Step_Kba = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus") + mStepSize; // 1e-15;
     double Step_KbA = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant") + mStepSize; // 1e-12;
-    if (mStepSize <1e-4)
-    {
-        mStepSize *=1.05;
-    }
+    // if (mStepSize <1e-4)
+    // {
+    mStepSize *=1.05;
+    // }
     
 
     for (unsigned i = 0; i<mBoundaries.size(); i++)
     {   
         TRACE("Doing A step Change")
         c_vector<double, 3> X1 = mBoundaries[i][1]; // UpperPoint -> Upstream 
-        c_vector<double, 3> X2 = mBoundaries[i][3]; //LowerPoint -> Downstreamc_vector<double, 3>
+        c_vector<double, 3> X2 = mBoundaries[i][3]; // LowerPoint -> Downstreamc_vector<double, 3>
         c_vector<double, 3> MidPoint = (X1+X2)/2;
 
         // Just for shear 
@@ -465,7 +476,6 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
         K_ShearMod = std::min((double)Step_Kbs, K_ShearMod);
         K_AreaDilationMod = std::min((double)Step_Kba, K_AreaDilationMod);
         K_AreaMod = std::min((double)Step_KbA, K_AreaMod);
-        PRINT_4_VARIABLES(K_ShearMod,K_AreaDilationMod, K_AreaMod, mStepSize)
 
 
         for (std::vector<unsigned>::iterator it = mBasementNodes.begin(); it != mBasementNodes.end(); ++it)

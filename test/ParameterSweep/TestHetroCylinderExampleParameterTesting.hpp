@@ -276,6 +276,7 @@ public:
         p_Mesh_modifier->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
         p_Mesh_modifier->SetBasementMembraneStrength(0);
         p_Mesh_modifier->SetPlateauParameters(a, b);
+        p_Mesh_modifier->SetUpdateFrequency(100);
 
         p_simulator->Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
