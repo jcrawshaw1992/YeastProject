@@ -55,8 +55,8 @@ if __name__=="__main__":
 
     # Altering A
     RunTheCode(8,2,10)
-    RunTheCode(12,0.5,12)
-    RunTheCode(6,4,14)
+    RunTheCode(12,2,12)
+    RunTheCode(6,2,14)
    
     print '\n ********* ------ Finished ------ ********* \n'
    
