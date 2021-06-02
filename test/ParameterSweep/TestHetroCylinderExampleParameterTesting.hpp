@@ -33,7 +33,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestSetUpCylinderArchive() throw(Exception)
+    void TestSetUpCylinderArchive() throw(Exception)
     {
         double EndTime = 2;
         double scale = 1e3;
@@ -137,7 +137,7 @@ public:
 
 }
 
-    void offTestRunningArchieve() throw(Exception)
+    void TestRunningArchieve() throw(Exception)
     {
 
         std::string Archieved = "HetroCylinderExampleThird";
@@ -232,7 +232,7 @@ public:
 
 
         std::string Archieved = "HetroCylinderExampleThird/";
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 25);
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 7);
         // Load and fix any settings in the simulator
 
         double scale = 1e3;
@@ -247,7 +247,7 @@ public:
         double DeformationParamter=8.3;
 
         double NewEndTime = 50;
-        double EndTime = 25;
+        double EndTime = 7;
         
         double SamplingTimestepMultiple = 10000;
         
