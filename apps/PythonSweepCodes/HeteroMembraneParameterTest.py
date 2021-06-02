@@ -25,7 +25,7 @@ def RunTheCode(a,b,p):
 if __name__=="__main__":
 
     t0 = time.time()
-    GenerateRunner =1
+    GenerateRunner =0
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestHetroCylinderExampleParameterTesting.hpp"
         subprocess.call(command, shell=True)
@@ -43,6 +43,7 @@ if __name__=="__main__":
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
     # Altering B
+    RunTheCode(8,2.2,12)
     RunTheCode(8,2,12)
     RunTheCode(8,0.5,12)
     RunTheCode(8,4,12)
