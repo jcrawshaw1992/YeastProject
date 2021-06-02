@@ -414,7 +414,7 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetSlowIncreaseInMembraneStrength(bool SlowIncreaseInMembraneStrength, double TimeStepSize)
 {
     mSlowIncreaseInMembraneStrength = SlowIncreaseInMembraneStrength;
-    mTimeStepSize = 1e-6;//TimeStepSize;
+    // mTimeStepSize = 1e-6;//TimeStepSize;
     mCounter =0;
     mSteps = 1;
 }
