@@ -33,7 +33,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestSetUpCylinderArchive() throw(Exception)
+    void TestSetUpCylinderArchive() throw(Exception)
     {
         double EndTime = 10;
         double scale = 1e3;
@@ -137,7 +137,7 @@ public:
 
 }
 
-    void offTestRunningArchieve() throw(Exception)
+    void TestRunningArchieve() throw(Exception)
     {
 
         std::string Archieved = "HetroCylinderExampleThird";
