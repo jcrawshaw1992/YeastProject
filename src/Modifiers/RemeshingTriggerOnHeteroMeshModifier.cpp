@@ -477,7 +477,6 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
         K_AreaDilationMod = std::min((double)Step_Kba, K_AreaDilationMod);
         K_AreaMod = std::min((double)Step_KbA, K_AreaMod);
 
-
         for (std::vector<unsigned>::iterator it = mBasementNodes.begin(); it != mBasementNodes.end(); ++it)
         {
             CellPtr cell_iter = rCellPopulation.GetCellUsingLocationIndex(*it);

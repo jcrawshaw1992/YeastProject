@@ -150,6 +150,9 @@ public:
     void SetPlateauParameters(double a, double B);
     double ma = 8;
     double mB = 2;
+    void SetUpdateFrequency(double MaxCounter);
+    double mMaxCounter = 
+
 
 
 

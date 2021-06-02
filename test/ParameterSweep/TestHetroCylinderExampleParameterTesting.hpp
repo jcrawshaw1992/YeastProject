@@ -208,7 +208,7 @@ public:
     }
 
 
-    void offTestIntroduceHetro() throw(Exception)
+    void TestIntroduceHetro() throw(Exception)
     {
 
 
@@ -232,7 +232,7 @@ public:
 
 
         std::string Archieved = "HetroCylinderExampleThird/";
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 7);
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 25);
         // Load and fix any settings in the simulator
 
         double scale = 1e3;
@@ -247,7 +247,7 @@ public:
         double DeformationParamter=8.3;
 
         double NewEndTime = 50;
-        double EndTime = 7;
+        double EndTime = 25;
         
         double SamplingTimestepMultiple = 10000;
         
@@ -272,7 +272,7 @@ public:
         GrowthMaps[0] = Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -5), 0);
         // Strength,hetro,stepsize, setupsolve
         // GrowthMaps, Strength, Hetrogeneous,  StepSize,SetupSolve
-        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 1, pow(10,-P), 1);
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 1, pow(10,-p), 1);
         p_Mesh_modifier->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
         p_Mesh_modifier->SetBasementMembraneStrength(0);
         p_Mesh_modifier->SetPlateauParameters(a, b);
