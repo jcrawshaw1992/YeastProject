@@ -33,7 +33,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void TestSetUpCylinderArchive() throw(Exception)
+    void offTestSetUpCylinderArchive() throw(Exception)
     {
         double EndTime = 10;
         double scale = 1e3;
@@ -137,7 +137,7 @@ public:
 
 }
 
-    void TestRunningArchieve() throw(Exception)
+    void offTestRunningArchieve() throw(Exception)
     {
 
         std::string Archieved = "HetroCylinderExampleThird";
@@ -208,7 +208,7 @@ public:
     }
 
 
-     void offTestIntroduceHetro() throw(Exception)
+    void TestIntroduceHetro() throw(Exception)
     {
 
         std::string Archieved = "HetroCylinderExampleThird/";
@@ -232,7 +232,7 @@ public:
         double EndTime = 25;
         
         double SamplingTimestepMultiple = 1000;
-        std::string output_dir = "HetroCylinderExampleThird/";
+        std::string output_dir = "HetroCylinder_a/8/";
         
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);

@@ -147,7 +147,7 @@ public:
 
     void Boundaries(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPlanePoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> PlanePoint);
     c_vector<c_vector<double, 3>, 2> PlateauDistributionFuction(double Length);
-    void SetPlateauParameters(double a, double B)
+    void SetPlateauParameters(double a, double B);
     double ma = 8;
     double mB = 2;
 
