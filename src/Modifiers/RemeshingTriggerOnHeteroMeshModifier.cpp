@@ -297,6 +297,14 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
              
         }
 }
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetPlateauParameters(double a, double B)
+{
+    ma = a;
+    mB = B;
+}
+
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetStartingParameterForSlowIncrease(double StartingParameterForSlowIncrease)
 {
@@ -532,12 +540,13 @@ c_vector<c_vector<double, 3>, 2> RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DI
     double K_AreaDilationMod = Basement_AreaDilationMod- Endo_AreaDilationMod;
     double K_AreaMod = Basement_AreaMod - Endo_AreaMod;
 
-    double a = 8; // The larger a is, the steaper the increase is 
-    double b = 2/(1.5*Length) *std::log(1/0.01 -1)/std::log(a*2);// Update this to be 2/L --- it is the same thing, just rounded for the thesis :) 
+    // double a = 8; // The larger a is, the steaper the increase is 
+    // double b = 2/(1.5*Length) *std::log(1/0.01 -1)/std::log(a*2);// Update this to be 2/L --- it is the same thing, just rounded for the thesis :) 
+    double b = mB/L;
     
     c_vector<c_vector<double, 3>, 2> SpatialFuncitonCoefficents;
     SpatialFuncitonCoefficents[0]=Create_c_vector(K_ShearMod, K_AreaDilationMod, K_AreaMod);
-    SpatialFuncitonCoefficents[1]=Create_c_vector(a,b,0);
+    SpatialFuncitonCoefficents[1]=Create_c_vector(ma,b,0);
 
     /*  M(x) = k/(1+x^2a) */
     return SpatialFuncitonCoefficents;
