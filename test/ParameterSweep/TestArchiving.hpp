@@ -134,10 +134,12 @@ public:
 
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
-                SimulationTime::Instance()->Destroy();
+        SimulationTime::Instance()->Destroy();
         SimulationTime::Instance()->SetStartTime(0.0);
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, 1);
+        p_simulator->SetEndTime(2);
+        p_simulator->Solve();
 
 
 }
