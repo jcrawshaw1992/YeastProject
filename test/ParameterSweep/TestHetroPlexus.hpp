@@ -35,7 +35,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
-    void TestSetUpCylinderArchive2() throw(Exception)
+    void offTestSetUpCylinderArchive2() throw(Exception)
     {
         double EndTime = 15;
         double scale = 0.00006684491/1.29;

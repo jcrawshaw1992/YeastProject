@@ -47,9 +47,9 @@ public:
         double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
 
         double BendingParameter = 9; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
-        double dt = 0.001; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
+        double dt = 0.002; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
 
-        double EndTime = 200;
+        double EndTime = 500;
 
         double SamplingTimestepMultiple = 1000; //2000;
 
@@ -120,7 +120,7 @@ public:
         double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
 
         double BendingParameter = 9; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
-        double dt = 0.01; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
+        double dt = 0.002; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
 
         double EndTime = 200;
 
@@ -139,7 +139,7 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
 
         p_simulator->SetEndTime(EndTime + 100);
-        p_simulator->SetOutputDirectory(output_dir + ParameterSet);
+        p_simulator->SetOutputDirectory(output_dir);
 
         p_simulator->Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
