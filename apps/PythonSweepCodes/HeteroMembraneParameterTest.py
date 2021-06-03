@@ -23,8 +23,9 @@ def RunTheCode(a,b,p):
 
 
 if __name__=="__main__":
-
+    
     t0 = time.time()
+    time.sleep(60*30)
     GenerateRunner =0
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestHetroCylinderExampleParameterTesting.hpp"
