@@ -46,3 +46,22 @@ if __name__=="__main__":
         Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
         Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
         subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
+
+
+    
+    OldFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/Parameters/"
+    NewFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/CollectedResultsNew/"
+    os.mkdir(NewFolder)
+
+    
+   
+    for I in Parameters:
+        i = I[0]
+        j = I[1]
+        k = I[2]
+        Oldfile = OldFolder + "Param_" + str(i) + "_DilationParam_" + str(j) + "_DeformationParam_"+ str(k) + "/results_from_time_10/results.viznodes" 
+        if path.exists(Oldfile):
+            NewFile = NewFolder + "Area_" + str(i) + "_Dil_" + str(j) + "_Def_" + str(k)+".viznodes" 
+            shutil.copy(Oldfile, NewFile)
+
+   
