@@ -59,7 +59,7 @@ public:
         std::string output_dir = "BendingForceOnBentRectanlge/" + ParameterSet;
 
 
-        Honeycomb3DMeshGeneratorBentRectangle generator(Nc, Nc* AspectRatio[j], 1e-3, 1e-3);
+        Honeycomb3DMeshGeneratorBentRectangle generator(Nc, Nc* AspectRatio, 1e-3, 1e-3);
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
 
         // Create the cells
