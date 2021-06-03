@@ -40,26 +40,15 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestRunningArchieve() throw(Exception)
+    void TestRunningArchieve() throw(Exception)
     {
 
         TRACE("Jess is best")
-        double DilationParameter;
-        double AreaParameter;
-        double DeformationParamter;
-        if (CommandLineArguments::Instance()->OptionExists("-AreaParameter"))
-        {
-            AreaParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
-            DilationParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
-            DeformationParamter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DeformationParamter");
-        }
-        else
-        {
-            DilationParameter =10;
-            AreaParameter=10;
-            DeformationParamter=10;
-
-        }
+     
+        double AreaParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
+        double DilationParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
+        double DeformationParamter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DeformationParamter");
+       
 
         PRINT_3_VARIABLES(AreaParameter, DilationParameter, DeformationParamter)
         double dt= 0.0005;
@@ -148,7 +137,7 @@ public:
 
 
 
-    void TestRunningArchieveExtended() throw(Exception)
+    void offTestRunningArchieveExtended() throw(Exception)
     {
 
         TRACE("Jess is best")
