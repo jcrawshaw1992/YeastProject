@@ -33,7 +33,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void TestSetUpCylinderArchive() throw(Exception)
+    void offTestSetUpCylinderArchive() throw(Exception)
     {
         double EndTime = 5;
         double scale = 1e3;
@@ -58,7 +58,7 @@ public:
 
         // Create a cell population
         HistoryDepMeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
-        // cell_population.SetChasteOutputDirectory(output_dir, 0);
+        cell_population.SetChasteOutputDirectory(output_dir, 0);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
         // Set population to output all data to results files
