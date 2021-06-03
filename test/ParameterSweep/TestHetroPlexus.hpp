@@ -35,7 +35,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
-    void offTestSetUpCylinderArchive2() throw(Exception)
+    void TestSetUpCylinderArchive2() throw(Exception)
     {
         double EndTime = 15;
         double scale = 0.00006684491/1.29;
@@ -75,9 +75,9 @@ public:
         double AreaParameter=7;//4.5;
         double DeformationParamter=6;//5.3;
         /*
-            -----------------------------
-            RemeshingTriggerOnHeteroMeshModifier
-            ----------------------------
+        -----------------------------
+        RemeshingTriggerOnHeteroMeshModifier
+        ----------------------------
         */
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
         std::map<double, c_vector<long double, 4> > GrowthMaps;
@@ -100,7 +100,7 @@ public:
 
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        p_membrane_force->SetMembraneStiffness(pow(10, -10));
+        p_membrane_force->SetMembraneStiffness(pow(10, -9));
         simulator.AddForce(p_membrane_force);
         /*
         -----------------------------
