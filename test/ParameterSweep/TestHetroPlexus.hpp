@@ -163,7 +163,7 @@ public:
 
         simulator.SetEndTime(EndTime + NewEndTime);
         simulator.SetSamplingTimestepMultiple(SamplingTimestepMultiple);
-        simulator.SetDt(dt);
+        simulator.SetDt(0.0001);
         simulator.SetOutputDirectory(output_dir);
 
         cell_population.SetWriteVtkAsPoints(true);
@@ -177,17 +177,17 @@ public:
         ----------------------------
         */
         std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = simulator.GetSimulationModifiers()->begin();
-        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
+        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier_2 = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
         GrowthMaps[0] = Create_c_vector(pow(10, -5), pow(10, -6), pow(10, -4), pow(10, -6));
   
-        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 1, pow(10,-11), 1);
-        p_Mesh_modifier->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
-        p_Mesh_modifier->SetBasementMembraneStrength(0);
-        p_Mesh_modifier->SetPlateauParameters(8, 2);
-        p_Mesh_modifier->SetUpdateFrequency(100);
+        p_Mesh_modifier_2->SetMembranePropeties(GrowthMaps, 1, 1, pow(10,-11), 1);
+        p_Mesh_modifier_2->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
+        p_Mesh_modifier_2->SetBasementMembraneStrength(0);
+        p_Mesh_modifier_2->SetPlateauParameters(8, 2);
+        p_Mesh_modifier_2->SetUpdateFrequency(100);
 
         simulator.Solve();
-        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(simulator);
+        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
 }
 
     void offTestIntroduceHetro() throw(Exception)
