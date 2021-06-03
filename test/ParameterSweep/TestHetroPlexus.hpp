@@ -37,11 +37,12 @@ public:
 
     void TestSetUpCylinderArchive2() throw(Exception)
     {
-        double EndTime = 1;//15
+        double EndTime = 15;
         double scale = 0.00006684491/1.29;
 
-        std::string output_dir = "HetroPlexus/SMALL/";
-        std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
+        std::string output_dir = "HetroPlexus/";
+        // std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
+         std::string mesh_file = "/data/vascrem/MeshCollection/Plexus.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
@@ -70,26 +71,19 @@ public:
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
 
-        // double DilationParameter=7.4;
-        // double AreaParameter=6.5;
-        // double DeformationParamter=7.3;
-
         double DilationParameter=6;
         double AreaParameter=7;//4.5;
         double DeformationParamter=6;//5.3;
         /*
-        -----------------------------
-        RemeshingTriggerOnHeteroMeshModifier
-        ----------------------------
+            -----------------------------
+            RemeshingTriggerOnHeteroMeshModifier
+            ----------------------------
         */
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
         std::map<double, c_vector<long double, 4> > GrowthMaps;
 
         GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter), pow(10, -8));
-        // GrowthMaps[1] = Create_c_vector(pow(10,-8), pow(10,-8),pow(10,-8), 0);
-        //Strength , hetro, stepsize, setupsolve
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
-        // p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
         /*
@@ -159,18 +153,44 @@ public:
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
 
+        c_vector<double, 3> UpperPlaneNormal =  Create_c_vector(-0.8572462913069383, 0.5148872691000456, -0.004460511091465417);
+        c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.04388350306511342, 0.036447307223086936, 6.2118799792568484e-6);
+        c_vector<double, 3> LowerPlaneNormal =  Create_c_vector(0.8091715380078461,-0.5849424621690752, -0.05553141479916481);
+        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.02241255988723196, 0.051968449252480085,0.0014797089022245845);
 
-        // std::string Archieved =  "HetroPlexus/SMALL";
-        // OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 0.2);
+        double NewEndTime = 100;
+        double SamplingTimestepMultiple = 10000;
+
+        simulator.SetEndTime(EndTime + NewEndTime);
+        simulator.SetSamplingTimestepMultiple(SamplingTimestepMultiple);
+        simulator.SetDt(dt);
+        simulator.SetOutputDirectory(output_dir);
+
+        cell_population.SetWriteVtkAsPoints(true);
+        cell_population.SetOutputMeshInVtk(true);
+        cell_population.SetStartTime(EndTime);
 
 
-        SimulationTime::Instance()->Destroy();
-        SimulationTime::Instance()->SetStartTime(0.0);
+        /* 
+        -----------------------------
+        Update membrane properties
+        ----------------------------
+        */
+        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = simulator.GetSimulationModifiers()->begin();
+        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
+        GrowthMaps[0] = Create_c_vector(pow(10, -5), pow(10, -6), pow(10, -4), pow(10, -6));
+  
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 1, pow(10,-11), 1);
+        p_Mesh_modifier->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
+        p_Mesh_modifier->SetBasementMembraneStrength(0);
+        p_Mesh_modifier->SetPlateauParameters(8, 2);
+        p_Mesh_modifier->SetUpdateFrequency(100);
 
-
+        simulator.Solve();
+        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(simulator);
 }
 
-    void TestIntroduceHetro() throw(Exception)
+    void offTestIntroduceHetro() throw(Exception)
     {
         double a =8;
         double b =2;
