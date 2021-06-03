@@ -152,7 +152,7 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
     {
         Node<3>* pNode1 = spring_iterator.GetNodeA();
         Node<3>* pNode3 = spring_iterator.GetNodeB();
-
+       
         std::pair<Node<3>*, Node<3>*> edge = std::pair<Node<3>*, Node<3>*>(pNode1, pNode3);
 
         std::pair<c_vector<double, 3>, c_vector<double, 3> > nonUnitNormals;
@@ -174,30 +174,36 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         unsigned node_index2 = pNode2->GetIndex();
         unsigned node_index3 = pNode3->GetIndex();
         unsigned node_index4 = pNode4->GetIndex();
+        
 
-
-        double  MembraneStiffness = mMembraneStiffness;// THis needs updating 
         // unsigned node_index;
         CellPtr p_cell1 = p_cell_population->GetCellUsingLocationIndex(node_index1);  //MembraneStiffness += p_cell1->GetCellData()->GetItem("BendingConstant");
         CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(node_index2);   //MembraneStiffness += p_cell2->GetCellData()->GetItem("BendingConstant");
         CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex(node_index3); // MembraneStiffness += p_cell3->GetCellData()->GetItem("BendingConstant");
         CellPtr p_cell4 = p_cell_population->GetCellUsingLocationIndex(node_index4);  //MembraneStiffness += p_cell4->GetCellData()->GetItem("BendingConstant");
+ 
+        double  MembraneStiffness = p_cell1->GetCellData()->GetItem("BendingConstant"); 
+        MembraneStiffness += p_cell2->GetCellData()->GetItem("BendingConstant");
+        MembraneStiffness += p_cell3->GetCellData()->GetItem("BendingConstant");
+        MembraneStiffness += p_cell4->GetCellData()->GetItem("BendingConstant"); 
+        MembraneStiffness/=4;
 
         c_vector<double, 3> normal_1 = nonUnitNormals.first;
         double area_1 = 0.5 * norm_2(normal_1);
         normal_1 /= norm_2(normal_1);
-
+   
         c_vector<double, 3> normal_2 = nonUnitNormals.second;
         double area_2 = 0.5 * norm_2(normal_2);
         normal_2 /= norm_2(normal_2);
 
-
+ 
         c_vector<double, 3> projection_21 = normal_2 - inner_prod(normal_1, normal_2) * normal_1;
         c_vector<double, 3> projection_12 = normal_1 - inner_prod(normal_1, normal_2) * normal_2;
         if (norm_2(projection_21) >1e-12)// If normals are parallel then orthogonal projections are zero.
         {
             projection_21 /= norm_2(projection_21);// Not sure why this is here???? Its not in my calculations in the confirmation
         }
+        
         
         if (norm_2(projection_12) >1e-12)
         {

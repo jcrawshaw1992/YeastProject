@@ -39,8 +39,8 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
             unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
             Node<3>* p_node = rCellPopulation.GetNode(node_index);
 
-            if (cell_iter->GetCellData()->GetItem("Boundary") ==0)
-            {
+            // if (cell_iter->GetCellData()->GetItem("Boundary") ==0)
+            // {
                 
 
                 c_vector<double, 3> Normal = zero_vector<double>(3);
@@ -68,20 +68,22 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
                 
                 rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(force);
                 cell_iter->GetCellData()->SetItem("OutwardForce", norm_2(force) );
-                ForceMap[node_index] = force;
-            }else if (cell_iter->GetCellData()->GetItem("Boundary") ==1)
-            {
-                c_vector<double, 3> AverageForce = Create_c_vector(0,0,0);
-                c_vector<unsigned, 3> NearestNodes =  p_cell_population->GetNearestInternalNodes(node_index);
-                for ( int i = 0; i <3; i++)
-                {  
-                    AverageForce += ForceMap[NearestNodes[i]];
-                }
-                AverageForce/=3;
+                // ForceMap[node_index] = force;
+                // cell_iter->GetCellData()->SetItem("OutwardForce",norm_2(force)  );
+                // rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(force);
+            // }else if (cell_iter->GetCellData()->GetItem("Boundary") ==1)
+            // {
+            //     c_vector<double, 3> AverageForce = Create_c_vector(0,0,0);
+            //     c_vector<unsigned, 3> NearestNodes =  p_cell_population->GetNearestInternalNodes(node_index);
+            //     for ( int i = 0; i <3; i++)
+            //     {  
+            //         AverageForce += ForceMap[NearestNodes[i]];
+            //     }
+            //     AverageForce/=3;
 
-                cell_iter->GetCellData()->SetItem("OutwardForce",norm_2(AverageForce) );
-                rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(AverageForce);
-            }
+            //     cell_iter->GetCellData()->SetItem("OutwardForce",norm_2(AverageForce) );
+            //     rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(AverageForce);
+            // }
       
 
         }

@@ -40,7 +40,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void TestRunningArchieve() throw(Exception)
+    void offTestRunningArchieve() throw(Exception)
     {
 
         TRACE("Jess is best")
@@ -145,6 +145,54 @@ public:
         SimulationTime::Instance()->SetStartTime(0.0);
 
     }
+
+
+
+    void TestRunningArchieveExtended() throw(Exception)
+    {
+
+        TRACE("Jess is best")
+        double DilationParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DilationParameter");
+        double AreaParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
+        double DeformationParamter =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DeformationParamter");
+    
+
+
+        PRINT_3_VARIABLES(AreaParameter, DilationParameter, DeformationParamter)
+        double dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
+        double NewEndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-NewEndTime");;
+        double EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
+      
+        double SamplingTimestepMultiple = 1000;
+        if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
+        {
+            SamplingTimestepMultiple = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-SamplingTimestepMultiple");
+        }
+
+        std::stringstream out;
+        out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter;
+        std::string ParameterSet = out.str();
+        std::string output_dir = "MembraneParameterSweep/Cylinder/Parameters/" + ParameterSet ;
+
+        // Load and fix any settings in the simulator
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, EndTime);
+
+        /* Update the ouput directory for the population  */
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+
+        p_simulator->SetEndTime(EndTime + NewEndTime);
+        p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
+        p_simulator->SetDt(dt);
+
+      
+        p_simulator->Solve();
+        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+        // SimulationTime::Instance()->Destroy();
+        // SimulationTime::Instance()->SetStartTime(0.0);
+
+    }
+
 };
 
 #endif /*TESTRELAXATION_HPP_*/

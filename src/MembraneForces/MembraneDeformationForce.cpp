@@ -26,36 +26,26 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
     //     MembraneForceMap[node_index] = Create_c_vector(0,0,0);
     // }
 
-
-    CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(100);
-
-    double Kalpha =p_cell->GetCellData()->GetItem("AreaDilationModulus");
-    double KS =p_cell->GetCellData()->GetItem("ShearModulus");
-    double KA = p_cell->GetCellData()->GetItem("AreaConstant"); 
-      
-
-
-
     for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
          elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
          ++elem_iter)
     {
         // THis will be needed later -- going to need to figure out how to stream line this later 
-        // double Kalpha = 0;
-        // double KA = 0;
-        // double KS = 0;
-        // for (int i = 0; i < 3; i++)
-        // {
-        //     unsigned node_index = elem_iter->GetNodeGlobalIndex(i);
-        //     CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
+        double Kalpha = 0;
+        double KA = 0;
+        double KS = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            unsigned node_index = elem_iter->GetNodeGlobalIndex(i);
+            CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
 
-        //     Kalpha +=p_cell->GetCellData()->GetItem("AreaDilationModulus");
-        //     KS +=p_cell->GetCellData()->GetItem("ShearModulus");
-        //     KA += p_cell->GetCellData()->GetItem("AreaConstant"); 
-        // }
-        // Kalpha/=3;
-        // KA/=3;
-        // KS/=3;
+            Kalpha +=p_cell->GetCellData()->GetItem("AreaDilationModulus");
+            KS +=p_cell->GetCellData()->GetItem("ShearModulus");
+            KA += p_cell->GetCellData()->GetItem("AreaConstant"); 
+        }
+        Kalpha/=3;
+        KA/=3;
+        KS/=3;
         // PRINT_3_VARIABLES(Kalpha,KA,KS ) 
 
         unsigned elem_index = elem_iter->GetIndex();

@@ -22,7 +22,7 @@ HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::HistoryDepMeshBasedCe
         MarkBoundaryNodes();
         // Define all the inital configurations ... this needed to be done and the start, and whenever there is a remeshing
         SetupMembraneConfiguration();
-        // SetInitialAnlgesAcrossMembrane();
+        SetInitialAnlgesAcrossMembrane();
     }
 }
 
@@ -263,6 +263,11 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
         CGALRemeshingCommand = "(cd  ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/;./isotropic_remeshing_ForChaste -input " + offfile + " -output " + mChasteOutputDirectory + "CurrentPlexusRemeshed.off -target_edge_length " + std::to_string(mTargetRemeshingEdgeLength) + " -iterations " + std::to_string(mIterations) + " > null)";
         SystemOutput = std::system(CGALRemeshingCommand.c_str()); // system only takes char *
     } 
+
+
+    // cd  ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/;./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Documents/Projects/Meshes/Plexus.off  -output  /Users/jcrawshaw/Documents/Projects/Meshes/PlexusRemeshed.off -target_edge_length 0.001  -iterations  5
+
+
 
     // Now ned to convert from .off back to a .vtu
     // TRACE("Now ned to convert from .off back to a .vtu")
