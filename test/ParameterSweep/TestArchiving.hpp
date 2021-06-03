@@ -77,13 +77,13 @@ public:
         RemeshingTriggerOnHeteroMeshModifier
         ----------------------------
         */
-        // boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
-        // std::map<double, c_vector<long double, 4> > GrowthMaps;
-        // GrowthMaps[1] = Create_c_vector(pow(10,-8), pow(10,-8),pow(10,-8), 0);
-        // //Strength , hetro, stepsize, setupsolve
-        // p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
-        // // p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
-        // simulator.AddSimulationModifier(p_Mesh_modifier);
+        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
+        std::map<double, c_vector<long double, 4> > GrowthMaps;
+        GrowthMaps[1] = Create_c_vector(pow(10,-8), pow(10,-8),pow(10,-8), 0);
+        //Strength , hetro, stepsize, setupsolve
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
+        // p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
+        simulator.AddSimulationModifier(p_Mesh_modifier);
 
         // // /*
         // // -----------------------------
@@ -117,20 +117,20 @@ public:
         // c_vector<double, 3> Point2 = Create_c_vector(0, 0, 39e-6 * scale);
 
 
-        // std::vector<c_vector<double, 3> > boundary_plane_points;
-        // std::vector<c_vector<double, 3> > boundary_plane_normals;
+        std::vector<c_vector<double, 3> > boundary_plane_points;
+        std::vector<c_vector<double, 3> > boundary_plane_normals;
 
-        // boundary_plane_points.push_back(Point1);
-        // boundary_plane_normals.push_back(PlaneNormal1);
+        boundary_plane_points.push_back(Point1);
+        boundary_plane_normals.push_back(PlaneNormal1);
 
-        // boundary_plane_points.push_back(Point2);
-        // boundary_plane_normals.push_back(PlaneNormal2);
+        boundary_plane_points.push_back(Point2);
+        boundary_plane_normals.push_back(PlaneNormal2);
 
-        // for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
-        // {
-        //     boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 5));
-        //     simulator.AddCellPopulationBoundaryCondition(p_condition);
-        // }
+        for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
+        {
+            boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 5));
+            simulator.AddCellPopulationBoundaryCondition(p_condition);
+        }
 
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
