@@ -17,7 +17,7 @@ from os import path
 if __name__=="__main__":
 
     t0 = time.time()
-    GenerateRunner =1
+    GenerateRunner =0
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestBendingOnPlaneSweep.hpp"
         subprocess.call(command, shell=True)

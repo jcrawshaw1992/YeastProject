@@ -43,7 +43,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
     void TestBending() throw(Exception)
     {
-        double N_c =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
+        double Nc =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
         double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
 
         double BendingParameter = 8; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
@@ -54,12 +54,12 @@ public:
         double SamplingTimestepMultiple = 1000; //2000;
 
         std::stringstream out;
-        out << "AspectRatio" << AspectRatio << "/Refinement" << N_C;
+        out << "AspectRatio" << AspectRatio << "/Refinement" << Nc;
         std::string ParameterSet = out.str();
         std::string output_dir = "BendingForceOnBentRectanlge/" + ParameterSet;
 
 
-        Honeycomb3DMeshGeneratorBentRectangle generator(N_C, N_C* AspectRatio[j], 1e-3, 1e-3);
+        Honeycomb3DMeshGeneratorBentRectangle generator(Nc, Nc* AspectRatio[j], 1e-3, 1e-3);
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
 
         // Create the cells
