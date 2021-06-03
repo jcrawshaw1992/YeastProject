@@ -25,10 +25,10 @@
 #include "HistoryDepMutableMesh.hpp"
 
 
-// #include "FixedRegionBoundaryCondition.hpp"
-// #include "MembraneDeformationForceOnCylinder.hpp"
-// #include "OutwardsPressureWithBreaks.hpp"
-// #include "RemeshingTriggerOnHeteroMeshModifier.hpp"
+#include "FixedRegionBoundaryCondition.hpp"
+#include "MembraneDeformationForceOnCylinder.hpp"
+#include "OutwardsPressureWithBreaks.hpp"
+#include "RemeshingTriggerOnHeteroMeshModifier.hpp"
 
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
