@@ -17,7 +17,7 @@ from os import path
 if __name__=="__main__":
 
     t0 = time.time()
-    GenerateRunner =0
+    GenerateRunner =1
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestBendingOnPlaneSweep.hpp"
         subprocess.call(command, shell=True)
@@ -37,7 +37,7 @@ if __name__=="__main__":
     for i in AspectRatio:
         for j in Refinment:
     
-            Input1 = chaste_run_exe +' -Nc '+str(j)+' -AspectRatio '+str(j)
+            Input1 = chaste_run_exe +' -Nc '+str(j)+' -AspectRatio '+str(i)
             Input2 = TerminalOutputFolder+'AspectRatio_'+str(i)+'_Nc_'+str(j)+'.txt'
             Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
             subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
