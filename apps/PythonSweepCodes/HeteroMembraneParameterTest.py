@@ -48,15 +48,19 @@ if __name__=="__main__":
     RunTheCode(8,0.5,12)
     RunTheCode(8,4,12)
 
-    # Altering P
-    RunTheCode(8,2,10)
-    RunTheCode(8,0.5,12)
-    RunTheCode(8,4,14)
 
     # Altering A
     RunTheCode(8,2,10)
     RunTheCode(12,2,12)
     RunTheCode(6,2,14)
+    
+
+    # Altering P
+    RunTheCode(8,2,10)
+    RunTheCode(8,0.5,12)
+    RunTheCode(8,4,14)
+
+    
    
     print '\n ********* ------ Finished ------ ********* \n'
    
