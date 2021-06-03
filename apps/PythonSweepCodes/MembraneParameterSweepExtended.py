@@ -49,7 +49,7 @@ if __name__=="__main__":
             InitialSimulationTime = ' 20'
             FinialSimulationTime = ' 30'
         else:
-            InitialSimulationTime = ' 30'
+            InitialSimulationTime = ' 40'
             FinialSimulationTime = ' 30'
 
         Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -EndTime '+InitialSimulationTime +' -NewEndTime'+FinialSimulationTime
