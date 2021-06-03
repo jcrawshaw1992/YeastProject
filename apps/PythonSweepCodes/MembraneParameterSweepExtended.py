@@ -28,9 +28,10 @@ if __name__=="__main__":
     if path.isdir(TerminalOutputFolder)==0:
         os.mkdir(TerminalOutputFolder)
 
-    Parameters = [[10, 9,  9],   [10, 9, 10],   [9, 9, 9],   [9, 9, 10],   [9, 9.5, 9],   [9, 9.5, 10],   [9, 10, 9],   [9, 10, 10],  [8, 9,  9], [8, 9, 10], [8, 9.5, 9], [8, 9.5, 10], [8, 10, 9], [8, 10, 10], [7, 8.5, 9], [7, 8.5, 10], [7, 9, 9], [7, 9, 10], [7, 9.5, 9], [7, 9.5, 10], [7, 10, 9], [7, 10, 10]]
+    # Parameters = [[10, 9,  9],   [10, 9, 10],   [9, 9, 9],   [9, 9, 10],   [9, 9.5, 9],   [9, 9.5, 10],   [9, 10, 9],   [9, 10, 10],  [8, 9,  9], [8, 9, 10], [8, 9.5, 9], [8, 9.5, 10], [8, 10, 9], [8, 10, 10], [7, 8.5, 9], [7, 8.5, 10], [7, 9, 9], [7, 9, 10], [7, 9.5, 9], [7, 9.5, 10], [7, 10, 9], [7, 10, 10]]
+    Parameters = [[9,  9.5,  10] , [9, 10, 10] , [8,  9.5,  10] , [8, 10, 10] , [7,    9.5,  10] , [7,   10, 10] ] 
+    
     print len(Parameters)
-    print Parameters
     for I in Parameters:
         i = I[0]
         j = I[1]
@@ -49,19 +50,19 @@ if __name__=="__main__":
 
 
     
-    OldFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/Parameters/"
-    NewFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/CollectedResultsNew/"
-    os.mkdir(NewFolder)
+    # OldFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/Parameters/"
+    # NewFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/CollectedResultsNew/"
+    # os.mkdir(NewFolder)
 
     
    
-    for I in Parameters:
-        i = I[0]
-        j = I[1]
-        k = I[2]
-        Oldfile = OldFolder + "Param_" + str(i) + "_DilationParam_" + str(j) + "_DeformationParam_"+ str(k) + "/results_from_time_10/results.viznodes" 
-        if path.exists(Oldfile):
-            NewFile = NewFolder + "Area_" + str(i) + "_Dil_" + str(j) + "_Def_" + str(k)+".viznodes" 
-            shutil.copy(Oldfile, NewFile)
+    # for I in Parameters:
+    #     i = I[0]
+    #     j = I[1]
+    #     k = I[2]
+    #     Oldfile = OldFolder + "Param_" + str(i) + "_DilationParam_" + str(j) + "_DeformationParam_"+ str(k) + "/results_from_time_10/results.viznodes" 
+    #     if path.exists(Oldfile):
+    #         NewFile = NewFolder + "Area_" + str(i) + "_Dil_" + str(j) + "_Def_" + str(k)+".viznodes" 
+    #         shutil.copy(Oldfile, NewFile)
 
    
