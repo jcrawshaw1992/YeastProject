@@ -71,8 +71,8 @@ public:
         double AreaParameter=7.5;
         double DeformationParamter=8.3;
 
-        double NewEndTime = 50;
-        double EndTime = 10;
+        double NewEndTime = 51;
+        double EndTime = 9;
         
         double SamplingTimestepMultiple = 1000;
         
