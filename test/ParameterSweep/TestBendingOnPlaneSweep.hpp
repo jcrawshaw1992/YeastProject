@@ -41,22 +41,22 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestBending() throw(Exception)
+    void TestBending() throw(Exception)
     {
         double Nc =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
         double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
 
         double BendingParameter = 9; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
-        double dt = 0.002; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
+        double dt = 0.005; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
 
-        double EndTime = 500;
+        double EndTime = 600;
 
         double SamplingTimestepMultiple = 1000; //2000;
 
         std::stringstream out;
         out << "AspectRatio" << AspectRatio << "/Refinement" << Nc;
         std::string ParameterSet = out.str();
-        std::string output_dir = "BendingForceOnBentRectanlge/" + ParameterSet;
+        std::string output_dir = "BendingForceOnBentRectanlge2/" + ParameterSet;
 
 
         Honeycomb3DMeshGeneratorBentRectangle generator(Nc, Nc* AspectRatio, 1e-3, 1e-3);
@@ -114,7 +114,7 @@ public:
 
 
 
-    void TestBendingFromArchieve() throw(Exception)
+    void offTestBendingFromArchieve() throw(Exception)
     {
         double Nc =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
         double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
