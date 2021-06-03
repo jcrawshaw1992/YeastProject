@@ -33,9 +33,9 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestSetUpCylinderArchive() throw(Exception)
+    void TestSetUpCylinderArchive() throw(Exception)
     {
-        double EndTime = 4;
+        double EndTime = 5;
         double scale = 1e3;
         double Length = 40e-6 * scale;
         // double Radius = 1e-6 * scale; // I want this to grow to 10
@@ -44,7 +44,7 @@ public:
         unsigned N_D = 50;
         unsigned N_Z = 150;
 
-        std::string output_dir = "HetroCylinderExampleThird/";
+        std::string output_dir = "HetroCylinderParameterTests/";
 
         Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, Radius, Length);
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
@@ -59,8 +59,8 @@ public:
         // Create a cell population
         HistoryDepMeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
         // cell_population.SetChasteOutputDirectory(output_dir, 0);
-        cell_population.SetWriteVtkAsPoints(true);
-        cell_population.SetOutputMeshInVtk(true);
+        // cell_population.SetWriteVtkAsPoints(true);
+        // cell_population.SetOutputMeshInVtk(true);
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
 
@@ -137,11 +137,11 @@ public:
 
 }
 
-    void offTestRunningArchieve() throw(Exception)
+    void TestRunningArchieve() throw(Exception)
     {
 
-        std::string Archieved = "HetroCylinderExampleThird";
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 4);
+        std::string Archieved = "HetroCylinderParameterTests";
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 5);
         // Load and fix any settings in the simulator
 
         double scale = 1e3;
@@ -159,10 +159,10 @@ public:
      
         double dt= 0.002;
         double NewEndTime = 5;
-        double EndTime = 4;
+        double EndTime = 5;
         
         double SamplingTimestepMultiple = 10000;
-        std::string output_dir = "HetroCylinderExampleThird/";
+        std::string output_dir = "HetroCylinderParameterTests/";
         
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
@@ -208,7 +208,7 @@ public:
     }
 
 
-    void TestIntroduceHetro() throw(Exception)
+    void offTestIntroduceHetro() throw(Exception)
     {
 
 
@@ -231,8 +231,8 @@ public:
         std::string output_dir = "HetroCylinderParameters/"+ParameterSet;
 
 
-        std::string Archieved = "HetroCylinderExampleThird/";
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 9);
+        std::string Archieved = "HetroCylinderParameterTests/";
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 10);
         // Load and fix any settings in the simulator
 
         double scale = 1e3;
@@ -247,13 +247,14 @@ public:
         double DeformationParamter=8.3;
 
         double NewEndTime = 50;
-        double EndTime = 9;
+        double EndTime = 10;
         
         double SamplingTimestepMultiple = 10000;
         
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetOutputMeshInVtk(true);
 
         p_simulator->SetEndTime(EndTime + NewEndTime);
         p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
