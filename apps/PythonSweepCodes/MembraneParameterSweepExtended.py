@@ -54,21 +54,9 @@ if __name__=="__main__":
 
         Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -EndTime '+InitialSimulationTime +' -NewEndTime'+FinialSimulationTime
         Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
-        Input3 = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
+        Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
         subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
-        AvaliablePaths.remove(Core) 
-        # # Check if all positions are taken
-        while len(AvaliablePaths) ==0:
-            time.sleep(SleepyTime)
-            print "Awake and checking for spare cores" 
-            for P in range(Parallel):
-                OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
-                if path.exists(OutputFile):
-                    AvaliablePaths.append(P)
-                    os.remove(OutputFile)
-            if len(AvaliablePaths) >0:
-                print AvaliablePaths, "Have found a spare core or two :-) " 
-                print time.time() - t0, "seconds time"
+
 
 
 
