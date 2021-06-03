@@ -33,7 +33,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void TestSetUpCylinderArchive() throw(Exception)
+    void offTestSetUpCylinderArchive() throw(Exception)
     {
         double EndTime =1;
         double scale = 1e3;
@@ -164,7 +164,7 @@ public:
         double NewEndTime = 5;
         double EndTime = 5;
         
-        double SamplingTimestepMultiple = 10000;
+        double SamplingTimestepMultiple = 10;
      
         
         /* Update the ouput directory for the population  */
