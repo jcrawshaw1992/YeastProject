@@ -104,17 +104,17 @@ public:
         // p_ForceOut->SetRadiusThreshold(10);
         // simulator.AddForce(p_ForceOut);
 
-        // // /*
-        // // -----------------------------
-        // // Boundary conditions
-        // // ----------------------------
-        // // */
+        // /*
+        // -----------------------------
+        // Boundary conditions
+        // ----------------------------
+        // */
 
-        // c_vector<double, 3> PlaneNormal1 = Create_c_vector(0, 0, -1);
-        // c_vector<double, 3> Point1 = Create_c_vector(0, 0, 1e-6 * scale);
+        c_vector<double, 3> PlaneNormal1 = Create_c_vector(0, 0, -1);
+        c_vector<double, 3> Point1 = Create_c_vector(0, 0, 1e-6 * scale);
 
-        // c_vector<double, 3> PlaneNormal2 = Create_c_vector(0, 0, 1);
-        // c_vector<double, 3> Point2 = Create_c_vector(0, 0, 39e-6 * scale);
+        c_vector<double, 3> PlaneNormal2 = Create_c_vector(0, 0, 1);
+        c_vector<double, 3> Point2 = Create_c_vector(0, 0, 39e-6 * scale);
 
 
         std::vector<c_vector<double, 3> > boundary_plane_points;
