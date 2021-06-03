@@ -23,13 +23,13 @@ if __name__=="__main__":
         subprocess.call(command, shell=True)
 
     chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParameterSweepRunner '
-    TerminalOutputFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/SweepTerminalOutputs/"
+    TerminalOutputFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/SweepTerminalOutputsNew/"
 
     # if path.isdir("MembraneParameterSweep/Cylinder/")==0:
     #     os.mkdir("MembraneParameterSweep/Cylinder/")
 
-    # if path.isdir(TerminalOutputFolder)==0:
-    #     os.mkdir(TerminalOutputFolder)
+    if path.isdir(TerminalOutputFolder)==0:
+        os.mkdir(TerminalOutputFolder)
 
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
@@ -44,9 +44,9 @@ if __name__=="__main__":
         i =I[0]
         j = I[1]
         k = I[2]
-        dt = ' 0.001'
+        dt = ' 0.0005'
         if i <7.3 or j<7.3 or k<7.3:
-            InitialSimulationTime = ' 20'
+            InitialSimulationTime = ' 30'
             FinialSimulationTime = ' 30'
         else:
             InitialSimulationTime = ' 40'
