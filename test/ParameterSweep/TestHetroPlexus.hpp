@@ -35,14 +35,14 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
-    void offTestSetUpCylinderArchive2() throw(Exception)
+    void TestSetUpCylinderArchive2() throw(Exception)
     {
         double EndTime = 15;
         double scale = 0.00006684491/1.29;
 
         std::string output_dir = "HetroPlexus/";
-        // std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
-         std::string mesh_file = "/data/vascrem/MeshCollection/Plexus.vtu";
+        std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
+        //  std::string mesh_file = "/data/vascrem/MeshCollection/Plexus.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
@@ -174,7 +174,7 @@ public:
         double AreaParameter=7;//4.5;
         double DeformationParamter=6;//5.3;
 
-        double NewEndTime = 50;
+        double NewEndTime = 100;
         double EndTime = 15;
         
         double SamplingTimestepMultiple = 10000;
@@ -182,8 +182,6 @@ public:
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetWriteVtkAsPoints(true);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetOutputMeshInVtk(true);
 
         p_simulator->SetEndTime(EndTime + NewEndTime);
         p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);

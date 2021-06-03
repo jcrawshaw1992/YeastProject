@@ -53,11 +53,11 @@ public:
         std::stringstream out;
         out << "A_"<< a << "_B_" <<b<< "_P_"<<p;
         std::string ParameterSet = out.str();
-        std::string output_dir = "TestHetroCylinder/Paramters/"+ParameterSet;
+        std::string output_dir = "HetroCylinder/Paramters/"+ParameterSet;
 
 
-        std::string Archieved = "TestHetroCylinder/";
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 10);
+        std::string Archieved = "HetroCylinder/";
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 9);
         // Load and fix any settings in the simulator
 
         double scale = 1e3;
@@ -74,7 +74,7 @@ public:
         double NewEndTime = 50;
         double EndTime = 10;
         
-        double SamplingTimestepMultiple = 10000;
+        double SamplingTimestepMultiple = 1000;
         
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);

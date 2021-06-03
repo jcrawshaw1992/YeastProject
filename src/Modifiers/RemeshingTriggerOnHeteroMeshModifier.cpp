@@ -165,7 +165,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
     {
         // TRACE("ABout to change")
         // PRINT_VARIABLE(mCounter)
-        if (mCounter ==10) // TODO this needs setting with a member variable
+        if (mCounter ==mMaxCounter) // TODO this needs setting with a member variable
         {
             StepChange(rCellPopulation);
             mCounter =0;
@@ -303,6 +303,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetPlateauPar
 {
     ma = a;
     mB = B;
+    PRINT_2_VARIABLES(ma,mB)
 }
 
 
@@ -319,7 +320,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetUpdateFreq
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetStartingParameterForSlowIncrease(double StartingParameterForSlowIncrease)
 {
- mStartingParameterForSlowIncrease =StartingParameterForSlowIncrease;
+    mStartingParameterForSlowIncrease =StartingParameterForSlowIncrease;
 }
 
 /////------------------------------------------------------------------
@@ -579,7 +580,7 @@ c_vector<c_vector<double, 3>, 2> RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DI
     // double a = 8; // The larger a is, the steaper the increase is 
     // double b = 2/(1.5*Length) *std::log(1/0.01 -1)/std::log(a*2);// Update this to be 2/L --- it is the same thing, just rounded for the thesis :) 
     double b = mB/Length;
-    
+    PRINT_2_VARIABLES(ma,mB)
     c_vector<c_vector<double, 3>, 2> SpatialFuncitonCoefficents;
     SpatialFuncitonCoefficents[0]=Create_c_vector(K_ShearMod, K_AreaDilationMod, K_AreaMod);
     SpatialFuncitonCoefficents[1]=Create_c_vector(ma,b,0);
