@@ -52,7 +52,7 @@ if __name__=="__main__":
             InitialSimulationTime = ' 30'
             FinialSimulationTime = ' 30'
 
-        Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -InitialEndTime'+InitialSimulationTime ' -NewEndTime'+FinialSimulationTime
+        Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -EndTime '+InitialSimulationTime +' -NewEndTime'+FinialSimulationTime
         Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
         Input3 = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
         subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
