@@ -14,7 +14,7 @@ import sys
 import os.path
 from os import path
 
-def RunTheCode(a,b,p):
+def RunTheCode(chaste_run_exe, a,b,p):
 
     Input1 = chaste_run_exe +' -a '+str(a)+' -b '+str(b)+' -p ' +str(p) 
     Input2 = TerminalOutputFolder+'a_'+str(a)+'_b_'+str(b)+'p_' +str(p)+'.txt'
@@ -44,22 +44,22 @@ if __name__=="__main__":
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
     # Altering B
-    RunTheCode(8,2.2,12)
-    RunTheCode(8,2,12)
-    RunTheCode(8,0.5,12)
-    RunTheCode(8,4,12)
+    RunTheCode(chaste_run_exe, 8,2.2,12)
+    RunTheCode(chaste_run_exe, 8,2,12)
+    RunTheCode(chaste_run_exe, 8,0.5,12)
+    RunTheCode(chaste_run_exe, 8,4,12)
 
 
     # Altering A
-    RunTheCode(8,2,10)
-    RunTheCode(12,2,12)
-    RunTheCode(6,2,14)
-    
+    RunTheCode(chaste_run_exe, 8,2,10)
+    RunTheCode(chaste_run_exe, 12,2,12)
+    RunTheCode(chaste_run_exe, 6,2,14)
+
 
     # Altering P
-    RunTheCode(8,2,10)
-    RunTheCode(8,0.5,12)
-    RunTheCode(8,4,14)
+    RunTheCode(chaste_run_exe, 8,2,10)
+    RunTheCode(chaste_run_exe, 8,0.5,12)
+    RunTheCode(chaste_run_exe, 8,4,14)
 
     
    
