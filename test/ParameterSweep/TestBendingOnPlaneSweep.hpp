@@ -141,8 +141,8 @@ public:
         p_simulator->SetEndTime(EndTime + 100);
         p_simulator->SetOutputDirectory(output_dir + ParameterSet);
 
-        simulator.Solve();
-        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+        p_simulator->Solve();
+        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
     }
 
 
