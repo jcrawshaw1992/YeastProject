@@ -93,16 +93,16 @@ public:
         // double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
         // double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
-        // /*
-        // -----------------------------
-        // Constant Compressive tissue pressure
-        // ----------------------------
-        // */
-        // boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
-        // p_ForceOut->SetPressure(P_blood - P_tissue);
-        // p_ForceOut->SetInitialPosition(cell_population, 100);
-        // p_ForceOut->SetRadiusThreshold(10);
-        // simulator.AddForce(p_ForceOut);
+        /*
+        -----------------------------
+        Constant Compressive tissue pressure
+        ----------------------------
+        */
+        boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
+        p_ForceOut->SetPressure(P_blood - P_tissue);
+        p_ForceOut->SetInitialPosition(cell_population, 100);
+        p_ForceOut->SetRadiusThreshold(10);
+        simulator.AddForce(p_ForceOut);
 
         // /*
         // -----------------------------
