@@ -134,6 +134,8 @@ public:
 
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+        SimulationTime::Instance()->Destroy();
+        SimulationTime::Instance()->SetStartTime(0.0);
 
 }
 
@@ -203,6 +205,8 @@ public:
 
         p_simulator->Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+        SimulationTime::Instance()->Destroy();
+        SimulationTime::Instance()->SetStartTime(0.0);
 
 
     }
