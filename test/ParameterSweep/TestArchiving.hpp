@@ -21,8 +21,8 @@
 #include "FixedG1GenerationalCellCycleModel.hpp"
 #include "OffLatticeSimulation.hpp"
 
-#include "MeshBasedCellPopulation.hpp"
-#include "MutableMesh.hpp"
+#include "HistoryDepMeshBasedCellPopulation.hpp"
+#include "HistoryDepMutableMesh.hpp"
 
 
 // #include "FixedRegionBoundaryCondition.hpp"
@@ -48,7 +48,7 @@ public:
 
         Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, Radius, Length);
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
-        MutableMesh<2, 3>* mesh = static_cast<MutableMesh<2, 3>*>(p_mesh);
+        HistoryDepMutableMesh<2, 3>* mesh = static_cast<HistoryDepMutableMesh<2, 3>*>(p_mesh);
 
         // Create the cells
         MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
@@ -57,7 +57,7 @@ public:
         cells_generator.GenerateBasicRandom(cells, mesh->GetNumNodes(), p_differentiated_type);
 
         // Create a cell population
-        MeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
+        HistoryDepMeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
         // cell_population.SetChasteOutputDirectory(output_dir, 0);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
@@ -134,15 +134,20 @@ public:
 
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
-        SimulationTime::Instance()->Destroy();
+                SimulationTime::Instance()->Destroy();
         SimulationTime::Instance()->SetStartTime(0.0);
 
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, 1);
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, 1);
         p_simulator->SetEndTime(2);
         p_simulator->Solve();
 
 
+
 }
+
+  
+
 
 
 
