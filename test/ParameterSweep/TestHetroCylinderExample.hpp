@@ -140,7 +140,7 @@ public:
     void TestRunningArchieve() throw(Exception)
     {
 
-        std::string Archieved = "HetroCylinder";
+        std::string Archieved = 'HetroCylinder/';
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 5);
         // Load and fix any settings in the simulator
 
