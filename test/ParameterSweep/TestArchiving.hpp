@@ -35,7 +35,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
     void offTestSetUpCylinderArchive() throw(Exception)
     {
-        double EndTime =1;
+        double EndTime =5;
         double scale = 1e3;
         double Length = 40e-6 * scale;
         // double Radius = 1e-6 * scale; // I want this to grow to 10
@@ -44,7 +44,7 @@ public:
         unsigned N_D = 50;
         unsigned N_Z = 150;
 
-        std::string output_dir = "TestingArchive/";
+        std::string output_dir = "TestHetroCylinder/";
 
         Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, Radius, Length);
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
@@ -132,9 +132,9 @@ public:
         SimulationTime::Instance()->Destroy();
         SimulationTime::Instance()->SetStartTime(0.0);
 
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, 1);
-        p_simulator->SetEndTime(2);
-        p_simulator->Solve();
+        // OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, 1);
+        // p_simulator->SetEndTime(2);
+        // p_simulator->Solve();
 
 
 
@@ -143,8 +143,8 @@ public:
     void TestRunningArchieve() throw(Exception)
     {
 
-        std::string output_dir = "TestingArchive/";
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, 1);
+        std::string output_dir = "TestHetroCylinder/";
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, 5);
         // Load and fix any settings in the simulator
 
         double scale = 1e3;
@@ -196,13 +196,8 @@ public:
         std::map<double, c_vector<long double, 4> > GrowthMaps;
         GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter), 0);
         GrowthMaps[0] = Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -6), 0);
-        // Strength,hetro,stepsize, setupsolve
-        // GrowthMaps, Strength, Hetrogeneous,  StepSize,SetupSolve
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 1e-18, 1);
-        // p_Mesh_modifier->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
         p_Mesh_modifier->SetBasementMembraneStrength(0);
-        // p_Mesh_modifier->SetStartingParameterForSlowIncrease(StartingParameterForSlowIncrease);
-        // p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
 
         p_simulator->Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
