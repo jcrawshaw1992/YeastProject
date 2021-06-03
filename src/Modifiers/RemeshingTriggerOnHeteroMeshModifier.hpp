@@ -88,7 +88,7 @@ private:
     void serialize(Archive& archive, const unsigned int version)
     {
         archive& boost::serialization::base_object<AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM> >(*this);
-        // archive& mGrowthMaps; -- cant have this one for some reason
+        archive& mGrowthMaps; 
         archive& mOn;
         archive& mSamplebasementNode;
         
@@ -97,10 +97,6 @@ private:
         archive& mCounter;
         archive& mBoundaries;
     
-        // archive& mKbs;
-        // archive& mKba;
-        // archive& mKbA;
-
         archive& mStrength;
         archive& mHetro;
         archive& mRemeshingInterval;
@@ -108,6 +104,16 @@ private:
         archive& mRemeshing;
         archive& mDistanceToEndothelialRegion;
         archive& mRemeshingTrigger;
+
+        archive& ma;
+        archive& mB;
+        archive& mMaxCounter;
+        archive& mStartingParameterForSlowIncrease;
+        archive& mMembraneFuctionSpatialConstants;
+        archive& mBasementMembraneStrength;
+//
+        archive& mSlowIncreaseInMembraneStrength;
+        archive& mTimeStepSize;
     }
 
 public:
@@ -170,9 +176,6 @@ public:
     void SetBasementMembraneStrength(double Strength);
 
     void SetMembraneParameters(double AreaParameter, double DilationParameter, double DeformationParamter, double BendingParameter);
-    
-
-
 
 
     double mBasementMembraneStrength;

@@ -1,0 +1,121 @@
+#ifndef TESTRELAXATION_HPP_
+#define TESTRELAXATION_HPP_
+
+// Must be included before other cell_based headers
+#include "CellBasedSimulationArchiver.hpp"
+#include "PetscSetupAndFinalize.hpp"
+
+#include <cxxtest/TestSuite.h>
+#include "MembraneSurfaceForce.hpp"
+#include "UblasCustomFunctions.hpp"
+
+#include "Debug.hpp"
+#include "Honeycomb3DCylinderMeshGenerator.hpp"
+#include "SmartPointers.hpp"
+#include "VtkMeshReader.hpp"
+
+#include "AbstractCellBasedTestSuite.hpp"
+#include "CellProliferativeTypesWriter.hpp"
+#include "CellsGenerator.hpp"
+#include "DifferentiatedCellProliferativeType.hpp"
+#include "FixedG1GenerationalCellCycleModel.hpp"
+#include "OffLatticeSimulation.hpp"
+
+#include "HistoryDepMeshBasedCellPopulation.hpp"
+#include "HistoryDepMutableMesh.hpp"
+
+#include "FixedRegionBoundaryCondition.hpp"
+#include "MembraneDeformationForce.hpp"
+#include "RemeshingTriggerOnHeteroMeshModifier.hpp"
+
+#include "HemeLBForce.hpp"
+#include "RadialForceOnCylinder.hpp"
+
+#include "ElementAnglesWriter.hpp"
+#include "RandomNumberGenerator.hpp"
+
+#include "Honeycomb3DMeshGeneratorBentRectangle.hpp"
+
+#include "MembraneBendingForce0TargetAngle.hpp"
+
+class TestRemeshing : public AbstractCellBasedTestSuite
+{
+public:
+    void TestBending() throw(Exception)
+    {
+        double N_c =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
+        double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
+
+        double BendingParameter = 8; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
+        double dt = 0.0001; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
+
+        double EndTime = 250;
+
+        double SamplingTimestepMultiple = 1000; //2000;
+
+        std::stringstream out;
+        out << "AspectRatio" << AspectRatio << "/Refinement" << N_C;
+        std::string ParameterSet = out.str();
+        std::string output_dir = "BendingForceOnBentRectanlge/" + ParameterSet;
+
+
+        Honeycomb3DMeshGeneratorBentRectangle generator(N_C, N_C* AspectRatio[j], 1e-3, 1e-3);
+        MutableMesh<2, 3>* p_mesh = generator.GetMesh();
+
+        // Create the cells
+        MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
+        std::vector<CellPtr> cells;
+        CellsGenerator<FixedG1GenerationalCellCycleModel, 2> cells_generator;
+        cells_generator.GenerateBasicRandom(cells, p_mesh->GetNumNodes(), p_differentiated_type);
+
+        // Create a cell population
+        HistoryDepMeshBasedCellPopulation<2, 3> cell_population(*p_mesh, cells);
+        cell_population.SetChasteOutputDirectory(output_dir, 0);
+        cell_population.AddPopulationWriter<ElementAnglesWriter>();
+
+        // Set population to output all data to results files
+        cell_population.AddCellWriter<CellProliferativeTypesWriter>();
+
+        OffLatticeSimulation<2, 3> simulator(cell_population);
+        simulator.SetOutputDirectory(output_dir);
+        simulator.SetSamplingTimestepMultiple(SamplingTimestepMultiple);
+        simulator.SetDt(dt);
+        simulator.SetUpdateCellPopulationRule(false);
+        simulator.SetEndTime(EndTime);
+
+        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
+        std::map<double, c_vector<long double, 4> > GrowthMaps;
+        GrowthMaps[1] = Create_c_vector(pow(10, -7),0,0, pow(10, -BendingParameter));
+        //Strength , hetro, stepsize, setupsolve
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
+        simulator.AddSimulationModifier(p_Mesh_modifier);
+
+        /*
+        -----------------------------
+        Bending forces
+        ----------------------------
+        */
+        boost::shared_ptr<MembraneBendingForce0TargetAngle> p_membrane_force(new MembraneBendingForce0TargetAngle());
+        p_membrane_force->SetMembraneStiffness(pow(10, -BendingParameter));
+        simulator.AddForce(p_membrane_force);
+
+        /*
+        -----------------------------
+        Membrane forces
+        ----------------------------
+        */
+        boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
+        simulator.AddForce(p_shear_force);
+
+        simulator.Solve();
+        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+    }
+    
+    
+    
+
+  
+  
+  };
+
+#endif /*TESTRELAXATION_HPP_*/

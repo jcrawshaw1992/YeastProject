@@ -1,38 +1,3 @@
-/*
-
-Copyright (c) 2005-2015, University of Oxford.
-All rights reserved.
-
-University of Oxford means the Chancellor, Masters and Scholars of the
-University of Oxford, having an administrative office at Wellington
-Square, Oxford OX1 2JD, UK.
-
-This file is part of Chaste.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
- * Redistributions of source code must retain the above copyright notice,
-   this list of conditions and the following disclaimer.
- * Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
- * Neither the name of the University of Oxford nor the names of its
-   contributors may be used to endorse or promote products derived from this
-   software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE
-GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
-LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
-OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-*/
-
 
 #include "MembraneBendingForce0TargetAngle.hpp"
 #include "UblasCustomFunctions.hpp"
@@ -49,21 +14,6 @@ void MembraneBendingForce0TargetAngle::SetMembraneStiffness(double membraneStiff
 {
     mMembraneStiffness = membraneStiffnes;
 }
-
-// double MembraneBendingForce0TargetAngle::GetMembraneStiffness() const
-// {
-// 	return mMembraneStiffness;
-// }
-
-// double MembraneBendingForce0TargetAngle::GetOriginalAngle(std::pair<Node<3>*, Node<3>*> edge)
-// {
-//     return mOriginalAngles.at(std::pair<unsigned,unsigned>(edge.first->GetIndex(),edge.second->GetIndex()));
-// }
-
-// double MembraneBendingForce0TargetAngle::SetOriginalAngle(std::pair<Node<3>*, Node<3>*> edge, double angle)
-// {
-//     mOriginalAngles[std::pair<unsigned,unsigned>(edge.first->GetIndex(),edge.second->GetIndex())] = angle;
-// }
 
 bool MembraneBendingForce0TargetAngle::CalculateElementNormals(MutableMesh<2, 3>& rMesh, std::pair<Node<3>*, Node<3>*> edge,
                                                      std::pair<c_vector<double, 3>, c_vector<double, 3> >& nonUnitNormals,
@@ -243,10 +193,10 @@ void MembraneBendingForce0TargetAngle::AddForceContribution(AbstractCellPopulati
         
         double force_coefficient = MembraneStiffness * (CurrentAngle - OriginalAngle);
   
-        node1_contribution *= force_coefficient;///rCellPopulation.GetVolumeOfCell(p_cell2);
-        node2_contribution *= force_coefficient;////rCellPopulation.GetVolumeOfCell(p_cell2);
-        node3_contribution *= force_coefficient;////rCellPopulation.GetVolumeOfCell(p_cell3);
-        node4_contribution *= force_coefficient;////rCellPopulation.GetVolumeOfCell(p_cell4);
+        node1_contribution *= force_coefficient;
+        node2_contribution *= force_coefficient;
+        node3_contribution *= force_coefficient;
+        node4_contribution *= force_coefficient;
 
 
 
@@ -255,27 +205,7 @@ void MembraneBendingForce0TargetAngle::AddForceContribution(AbstractCellPopulati
         pNode3->AddAppliedForceContribution(node3_contribution);
         pNode4->AddAppliedForceContribution(node4_contribution);
          
-       
-        
-        // if (Boundary2 ==0)
-        // {
-        //     pNode2->AddAppliedForceContribution(node2_contribution);
-        // }
-        
-        // if (Boundary3 ==0)
-        // {
-        //     pNode3->AddAppliedForceContribution(node3_contribution);
-        // }
-        
-        // if (Boundary4 ==0)
-        // {
-        //     pNode4->AddAppliedForceContribution(node4_contribution);
-        // }
-        
-        // pNode2->AddAppliedForceContribution(node2_contribution);
-        // pNode3->AddAppliedForceContribution(node3_contribution);
-        // pNode4->AddAppliedForceContribution(node4_contribution);
-    }
+          }
 }
 
 
@@ -295,138 +225,3 @@ CHASTE_CLASS_EXPORT(MembraneBendingForce0TargetAngle)
 
 
 
-
-
-// -------------------
-
-
-// void MembraneBendingForce0TargetAngle::SetupInitialMembrane(MutableMesh<2,3>& rMesh, AbstractCellPopulation<2, 3>& rCellPopulation)
-// {
-//      MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
-//     for (MutableMesh<2,3>::EdgeIterator edge_iterator = rMesh.EdgesBegin();
-//         edge_iterator != rMesh.EdgesEnd();
-//         ++edge_iterator)
-//     {
-//         std::pair<c_vector<double, 3>, c_vector<double, 3> > nonUnitNormals;
-//         std::pair<Node<3>*,  Node<3>*> otherNodes;
-
-//         std::pair<Node<3>*, Node<3>*> edge = std::pair<Node<3>*, Node<3>*>(edge_iterator.GetNodeA(), edge_iterator.GetNodeB());
-
-//         bool boundary_edge_found = CalculateElementNormalsInital(rMesh, edge, nonUnitNormals, otherNodes, p_cell_population);
-
-//         if (boundary_edge_found)
-//         {
-//             SetOriginalAngle(edge, DOUBLE_UNSET);
-//         }
-//         else
-//         {
-
-//             c_vector<double, 3> normal_1 =  nonUnitNormals.first;
-//             normal_1 /= norm_2(normal_1);
-//             c_vector<double, 3> normal_2 = nonUnitNormals.second;
-//             normal_2 /= norm_2(normal_2);
-
-//             SetOriginalAngle(edge, acos(inner_prod(normal_1, normal_2)));
-//         }
-//     }
-// }
-
-// bool MembraneBendingForce0TargetAngle::CalculateElementNormalsInital(MutableMesh<2, 3>& rMesh, std::pair<Node<3>*, Node<3>*> edge,
-//                                                      std::pair<c_vector<double, 3>, c_vector<double, 3> >& nonUnitNormals,
-//                                                      std::pair<Node<3>*,  Node<3>*>& otherNodes,
-//                                                      MeshBasedCellPopulation<2, 3>* p_cell_population)
-// {
-//     Node<3>* pNode1 = edge.first;
-//     Node<3>* pNode3 = edge.second;
-
-//     /*
-//      *  Find common triangles
-//      */
-//     // Find the indices of the elements owned by each node
-//     std::set<unsigned> elements_containing_node1 = pNode1->rGetContainingElementIndices();
-//     std::set<unsigned> elements_containing_node3 = pNode3->rGetContainingElementIndices();
-
-//     // Find common elements
-//     std::set<unsigned> shared_elements;
-//     std::set_intersection(elements_containing_node1.begin(),
-//                           elements_containing_node1.end(),
-//                           elements_containing_node3.begin(),
-//                           elements_containing_node3.end(),
-//                           std::inserter(shared_elements, shared_elements.begin()));
-
-//     // Check that the nodes have a common edge
-//     switch (shared_elements.size())
-//     {
-//     case 1:
-//         // We found a boundary edge and we finish here
-//         return true;
-//     case 2:
-//         break;
-//     default:
-//         NEVER_REACHED;
-//     }
-
-//     std::set<unsigned>::iterator set_iter = shared_elements.begin();
-//     Element<2,3>* pElement1 = rMesh.GetElement(*set_iter);
-//     ++set_iter;
-//     Element<2,3>* pElement2 = rMesh.GetElement(*set_iter);
-
-//     // Find additional nodes
-//     Node<3>* pNode2 = NULL;
-//     Node<3>* pNode4 = NULL;
-//     for (unsigned local_index = 0; local_index < 3; ++local_index)
-//     {
-//         unsigned index_for_node2 = pElement1->GetNodeGlobalIndex(local_index);
-//         unsigned index_for_node4 = pElement2->GetNodeGlobalIndex(local_index);
-
-//         if ((index_for_node2 != pNode1->GetIndex()) && (index_for_node2 != pNode3->GetIndex()))
-//         {
-//             pNode2 = pElement1->GetNode(local_index);
-//         }
-
-//         if ((index_for_node4 != pNode1->GetIndex()) && (index_for_node4 != pNode3->GetIndex()))
-//         {
-//             pNode4 = pElement2->GetNode(local_index);
-//         }
-//     }
-//     assert(pNode2 != NULL);
-//     assert(pNode4 != NULL);
-
-//     // Calculate the force acting on each node
-
-
-//             CellPtr p_cell1 = p_cell_population->GetCellUsingLocationIndex( pNode1->GetIndex());
-//             CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex( pNode2->GetIndex());
-//             CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex( pNode3->GetIndex());
-//             CellPtr p_cell4 = p_cell_population->GetCellUsingLocationIndex( pNode4->GetIndex());
-
-//             c_vector<double, 3> Location_1 = pNode1->rGetLocation();
-//             c_vector<double, 3> Location_2 = pNode2->rGetLocation();
-//             c_vector<double, 3> Location_3 = pNode3->rGetLocation();
-//             c_vector<double, 3> Location_4 = pNode4->rGetLocation();
-
-
-//             // Location_1[0] = p_cell1->GetCellData()->GetItem("Initial_Location_X");  Location_1[1] = p_cell1->GetCellData()->GetItem("Initial_Location_Y");  Location_1[2] = p_cell1->GetCellData()->GetItem("Initial_Location_Z");
-
-//             // c_vector<double, 3> Location_2;
-//             // Location_2[0] = p_cell2->GetCellData()->GetItem("Initial_Location_X");  Location_2[1] = p_cell2->GetCellData()->GetItem("Initial_Location_Y");  Location_2[2] = p_cell2->GetCellData()->GetItem("Initial_Location_Z");
-
-//             // c_vector<double, 3> Location_3;
-//             // Location_3[0] = p_cell3->GetCellData()->GetItem("Initial_Location_X");  Location_3[1] = p_cell3->GetCellData()->GetItem("Initial_Location_Y");  Location_3[2] = p_cell3->GetCellData()->GetItem("Initial_Location_Z");
-
-//             // c_vector<double, 3> Location_4;
-//             // Location_4[0] = p_cell4->GetCellData()->GetItem("Initial_Location_X");  Location_4[1] = p_cell4->GetCellData()->GetItem("Initial_Location_Y");  Location_4[2] = p_cell4->GetCellData()->GetItem("Initial_Location_Z");
-
-//             c_vector<double, 3> vector_A = Location_1 - Location_3;
-//             c_vector<double, 3> vector_B = Location_2 - Location_3;
-//             c_vector<double, 3> normal_1 = VectorProduct(vector_A,vector_B);
-
-//             vector_A = Location_4 - Location_3;
-//             vector_B = Location_1 - Location_3;
-//             c_vector<double, 3> normal_2 = VectorProduct(vector_A,vector_B);
-
-//             nonUnitNormals = std::pair<c_vector<double, 3>, c_vector<double, 3> >(normal_1, normal_2);
-//             otherNodes = std::pair<Node<3>*,  Node<3>*>(pNode2, pNode4);
-
-//             return false;
-// }

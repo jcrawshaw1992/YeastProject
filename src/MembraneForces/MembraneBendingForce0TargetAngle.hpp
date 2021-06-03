@@ -59,20 +59,11 @@ private:
     {
         archive & boost::serialization::base_object<AbstractForce<2,3> >(*this);
         archive & mMembraneStiffness;
-        // archive & mOriginalAngles;
     }
 
 protected:
 
     double mMembraneStiffness;
-
-    // std::map<std::pair<unsigned, unsigned>, double> mOriginalAngles;
-
-    // bool CalculateElementNormalsInital(MutableMesh<2, 3>& rMesh, std::pair<Node<3>*, Node<3>*> edge,
-    //                              std::pair<c_vector<double, 3>, c_vector<double, 3> >& nonUnitNormals,
-    //                              std::pair<Node<3>*,  Node<3>*>& otherNodes,
-    //                             MeshBasedCellPopulation<2, 3>* p_cell_population );
-
     bool CalculateElementNormals(MutableMesh<2, 3>& rMesh, std::pair<Node<3>*, Node<3>*> edge,
                                  std::pair<c_vector<double, 3>, c_vector<double, 3> >& nonUnitNormals,
                                  std::pair<Node<3>*,  Node<3>*>& otherNodes);
@@ -85,14 +76,6 @@ public:
     MembraneBendingForce0TargetAngle();
 
     void SetMembraneStiffness(double membraneStiffnes);
-
-    // double GetMembraneStiffness() const;
-
-    // double GetOriginalAngle(std::pair<Node<3>*, Node<3>*> edge);
-
-    // double SetOriginalAngle(std::pair<Node<3>*, Node<3>*> edge, double angle);
-
-    // void SetupInitialMembrane(MutableMesh<2,3>& rMesh, AbstractCellPopulation<2, 3>& rCellPopulation);
 
     /**
      * Overridden AddForceContribution() method.

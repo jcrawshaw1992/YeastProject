@@ -394,6 +394,33 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::Boundaries(c_
 }
 
 
+// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+// void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::BoundariesEdge(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPlanePoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> LowerPlanePoint)
+// {
+
+//     // Upper plane is defined as the one upstream and the lower is downstream
+//     // Set the boundary planes for this hetro region, set an upper and a lower bound.
+//     std::vector<  c_vector<double, 3> > CurrentBoundary;
+//     CurrentBoundary.push_back(UpperPlaneNormal);
+//     CurrentBoundary.push_back(UpperPlanePoint);
+
+//     CurrentBoundary.push_back(LowerPlaneNormal);
+//     CurrentBoundary.push_back(LowerPlanePoint);
+
+//     mBoundaries.push_back(CurrentBoundary);
+
+//     double Length = norm_2(UpperPlanePoint -LowerPlanePoint );
+//     /*  M(x) = k/(1+x^2a) */
+//     mMembraneFuctionSpatialConstants.push_back(PlateauDistributionFuction(Length));
+//     mHetro = 1;
+//     mOn =  1;
+//     TRACE("GOt here")
+    
+// }
+
+
+
+
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetRemeshingInterval(int RemeshingInterval)
 {

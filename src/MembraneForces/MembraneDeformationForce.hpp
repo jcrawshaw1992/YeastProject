@@ -49,6 +49,7 @@ private:
         archive & mBCoefficients;
         archive & mArea0;
         archive & mNearestNodesMap;
+        archive & mNeighbours;
     }
 
 protected:

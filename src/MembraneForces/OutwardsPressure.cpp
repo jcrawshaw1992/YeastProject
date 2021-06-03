@@ -15,19 +15,6 @@ void OutwardsPressure::SetPressure(double Pressure)
       mStrength =  Pressure;
 }
 
-void OutwardsPressure::SetNearestNeighboursMap(std::map<unsigned, c_vector<unsigned, 2> > NearestNodesMap)
-{
-    mNearestNodesMap = NearestNodesMap;
-}
-
-void OutwardsPressure::SetRadiusThreshold(double RadialThreshold)
-{
-    mRadialThreshold = RadialThreshold;
-    mGrowthThreshold =1;
-}
-
-
-
 void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
         HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);        
@@ -39,67 +26,37 @@ void OutwardsPressure::AddForceContribution(AbstractCellPopulation<2, 3>& rCellP
             unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
             Node<3>* p_node = rCellPopulation.GetNode(node_index);
 
-            // if (cell_iter->GetCellData()->GetItem("Boundary") ==0)
-            // {
-                
+            c_vector<double, 3> Normal = zero_vector<double>(3);
 
-                c_vector<double, 3> Normal = zero_vector<double>(3);
+            std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
 
-                std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
+            assert(containing_elements.size() > 0);
+            for (std::set<unsigned>::iterator iter = containing_elements.begin();
+                    iter != containing_elements.end();
+                    ++iter)
+            {
+                Node<3>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
+                Node<3>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
+                Node<3>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
 
-                assert(containing_elements.size() > 0);
-                for (std::set<unsigned>::iterator iter = containing_elements.begin();
-                        iter != containing_elements.end();
-                        ++iter)
-                {
-                    Node<3>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
-                    Node<3>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
-                    Node<3>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
+                c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
+                c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
 
-                    c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
-                    c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
-
-                    c_vector<double, 3> normalVector = VectorProduct(vector_12, vector_13);
-                    Normal += normalVector;
-                }
-                Normal /=norm_2(Normal);
+                c_vector<double, 3> normalVector = VectorProduct(vector_12, vector_13);
+                Normal += normalVector;
+            }
+            Normal /=norm_2(Normal);
+        
+            c_vector<double, 3> force = mStrength *Normal; // / norm_2(cell_location);
             
-                c_vector<double, 3> force = mStrength *Normal; // / norm_2(cell_location);
-                
-                rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(force);
-                cell_iter->GetCellData()->SetItem("OutwardForce", norm_2(force) );
-                // ForceMap[node_index] = force;
-                // cell_iter->GetCellData()->SetItem("OutwardForce",norm_2(force)  );
-                // rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(force);
-            // }else if (cell_iter->GetCellData()->GetItem("Boundary") ==1)
-            // {
-            //     c_vector<double, 3> AverageForce = Create_c_vector(0,0,0);
-            //     c_vector<unsigned, 3> NearestNodes =  p_cell_population->GetNearestInternalNodes(node_index);
-            //     for ( int i = 0; i <3; i++)
-            //     {  
-            //         AverageForce += ForceMap[NearestNodes[i]];
-            //     }
-            //     AverageForce/=3;
-
-            //     cell_iter->GetCellData()->SetItem("OutwardForce",norm_2(AverageForce) );
-            //     rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(AverageForce);
-            // }
-      
-
+            rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(force);
+            cell_iter->GetCellData()->SetItem("OutwardForce", norm_2(force) );
+            
         }
         
 }
  
 
-
-void OutwardsPressure::SetInitialPosition(AbstractCellPopulation<2, 3>& rCellPopulation)
-{
-    Node<3>* p_node = rCellPopulation.GetNode(100);
-    mInitialPosition = p_node->rGetLocation(); 
-
-    mGrowthThreshold =1;
-}
- 
 
 
 void OutwardsPressure::OutputForceParameters(out_stream& rParamsFile)

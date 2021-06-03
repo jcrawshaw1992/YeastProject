@@ -51,7 +51,10 @@ private:
     void serialize(Archive & archive, const unsigned int version)
     {
         archive & boost::serialization::base_object<AbstractCellPopulationBoundaryCondition<ELEMENT_DIM,SPACE_DIM> >(*this);
-        // archive mIntialTime;
+        archive &  mIntialTime;
+        archive & mRadius;
+        archive & mNormalToPlane;
+        archive & mPointOnPlane;
     }
 
 public:

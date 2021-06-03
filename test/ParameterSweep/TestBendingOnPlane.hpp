@@ -41,7 +41,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void TestBending() throw(Exception)
+    void offTestBending() throw(Exception)
     {
         // TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-BendingParameter"));
         double BendingParameter = 8; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
@@ -51,12 +51,15 @@ public:
 
         double SamplingTimestepMultiple = 1000; //2000;
 
-        int N_C[3] = { 21, 31 };
-        double AspectRatio[3] = { 1.5, 3, 0.75};
+        // int N_C[3] = { 21, 31 };
+        int N_C[1] = { 31 };
+        // double AspectRatio[3] = { 1.5, 3, 0.75};
+        double AspectRatio[1] = { 0.75};
 
-        for (int i = 0; i < 3; ++i)
+
+        for (int i = 0; i < 1; ++i)
         {
-            for (int j = 0; j < 3; ++j)
+            for (int j = 0; j < 1; ++j)
             {
                 std::stringstream out;
                 out << "AspectRatio" << AspectRatio[j] << "/Refinement" << N_C[i];
@@ -77,8 +80,8 @@ public:
                 HistoryDepMeshBasedCellPopulation<2, 3> cell_population(*p_mesh, cells);
                 cell_population.SetChasteOutputDirectory(output_dir, 0);
                 // cell_population.SetUpInitialConfig(0);
-                // cell_population.SetWriteVtkAsPoints(true);
-                // cell_population.SetOutputMeshInVtk(true);
+                cell_population.SetWriteVtkAsPoints(true);
+                cell_population.SetOutputMeshInVtk(true);
                 cell_population.AddPopulationWriter<ElementAnglesWriter>();
 
                 // Set population to output all data to results files
@@ -125,37 +128,33 @@ public:
     }
     
     
-    void offTestBendingFromArchiving() throw(Exception)
+    void TestBendingFromArchiving() throw(Exception)
     {
-        double EndTime = 30;
+        double EndTime = 100;
 
-        int N_C[3] = { 11, 21, 31 };
+        int N_C[1] = {11};
         double AspectRatio[3] = { 3, 0.75, 1.5 };
 
-        for (int i = 0; i < 3; ++i)
+        for (int i = 0; i < 1; ++i)
         {
             for (int j = 0; j < 3; ++j)
             {
                 std::stringstream out;
                 out << "AspectRatio" << AspectRatio[j] << "/Refinement" << N_C[i];
                 std::string ParameterSet = out.str();
-                std::string output_dir = "BendingForceOnBentRectanlge/SweepGrowth/" + ParameterSet;
-
-                int n_z = N_C[i] * AspectRatio[j];
+                std::string output_dir = "BendingForceOnBentRectanlge/" + ParameterSet;
 
                 // std::string Archieved = "output_dir";
                 OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, EndTime);
-
 
                 /* Update the ouput directory for the population  */
                 static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
                 static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
 
-                p_simulator->SetEndTime(EndTime + 70);
+                p_simulator->SetEndTime(EndTime + 100);
 
                 p_simulator->Solve();
                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-
     
                 SimulationTime::Instance()->Destroy();
                 SimulationTime::Instance()->SetStartTime(0.0);
