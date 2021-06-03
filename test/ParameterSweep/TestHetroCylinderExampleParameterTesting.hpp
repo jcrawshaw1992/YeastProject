@@ -35,9 +35,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
-
-
-    void offTestIntroduceHetro() throw(Exception)
+    void TestIntroduceHetro() throw(Exception)
     {
         TS_ASSERT(CommandLineArguments::Instance()->OptionExists("-a"));
         double a =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-a");
