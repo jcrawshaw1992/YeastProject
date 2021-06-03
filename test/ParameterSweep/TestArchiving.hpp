@@ -85,13 +85,8 @@ public:
         // p_Mesh_modifier->SetSlowIncreaseInMembraneStrength(1, 1);
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
-        // // /*
-        // // -----------------------------
-        // // HemeLB Force
-        // // ----------------------------
-        // // */
-        // double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
-        // double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
         /*
         -----------------------------
@@ -134,7 +129,7 @@ public:
 
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
-                SimulationTime::Instance()->Destroy();
+        SimulationTime::Instance()->Destroy();
         SimulationTime::Instance()->SetStartTime(0.0);
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, 1);
