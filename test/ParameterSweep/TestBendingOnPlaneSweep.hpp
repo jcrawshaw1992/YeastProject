@@ -128,7 +128,7 @@ public:
         std::stringstream out;
         out << "AspectRatio" << AspectRatio << "/Refinement" << Nc;
         std::string ParameterSet = out.str();
-        std::string output_dir = "BendingForceOnBentRectanlge/" + ParameterSet;
+        std::string output_dir = "BendingForceOnBentRectanlgeThree/" + ParameterSet;
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, EndTime);
 
