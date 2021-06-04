@@ -148,7 +148,7 @@ public:
         PRINT_3_VARIABLES(AreaParameter, DilationParameter, DeformationParamter)
         double dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
         double NewEndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-NewEndTime");;
-        double EndTime = 50;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
+        double EndTime = 60;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
       
         double SamplingTimestepMultiple = 1000;
         if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
