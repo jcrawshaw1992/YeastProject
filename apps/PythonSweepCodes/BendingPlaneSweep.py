@@ -32,7 +32,7 @@ if __name__=="__main__":
         os.mkdir(TerminalOutputFolder)
 
     AspectRatio = [ 0.75,1.5,3] 
-    Refinment = [ 7,15,25]
+    Refinment = [ 5,11,21]
     
        
     for i in AspectRatio:
