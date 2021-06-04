@@ -41,7 +41,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void TestBending() throw(Exception)
+    void offTestBending() throw(Exception)
     {
         double Nc =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
         double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
@@ -114,15 +114,15 @@ public:
 
 
 
-    void offTestBendingFromArchieve() throw(Exception)
+    void TestBendingFromArchieve() throw(Exception)
     {
         double Nc =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
         double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
 
         double BendingParameter = 9; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
-        double dt = 0.002; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
+        double dt = 0.01; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
 
-        double EndTime = 200;
+        double EndTime = 600;
 
         double SamplingTimestepMultiple = 1000; //2000;
 
@@ -138,7 +138,7 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
 
-        p_simulator->SetEndTime(EndTime + 100);
+        p_simulator->SetEndTime(EndTime + 200);
         p_simulator->SetOutputDirectory(output_dir);
 
         p_simulator->Solve();
