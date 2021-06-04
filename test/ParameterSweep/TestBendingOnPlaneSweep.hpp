@@ -41,15 +41,15 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestBending() throw(Exception)
+    void TestBending() throw(Exception)
     {
         double Nc =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
         double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
 
         double BendingParameter = 9; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
-        double dt = 0.001; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
+        double dt = 0.0001; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
 
-        double EndTime = 1600;
+        double EndTime = 2600;
 
         double SamplingTimestepMultiple = 1000; //2000;
 
