@@ -269,7 +269,7 @@ public:
         double DeformationParamter=8;
 
      
-        double dt= 0.001;
+        double dt= 0.002;
         double NewEndTime = 100;
         double EndTime = 8;
         
@@ -324,7 +324,7 @@ public:
         double DeformationParamter=8;
 
      
-        double dt= 0.001;
+        double dt= 0.002;
         double NewEndTime = 100;
         double EndTime = 8;
         
