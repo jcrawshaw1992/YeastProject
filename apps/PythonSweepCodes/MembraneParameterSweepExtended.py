@@ -37,7 +37,7 @@ if __name__=="__main__":
         i = I[0]
         j = I[1]
         k = I[2]
-        dt = ' 0.0005'
+        dt = ' 0.00005'
         SimulationTime = ' 50'
 
         Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
