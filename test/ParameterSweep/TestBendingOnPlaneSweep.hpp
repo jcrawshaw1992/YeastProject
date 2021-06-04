@@ -41,7 +41,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void TestBending() throw(Exception)
+    void offTestBending() throw(Exception)
     {
         double Nc =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
         double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
@@ -114,36 +114,35 @@ public:
 
 
 
-    // void TestBendingFromArchieve() throw(Exception)
-    // {
-    //     double Nc =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
-    //     double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
+    void TestBendingFromArchieve() throw(Exception)
+    {
+        double Nc =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
+        double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
 
-    //     double BendingParameter = 9; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
-    //     double dt = 0.01; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
+        double dt = 0.01; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
 
-    //     double EndTime = 600;
+        double EndTime = 1600;
 
-    //     double SamplingTimestepMultiple = 1000; //2000;
+        double SamplingTimestepMultiple = 1000; //2000;
 
-    //     std::stringstream out;
-    //     out << "AspectRatio" << AspectRatio << "/Refinement" << Nc;
-    //     std::string ParameterSet = out.str();
-    //     std::string output_dir = "BendingForceOnBentRectanlge/" + ParameterSet;
+        std::stringstream out;
+        out << "AspectRatio" << AspectRatio << "/Refinement" << Nc;
+        std::string ParameterSet = out.str();
+        std::string output_dir = "BendingForceOnBentRectanlge/" + ParameterSet;
 
-    //     OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, EndTime);
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, EndTime);
 
 
-    //     /* Update the ouput directory for the population  */
-    //     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
-    //     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+        /* Update the ouput directory for the population  */
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
 
-    //     p_simulator->SetEndTime(EndTime + 200);
-    //     p_simulator->SetOutputDirectory(output_dir);
+        p_simulator->SetEndTime(EndTime + 1000);
+        p_simulator->SetOutputDirectory(output_dir);
 
-    //     p_simulator->Solve();
-    //     CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-    // }
+        p_simulator->Solve();
+        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+    }
 
 
 

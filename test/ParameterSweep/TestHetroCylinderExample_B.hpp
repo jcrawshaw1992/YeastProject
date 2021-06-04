@@ -35,7 +35,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
- void TestIntroduceHetro1() throw(Exception)
+ void offTestIntroduceHetro1() throw(Exception)
     {
         std::string Archieved = "HetroCylinder/";
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 8);
@@ -51,12 +51,12 @@ public:
         double DeformationParamter=8;
 
      
-        double dt= 0.002;
+        double dt= 0.001;
         double NewEndTime = 100;
         double EndTime = 8;
         
-        double SamplingTimestepMultiple = 100;
-        std::string output_dir = "HetroCylinder/B_2/";
+        double SamplingTimestepMultiple = 500;
+        std::string output_dir = "HetroCylinder/B_10/";
         
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
@@ -76,12 +76,12 @@ public:
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
         std::map<double, c_vector<long double, 4> > GrowthMaps;
         GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter), 0);
-        GrowthMaps[0] = Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -5), 0);
+        GrowthMaps[0] = Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -4), 0);
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 1, 1e-10, 1);
         p_Mesh_modifier->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
         p_Mesh_modifier->SetBasementMembraneStrength(0);
-        p_Mesh_modifier->SetPlateauParameters(8, 2);
-        p_Mesh_modifier->SetUpdateFrequency(100);
+        p_Mesh_modifier->SetPlateauParameters(8, 10);
+        p_Mesh_modifier->SetUpdateFrequency(200);
 
         p_simulator->Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
@@ -90,7 +90,7 @@ public:
 
 
 
-     void TestIntroduceHetro2() throw(Exception)
+     void offTestIntroduceHetro2() throw(Exception)
     {
         std::string Archieved = "HetroCylinder/";
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, 8);
@@ -105,13 +105,14 @@ public:
         double AreaParameter=7;
         double DeformationParamter=8;
 
-     
-        double dt= 0.002;
+
+        double dt= 0.001;
         double NewEndTime = 100;
         double EndTime = 8;
         
-        double SamplingTimestepMultiple = 100;
-        std::string output_dir = "HetroCylinder/B_4/";
+        double SamplingTimestepMultiple = 500;
+        
+        std::string output_dir = "HetroCylinder/B_20_/";
         
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
@@ -131,12 +132,12 @@ public:
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
         std::map<double, c_vector<long double, 4> > GrowthMaps;
         GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter), 0);
-        GrowthMaps[0] = Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -5), 0);
+        GrowthMaps[0] = Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -4), 0);
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 1, 1e-10, 1);
         p_Mesh_modifier->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
         p_Mesh_modifier->SetBasementMembraneStrength(0);
-        p_Mesh_modifier->SetPlateauParameters(8, 4);
-        p_Mesh_modifier->SetUpdateFrequency(100);
+        p_Mesh_modifier->SetPlateauParameters(8, 20);
+        p_Mesh_modifier->SetUpdateFrequency(200);
 
         p_simulator->Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
@@ -161,12 +162,13 @@ public:
         double DeformationParamter=8;
 
      
-        double dt= 0.002;
+        double dt= 0.001;
         double NewEndTime = 100;
         double EndTime = 8;
         
-        double SamplingTimestepMultiple = 100;
-        std::string output_dir = "HetroCylinder/B_0.5/";
+        double SamplingTimestepMultiple = 500;
+    
+        std::string output_dir = "HetroCylinder/B_0.01/";
         
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
@@ -186,12 +188,12 @@ public:
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
         std::map<double, c_vector<long double, 4> > GrowthMaps;
         GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter), 0);
-        GrowthMaps[0] = Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -5), 0);
+        GrowthMaps[0] = Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -4), 0);
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 1, 1e-10, 1);
         p_Mesh_modifier->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
         p_Mesh_modifier->SetBasementMembraneStrength(0);
-        p_Mesh_modifier->SetPlateauParameters(8,0.5);
-        p_Mesh_modifier->SetUpdateFrequency(100);
+        p_Mesh_modifier->SetPlateauParameters(8,0.01);
+        p_Mesh_modifier->SetUpdateFrequency(200);
 
         p_simulator->Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
