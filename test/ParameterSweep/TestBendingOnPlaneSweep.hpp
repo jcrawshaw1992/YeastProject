@@ -46,17 +46,17 @@ public:
         double Nc =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
         double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
 
-        double BendingParameter = 9; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
-        double dt = 0.0001; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
+        double BendingParameter = 11; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
+        double dt = 0.005; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
 
-        double EndTime = 2600;
+        double EndTime = 200;
 
-        double SamplingTimestepMultiple = 1000; //2000;
+        double SamplingTimestepMultiple = 500; //2000;
 
         std::stringstream out;
         out << "AspectRatio" << AspectRatio << "/Refinement" << Nc;
         std::string ParameterSet = out.str();
-        std::string output_dir = "BendingForceOnBentRectanlgeThree/" + ParameterSet;
+        std::string output_dir = "BendingForceOnBentRectanlgeFour/" + ParameterSet;
 
 
         Honeycomb3DMeshGeneratorBentRectangle generator(Nc, Nc* AspectRatio, 1e-3, 1e-3);
@@ -85,7 +85,7 @@ public:
 
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
         std::map<double, c_vector<long double, 4> > GrowthMaps;
-        GrowthMaps[1] = Create_c_vector(pow(10, -7),0,0, pow(10, -BendingParameter));
+        GrowthMaps[1] = Create_c_vector(pow(10, -12),0,0, pow(10, -BendingParameter));
         //Strength , hetro, stepsize, setupsolve
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
         simulator.AddSimulationModifier(p_Mesh_modifier);
@@ -109,12 +109,15 @@ public:
 
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+        SimulationTime::Instance()->Destroy();
+        SimulationTime::Instance()->SetStartTime(0.0);
+
     }
 
 
 
 
-    void TestBendingFromArchieve() throw(Exception)
+    void offTestBendingFromArchieve() throw(Exception)
     {
         double Nc =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
         double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
@@ -142,6 +145,7 @@ public:
 
         p_simulator->Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+
     }
 
 
