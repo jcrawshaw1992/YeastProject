@@ -40,7 +40,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestRunningArchieve() throw(Exception)
+    void TestRunningArchieve() throw(Exception)
     {
 
         TRACE("Jess is best")
@@ -137,7 +137,7 @@ public:
 
 
 
-    void TestRunningArchieveExtended() throw(Exception)
+    void offTestRunningArchieveExtended() throw(Exception)
     {
 
         TRACE("Jess is best")

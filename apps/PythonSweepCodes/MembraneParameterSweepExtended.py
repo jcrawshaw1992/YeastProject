@@ -17,7 +17,7 @@ from os import path
 if __name__=="__main__":
 
     t0 = time.time()
-    GenerateRunner =0
+    GenerateRunner =1
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParameterSweep.hpp"
         subprocess.call(command, shell=True)
@@ -37,8 +37,8 @@ if __name__=="__main__":
         i = I[0]
         j = I[1]
         k = I[2]
-        dt = ' 0.00005'
-        SimulationTime = ' 50'
+        dt = ' 0.001'
+        SimulationTime = ' 200'
 
         Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
         Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
