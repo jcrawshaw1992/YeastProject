@@ -41,17 +41,17 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestBending() throw(Exception)
+    void TestBending() throw(Exception)
     {
         double Nc =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
         double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
 
-        double BendingParameter = 11; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
-        double dt = 0.005; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
+        double BendingParameter = 10; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
+        double dt = 0.01; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
 
-        double EndTime = 200;
+        double EndTime = 2000;
 
-        double SamplingTimestepMultiple = 500; //2000;
+        double SamplingTimestepMultiple = 1000; //2000;
 
         std::stringstream out;
         out << "AspectRatio" << AspectRatio << "/Refinement" << Nc;
@@ -117,14 +117,14 @@ public:
 
 
 
-    void TestBendingFromArchieve() throw(Exception)
+    void offTestBendingFromArchieve() throw(Exception)
     {
         double Nc =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-Nc");
         double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
 
         double dt =0.01; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
 
-        double EndTime = 200;
+        double EndTime = 2000;
 
         double SamplingTimestepMultiple = 1000; //2000;
 
