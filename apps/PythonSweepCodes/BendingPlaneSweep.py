@@ -31,9 +31,16 @@ if __name__=="__main__":
     if path.isdir(TerminalOutputFolder)==0:
         os.mkdir(TerminalOutputFolder)
 
-    AspectRatio = [ 0.75,1.5,3] 
-    Refinment = [ 5,11,21]
+
+
+
+
+    # AspectRatio = [ 0.75,1.5,3] 
+    # Refinment = [ 5,11,21]
     
+
+    AspectRatio = [1.5,3] 
+    Refinment = [ 21]
        
     for i in AspectRatio:
         for j in Refinment:
