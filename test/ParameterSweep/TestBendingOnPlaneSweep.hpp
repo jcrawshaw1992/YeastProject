@@ -47,7 +47,7 @@ public:
         double AspectRatio =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AspectRatio");
 
         double BendingParameter = 9; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
-        double dt = 0.003; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
+        double dt = 0.001; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
 
         double EndTime = 1600;
 
