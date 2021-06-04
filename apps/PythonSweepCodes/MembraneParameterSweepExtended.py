@@ -17,10 +17,10 @@ from os import path
 if __name__=="__main__":
 
     t0 = time.time()
-    # GenerateRunner =1
-    # if GenerateRunner ==1:
-    #     command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParameterSweep.hpp"
-    #     subprocess.call(command, shell=True)
+    GenerateRunner =1
+    if GenerateRunner ==1:
+        command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParameterSweep.hpp"
+        subprocess.call(command, shell=True)
 
     chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParameterSweepRunner '
     TerminalOutputFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/SweepTerminalOutputsNew/"
@@ -37,7 +37,7 @@ if __name__=="__main__":
         i = I[0]
         j = I[1]
         k = I[2]
-        dt = ' 0.02'
+        dt = ' 0.001'
         SimulationTime = ' 50'
 
         Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime

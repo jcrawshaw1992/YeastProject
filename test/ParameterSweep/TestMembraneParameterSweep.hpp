@@ -40,7 +40,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestRunningArchieve() throw(Exception)
+    void TestRunningArchieve() throw(Exception)
     {
 
         TRACE("Jess is best")
@@ -137,7 +137,7 @@ public:
 
 
 
-    void TestRunningArchieveExtended() throw(Exception)
+    void offTestRunningArchieveExtended() throw(Exception)
     {
 
         TRACE("Jess is best")
@@ -145,12 +145,10 @@ public:
         double AreaParameter = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-AreaParameter");
         double DeformationParamter =CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-DeformationParamter");
     
-
-
         PRINT_3_VARIABLES(AreaParameter, DilationParameter, DeformationParamter)
         double dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
         double NewEndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-NewEndTime");;
-        double EndTime = 70;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
+        double EndTime = 130;//CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
       
         double SamplingTimestepMultiple = 1000;
         if (CommandLineArguments::Instance()->OptionExists("-SamplingTimestepMultiple"))
