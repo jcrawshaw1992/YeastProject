@@ -484,7 +484,14 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
     // {
     mStepSize *=1.05;
     // }
-    
+
+    double a  = mMembraneFuctionSpatialConstants[0][1][0];
+    double b  = mMembraneFuctionSpatialConstants[0][1][1];
+
+    PRINT_2_VARIABLES(a,b)
+    PRINT_2_VARIABLES(ma,mB)
+
+
 
     for (unsigned i = 0; i<mBoundaries.size(); i++)
     {   
@@ -498,8 +505,6 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
         double K_AreaDilationMod  = mMembraneFuctionSpatialConstants[i][0][1];
         double K_AreaMod          = mMembraneFuctionSpatialConstants[i][0][2];
 
-        double a  = mMembraneFuctionSpatialConstants[i][1][0];
-        double b  = mMembraneFuctionSpatialConstants[i][1][1];
 
         K_ShearMod = std::min((double)Step_Kbs, K_ShearMod);
         K_AreaDilationMod = std::min((double)Step_Kba, K_AreaDilationMod);

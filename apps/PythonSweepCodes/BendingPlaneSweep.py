@@ -33,11 +33,10 @@ if __name__=="__main__":
 
 
     AspectRatio = [ 0.75,1.5,3] 
-    Refinment = [ 5,10,15,20]
+    Refinment = [ 5,10,15]
   
     for i in AspectRatio:
         for j in Refinment:
-    
             Input1 = chaste_run_exe +' -Nc '+str(j)+' -AspectRatio '+str(i)
             Input2 = TerminalOutputFolder+'AspectRatio_'+str(i)+'_Nc_'+str(j)+'.txt'
             Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'

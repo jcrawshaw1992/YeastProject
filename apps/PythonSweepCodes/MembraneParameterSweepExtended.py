@@ -17,7 +17,7 @@ from os import path
 if __name__=="__main__":
 
     t0 = time.time()
-    GenerateRunner =1
+    GenerateRunner =0
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParameterSweep.hpp"
         subprocess.call(command, shell=True)
@@ -40,12 +40,16 @@ if __name__=="__main__":
     ParameteresUnder300 =[[8, 10, 10], [9, 10, 10]]
 
 
-    print len(ParameteresUnder50)
-    for I in ParameteresUnder50:
+    # ParameteresUnder100_SmallTimeStep =[[9, 10.0, 9]]
+    # ParameteresUnder50_SmallTimeStep =[[10, 5, 5], [10.0,   5.0,   5.5],[10.0,   5.0,   6.0],[10.0,   5.0,   6.5],[10.0,   5.0,   9.5],[10.0,   5.0,  10.0],[10.0,   9.5,   5.0],[10.0,  10.0,   5.0]]
+
+
+    print len(ParameteresUnder50_SmallTimeStep)
+    for I in ParameteresUnder50_SmallTimeStep:
         i = I[0]
         j = I[1]
         k = I[2]
-        dt = ' 0.001'
+        dt = ' 0.0001'
         SimulationTime = ' 90'
 
         Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
@@ -53,18 +57,98 @@ if __name__=="__main__":
         Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
         subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
 
-    print len(ParameteresUnder100)
-    for I in ParameteresUnder100:
+
+    print len(ParameteresUnder200)
+    for I in ParameteresUnder200:
         i = I[0]
         j = I[1]
         k = I[2]
         dt = ' 0.001'
-        SimulationTime = ' 100'
+        SimulationTime = ' 250'
 
         Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
         Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
         Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
         subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
+
+
+
+    print "done"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # print len(ParameteresUnder300)
+    # for I in ParameteresUnder300:
+    #     i = I[0]
+    #     j = I[1]
+    #     k = I[2]
+    #     dt = ' 0.001'
+    #     SimulationTime = ' 350'
+
+    #     Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
+    #     Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
+    #     Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
+    #     subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
+
+
+
+
+
+    # print len(ParameteresUnder100_SmallTimeStep)
+    # for I in ParameteresUnder100_SmallTimeStep:
+    #     i = I[0]
+    #     j = I[1]
+    #     k = I[2]
+    #     dt = ' 0.0001'
+    #     SimulationTime = ' 120'
+
+    #     Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
+    #     Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
+    #     Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
+    #     subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
+
+
+
+
+
+
+
+    # print len(ParameteresUnder50)
+    # for I in ParameteresUnder50:
+    #     i = I[0]
+    #     j = I[1]
+    #     k = I[2]
+    #     dt = ' 0.001'
+    #     SimulationTime = ' 90'
+
+    #     Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
+    #     Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
+    #     Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
+    #     subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
+
+    # print len(ParameteresUnder100)
+    # for I in ParameteresUnder100:
+    #     i = I[0]
+    #     j = I[1]
+    #     k = I[2]
+    #     dt = ' 0.001'
+    #     SimulationTime = ' 100'
+
+    #     Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
+    #     Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
+    #     Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
+    #     subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
 
 
     
