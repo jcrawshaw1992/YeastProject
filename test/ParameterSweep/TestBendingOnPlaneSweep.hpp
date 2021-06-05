@@ -49,14 +49,14 @@ public:
         double BendingParameter = 10; //CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-BendingParameter");
         double dt = 0.001; //For most using 0.001, but for apsect ratio 3 and refinemnt 30 need finer
 
-        double EndTime = 2000;
+        double EndTime = 20000;
 
         double SamplingTimestepMultiple = 1000; //2000;
 
         std::stringstream out;
         out << "AspectRatio" << AspectRatio << "/Refinement" << Nc;
         std::string ParameterSet = out.str();
-        std::string output_dir = "BendingForceOnBentRectanlgeFive/" + ParameterSet;
+        std::string output_dir = "BendingForceOnBentRectanlgeSix/" + ParameterSet;
 
 
         Honeycomb3DMeshGeneratorBentRectangle generator(Nc* AspectRatio, Nc, 1e-3, 1e-3);
@@ -85,7 +85,7 @@ public:
 
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
         std::map<double, c_vector<long double, 4> > GrowthMaps;
-        GrowthMaps[1] = Create_c_vector(pow(10, -12),0,0, pow(10, -BendingParameter));
+        GrowthMaps[1] = Create_c_vector(pow(10, -9),0,0, pow(10, -BendingParameter));
         //Strength , hetro, stepsize, setupsolve
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
         simulator.AddSimulationModifier(p_Mesh_modifier);

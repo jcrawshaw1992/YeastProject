@@ -41,7 +41,7 @@ if __name__=="__main__":
 
 
     # ParameteresUnder100_SmallTimeStep =[[9, 10.0, 9]]
-    # ParameteresUnder50_SmallTimeStep =[[10, 5, 5], [10.0,   5.0,   5.5],[10.0,   5.0,   6.0],[10.0,   5.0,   6.5],[10.0,   5.0,   9.5],[10.0,   5.0,  10.0],[10.0,   9.5,   5.0],[10.0,  10.0,   5.0]]
+    ParameteresUnder50_SmallTimeStep =[[10, 5, 5], [10.0,   5.0,   5.5],[10.0,   5.0,   6.0],[10.0,   5.0,   6.5],[10.0,   5.0,   9.5],[10.0,   5.0,  10.0],[10.0,   9.5,   5.0],[10.0,  10.0,   5.0]]
 
 
     print len(ParameteresUnder50_SmallTimeStep)
