@@ -56,7 +56,7 @@ public:
         double EndTime = 8;
         
         double SamplingTimestepMultiple = 500;
-        std::string output_dir = "HetroCylinder/B_2_/";
+        std::string output_dir = "HetroCylinder/B_SuperSmall/";
         
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
@@ -80,7 +80,7 @@ public:
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 1, 1e-10, 1);
         p_Mesh_modifier->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
         p_Mesh_modifier->SetBasementMembraneStrength(0);
-        p_Mesh_modifier->SetPlateauParameters(8, 2);
+        p_Mesh_modifier->SetPlateauParameters(8, pow(10, -7));
         p_Mesh_modifier->SetUpdateFrequency(200);
 
         p_simulator->Solve();
