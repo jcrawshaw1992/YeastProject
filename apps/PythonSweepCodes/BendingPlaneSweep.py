@@ -34,6 +34,10 @@ if __name__=="__main__":
 
     AspectRatio = [ 0.75,1.5,3] 
     Refinment = [ 5,10,15]
+
+
+    AspectRatio = [ 0.75] 
+    Refinment = [15]
   
     for i in AspectRatio:
         for j in Refinment:

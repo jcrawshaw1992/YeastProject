@@ -385,6 +385,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::Boundaries(c_
     double Length = norm_2(UpperPlanePoint -LowerPlanePoint );
     /*  M(x) = k/(1+x^2a) */
     mMembraneFuctionSpatialConstants.push_back(PlateauDistributionFuction(Length));
+    PRINT_VARIABLE(Length)
 
 
     mHetro = 1;
@@ -588,7 +589,8 @@ c_vector<c_vector<double, 3>, 2> RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DI
     PRINT_2_VARIABLES(ma,mB)
     c_vector<c_vector<double, 3>, 2> SpatialFuncitonCoefficents;
     SpatialFuncitonCoefficents[0]=Create_c_vector(K_ShearMod, K_AreaDilationMod, K_AreaMod);
-    SpatialFuncitonCoefficents[1]=Create_c_vector(ma,b,0);
+    SpatialFuncitonCoefficents[1]=Create_c_vector(ma,mB,0);
+    // PRINT_VARIABLE(ma,b,Length)
 
     /*  M(x) = k/(1+x^2a) */
     return SpatialFuncitonCoefficents;
