@@ -56,10 +56,10 @@ public:
         std::stringstream out;
         out << "AspectRatio" << AspectRatio << "/Refinement" << Nc;
         std::string ParameterSet = out.str();
-        std::string output_dir = "BendingForceOnBentRectanlgeFour/" + ParameterSet;
+        std::string output_dir = "BendingForceOnBentRectanlgeFive/" + ParameterSet;
 
 
-        Honeycomb3DMeshGeneratorBentRectangle generator(Nc, Nc* AspectRatio, 1e-3, 1e-3);
+        Honeycomb3DMeshGeneratorBentRectangle generator(Nc* AspectRatio, Nc, 1e-3, 1e-3);
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
 
         // Create the cells

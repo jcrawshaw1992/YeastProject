@@ -31,41 +31,41 @@ if __name__=="__main__":
     Parameters = [[10, 9,  9],   [10, 9, 10],   [9, 9, 9],   [9, 9, 10],   [9, 9.5, 9],   [9, 9.5, 10],   [9, 10, 9],   [9, 10, 10],  [8, 9,  9], [8, 9, 10], [8, 9.5, 9], [8, 9.5, 10], [8, 10, 9], [8, 10, 10], [7, 8.5, 9], [7, 8.5, 10], [7, 9, 9], [7, 9, 10], [7, 9.5, 9], [7, 9.5, 10], [7, 10, 9], [7, 10, 10]]
     Parameters = [[7,  9,  9.5] , [7,  9.5, 9.5],  [7, 10,  9.5],  [8,  9,  9.5],  [8,  9.5, 9.5],  [8, 10,  9.5],  [9,  9,  9.5],  [9,  9.5, 9.5],  [9, 10,  9.5], [10,  9,  9.5], [10,  9.5, 5.5], [10,  9.5, 6.5], [10,  9.5, 7], [10,  9.5, 7.5], [10,  9.5, 8], [10,  9.5, 8.5], [10,  9.5, 9], [10,  9.5, 9.5], [10,  9.5,10], [10, 10,  5.5], [10, 10,  6.5], [10, 10,  7], [10, 10,  7.5], [10, 10,  8], [10, 10,  8.5], [10, 10,  9], [10, 10,  9.5], [10, 10, 10]]
 
-    print len(Parameters)
-    for I in Parameters:
-        i = I[0]
-        j = I[1]
-        k = I[2]
-        dt = ' 0.0005'
-        if i <5.5 or j<5.5 or k<5.5:
-            dt = ' 0.00001'
-        elif i <7.3 or j<7.3 or k<7.3:
-            dt = ' 0.0001'
-
-        SimulationTime = ' 150'
-
-        Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
-        Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
-        Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
-        subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
-
-
-    
-
-
-    # OldFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/Parameters/"
-    # NewFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/CollectedResultsNewest/"
-    # os.mkdir(NewFolder)
-
-    
-   
+    # print len(Parameters)
     # for I in Parameters:
     #     i = I[0]
     #     j = I[1]
     #     k = I[2]
-    #     Oldfile = OldFolder + "Param_" + str(i) + "_DilationParam_" + str(j) + "_DeformationParam_"+ str(k) + "/results_from_time_10/results.viznodes" 
-    #     if path.exists(Oldfile):
-    #         NewFile = NewFolder + "Area_" + str(i) + "_Dil_" + str(j) + "_Def_" + str(k)+".viznodes" 
-    #         shutil.copy(Oldfile, NewFile)
+    #     dt = ' 0.0005'
+    #     if i <5.5 or j<5.5 or k<5.5:
+    #         dt = ' 0.00001'
+    #     elif i <7.3 or j<7.3 or k<7.3:
+    #         dt = ' 0.0001'
+
+    #     SimulationTime = ' 150'
+
+    #     Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
+    #     Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
+    #     Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
+    #     subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
+
+
+    
+
+
+    OldFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/Parameters/"
+    NewFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/CollectedResults5th/"
+    os.mkdir(NewFolder)
+
+    
+   
+    for I in Parameters:
+        i = I[0]
+        j = I[1]
+        k = I[2]
+        Oldfile = OldFolder + "Param_" + str(i) + "_DilationParam_" + str(j) + "_DeformationParam_"+ str(k) + "/results_from_time_10/results.viznodes" 
+        if path.exists(Oldfile):
+            NewFile = NewFolder + "Area_" + str(i) + "_Dil_" + str(j) + "_Def_" + str(k)+".viznodes" 
+            shutil.copy(Oldfile, NewFile)
 
    

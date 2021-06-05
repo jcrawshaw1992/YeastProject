@@ -23,17 +23,17 @@ if __name__=="__main__":
         subprocess.call(command, shell=True)
 
     chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestBendingOnPlaneSweepRunner '
-    TerminalOutputFolder = "/data/vascrem/testoutput/BendingForceOnBentRectanlgeFour/SweepTerminalOutputs/"
+    TerminalOutputFolder = "/data/vascrem/testoutput/BendingForceOnBentRectanlgeFive/SweepTerminalOutputs/"
 
-    if path.isdir("/data/vascrem/testoutput/BendingForceOnBentRectanlge")==0:
-        os.mkdir("/data/vascrem/testoutput/BendingForceOnBentRectanlge")
+    if path.isdir("/data/vascrem/testoutput/BendingForceOnBentRectanlgeFive")==0:
+        os.mkdir("/data/vascrem/testoutput/BendingForceOnBentRectanlgeFive")
 
     if path.isdir(TerminalOutputFolder)==0:
         os.mkdir(TerminalOutputFolder)
 
 
     AspectRatio = [ 0.75,1.5,3] 
-    Refinment = [ 5,10,20]
+    Refinment = [ 5,10,15,20]
   
     for i in AspectRatio:
         for j in Refinment:
