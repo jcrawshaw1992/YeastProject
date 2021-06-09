@@ -157,9 +157,9 @@ public:
 
          for (int i =1; i<=40; i++)
         { 
-            static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+            // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
             EndTime +=1;
-            p_simulator->SetEndTime(EndTime);
+            simulator.SetEndTime(EndTime);
 
             simulator.Solve();
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
