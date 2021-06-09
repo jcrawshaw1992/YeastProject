@@ -66,6 +66,9 @@ void OutwardsPressureWithBreaks::AddForceContribution(AbstractCellPopulation<2, 
             c_vector<double, 3> Normal = p_node->rGetLocation();
             Normal[2] = 0;
 
+            double CellArea= rCellPopulation.GetVolumeOfCell(rCellPopulation.GetCellUsingLocationIndex(node_index));
+            PRINT_VARIABLE(CellArea);
+
             // Turned off for the sake of speed
 
             // c_vector<double, 3> Normal = zero_vector<double>(3);

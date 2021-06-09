@@ -37,7 +37,7 @@ public:
 
     void TestSetUpCylinderArchive() throw(Exception)
     {
-        double EndTime = 15;
+        double EndTime = 4;
         double scale = 0.00006684491/1.29;
 
         std::string output_dir = "PlexusExample/";
@@ -152,6 +152,23 @@ public:
 
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+
+        simulator.SetDt(0.00001);
+
+         for (int i =1; i<=40; i++)
+        { 
+            static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+            EndTime +=1;
+            p_simulator->SetEndTime(EndTime);
+
+            simulator.Solve();
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+        }
+
+
+
+
+
 }
 
 
