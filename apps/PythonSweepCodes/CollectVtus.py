@@ -14,6 +14,13 @@ import sys
 import os.path
 from os import path
 
+
+def JessFunction(input1, input2): 
+
+    Lots of code
+    return X
+
+
 if __name__=="__main__":
 
     OldFolder = "/Users/jcrawshaw/Documents/testoutput/StepChangeHetroCylinder/Collapse/results_from_time_"
@@ -22,6 +29,7 @@ if __name__=="__main__":
     NumberOfSimulations =  range(9,114)
     NumberOfSimulations = NumberOfSimulations[0::4]
     counter =0
+    JessFunction(input1, input2)
     for i in NumberOfSimulations:
     
 

@@ -37,7 +37,7 @@ public:
 
     void TestSetUpCylinderArchive() throw(Exception)
     {
-        double EndTime = 4;
+        double EndTime = 1;
         double scale = 0.00006684491/1.29;
 
         std::string output_dir = "PlexusExample/";
@@ -100,7 +100,7 @@ public:
 
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        p_membrane_force->SetMembraneStiffness(pow(10, -9));
+        p_membrane_force->SetMembraneStiffness(pow(10, -8.5));
         simulator.AddForce(p_membrane_force);
         /*
         -----------------------------
@@ -153,9 +153,24 @@ public:
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
 
+         for (int i =1; i<=3; i++)
+        { 
+            EndTime +=1;
+            simulator.SetEndTime(EndTime);
+            if (i >2)
+            {
+                simulator.SetSamplingTimestepMultiple(50);
+            }
+
+            simulator.Solve();
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+        }
+
+        
+        simulator.SetSamplingTimestepMultiple(500);
         simulator.SetDt(0.00001);
 
-         for (int i =1; i<=40; i++)
+         for (int i =1; i<=20; i++)
         { 
             // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
             EndTime +=1;
