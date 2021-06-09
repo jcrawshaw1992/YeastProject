@@ -27,6 +27,7 @@
 
 #include "FixedRegionBoundaryCondition.hpp"
 #include "MembraneDeformationForceOnCylinder.hpp"
+#include "OutwardsPressure.hpp"
 #include "OutwardsPressureWithBreaks.hpp"
 // #include "StepHeteroModifier.hpp"
 #include "StepHeteroModifier.hpp"
@@ -34,7 +35,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void TestSetUpCylinderArchive() throw(Exception)
+    void offTestSetUpCylinderArchive() throw(Exception)
     {
         double EndTime = 5;
         double scale = 1e3;
@@ -79,7 +80,7 @@ public:
         ----------------------------
         */
         boost::shared_ptr<StepHeteroModifier<2, 3> > p_Mesh_modifier(new StepHeteroModifier<2, 3>());
-        p_Mesh_modifier.SetMembraneStrength(1);
+        p_Mesh_modifier->SetMembraneStrength(1);
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
         // /*
@@ -143,11 +144,11 @@ public:
         double AreaParameter=7.3;
         double DeformationParamter=8.1;
 
-        double dt= 0.001;
-        double NewEndTime = 4;
+        double dt= 0.01;
+        double NewEndTime = 1;
         double EndTime = 5;
         
-        double SamplingTimestepMultiple = 1000;
+        double SamplingTimestepMultiple = 100;
         std::string output_dir = "StepChangeHetroCylinder/";
         
         /* Update the ouput directory for the population  */
@@ -168,6 +169,21 @@ public:
         */
         boost::shared_ptr<MembraneDeformationForceOnCylinder> p_shear_force(new MembraneDeformationForceOnCylinder());
         p_simulator->AddForce(p_shear_force);
+
+
+        /*
+        -----------------------------
+        Outwards force
+        ----------------------------
+        */
+
+
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
+
+        boost::shared_ptr<OutwardsPressure> p_force(new OutwardsPressure());
+        p_force->SetPressure(P_blood - P_tissue);
+        // p_simulator->AddForce(p_force);
 
 
         p_simulator->Solve();

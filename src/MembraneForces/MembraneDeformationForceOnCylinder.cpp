@@ -187,13 +187,13 @@ void MembraneDeformationForceOnCylinder::AddForceContribution(AbstractCellPopula
             pNode->AddAppliedForceContribution(MembraneForceMap[node_index] ); // Add the new force
         }
 
-        c_vector<double, 3> Normal = pNode->rGetLocation();
-        Normal[2] = 0;
-        Normal /=norm_2(Normal);
+        // c_vector<double, 3> Normal = pNode->rGetLocation();
+        // Normal[2] = 0;
+        // Normal /=norm_2(Normal);
 
-        c_vector<double, 3> force = mStrength *Normal; // / norm_2(cell_location);
+        // c_vector<double, 3> force = mStrength *Normal; // / norm_2(cell_location);
         
-        pNode->AddAppliedForceContribution(force); // Add the new force
+        // pNode->AddAppliedForceContribution(force); // Add the new force
 
     }
         

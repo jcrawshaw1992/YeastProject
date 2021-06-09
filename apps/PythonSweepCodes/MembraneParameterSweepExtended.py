@@ -31,7 +31,7 @@ if __name__=="__main__":
     # Parameters = [[7,  9,  9.5] , [7,  9.5, 9.5],  [7, 10,  9.5],  [8,  9,  9.5],  [8,  9.5, 9.5],  [8, 10,  9.5],  [9,  9,  9.5],  [9,  9.5, 9.5],  [9, 10,  9.5], [10,  9,  9.5], [10,  9.5, 5.5], [10,  9.5, 6.5], [10,  9.5, 7], [10,  9.5, 7.5], [10,  9.5, 8], [10,  9.5, 8.5], [10,  9.5, 9], [10,  9.5, 9.5], [10,  9.5,10], [10, 10,  5.5], [10, 10,  6.5], [10, 10,  7], [10, 10,  7.5], [10, 10,  8], [10, 10,  8.5], [10, 10,  9], [10, 10,  9.5], [10, 10, 10]]
 
 
-    # Parameters = [[7,    8.5,   9.5],    [7,    9.0,   8.5],    [7,    9.5,   8.5],    [7,   10.0,   8.5],    [7,   10.0,  10.0],    [8,    8.5,   9.0],    [8,    8.5,   9.5],    [8,    8.5,  10.0],    [8,    9.0,   8.5],    [8,    9.0,  10.0],    [8,    9.5,   8.5],    [8,    9.5,   9.0],    [8,    9.5,  10.0],    [8,   10.0,   8.5],    [8,   10.0,   9.0],    [8,   10.0,  10.0],    [9,  8.5,   9.0],    [9,  8.5,   9.5],    [9,  8.5,  10.0],    [9,  9.0,   8.5],    [9,  9.0,  10.0],    [9,  9.5,   8.5],    [9,  9.5,   9.0],    [9,  9.5,  10.0],    [9, 10.0,   8.5],    [9, 10.0,   9.0],    [9, 10.0,  10.0],    [10,   5.0,   5.0],    [10,   5.0,   5.5],    [10,   5.0,   6.0],    [10,   5.0,   6.5],    [10,   5.0,   9.5],    [10,   5.0,  10.0],    [10,   8.5,   9.0],    [10,   8.5,   9.5],    [10,   8.5,  10.0],    [10,   9.0,   8.5],    [10,   9.0,  10.0],    [10,   9.5,   5.0],    [10,   9.5,   6.0],    [10,   9.5,  10.0],    [10,  10.0,   5.0],    [10,  10.0,   6.0],    [10,  10.0,  10.0]]
+    Parameters = [[7,    8.5,   9.5],    [7,    9.0,   8.5],    [7,    9.5,   8.5],    [7,   10.0,   8.5],    [7,   10.0,  10.0],    [8,    8.5,   9.0],    [8,    8.5,   9.5],    [8,    8.5,  10.0],    [8,    9.0,   8.5],    [8,    9.0,  10.0],    [8,    9.5,   8.5],    [8,    9.5,   9.0],    [8,    9.5,  10.0],    [8,   10.0,   8.5],    [8,   10.0,   9.0],    [8,   10.0,  10.0],    [9,  8.5,   9.0],    [9,  8.5,   9.5],    [9,  8.5,  10.0],    [9,  9.0,   8.5],    [9,  9.0,  10.0],    [9,  9.5,   8.5],    [9,  9.5,   9.0],    [9,  9.5,  10.0],    [9, 10.0,   8.5],    [9, 10.0,   9.0],    [9, 10.0,  10.0],    [10,   5.0,   5.0],    [10,   5.0,   5.5],    [10,   5.0,   6.0],    [10,   5.0,   6.5],    [10,   5.0,   9.5],    [10,   5.0,  10.0],    [10,   8.5,   9.0],    [10,   8.5,   9.5],    [10,   8.5,  10.0],    [10,   9.0,   8.5],    [10,   9.0,  10.0],    [10,   9.5,   5.0],    [10,   9.5,   6.0],    [10,   9.5,  10.0],    [10,  10.0,   5.0],    [10,  10.0,   6.0],    [10,  10.0,  10.0]]
 
 
     ParameteresUnder50 =[[7.0,   8.5,   9.5],[ 7.0,   9.0,   8.5],[ 7.0,   9.5,   8.5],[ 7.0,  10.0,   8.5],[ 8.0,   8.5,   9.0],[ 8.0,   8.5,   9.5],[ 8.0,   8.5,  10.0],[ 8.0,   9.0,   8.5],[ 8.0,   9.5,   8.5],[ 8.0,  10.0,   8.5],[ 9.0,   8.5,   9.0],[ 9.0,   8.5,   9.5],[ 9.0,   8.5,  10.0],[ 9.0,   9.0,   8.5],[ 9.0,   9.5,   8.5],[ 9.0,  10.0,   8.5],[10.0,   5.0,   5.0],[10.0,   5.0,   5.5],[10.0,   5.0,   6.0],[10.0,   5.0,   6.5],[10.0,   5.0,   9.5],[10.0,   5.0,  10.0],[10.0,   8.5,   9.0],[10.0,   8.5,   9.5],[10.0,   8.5,  10.0],[10.0,   9.0,   8.5],[10.0,   9.5,   5.0],[10.0,   9.5,   6.0],[10.0,  10.0,   5.0],[10.0,  10.0,   6.0000]]
@@ -44,36 +44,36 @@ if __name__=="__main__":
     ParameteresUnder50_SmallTimeStep =[[10, 5, 5], [10.0,   5.0,   5.5],[10.0,   5.0,   6.0],[10.0,   5.0,   6.5],[10.0,   5.0,   9.5],[10.0,   5.0,  10.0],[10.0,   9.5,   5.0],[10.0,  10.0,   5.0]]
 
 
-    print len(ParameteresUnder50_SmallTimeStep)
-    for I in ParameteresUnder50_SmallTimeStep:
-        i = I[0]
-        j = I[1]
-        k = I[2]
-        dt = ' 0.0001'
-        SimulationTime = ' 90'
+    # print len(ParameteresUnder50_SmallTimeStep)
+    # for I in ParameteresUnder50_SmallTimeStep:
+    #     i = I[0]
+    #     j = I[1]
+    #     k = I[2]
+    #     dt = ' 0.0001'
+    #     SimulationTime = ' 90'
 
-        Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
-        Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
-        Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
-        subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
-
-
-    print len(ParameteresUnder200)
-    for I in ParameteresUnder200:
-        i = I[0]
-        j = I[1]
-        k = I[2]
-        dt = ' 0.001'
-        SimulationTime = ' 250'
-
-        Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
-        Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
-        Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
-        subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
+    #     Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
+    #     Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
+    #     Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
+    #     subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
 
 
+    # print len(ParameteresUnder200)
+    # for I in ParameteresUnder200:
+    #     i = I[0]
+    #     j = I[1]
+    #     k = I[2]
+    #     dt = ' 0.001'
+    #     SimulationTime = ' 250'
 
-    print "done"
+    #     Input1 = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j)+' -DeformationParamter ' +str(k) +' -dt'+dt+' -NewEndTime'+SimulationTime
+    #     Input2 = TerminalOutputFolder+'AreaParameter'+str(i)+'_DilationParameter'+str(j)+'_DeformationParamter' +str(k)+'.txt'
+    #     Input3 = TerminalOutputFolder+'WaitFile'+str(1)+'.txt'
+    #     subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
+
+
+
+    # print "done"
 
 
 
@@ -154,19 +154,22 @@ if __name__=="__main__":
     
 
 
-    # OldFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/Parameters/"
-    # NewFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/CollectedResults5th/"
+    OldFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/Parameters/"
+    NewFolder = "/data/vascrem/testoutput/MembraneParameterSweep/Cylinder/CollectedResults6th/"
     # os.mkdir(NewFolder)
+
+    Parameters = [[7,    8.5,   9.5],    [7,    9,   8.5],    [7,    9.5,   8.5],    [7,   10,   8.5],    [7,   10,  10],    [8,    8.5,   9],    [8,    8.5,   9.5],    [8,    8.5,  10],    [8,    9,   8.5],    [8,    9,  10],    [8,    9.5,   8.5],    [8,    9.5,   9],    [8,    9.5,  10],    [8,   10,   8.5],    [8,   10,   9],    [8,   10,  10],    [9,  8.5,   9],    [9,  8.5,   9.5],    [9,  8.5,  10],    [9,  9,   8.5],    [9,  9,  10],    [9,  9.5,   8.5],    [9,  9.5,   9],    [9,  9.5,  10],    [9, 10,   8.5],    [9, 10,   9],    [9, 10,  10],    [10,   5,   5],    [10,   5,   5.5],    [10,   5,   6],    [10,   5,   6.5],    [10,   5,   9.5],    [10,   5,  10],    [10,   8.5,   9],    [10,   8.5,   9.5],    [10,   8.5,  10],    [10,   9,   8.5],    [10,   9,  10],    [10,   9.5,   5],    [10,   9.5,   6],    [10,   9.5,  10],    [10,  10,   5],    [10,  10,   6],    [10,  10,  10]]
+
 
     
    
-    # for I in Parameters:
-    #     i = I[0]
-    #     j = I[1]
-    #     k = I[2]
-    #     Oldfile = OldFolder + "Param_" + str(i) + "_DilationParam_" + str(j) + "_DeformationParam_"+ str(k) + "/results_from_time_10/results.viznodes" 
-    #     if path.exists(Oldfile):
-    #         NewFile = NewFolder + "Area_" + str(i) + "_Dil_" + str(j) + "_Def_" + str(k)+".viznodes" 
-    #         shutil.copy(Oldfile, NewFile)
+    for I in Parameters:
+        i = I[0]
+        j = I[1]
+        k = I[2]
+        Oldfile = OldFolder + "Param_" + str(i) + "_DilationParam_" + str(j) + "_DeformationParam_"+ str(k) + "/results_from_time_10/results.viznodes" 
+        # if path.exists(Oldfile):
+        NewFile = NewFolder + "Area_" + str(i) + "_Dil_" + str(j) + "_Def_" + str(k)+".viznodes" 
+        shutil.copy(Oldfile, NewFile)
 
    

@@ -13,8 +13,8 @@ After this, the membrane constants will be dependent on the number of cells in t
 
 */
 
-#ifndef RemeshingTriggerOnHeteroMeshModifier_HPP_
-#define RemeshingTriggerOnHeteroMeshModifier_HPP_
+#ifndef RemeshingTriggerOnStepHeteroModifier_HPP_
+#define RemeshingTriggerOnStepHeteroModifier_HPP_
 
 #include <boost/serialization/base_object.hpp>
 #include "ChasteSerialization.hpp"
@@ -41,7 +41,7 @@ After this, the membrane constants will be dependent on the number of cells in t
  */
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-class RemeshingTriggerOnHeteroMeshModifier : public AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM>
+class RemeshingTriggerOnStepHeteroModifier : public AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM>
 {
 private:
     // "AreaConstant" = mGrowthMaps[X](0);
@@ -120,12 +120,12 @@ public:
     /**
 	 * Default constructor.
 	 */
-    RemeshingTriggerOnHeteroMeshModifier();
+    RemeshingTriggerOnStepHeteroModifier();
 
     /**
      * Destructor.
      */
-    virtual ~RemeshingTriggerOnHeteroMeshModifier();
+    virtual ~RemeshingTriggerOnStepHeteroModifier();
 
     /**
      * Overridden UpdateAtEndOfTimeStep() method.
@@ -243,6 +243,6 @@ public:
 };
 
 #include "SerializationExportWrapper.hpp"
-EXPORT_TEMPLATE_CLASS_ALL_DIMS(RemeshingTriggerOnHeteroMeshModifier);
+EXPORT_TEMPLATE_CLASS_ALL_DIMS(RemeshingTriggerOnStepHeteroModifier);
 
-#endif /*RemeshingTriggerOnHeteroMeshModifier_HPP_*/
+#endif /*RemeshingTriggerOnStepHeteroModifier_HPP_*/

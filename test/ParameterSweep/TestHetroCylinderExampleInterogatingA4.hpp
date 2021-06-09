@@ -48,12 +48,12 @@ public:
         double AreaParameter=7;
         double DeformationParamter=8;
 
-        double dt= 0.001;
+        double dt= 0.005;
         double NewEndTime = EndTime;
     
-        double SamplingTimestepMultiple = 500;
+        double SamplingTimestepMultiple = 100;
     
-        std::string output_dir = "HetroCylinder/A_3/";
+        std::string output_dir = "HetroCylinder/A_4/";
         
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
@@ -75,8 +75,10 @@ public:
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 1, 1e-10, 1);
         p_Mesh_modifier->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
         p_Mesh_modifier->SetBasementMembraneStrength(0);
-        p_Mesh_modifier->SetPlateauParameters(3,2);
+        p_Mesh_modifier->SetPlateauParameters(4,2);
         p_Mesh_modifier->SetUpdateFrequency(50);
+
+
 
         std::vector<c_vector<double, 3> > boundary_plane_points;
         std::vector<c_vector<double, 3> > boundary_plane_normals;
@@ -93,34 +95,37 @@ public:
             p_simulator->AddCellPopulationBoundaryCondition(p_condition);
         }
 
-
         for (int i =1; i<=40; i++)
         { 
             static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(NewEndTime);
             NewEndTime +=2;
             p_simulator->SetEndTime(NewEndTime);
+
             p_simulator->Solve();
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
         }
+
+
     }
+
 
 
     void offTestIntroduceHetroPickedUp() throw(Exception)
     {
-        std::string Archieved = "HetroCylinder/A_3/";
-        double EndTime = 16;
+        std::string Archieved = "HetroCylinder/A_4/";
+        double EndTime = 38;
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved,EndTime);
 
         double DilationParameter=8.4;
         double AreaParameter=7;
         double DeformationParamter=8;
 
-        double dt= 0.001;
+        double dt= 0.001; //double dt= 0.0005;
         double NewEndTime = EndTime;
     
-        double SamplingTimestepMultiple = 500;
+        double SamplingTimestepMultiple = 1000;
     
-        std::string output_dir = "HetroCylinder/A_3/";
+        std::string output_dir = "HetroCylinder/A_4/";
         
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
@@ -141,7 +146,6 @@ public:
         // GrowthMaps[0] = Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 0);
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 1, 1e-10, 0);
         p_Mesh_modifier->SetBasementMembraneStrength(0);
-        
         p_Mesh_modifier->SetUpdateFrequency(250);
 
         for (int i =1; i<=40; i++)
@@ -157,23 +161,24 @@ public:
 
     }
 
-    void TestIntroduceHetroPickedUp2nd() throw(Exception)
+
+
+  void TestIntroduceHetroPickedUp2() throw(Exception)
     {
-        std::string Archieved = "HetroCylinder/A_3/";
-        double EndTime = 22;
+        std::string Archieved = "HetroCylinder/A_4/";
+        double EndTime = 54;
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved,EndTime);
 
         double DilationParameter=8.4;
         double AreaParameter=7;
         double DeformationParamter=8;
 
-        double dt= 0.0001;
+        double dt= 0.0001; //double dt= 0.0005;
         double NewEndTime = EndTime;
-
-        double SamplingTimestepMultiple = 5000;
     
+        double SamplingTimestepMultiple = 10000;
     
-        std::string output_dir = "HetroCylinder/A_3/";
+        std::string output_dir = "HetroCylinder/A_4/";
         
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
@@ -210,10 +215,9 @@ public:
     }
 
 
+ 
 
-
-
-
+ 
 
 
 

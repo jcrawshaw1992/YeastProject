@@ -13,8 +13,8 @@ After this, the membrane constants will be dependent on the number of cells in t
 
 */
 
-#ifndef RemeshingTriggerOnHeteroMeshModifier_HPP_
-#define RemeshingTriggerOnHeteroMeshModifier_HPP_
+#ifndef StepHeteroModifier_HPP_
+#define StepHeteroModifier_HPP_
 
 #include <boost/serialization/base_object.hpp>
 #include "ChasteSerialization.hpp"
@@ -30,8 +30,6 @@ After this, the membrane constants will be dependent on the number of cells in t
 
 #include "EmptyBasementMatrix.hpp"
 #include "HasEndothelialCell.hpp"
-#include "LostEndothelialCell.hpp"
-
 #include "HistoryDepMeshBasedCellPopulation.hpp"
 
 /**
@@ -41,7 +39,7 @@ After this, the membrane constants will be dependent on the number of cells in t
  */
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-class RemeshingTriggerOnHeteroMeshModifier : public AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM>
+class StepHeteroModifier : public AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM>
 {
 private:
     // "AreaConstant" = mGrowthMaps[X](0);
@@ -53,26 +51,14 @@ private:
     // Need my own version of "UblasCustomFunctions.hpp", which has c_vector<double, 4>, get James to push this one day 
 
     // c_vector<double, 4> Create_c_vector(double x, double y, double z, double t);
-    bool mOn = 0;
-
     unsigned mSamplebasementNode;
-    bool mAchievedTargetK = 0;
-    double mStrength = 2.5;
+    double mStrength = 1;
     bool mHetro = 0;
-    double mStepSize = 1e-10;
     double mCounter = 0;
     unsigned mSteps =1;
-    double mThreshold = 100;
-    // double mSetupSolve;
-    int mRemeshingInterval = 500;
-    int mExecute = 0;
-    bool mRemeshing = 0;
-    int mStepsSinceLastRemesh = 1;
+
     std::map<unsigned, c_vector<double, 2> > mDistanceToEndothelialRegion;
-
-    // std::vector<unsigned> mNodesNextToBasement;
     std::vector<unsigned> mBasementNodes;
-
     std::vector<std::vector<c_vector<double, 3> > > mBoundaries;
 
     /** Needed for serialization. */
@@ -88,30 +74,22 @@ private:
     void serialize(Archive& archive, const unsigned int version)
     {
         archive& boost::serialization::base_object<AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM> >(*this);
-        // archive& mGrowthMaps; 
-        archive& mOn;
+        archive& mGrowthMaps; 
         archive& mSamplebasementNode;
+        archive& mSetUpSolve;
         
         archive& mBasementNodes;
         archive& mStepSize;
+        archive& mSteps;
         archive& mCounter;
         archive& mBoundaries;
     
         archive& mStrength;
         archive& mHetro;
-        archive& mRemeshingInterval;
-        archive& mExecute;
-        archive& mRemeshing;
         archive& mDistanceToEndothelialRegion;
-        archive& mRemeshingTrigger;
 
-        archive& ma;
-        archive& mB;
         archive& mMaxCounter;
         archive& mStartingParameterForSlowIncrease;
-        archive& mMembraneFuctionSpatialConstants;
-        archive& mBasementMembraneStrength;
-//
         archive& mSlowIncreaseInMembraneStrength;
         archive& mTimeStepSize;
     }
@@ -120,12 +98,12 @@ public:
     /**
 	 * Default constructor.
 	 */
-    RemeshingTriggerOnHeteroMeshModifier();
+    StepHeteroModifier();
 
     /**
      * Destructor.
      */
-    virtual ~RemeshingTriggerOnHeteroMeshModifier();
+    virtual ~StepHeteroModifier();
 
     /**
      * Overridden UpdateAtEndOfTimeStep() method.
@@ -152,56 +130,27 @@ public:
      */
 
     void Boundaries(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPlanePoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> PlanePoint);
-    c_vector<c_vector<double, 3>, 2> PlateauDistributionFuction(double Length);
-    void SetPlateauParameters(double a, double B);
-    double ma = 8;
-    double mB = 2;
     void SetUpdateFrequency(double MaxCounter);
     double mMaxCounter = 100;
     bool mSetUpSolve =1;
 
-
-
+    void SetStepSize(double StepSize);
+    double mStepSize = pow(10,-10);
 
     void SetStartingParameterForSlowIncrease(double StartingParameterForSlowIncrease);
     double mStartingParameterForSlowIncrease = 1e-8;
 
-
-
-    // Has spatial constants of the membrane function .. the ks and the as 
-    std::vector<c_vector<c_vector<double, 3>, 2>> mMembraneFuctionSpatialConstants;
-
-
     void SetMembraneStrength(double Strength);
 
-    void SetBasementMembraneStrength(double Strength);
 
-    void SetMembraneParameters(double AreaParameter, double DilationParameter, double DeformationParamter, double BendingParameter);
-
-
-    double mBasementMembraneStrength;
-
-    /**
-     * Set remeshing interval
-     *  
-     */
-    void SetRemeshingInterval(int RemeshingInterval);
-
-    /**
-     * Set interval for updating mesh properties 
-     *  
-     */
-
-    void SetThreshold(double Threshold);
-
-    
     /**
 	 * Set mResetTractionsOnCells.
 	 *
 	 * Set the member variable mGrowthMaps to be the paramters sent in 
 	 */
 
-    void SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps, double Strength, bool Hetrogeneous, double StepSize, double SetupSolve);
+
+    void SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps, double Strength);
 
     void SetBendingForce(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, double BendingConstant);
 
@@ -209,10 +158,9 @@ public:
    * Helper method to store the applied tractions in CellData.
    */
     void UpdateCellData(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
-    void SetMembraneStrenghtOnNewMesh(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
     
     void StepChange(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
-    double exec(const char* cmd);
+
 
 
     // void UpdateCellData_HillStep(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
@@ -223,15 +171,8 @@ public:
     void SlowIncreaseInMembraneParameters(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
     double mTimeStepSize;
 
-    // These functions are all about the trigger for remeshing, which needs to be apsect ratios, unless I am being super lazy
-    void SetRemeshingTrigger(std::string RemeshingTrigger);
-    // double CalculateAspectRatio(c_vector<double, SPACE_DIM> Node1, c_vector<double, SPACE_DIM> Node2,c_vector<double, SPACE_DIM> Node3 );    
-    // double FindMinimumAspectRatioOverMesh(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
-
- 
-    std::string mRemeshingTrigger= "AspectRatio";
-
-
+  
+  
 
     /**
      * Overridden OutputSimulationModifierParameters() method.
@@ -243,6 +184,6 @@ public:
 };
 
 #include "SerializationExportWrapper.hpp"
-EXPORT_TEMPLATE_CLASS_ALL_DIMS(RemeshingTriggerOnHeteroMeshModifier);
+EXPORT_TEMPLATE_CLASS_ALL_DIMS(StepHeteroModifier);
 
-#endif /*RemeshingTriggerOnHeteroMeshModifier_HPP_*/
+#endif /*StepHeteroModifier_HPP_*/
