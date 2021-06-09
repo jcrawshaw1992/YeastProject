@@ -41,8 +41,8 @@ public:
         double scale = 0.00006684491/1.29;
 
         std::string output_dir = "PlexusExample/";
-        std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
-        //  std::string mesh_file = "/data/vascrem/MeshCollection/Plexus.vtu";
+        // std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
+         std::string mesh_file = "/data/vascrem/MeshCollection/Plexus.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
