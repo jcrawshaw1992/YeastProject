@@ -95,7 +95,7 @@ public:
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        p_ForceOut->SetPressure(P_blood - P_tissue);
+        p_ForceOut->SetPressure((P_blood - P_tissue)/2);
         simulator.AddForce(p_ForceOut);
 
 
