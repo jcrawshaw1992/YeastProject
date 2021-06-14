@@ -49,7 +49,7 @@ if __name__=="__main__":
     TerminalOutputFolder = Directory + "TerminalOutputFolder/"
     CreateNewFolder(TerminalOutputFolder) 
 
-    Parallel = 25
+    Parallel = 2
     SleepyTime = 50
     AvaliablePaths = range(Parallel)
         
@@ -58,9 +58,8 @@ if __name__=="__main__":
 
     # FileLabels = [ 'PI_5'] 
     # Alpha = [m.pi/5] 
-    Length = [ 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2]
+    Length = [ 0.2, 0.4, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2]
     Collapse = [0.2248, 0.3178, 0.4170 , 0.5124, 0.6119, 0.7080, 0.8059, 0.9032]
-    Collapse = [0.4170]
     counter = -1
     for A in Alpha:
         counter = counter+1

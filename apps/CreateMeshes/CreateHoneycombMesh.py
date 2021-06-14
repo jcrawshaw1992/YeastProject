@@ -158,12 +158,10 @@ def CreateIdealSkeleton(Directory, Generations,GenerationsX,Height,HorizonatalEd
     # pdb.set_trace()
     Edges.remove(Branch)
     
-
     RightCollpaseBoundary =  Nodes[Branch[1]][0]
     LeftCollpaseBoundary = Nodes[Branch[0]][0]
     NumberOfIntervals = 100
     for k in range(1, NumberOfIntervals):
-
         # NewNodes =  np.array(Nodes[Branch[0]]) + k*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/NumberOfIntervals
         NewNodes =  np.array(Nodes[Branch[0]]) + k*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/NumberOfIntervals
 
@@ -240,7 +238,7 @@ if __name__=="__main__":
     Boundaries = CreateIdealSkeleton(Directory, 3, 2, Height, HorizonatalEdgeLength, Alpha, 0, 1, Bounds)
     
     # # ---- Read points into the vtp writer to generate a centerlines.vtp file -------------# 
-    command = CPP_Centerlines_vtp_writer + ' -ofile ' + CenterLines_filename + ' -CenterlinePoints ' +Directory+ 'CenterlinePoints.txt -CenterlineEdges ' + Directory +'CenterlineEdges.txt -Radius 0.2 -LeftBound '+str(Boundaries[0]+0.001)+' -RightBound '+str(Boundaries[1]-0.001)+' -Collapse ' + i + ' -Branch 1'
+    command = CPP_Centerlines_vtp_writer + ' -ofile ' + CenterLines_filename + ' -CenterlinePoints ' +Directory+ 'CenterlinePoints.txt -CenterlineEdges ' + Directory +'CenterlineEdges.txt -Radius 0.2 -LeftBound '+str(Boundaries[0]+0.001)+' -RightBound '+str(Boundaries[1]-0.01)+' -Collapse ' + i + ' -Branch 1'
     
     subprocess.call(command, shell=True)
 
