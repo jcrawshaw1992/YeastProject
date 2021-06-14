@@ -85,7 +85,6 @@ public:
         p_Mesh_modifier->SetMembraneStrength(1);
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
-
         /*
         -----------------------------
         Constant Compressive tissue pressure
@@ -95,7 +94,7 @@ public:
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        p_ForceOut->SetPressure(2*(P_blood - P_tissue)/2);
+        p_ForceOut->SetPressure((P_blood - P_tissue));
         simulator.AddForce(p_ForceOut);
 
 
@@ -153,26 +152,26 @@ public:
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
 
-         for (int i =1; i<=3; i++)
-        { 
-            EndTime +=1;
-            simulator.SetEndTime(EndTime);
-            if (i >2)
-            {
-                simulator.SetSamplingTimestepMultiple(50);
-            }
+        simulator.SetSamplingTimestepMultiple(500);
+        simulator.SetDt(0.00001);
 
+         for (int i =1; i<=5; i++)
+        { 
+            EndTime +=0.5;
+            simulator.SetEndTime(EndTime);
+   
             simulator.Solve();
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
         }
 
         
-        simulator.SetSamplingTimestepMultiple(500);
-        simulator.SetDt(0.00001);
+        simulator.SetSamplingTimestepMultiple(5000);
+        simulator.SetDt(0.000001);
+        
 
-         for (int i =1; i<=20; i++)
+        for (int i =1; i<=20; i++)
         { 
-            // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+            static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
             EndTime +=1;
             simulator.SetEndTime(EndTime);
 
@@ -189,7 +188,7 @@ public:
 
 
 
-    void TestContinuingHomoArchieve() throw(Exception)
+    void offTestContinuingHomoArchieve() throw(Exception)
     {
         std::string Archieved = "PlexusExample/";
         double EndTime = 1;
