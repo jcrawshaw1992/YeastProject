@@ -35,7 +35,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
-    void TestSetUpCylinderArchive() throw(Exception)
+    void offTestSetUpCylinderArchive() throw(Exception)
     {
         double EndTime = 1;
         double scale = 0.00006684491/1.29;
@@ -95,7 +95,7 @@ public:
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        p_ForceOut->SetPressure(2*(P_blood - P_tissue)/3);
+        p_ForceOut->SetPressure(2*(P_blood - P_tissue)/2);
         simulator.AddForce(p_ForceOut);
 
 
@@ -185,6 +185,64 @@ public:
 
 
 }
+
+
+
+
+    void TestContinuingHomoArchieve() throw(Exception)
+    {
+        std::string Archieved = "PlexusExample/";
+        double EndTime = 1;
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved,EndTime);
+
+    
+        double dt= 0.000001;
+        double NewEndTime = EndTime;
+    
+        double SamplingTimestepMultiple = 1000;
+    
+        std::string output_dir = "PlexusExample/";
+        
+        /* Update the ouput directory for the population  */
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+    
+        p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
+        p_simulator->SetDt(dt);
+        p_simulator->SetOutputDirectory(output_dir);
+
+
+        for (int i =1; i<=20; i++)
+        { 
+            static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(NewEndTime);
+            NewEndTime +=1;
+            p_simulator->SetEndTime(NewEndTime);
+
+            p_simulator->Solve();
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+        }
+
+        dt/=10;SamplingTimestepMultiple *= 10;
+    
+        p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
+        p_simulator->SetDt(dt);
+        p_Mesh_modifier->SetUpdateFrequency(0.5/dt);
+
+        for (int i =1; i<=40; i++)
+        { 
+            static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(NewEndTime);
+            NewEndTime +=4;
+            p_simulator->SetEndTime(NewEndTime);
+
+            p_simulator->Solve();
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+        }
+
+
+
+
+    }
+
+
 
 
 
