@@ -157,6 +157,7 @@ public:
 
          for (int i =1; i<=5; i++)
         { 
+            cell_population.SetStartTime(EndTime);
             EndTime +=0.5;
             simulator.SetEndTime(EndTime);
    
@@ -171,7 +172,7 @@ public:
 
         for (int i =1; i<=20; i++)
         { 
-            static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+            cell_population.SetStartTime(EndTime);
             EndTime +=1;
             simulator.SetEndTime(EndTime);
 
