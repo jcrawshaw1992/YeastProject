@@ -52,7 +52,7 @@ public:
             dt= CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-dt");
         }
         double startime = 0;
-        double EndTime = 10;
+        double EndTime = 35;
         if (CommandLineArguments::Instance()->OptionExists("-EndTime"))
         {
             EndTime = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EndTime");
@@ -96,11 +96,16 @@ public:
         std::stringstream out;
         out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter1;
         std::string ParameterSet = out.str();
-        std::string output_dir = "ParameterSweepWithRemeshing/Cylinder2/"+ParameterSet;
+        std::string output_dir = "ParameterSweepWithRemeshing/"+ParameterSet;
 
         
-        double Length = 50e-6 * scale;
-        double Radius = 1e-6 * scale; // I want this to grow to 10
+        // double Length = 50e-6 * scale;
+        // double Radius = 1e-6 * scale; // I want this to grow to 10
+
+
+        double Length = 20e-6 * scale;
+        double Radius = 0.5e-6 * scale; // I want this to grow to 10
+
 
         // unsigned N_D = 15; //50
         unsigned N_Z = N_D*2*4;//
@@ -219,7 +224,7 @@ public:
             std::stringstream outN;
             outN << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter[D_index];
             std::string ParameterSetN = outN.str();
-            std::string output_dir = "ParameterSweepWithRemeshing/Cylinder/"+ParameterSetN;
+            std::string output_dir = "ParameterSweepWithRemeshing/"+ParameterSetN;
 
             startime = EndTime;
             EndTime = EndTime +EndTime;
