@@ -44,7 +44,7 @@ def Waiting(AvaliablePaths,SleepyTime,Parallel, TerminalOutputFolder, t0):
 
 if __name__=="__main__":
     t0 = time.time()
-    Directory = "/data/vascrem/MeshCollection/IdealisedNetwork/VaryingLengthAndAngleNew/"
+    Directory = "/data/vascrem/MeshCollection/IdealisedNetwork/VaryingLengthAndAngle/"
     CreateNewFolder(Directory) 
     TerminalOutputFolder = Directory + "TerminalOutputFolder/"
     CreateNewFolder(TerminalOutputFolder) 
