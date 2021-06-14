@@ -23,7 +23,7 @@ if __name__=="__main__":
     Server = 1
     if Server ==1:
         chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUpRunner '
-        TerminalOutputFolder = "/data/vascrem/testoutput/ParameterSweepWithRemeshing/Cylinder2/SweepTerminalOutputs/"
+        TerminalOutputFolder = "/data/vascrem/testoutput/ParameterSweepWithRemeshing/SweepTerminalOutputs/"
     else:
         chaste_run_exe =  '/Users/jcrawshaw/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUpRunner '
         TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/ParameterSweepWithRemeshing/Cylinder2/SweepTerminalOutputs/"
