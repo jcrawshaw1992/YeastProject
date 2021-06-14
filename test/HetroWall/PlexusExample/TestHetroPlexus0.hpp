@@ -225,14 +225,12 @@ public:
     
         p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
         p_simulator->SetDt(dt);
-        p_Mesh_modifier->SetUpdateFrequency(0.5/dt);
 
         for (int i =1; i<=40; i++)
         { 
             static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(NewEndTime);
-            NewEndTime +=4;
+            NewEndTime +=2;
             p_simulator->SetEndTime(NewEndTime);
-
             p_simulator->Solve();
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
         }
