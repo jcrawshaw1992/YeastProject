@@ -27,6 +27,7 @@
 #include "MembraneDeformationForce.hpp"
 #include "OutwardsPressure.hpp"
 #include "MembraneBendingForce.hpp"
+
 #include "StepHeteroModifier.hpp"
 
 
@@ -99,7 +100,7 @@ public:
 
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        p_membrane_force->SetMembraneStiffness(pow(10, -8.5));
+        p_membrane_force->SetMembraneStiffness(pow(10, -10));
         simulator.AddForce(p_membrane_force);
         /*
         -----------------------------
@@ -152,7 +153,7 @@ public:
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
 
-        simulator.SetSamplingTimestepMultiple(500);
+        simulator.SetSamplingTimestepMultiple(5000);
         simulator.SetDt(0.00001);
 
          for (int i =1; i<=5; i++)
@@ -166,7 +167,7 @@ public:
         }
 
         
-        simulator.SetSamplingTimestepMultiple(5000);
+        simulator.SetSamplingTimestepMultiple(50000);
         simulator.SetDt(0.000001);
         
 

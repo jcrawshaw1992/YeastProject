@@ -94,12 +94,13 @@ public:
     void TestRunningArchieve2() throw(Exception)
     {
 
+        double EndTime = 36;
         std::string output_dir = "StepChangeHetroCylinder/CollapseWithBending/SmallBending/";
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, 28);
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, EndTime);
 
         double dt= 0.001;
-        double NewEndTime = 28;
-        double EndTime = 28;
+        double NewEndTime = EndTime;
+        
         
         double SamplingTimestepMultiple = 500;
 
