@@ -37,7 +37,7 @@ public:
     void TestIntroduceHetro() throw(Exception)
     {
         std::string Archieved = "StepChangeHetroCylinder";
-        double EndTime = 5;//9;
+        double EndTime = 13;//9;
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved,EndTime);
 
         c_vector<double, 3> UpperPlaneNormal =  Create_c_vector(0, 0, 1);

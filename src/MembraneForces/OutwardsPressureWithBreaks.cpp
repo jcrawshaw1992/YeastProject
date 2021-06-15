@@ -10,6 +10,7 @@ OutwardsPressureWithBreaks::OutwardsPressureWithBreaks()
 {
 }
 
+
 void OutwardsPressureWithBreaks::SetPressure(double Pressure)
 {
       mStrength =  Pressure;
@@ -21,6 +22,7 @@ void OutwardsPressureWithBreaks::SetRadiusThreshold(double RadialThreshold)
     mRadialThreshold = RadialThreshold;
     mGrowthThreshold =1;
 }
+
 
 
 

@@ -53,8 +53,8 @@ private:
 
 public:
 
-    double mStrength;
-    double mInitalRadius;
+    double mStrength =1;
+    double mInitalRadius=1;
     /**
      * Constructor.
      */
@@ -67,9 +67,7 @@ public:
     void AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation);
     void SetInitialPosition(AbstractCellPopulation<2, 3>& rCellPopulation, unsigned node);
 
-
     void SetRadiusThreshold(double RadialThreshold);
-
     double mRadialThreshold=0;
     c_vector<double, 3> mInitialPosition=Create_c_vector(0,0,0);
     bool mGrowthThreshold=0;

@@ -11,12 +11,12 @@ StepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepHeteroModifier()
         : AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM>()
 {
              //AreaConstant           AreaDilationModulus        ShearModulus    
-    //     mGrowthMaps =  { {1, Create_c_vector(pow(10, -7), pow(10, -8.4), pow(10, -8), 1e-14) },
-    //     {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-14)}
-    // };
-    mGrowthMaps =  { {1, Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -5), 1e-14) },
-        {0, Create_c_vector(pow(10, -6), pow(10, -5.5), pow(10, -4), 1e-14)}
+        mGrowthMaps =  { {1, Create_c_vector(pow(10, -7), pow(10, -8.4), pow(10, -8), 1e-14) },
+        {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-14)}
     };
+    // mGrowthMaps =  { {1, Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -5), 1e-14) },
+    //     {0, Create_c_vector(pow(10, -6), pow(10, -5.5), pow(10, -4), 1e-14)}
+    // };
     PRINT_VECTOR(mGrowthMaps[0])
 }
 
@@ -24,14 +24,9 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 StepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::~StepHeteroModifier()
 {
 }
-// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-// void StepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::RunSetUpSolve()
-// {
-//     mSetUpSolve =1;
-// }
 
 
-
+    
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void StepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, std::string outputDirectory)
 {
@@ -124,7 +119,7 @@ void StepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopu
 {
         assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
         mBasementNodes.clear();
-        mDistanceToEndothelialRegion.clear();
+        // mDistanceToEndothelialRegion.clear();
 
         assert(SPACE_DIM ==3);
         MAKE_PTR(EmptyBasementMatrix, p_Basement);
@@ -171,7 +166,7 @@ void StepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopu
                             mBasementNodes.push_back(node_index);
                             mSamplebasementNode = node_index;
                                                                                     // DistanceToUpperPlane,DistanceToLowerPlane
-                            mDistanceToEndothelialRegion[node_index] = Create_c_vector(norm_2(NodeToUpperPlane),norm_2(NodeToLowerPlane));
+                            // mDistanceToEndothelialRegion[node_index] = Create_c_vector(norm_2(NodeToUpperPlane),norm_2(NodeToLowerPlane));
                             break;
                         }
                         
@@ -263,7 +258,6 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void StepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetSlowIncreaseInMembraneStrength(bool SlowIncreaseInMembraneStrength, double TimeStepSize)
 {
     mSlowIncreaseInMembraneStrength = SlowIncreaseInMembraneStrength;
-    // mTimeStepSize = 1e-6;//TimeStepSize;
     mCounter =0;
     mSteps = 1;
 }
@@ -335,8 +329,8 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void StepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetBendingForce(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, double BendingConstant)
 {
     assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
-    std::set<unsigned> MutantNodeIndices;
-    std::set<unsigned> EdgeMutantNodeIndices;
+    // std::set<unsigned> MutantNodeIndices;
+    // std::set<unsigned> EdgeMutantNodeIndices;
     for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
          cell_iter != rCellPopulation.End();
          ++cell_iter)

@@ -57,7 +57,7 @@ private:
     double mCounter = 0;
     unsigned mSteps =1;
 
-    std::map<unsigned, c_vector<double, 2> > mDistanceToEndothelialRegion;
+    // std::map<unsigned, c_vector<double, 2> > mDistanceToEndothelialRegion;
     std::vector<unsigned> mBasementNodes;
     std::vector<std::vector<c_vector<double, 3> > > mBoundaries;
 
@@ -86,12 +86,11 @@ private:
     
         archive& mStrength;
         archive& mHetro;
-        archive& mDistanceToEndothelialRegion;
+        // archive& mDistanceToEndothelialRegion;
 
         archive& mMaxCounter;
         archive& mStartingParameterForSlowIncrease;
         archive& mSlowIncreaseInMembraneStrength;
-        archive& mTimeStepSize;
     }
 
 public:
@@ -169,9 +168,7 @@ public:
     bool mSlowIncreaseInMembraneStrength = 0;
     void SetSlowIncreaseInMembraneStrength(bool SlowIncreaseInMembraneStrength, double TimeStepSize);
     void SlowIncreaseInMembraneParameters(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
-    double mTimeStepSize;
 
-  
   
 
     /**

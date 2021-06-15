@@ -36,15 +36,20 @@ if __name__=="__main__":
     AreaParameter = [10, 8, 6]
     DilationParameter = [10,9.5, 9, 8.5, 8,7.5,7,6.5,6  ]
 
+
+
+    AreaParameter = [10, 8]
+    DilationParameter = [10,9.5, 9, 8.5, 8,7.5]
+
     Parallel = 28
     SleepyTime = 200
 
 
     EndTime =40
-    dt = 0.0001
+    dt = 0.00001
     TargetRemeshingIterations = 3
-    SamplingTimestepMultiple = 300
-    SecondSamplingTimestepMultiple = 300
+    SamplingTimestepMultiple = 3000
+    SecondSamplingTimestepMultiple = 3000
     EdgeLength = 0.5
     ND =20
     AvaliablePaths = range(Parallel)

@@ -24,7 +24,6 @@
 #include "HistoryDepMeshBasedCellPopulation.hpp"
 #include "HistoryDepMutableMesh.hpp"
 
-
 #include "FixedRegionBoundaryCondition.hpp"
 #include "MembraneDeformationForceOnCylinder.hpp"
 #include "OutwardsPressure.hpp"
@@ -40,16 +39,15 @@ public:
 
   void TestSetUpCylinderArchive() throw(Exception)
     {
-        double EndTime = 5;
+        double EndTime = 1;
         double scale = 1e3;
         double Length = 40e-6 * scale;
-        // double Radius = 1e-6 * scale; // I want this to grow to 10
         double Radius = 0.5e-6 * scale; // I want this to grow to 10
 
         unsigned N_D = 50;
         unsigned N_Z = 150;
 
-        std::string output_dir = "StepChangeHetroCylinder/CollapseWithBending/";
+        std::string output_dir = "TestArchiving/";
 
         Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, Radius, Length);
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
@@ -72,7 +70,7 @@ public:
         // Set up cell-based simulation
         OffLatticeSimulation<2, 3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
-        simulator.SetSamplingTimestepMultiple(500);
+        simulator.SetSamplingTimestepMultiple(50);
         simulator.SetDt(0.005);
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
@@ -99,17 +97,17 @@ public:
         Constant Compressive tissue pressure
         ----------------------------
         */
-        boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
-        p_ForceOut->SetPressure(P_blood - P_tissue);
-        p_ForceOut->SetInitialPosition(cell_population, 100);
-        p_ForceOut->SetRadiusThreshold(10);
-        simulator.AddForce(p_ForceOut);
+        // boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
+        // p_ForceOut->SetPressure(P_blood - P_tissue);
+        // p_ForceOut->SetInitialPosition(cell_population, 100);
+        // p_ForceOut->SetRadiusThreshold(10);
+        // simulator.AddForce(p_ForceOut);
 
-        // /*
-        // -----------------------------
-        // Boundary conditions
-        // ----------------------------
-        // */
+        /*
+        -----------------------------
+        Boundary conditions
+        ----------------------------
+        */
 
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(0, 0, -1);
         c_vector<double, 3> Point1 = Create_c_vector(0, 0, 1e-6 * scale);
@@ -134,63 +132,66 @@ public:
         }
 
         simulator.Solve();
-        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
 
-}
+
+        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+        
+
+    }   
 
 
     void TestRunningArchieve2() throw(Exception)
     {
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load("StepChangeHetroCylinder/CollapseWithBending", 5);
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load("TestArchiving/", 1);
 
-        double dt= 0.01;
-        double NewEndTime = 1;
-        double EndTime = 5;
+        // double dt= 0.01;
+        // double NewEndTime = 1;
+        // double EndTime = 5;
         
-        double SamplingTimestepMultiple = 100;
-        std::string output_dir = "StepChangeHetroCylinder/CollapseWithBending/LargeBending/";
+        // double SamplingTimestepMultiple = 100;
+        // std::string output_dir = "StepChangeHetroCylinder/CollapseWithBending/LargeBending/";
         
-        /* Update the ouput directory for the population  */
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+        // /* Update the ouput directory for the population  */
+        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
 
-        p_simulator->RemoveAllForces();
-        p_simulator->SetEndTime(EndTime + NewEndTime);
-        p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
-        p_simulator->SetDt(dt);
-        p_simulator->SetOutputDirectory(output_dir);
+        // p_simulator->RemoveAllForces();
+        // p_simulator->SetEndTime(EndTime + NewEndTime);
+        // p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
+        // p_simulator->SetDt(dt);
+        // p_simulator->SetOutputDirectory(output_dir);
     
 
-        /*
-        -----------------------------
-        Membrane forces
-        ----------------------------
-        */
-        boost::shared_ptr<MembraneDeformationForceOnCylinder> p_shear_force(new MembraneDeformationForceOnCylinder());
-        p_simulator->AddForce(p_shear_force);
+        // /*
+        // -----------------------------
+        // Membrane forces
+        // ----------------------------
+        // */
+        // boost::shared_ptr<MembraneDeformationForceOnCylinder> p_shear_force(new MembraneDeformationForceOnCylinder());
+        // p_simulator->AddForce(p_shear_force);
 
 
-        /*
-        -----------------------------
-        Outwards force
-        ----------------------------
-        */
+        // /*
+        // -----------------------------
+        // Outwards force
+        // ----------------------------
+        // */
 
 
-        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
-        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
+        // double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        // double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
-        boost::shared_ptr<OutwardsPressure> p_force(new OutwardsPressure());
-        p_force->SetPressure(P_blood - P_tissue);
-        p_simulator->AddForce(p_force);
+        // boost::shared_ptr<OutwardsPressure> p_force(new OutwardsPressure());
+        // p_force->SetPressure(P_blood - P_tissue);
+        // p_simulator->AddForce(p_force);
 
-        // boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        // p_membrane_force->SetMembraneStiffness(pow(10, -13));
-        // p_simulator->AddForce(p_membrane_force);
+        // // boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
+        // // p_membrane_force->SetMembraneStiffness(pow(10, -13));
+        // // p_simulator->AddForce(p_membrane_force);
 
 
-        p_simulator->Solve();
-        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+        // p_simulator->Solve();
+        // CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
 
 
     }
