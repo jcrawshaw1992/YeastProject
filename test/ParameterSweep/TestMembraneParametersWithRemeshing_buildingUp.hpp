@@ -91,7 +91,6 @@ public:
 
 // vmtksurfaceremeshing -ifile CurrentMesh.stl -ofile CurretMesh3.stl -connectivityiterations 10 -maxarea 0.0000001 -elementsizemode area -relaxation 4
 
-
         double DeformationParamter1 = 6;
         std::stringstream out;
         out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter1;
@@ -220,7 +219,7 @@ public:
             std::stringstream outN;
             outN << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter[D_index];
             std::string ParameterSetN = outN.str();
-            std::string output_dir = "ParameterSweepWithRemeshing/"+ParameterSetN;
+            std::string output_dir = "ParameterSweepWithRemeshing2/"+ParameterSetN;
 
             startime = EndTime;
             EndTime = EndTime +EndTime;

@@ -16,7 +16,7 @@ from os import path
 
 if __name__=="__main__":
     t0 = time.time()
-    GenerateRunner =0
+    GenerateRunner =1
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUp.hpp"
         subprocess.call(command, shell=True)
@@ -49,29 +49,25 @@ if __name__=="__main__":
     SleepyTime = 200
 
 
-    EndTime =40
+    EndTime =5
     dt = 0.001
     TargetRemeshingIterations = 5
-    SamplingTimestepMultiple = 3000
-    SecondSamplingTimestepMultiple = 3000
-    EdgeLength =  0.1e-5
+    SamplingTimestepMultiple = 1000
+    SecondSamplingTimestepMultiple = 1000
+    EdgeLength =  0.1e-3
     ND =20
     AvaliablePaths = range(Parallel)
     for i in AreaParameter:
         for j in DilationParameter:
             Core = AvaliablePaths[0]
-
+            EndTime =5
             if i < 8:
-                EndTime = 15
+                EndTime = 5
             else:
-                EndTime = 30
+                EndTime = 10
 
-            # if j < 8:
-            #     EndTime = 15
-            # elif j < 9:
-            #     EndTime = 20
-            # else:
-            #     EndTime = 25
+            if j > 9:
+                EndTime = 15
 
             Input1a = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j) + ' -dt ' + str(dt) + ' -EndTime '+ str(EndTime) +' -SamplingTimestepMultiple '+ str(SamplingTimestepMultiple) 
             Input1b = ' -TargetRemeshingIterations ' +str(TargetRemeshingIterations) + ' -EdgeLength ' +str(EdgeLength) + ' -SecondSamplingTimestepMultiple ' +str(SecondSamplingTimestepMultiple) + ' -N_D '+ str(ND)
