@@ -16,7 +16,8 @@ from os import path
 
 if __name__=="__main__":
     t0 = time.time()
-    GenerateRunner =1
+    GenerateRunner =0
+    print GenerateRunner
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUp.hpp"
         subprocess.call(command, shell=True)
@@ -54,13 +55,13 @@ if __name__=="__main__":
     TargetRemeshingIterations = 5
     SamplingTimestepMultiple = 1000
     SecondSamplingTimestepMultiple = 1000
-    EdgeLength =  0.1e-3
+    EdgeLength =  0.1e-1
     ND =20
     AvaliablePaths = range(Parallel)
     for i in AreaParameter:
         for j in DilationParameter:
             Core = AvaliablePaths[0]
-            EndTime =5
+            EndTime =4
             if i < 8:
                 EndTime = 5
             else:
