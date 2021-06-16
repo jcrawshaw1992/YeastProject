@@ -38,10 +38,15 @@ public:
 
     void TestSetUpCylinderArchive() throw(Exception)
     {
-        double EndTime = 1;
+        TRACE("START")
+        double EndTime = 0.2;
         double scale = 0.00006684491/1.29;
 
-        std::string output_dir = "PlexusExample/";
+        double SamplingStep = 1000;
+        double dt = 0.00001;
+
+
+        std::string output_dir = "PlexusExample2/";
         // std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
          std::string mesh_file = "/data/vascrem/MeshCollection/Plexus.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
@@ -67,8 +72,10 @@ public:
         // Set up cell-based simulation
         OffLatticeSimulation<2, 3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
-        simulator.SetSamplingTimestepMultiple(500);
-        simulator.SetDt(0.0001);
+        simulator.SetSamplingTimestepMultiple(SamplingStep);
+        simulator.SetDt(dt);
+
+
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
 
@@ -100,7 +107,7 @@ public:
 
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        p_membrane_force->SetMembraneStiffness(pow(10, -10));
+        p_membrane_force->SetMembraneStiffness(pow(10, -12));
         simulator.AddForce(p_membrane_force);
         /*
         -----------------------------
@@ -150,14 +157,31 @@ public:
             simulator.AddCellPopulationBoundaryCondition(p_condition);
         }
 
+        TRACE("First Solve ")
         simulator.Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
 
-        simulator.SetSamplingTimestepMultiple(5000);
-        simulator.SetDt(0.00001);
 
          for (int i =1; i<=5; i++)
         { 
+            PRINT_VARIABLE(EndTime)
+            cell_population.SetStartTime(EndTime);
+            EndTime +=0.2;
+            simulator.SetEndTime(EndTime);
+            
+            simulator.Solve();
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+        }
+
+        SamplingStep *= 10;
+        dt /= 10;
+
+        simulator.SetSamplingTimestepMultiple(SamplingStep);
+        simulator.SetDt(dt);
+
+        for (int i =1; i<=5; i++)
+        { 
+            PRINT_VARIABLE(EndTime)
             cell_population.SetStartTime(EndTime);
             EndTime +=0.5;
             simulator.SetEndTime(EndTime);
@@ -165,14 +189,17 @@ public:
             simulator.Solve();
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
         }
-
         
-        simulator.SetSamplingTimestepMultiple(50000);
-        simulator.SetDt(0.000001);
+        SamplingStep *= 10;
+        dt /= 10;
+
+        simulator.SetSamplingTimestepMultiple(SamplingStep);
+        simulator.SetDt(dt);
         
 
         for (int i =1; i<=20; i++)
         { 
+            PRINT_VARIABLE(EndTime)
             cell_population.SetStartTime(EndTime);
             EndTime +=1;
             simulator.SetEndTime(EndTime);

@@ -238,6 +238,8 @@ if __name__=="__main__":
     t0 = time.time()
     
     TerminalOutputFolder = '/data/vascrem/testoutput/HemeLBSweep/VariableEdgeLengthAndAngle/'
+    if path.isdir(TerminalOutputFolder)==0:
+        os.mkdir(TerminalOutputFolder)
     Scalling = ['0.2', '0.4', '0.6', '0.8','1', '1.2', '1.4', '1.6', '1.8', '2']  
    
     Collapse = ['0','1','2','3','4','5','6','7','8','9','10']
@@ -253,7 +255,7 @@ if __name__=="__main__":
     
     BifucationAngles = ['PI_2_2', 'PI_3', 'PI_4', 'PI_5', 'PI_6'] 
     
-    Length = ['0.2', '0.4', '0.6', '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2']
+    Length = [ '0.4', '0.6', '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2'] # '0.2'
     Collapse = [ '0.3178', '0.4170' , '0.5124', '0.6119', '0.7080','0.8059']
     
 
@@ -264,7 +266,12 @@ if __name__=="__main__":
     counter = 1
     if run ==1:
         for Angle in BifucationAngles:
+            if path.isdir(TerminalOutputFolder+Angle)==0:
+                os.mkdir(TerminalOutputFolder+Angle)
             for length in Scalling:
+                if path.isdir(TerminalOutputFolder+Angle+'HorizontalLength_'+length)==0:
+                    os.mkdir(TerminalOutputFolder+Angle+'HorizontalLength_'+length)
+
                 for i in Collapse:
 
                     print Angle, length, i

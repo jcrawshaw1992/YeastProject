@@ -103,13 +103,14 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
             typename std::vector<double>::iterator Iterator = quartiles.begin();
             double Quartile1 = *Iterator;
 
-            if (mStepsSinceLastRemesh>200) 
+            if (mStepsSinceLastRemesh>1000) 
             {
                 
                 // if (  MinimumAspectRatio <0.2 || Quartile1 < 0.5)
-                if (  MinimumAspectRatio <0.2 || Quartile1 < 0.5)
+                if (  MinimumAspectRatio <0.3 || Quartile1 < 0.5)
                 {
-                    
+                    TRACE("REMESHING")
+                    PRINT_2_VARIABLES(MinimumAspectRatio,Quartile1 )
                     // TRACE(" AR is too smalle, remeshing now :) ")
                     pCellPopulation->ExecuteHistoryDependentRemeshing();
                     UpdateCellData(rCellPopulation);

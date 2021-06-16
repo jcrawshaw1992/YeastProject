@@ -252,11 +252,14 @@ if __name__=="__main__":
     CreateNewFolder(TerminalOutputFolder)
 
     Collapse = ['0.3178', '0.417','0.5124', '0.6119', '0.708', '0.8059']  
-    BifucationAngles = ['PI_6'] 
-    Lengths = [ '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2']
+    BifucationAngles = ['PI_2_2', 'PI_3', 'PI_4', 'PI_5', 'PI_6'] 
+    
+    Lengths = [ '0.4', '0.6', '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2'] # '0.2'
+    Lengths = [ '0.4'] # '0.2'
+    Collapse = [ '0.6119', '0.708','0.8059'] #  '0.3178', 
 
-    Parallel = 3
-    SleepyTime = 200
+    Parallel = 2
+    SleepyTime = 300
     AvaliablePaths = range(Parallel)
     counter = 1
 
@@ -291,15 +294,15 @@ if __name__=="__main__":
                 Seed = MeshData[2:5]
 
                 dX = 0.08/41.0
-                SimulationTime = 12000
+                SimulationTime = 14000
                 if float(length) < 0.3:
-                    SimulationTime = 5000
+                    SimulationTime = 6000
                 elif float(length) < 0.63:
-                    SimulationTime = 8000
-                elif float(length) < 0.7:
                     SimulationTime = 9000
-                elif float(length) < 1.1:
+                elif float(length) < 0.7:
                     SimulationTime = 10000
+                elif float(length) < 1.1:
+                    SimulationTime = 12000
         
                 
                 write_pr2(mHemeLBDirectory, SimulationTime, dX, Seed, Boundaries)
@@ -309,7 +312,7 @@ if __name__=="__main__":
                 update_xml_file(int(SimulationTime*0.9), mHemeLBDirectory)
             
                 # # Run HemeLB
-                RunHemeLB = 'mpirun -np 11 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
+                RunHemeLB = 'mpirun -np 3 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
                 TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
                 # # Generate the new config.vtu
                 GmyUnstructuredGridReader =" python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "

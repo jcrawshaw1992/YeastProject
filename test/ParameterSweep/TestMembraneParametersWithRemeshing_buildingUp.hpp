@@ -78,7 +78,7 @@ public:
             TargetRemeshingIterations = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-TargetRemeshingIterations");
         }
         double scale = 1e3;
-        double EdgeLength = 0.3e-6 * scale;
+        double EdgeLength = 0.1e-7 * scale;
         if (CommandLineArguments::Instance()->OptionExists("-EdgeLength"))
         {
             EdgeLength = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-EdgeLength") *1e-6 * scale;
@@ -96,15 +96,11 @@ public:
         std::stringstream out;
         out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter1;
         std::string ParameterSet = out.str();
-        std::string output_dir = "ParameterSweepWithRemeshing/"+ParameterSet;
-
-        
-        // double Length = 50e-6 * scale;
-        // double Radius = 1e-6 * scale; // I want this to grow to 10
+        std::string output_dir = "ParameterSweepWithRemeshing2/"+ParameterSet;
 
 
         double Length = 20e-6 * scale;
-        double Radius = 0.5e-6 * scale; // I want this to grow to 10
+        double Radius = 0.5e-6 * scale; // I want this to grow to 5
 
 
         // unsigned N_D = 15; //50
@@ -126,7 +122,7 @@ public:
         cell_population.SetTargetRemeshingEdgeLength(EdgeLength); //0.2e-6 * scale); 
         cell_population.SetTargetRemeshingIterations(TargetRemeshingIterations); //10
         cell_population.SetPrintRemeshedIC(1);
-        cell_population.SetWriteVtkAsPoints(true);
+        // cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
         cell_population.SetRemeshingSoftwear("VMTK");
         cell_population.SetOperatingSystem(OperatingSystem);
