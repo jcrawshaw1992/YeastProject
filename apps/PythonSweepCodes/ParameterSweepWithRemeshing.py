@@ -42,8 +42,8 @@ if __name__=="__main__":
 
 
     # AreaParameter = [10, 8]
-    AreaParameter = [6]
-    DilationParameter = [10,9.5, 9, 8.5, 8,7.5]
+    AreaParameter = [7]
+    DilationParameter = [10,9.5, 9, 8.5, 8,7.5,7,6.5,6]
 
     Parallel = 28
     SleepyTime = 200
@@ -52,20 +52,26 @@ if __name__=="__main__":
     EndTime =40
     dt = 0.00001
     TargetRemeshingIterations = 5
-    SamplingTimestepMultiple = 100000
-    SecondSamplingTimestepMultiple = 100000
-    EdgeLength =  0.1e-4 
+    SamplingTimestepMultiple = 300000
+    SecondSamplingTimestepMultiple = 300000
+    EdgeLength =  0.1e-5
     ND =20
     AvaliablePaths = range(Parallel)
     for i in AreaParameter:
         for j in DilationParameter:
             Core = AvaliablePaths[0]
-            if DilationParameter < 8:
-                EndTime = 15
-            elif DilationParameter < 9:
+
+            if i < 8:
                 EndTime = 20
             else:
-                EndTime = 25
+                EndTime = 30
+
+            # if j < 8:
+            #     EndTime = 15
+            # elif j < 9:
+            #     EndTime = 20
+            # else:
+            #     EndTime = 25
 
             Input1a = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j) + ' -dt ' + str(dt) + ' -EndTime '+ str(EndTime) +' -SamplingTimestepMultiple '+ str(SamplingTimestepMultiple) 
             Input1b = ' -TargetRemeshingIterations ' +str(TargetRemeshingIterations) + ' -EdgeLength ' +str(EdgeLength) + ' -SecondSamplingTimestepMultiple ' +str(SecondSamplingTimestepMultiple) + ' -N_D '+ str(ND)
