@@ -258,7 +258,7 @@ if __name__=="__main__":
     Lengths = [  '0.6', '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2']
     Collapse = [ '0.3178', '0.417','0.5124','0.6119', '0.708','0.8059'] #  '0.3178', 
 
-    Parallel = 2
+    Parallel = 3
     SleepyTime = 300
     AvaliablePaths = range(Parallel)
     counter = 1
@@ -318,7 +318,7 @@ if __name__=="__main__":
                 update_xml_file(int(SimulationTime*0.9), mHemeLBDirectory)
             
                 # # Run HemeLB
-                RunHemeLB = 'mpirun -np 3 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
+                RunHemeLB = 'mpirun -np 7 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
                 TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
                 # # Generate the new config.vtu
                 GmyUnstructuredGridReader =" python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
