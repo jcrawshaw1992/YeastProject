@@ -121,7 +121,7 @@ public:
 
 
 
-  void TestRunningArchieve2() throw(Exception)
+    void TestRunningArchieve2() throw(Exception)
     {
 
         std::string output_dir = "StepChangeHetroCylinder/CollapseWithBending/LargeBending/";

@@ -16,7 +16,7 @@ from os import path
 
 if __name__=="__main__":
     t0 = time.time()
-    GenerateRunner =0
+    GenerateRunner =1
     print GenerateRunner
     if GenerateRunner ==1:
         command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUp.hpp"
@@ -24,27 +24,27 @@ if __name__=="__main__":
     Server = 1
     if Server ==1:
         chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUpRunner '
-        TerminalOutputFolder = "/data/vascrem/testoutput/ParameterSweepWithRemeshing2/SweepTerminalOutputs/"
+        TerminalOutputFolder = "/data/vascrem/testoutput/ParameterSweepWithRemeshing3/SweepTerminalOutputs/"
     else:
         chaste_run_exe =  '/Users/jcrawshaw/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUpRunner '
         TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/ParameterSweepWithRemeshing/Cylinder2/SweepTerminalOutputs/"
 
-    if path.isdir("/data/vascrem/testoutput/ParameterSweepWithRemeshing2")==0:
-        os.mkdir("/data/vascrem/testoutput/ParameterSweepWithRemeshing2")
+    if path.isdir("/data/vascrem/testoutput/ParameterSweepWithRemeshing3")==0:
+        os.mkdir("/data/vascrem/testoutput/ParameterSweepWithRemeshing3")
 
     if path.isdir(TerminalOutputFolder)==0:
         os.mkdir(TerminalOutputFolder)
 
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
-    AreaParameter = [10, 8, 6]
+    AreaParameter = [ 8]
     DilationParameter = [10,9.5, 9, 8.5, 8,7.5,7,6.5,6  ]
 
 
 
     # AreaParameter = [10, 8]
     AreaParameter = [7]
-    DilationParameter = [10,9.5, 9, 8.5, 8,7.5,7,6.5,6]
+    DilationParameter = [10]
 
     Parallel = 28
     SleepyTime = 200
@@ -55,7 +55,7 @@ if __name__=="__main__":
     TargetRemeshingIterations = 5
     SamplingTimestepMultiple = 1000
     SecondSamplingTimestepMultiple = 1000
-    EdgeLength =  0.1e-1
+    EdgeLength =  0.5
     ND =20
     AvaliablePaths = range(Parallel)
     for i in AreaParameter:

@@ -95,7 +95,7 @@ public:
         std::stringstream out;
         out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter1;
         std::string ParameterSet = out.str();
-        std::string output_dir = "ParameterSweepWithRemeshing2/"+ParameterSet;
+        std::string output_dir = "ParameterSweepWithRemeshing3/"+ParameterSet;
 
 
         double Length = 20e-6 * scale;
@@ -147,9 +147,16 @@ public:
         std::map<double, c_vector<long double, 4> > GrowthMaps;
         GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter1), 0);
         p_Mesh_modifier->SetRemeshingInterval(1000);
+        p_Mesh_modifier->SetRemeshingTrigger("time");
         //Strength , hetro, stepsize, setupsolve
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
         simulator.AddSimulationModifier(p_Mesh_modifier);
+
+
+         
+
+
+
 
 
         /*
@@ -196,7 +203,7 @@ public:
 
         for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
         {
-            boost::shared_ptr<FixedRegionBoundaryConditionWithRemeshing<2, 3> > p_condition(new FixedRegionBoundaryConditionWithRemeshing<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.005));
+            boost::shared_ptr<FixedRegionBoundaryConditionWithRemeshing<2, 3> > p_condition(new FixedRegionBoundaryConditionWithRemeshing<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id],1 ));
             simulator.AddCellPopulationBoundaryCondition(p_condition);
         }
 
@@ -219,7 +226,7 @@ public:
             std::stringstream outN;
             outN << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter[D_index];
             std::string ParameterSetN = outN.str();
-            std::string output_dir = "ParameterSweepWithRemeshing2/"+ParameterSetN;
+            std::string output_dir = "ParameterSweepWithRemeshing3/"+ParameterSetN;
 
             startime = EndTime;
             EndTime = EndTime +EndTime;

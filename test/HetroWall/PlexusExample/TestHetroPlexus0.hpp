@@ -43,10 +43,10 @@ public:
         double scale = 0.00006684491/1.29;
 
         double SamplingStep = 1000;
-        double dt = 0.00001;
+        double dt = 0.000001;
 
 
-        std::string output_dir = "PlexusExample2/";
+        std::string output_dir = "PlexusExample3/";
         // std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
          std::string mesh_file = "/data/vascrem/MeshCollection/Plexus.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
@@ -79,6 +79,7 @@ public:
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
 
+
         double DilationParameter=6;
         double AreaParameter=7;//4.5;
         double DeformationParamter=6;//5.3;
@@ -107,7 +108,7 @@ public:
 
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        p_membrane_force->SetMembraneStiffness(pow(10, -12));
+        p_membrane_force->SetMembraneStiffness(pow(10, -10));
         simulator.AddForce(p_membrane_force);
         /*
         -----------------------------
