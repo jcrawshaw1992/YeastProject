@@ -52,8 +52,8 @@ if __name__=="__main__":
 
     EndTime =5
     dt = 0.001
-    TargetRemeshingIterations = 5
-    SamplingTimestepMultiple = 1000
+    TargetRemeshingIterations = 10
+    SamplingTimestepMultiple = 1#1000
     SecondSamplingTimestepMultiple = 1000
     EdgeLength =  0.1
     ND =20
