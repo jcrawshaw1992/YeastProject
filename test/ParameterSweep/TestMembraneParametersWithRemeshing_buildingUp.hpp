@@ -123,7 +123,7 @@ public:
         cell_population.SetPrintRemeshedIC(1);
         // cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
-        cell_population.SetRemeshingSoftwear("VMTK");
+        cell_population.SetRemeshingSoftwear("CGAL");
         cell_population.SetOperatingSystem(OperatingSystem);
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
