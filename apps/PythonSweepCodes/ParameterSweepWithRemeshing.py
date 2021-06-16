@@ -55,7 +55,7 @@ if __name__=="__main__":
     TargetRemeshingIterations = 5
     SamplingTimestepMultiple = 1000
     SecondSamplingTimestepMultiple = 1000
-    EdgeLength =  0.5
+    EdgeLength =  0.1
     ND =20
     AvaliablePaths = range(Parallel)
     for i in AreaParameter:
