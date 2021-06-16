@@ -254,9 +254,9 @@ if __name__=="__main__":
     Collapse = ['0.3178', '0.417','0.5124', '0.6119', '0.708', '0.8059']  
     BifucationAngles = ['PI_2_2', 'PI_3', 'PI_4', 'PI_5', 'PI_6'] 
     
-    Lengths = [ '0.4', '0.6', '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2'] # '0.2'
-    Lengths = [ '0.4'] # '0.2'
-    Collapse = [ '0.6119', '0.708','0.8059'] #  '0.3178', 
+    # Lengths = [ '0.4', '0.6', '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2'] # '0.2'
+    Lengths = [  '0.6', '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2']
+    Collapse = [ '0.3178', '0.417','0.5124','0.6119', '0.708','0.8059'] #  '0.3178', 
 
     Parallel = 2
     SleepyTime = 300
@@ -267,8 +267,10 @@ if __name__=="__main__":
         AngleMeshDirectory = MeshFolder+Angle
         CreateNewFolder(TerminalOutputFolder+Angle)
         for length in Lengths:
-            CreateNewFolder(TerminalOutputFolder+Angle+'/HorizontalLength_'+length)
             LengthMeshDirectory = AngleMeshDirectory+'/HorizontalLength_'+length
+
+            CreateNewFolder(TerminalOutputFolder+Angle+'/HorizontalLength_'+length)
+            
             for i in Collapse:
                 if Angle == '/PI_6/' and float(i) > 0.55:
                     continue
@@ -278,6 +280,11 @@ if __name__=="__main__":
                     continue
                 if float(length) > 1.5 and float(i) < 0.65:
                     continue
+
+                ScaledMeshstl = LengthMeshDirectory+'/ScaledMesh.' +i+ '.stl'
+                if os.path.isfile(ScaledMeshstl) ==0:
+                    continue
+
             
                 Core = AvaliablePaths[0] 
                 mHemeLBDirectory = TerminalOutputFolder+Angle+'/HorizontalLength_'+length+'/'+i+'/'
@@ -285,7 +292,6 @@ if __name__=="__main__":
                 CreateNewFolder(mHemeLBDirectory)
                 CheckToReplaceResultsFolder(mHemeLBDirectory)
                                                 
-                ScaledMeshstl = LengthMeshDirectory+'/ScaledMesh.' +i+ '.stl'
                 MeshFile = mHemeLBDirectory + 'config.stl'
                 shutil.copyfile(ScaledMeshstl, MeshFile)
                 
