@@ -37,14 +37,8 @@ if __name__=="__main__":
 
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
-    AreaParameter = [ 8]
+    AreaParameter = [ 7 ] # 8 
     DilationParameter = [10,9.5, 9, 8.5, 8,7.5,7,6.5,6  ]
-
-
-
-    # AreaParameter = [10, 8]
-    AreaParameter = [7]
-    DilationParameter = [10]
 
     Parallel = 28
     SleepyTime = 200
@@ -52,23 +46,23 @@ if __name__=="__main__":
 
     EndTime =5
     dt = 0.001
-    TargetRemeshingIterations = 10
-    SamplingTimestepMultiple = 1#1000
+    TargetRemeshingIterations = 15
+    SamplingTimestepMultiple = 1000
     SecondSamplingTimestepMultiple = 1000
-    EdgeLength =  0.1
+    EdgeLength =  0.2
     ND =20
     AvaliablePaths = range(Parallel)
     for i in AreaParameter:
         for j in DilationParameter:
             Core = AvaliablePaths[0]
-            EndTime =4
-            if i < 8:
-                EndTime = 5
-            else:
-                EndTime = 10
+            EndTime =10
+            # if i < 8:
+            #     EndTime = 8
+            # else:
+            #     EndTime = 10
 
-            if j > 9:
-                EndTime = 15
+            # if j > 9:
+            #     EndTime = 15
 
             Input1a = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j) + ' -dt ' + str(dt) + ' -EndTime '+ str(EndTime) +' -SamplingTimestepMultiple '+ str(SamplingTimestepMultiple) 
             Input1b = ' -TargetRemeshingIterations ' +str(TargetRemeshingIterations) + ' -EdgeLength ' +str(EdgeLength) + ' -SecondSamplingTimestepMultiple ' +str(SecondSamplingTimestepMultiple) + ' -N_D '+ str(ND)

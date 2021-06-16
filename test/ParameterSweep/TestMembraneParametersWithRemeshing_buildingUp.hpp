@@ -146,7 +146,7 @@ public:
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
         std::map<double, c_vector<long double, 4> > GrowthMaps;
         GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter1), 0);
-        p_Mesh_modifier->SetRemeshingInterval(10);
+        p_Mesh_modifier->SetRemeshingInterval(1000);
         p_Mesh_modifier->SetRemeshingTrigger("time");
         //Strength , hetro, stepsize, setupsolve
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
