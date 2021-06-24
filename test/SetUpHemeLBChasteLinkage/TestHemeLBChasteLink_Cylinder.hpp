@@ -28,26 +28,27 @@
 #include "HistoryDepMutableMesh.hpp"
 
 // #include "AppliedForceModifier.hpp"
-#include "RemeshingTriggerOnHeteroMeshModifier.hpp"
+// #include "RemeshingTriggerOnHeteroMeshModifier.hpp"
 #include "FixedRegionBoundaryCondition.hpp"
 #include "MembraneDeformationForce.hpp"
-#include "OutwardsPressure.hpp"
+#include "OutwardsPressureWithBreaks.hpp"
 #include "HemeLBForce.hpp"
+#include "StepHeteroModifier.hpp"
 
 
 class TestRemeshing  : public AbstractCellBasedTestSuite
 {
 public:
- void OffTestGrowToEquiCylinder() throw (Exception)
+ void TestGrowToEquiCylinder() throw (Exception)
     {
   
-        double EndTime = 50;
+        double EndTime = 4;
         double scale = 1e3;
-        double Length = 50e-6 * scale;
+        double Length = 10e-6 * scale;
         double Radius = 1e-6 * scale;
 
-        unsigned N_D = 40;
-        unsigned N_Z = 100;
+        unsigned N_D = 30;
+        unsigned N_Z = 30;
         
         std::string output_dir = "TestHemeLBChaste/";
 
@@ -81,14 +82,25 @@ public:
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
         
+        // /*
+        // -----------------------------
+        // RemeshingTriggerOnHeteroMeshModifier
+        // ----------------------------
+        // */  
+        // boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
+        // p_Mesh_modifier->SetMembraneStrength(5);
+        // simulator.AddSimulationModifier(p_Mesh_modifier);
+
+
         /*
         -----------------------------
-        RemeshingTriggerOnHeteroMeshModifier
+        StepHeteroModifier
         ----------------------------
-        */  
-        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
-        p_Mesh_modifier->SetMembraneStrength(5);
+        */
+        boost::shared_ptr<StepHeteroModifier<2, 3> > p_Mesh_modifier(new StepHeteroModifier<2, 3>());
+        p_Mesh_modifier->SetMembraneStrength(1);
         simulator.AddSimulationModifier(p_Mesh_modifier);
+
 
         /*
         -----------------------------
@@ -99,10 +111,10 @@ public:
         c_vector<double, 3> Point1 = Create_c_vector(0,0,1e-6 * scale);
 
         c_vector<double, 3> PlaneNormal2 = Create_c_vector(0,0,-1);
-        c_vector<double, 3> Point2 = Create_c_vector(0,0,49e-6 * scale);
+        c_vector<double, 3> Point2 = Create_c_vector(0,0,Length - 1e-6 * scale);
 
-        double P_blood = 0.002133152*1.5; // Pa ==   1.6004e-05 mmHg
-        double P_tissue = 0.001466542*1.5; // Pa == 1.5000e-05 mmHg
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
 
         /*
         -----------------------------
@@ -110,7 +122,7 @@ public:
         ----------------------------
         */        
 
-        boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
+        boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
         p_ForceOut->SetPressure((P_blood-P_tissue)/1);
         p_ForceOut->SetRadiusThreshold(5*Radius);
         simulator.AddForce(p_ForceOut);
@@ -139,7 +151,7 @@ public:
         CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
 }
 
- void TestCollapsingCylinder() throw (Exception)
+ void offTestCollapsingCylinder() throw (Exception)
     {        
         std::string output_dir = "TestHemeLBChaste/";
         double scale = 1e3; double EndTime = 50;
@@ -345,7 +357,7 @@ public:
 //         ----------------------------
 //         */        
 
-//         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
+//         boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
 //         p_ForceOut->SetPressure((P_blood-P_tissue)/1);
 //         simulator.AddForce(p_ForceOut);
 
