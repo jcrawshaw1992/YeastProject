@@ -36,10 +36,10 @@ void OutwardsPressureWithBreaks::AddForceContribution(AbstractCellPopulation<2, 
          Node<3>* p_node = rCellPopulation.GetNode(100);
         c_vector<double, 3> Position = p_node->rGetLocation(); 
         Position[2] = 0;
-        CurrentRadius = sqrt(Position[0]* Position[0]+Position[1]*Position[0]);
+        CurrentRadius = sqrt(Position[0]* Position[0]+Position[1]*Position[1]);
         PRINT_VARIABLE(CurrentRadius)
-        PRINT_VECTOR(Position)
-        PRINT_VARIABLE(mNode)
+        // PRINT_VECTOR(Position)
+        // PRINT_VARIABLE(mNode)
         
         // // Growth = norm_2(Position-Position);
         // bool Cylinder =1;
