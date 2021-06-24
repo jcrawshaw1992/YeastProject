@@ -126,7 +126,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     WriteOutVtuFile(mOutputDirectory);
 
     /*  Step 0: Create the HemeLB config.pr2 file */
-    double HemeLBSimulationTime = 4000; //
+    double HemeLBSimulationTime = 5000; //
     int Period = HemeLBSimulationTime*0.8;
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
       
@@ -211,8 +211,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     // python ~/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py config.vtu  results2/Extracted/surface-pressure.xtr results2/Extracted/wholegeometry-velocity.xtr results2/Extracted/surface-traction.xtr 
         
     // Set up to generate the vtu files -> SHould have a vtu generated here, i think from the gmy file 
-    if (mFlowVtus)
-    {
+    // if (mFlowVtus)
+    // {
         TRACE("GmyUnstructuredGridReader")
         std::string GmyUnstructuredGridReader = "python " +mHemeLBPath+ "Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >nul"; 
         SystemOutput = std::system(GmyUnstructuredGridReader.c_str());
@@ -220,7 +220,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
         // For the not first ones here is what I will do, this one is the set up so I wont bother here, but in future reps have the vtu sorting when HemelB is going
         std::string GenerateFlowVtus = "python " +mHemeLBPath+ "Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory + "results/Extracted/surface-traction.xtr >nul";
         SystemOutput = std::system(GenerateFlowVtus.c_str());
-    }
+    // }
 
 }
 
