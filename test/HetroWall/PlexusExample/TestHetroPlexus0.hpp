@@ -77,12 +77,7 @@ public:
 
 
         simulator.SetUpdateCellPopulationRule(false);
-        simulator.SetEndTime(EndTime);
-
-
-        double DilationParameter=6;
-        double AreaParameter=7;//4.5;
-        double DeformationParamter=6;//5.3;
+        // simulator.SetEndTime(EndTime);
 
 
         /*
