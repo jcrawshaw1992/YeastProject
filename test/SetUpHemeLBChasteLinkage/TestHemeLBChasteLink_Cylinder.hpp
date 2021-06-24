@@ -147,8 +147,8 @@ public:
           simulator.AddCellPopulationBoundaryCondition(p_condition);
         }
       
-     	  // simulator.Solve();
-        // CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
+     	  simulator.Solve();
+        CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
 }
 
 //  void offTestCollapsingCylinder() throw (Exception)
