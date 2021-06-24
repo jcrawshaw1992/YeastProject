@@ -137,10 +137,10 @@ public:
     {
 
 
-        double dt= 0.0001;
-        double NewEndTime = 51;
-        double EndTime = 51;
-        double SamplingTimestepMultiple = 5000;
+        double dt= 0.00001;
+        double NewEndTime = 55;
+        double EndTime = 55;
+        double SamplingTimestepMultiple = 50000;
 
         std::string output_dir = "StepChangeHetroCylinder/CollapseWithBending/LargeBending/";
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, NewEndTime);

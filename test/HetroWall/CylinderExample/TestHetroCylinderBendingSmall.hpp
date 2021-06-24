@@ -37,101 +37,100 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
 
-    void TestRunningArchieveInitial() throw(Exception)
-    {
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load("StepChangeHetroCylinder", 13);
+    // void TestRunningArchieveInitial() throw(Exception)
+    // {
+    //     OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load("StepChangeHetroCylinder", 13);
 
 
-        double dt= 0.015;
-        double NewEndTime = 13;
-        double EndTime = 13;
+    //     double dt= 0.015;
+    //     double NewEndTime = 13;
+    //     double EndTime = 13;
         
-        double SamplingTimestepMultiple = 500;
-        std::string output_dir = "StepChangeHetroCylinder/CollapseWithBending/SmallBending/";
+    //     double SamplingTimestepMultiple = 500;
+    //     std::string output_dir = "StepChangeHetroCylinder/CollapseWithBending/SmallBending/";
 
 
-        /* Update the ouput directory for the population  */
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+    //     /* Update the ouput directory for the population  */
+    //     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+    //     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
 
-        // p_simulator->SetEndTime(EndTime + NewEndTime);
-        p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
-        p_simulator->SetDt(dt);
-        p_simulator->SetOutputDirectory(output_dir);
+    //     // p_simulator->SetEndTime(EndTime + NewEndTime);
+    //     p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
+    //     p_simulator->SetDt(dt);
+    //     p_simulator->SetOutputDirectory(output_dir);
     
      
 
-        boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        // p_membrane_force->SetMembraneStiffness(pow(10, 13));
-        p_simulator->AddForce(p_membrane_force);
+    //     boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
+    //     // p_membrane_force->SetMembraneStiffness(pow(10, 13));
+    //     p_simulator->AddForce(p_membrane_force);
 
-        /* 
-        -----------------------------
-        Update membrane properties
-        ----------------------------
-        */
+    //     /* 
+    //     -----------------------------
+    //     Update membrane properties
+    //     ----------------------------
+    //     */
 
-        c_vector<double, 3> UpperPlaneNormal =  Create_c_vector(0, 0, 1);
-        c_vector<double, 3> UpperPlanePoint = Create_c_vector(0, 0, 15e-6 * 1e3);
-        c_vector<double, 3> LowerPlaneNormal =  Create_c_vector(0, 0, -1);
-        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0, 0,25e-6 * 1e3);
+    //     c_vector<double, 3> UpperPlaneNormal =  Create_c_vector(0, 0, 1);
+    //     c_vector<double, 3> UpperPlanePoint = Create_c_vector(0, 0, 15e-6 * 1e3);
+    //     c_vector<double, 3> LowerPlaneNormal =  Create_c_vector(0, 0, -1);
+    //     c_vector<double, 3> LowerPlanePoint = Create_c_vector(0, 0,25e-6 * 1e3);
 
-        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
-        boost::shared_ptr<StepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<StepHeteroModifier<2, 3> >(*iter);
-        p_Mesh_modifier->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
-        p_Mesh_modifier->SetUpdateFrequency(0.5/dt);
+    //     std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
+    //     boost::shared_ptr<StepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<StepHeteroModifier<2, 3> >(*iter);
+    //     p_Mesh_modifier->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
+    //     p_Mesh_modifier->SetUpdateFrequency(0.5/dt);
 
 
 
-        for (int i =1; i<=40; i++)
-        { 
-            static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(NewEndTime);
-            NewEndTime +=1;
-            p_simulator->SetEndTime(NewEndTime);
+    //     for (int i =1; i<=40; i++)
+    //     { 
+    //         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(NewEndTime);
+    //         NewEndTime +=1;
+    //         p_simulator->SetEndTime(NewEndTime);
 
-            p_simulator->Solve();
-            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-        }
+    //         p_simulator->Solve();
+    //         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+    //     }
 
-        dt/= 10;SamplingTimestepMultiple *= 10;
+    //     dt/= 10;SamplingTimestepMultiple *= 10;
 
-        p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
-        p_simulator->SetDt(dt);
-        p_simulator->SetOutputDirectory(output_dir);
-        p_Mesh_modifier->SetUpdateFrequency(0.5/dt);
+    //     p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
+    //     p_simulator->SetDt(dt);
+    //     p_simulator->SetOutputDirectory(output_dir);
+    //     p_Mesh_modifier->SetUpdateFrequency(0.5/dt);
 
-        for (int i =1; i<=40; i++)
-        { 
-            static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(NewEndTime);
-            NewEndTime +=4;
-            p_simulator->SetEndTime(NewEndTime);
+    //     for (int i =1; i<=40; i++)
+    //     { 
+    //         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(NewEndTime);
+    //         NewEndTime +=4;
+    //         p_simulator->SetEndTime(NewEndTime);
 
-            p_simulator->Solve();
-            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-        }
+    //         p_simulator->Solve();
+    //         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+    //     }
 
     
         
 
-        p_simulator->Solve();
-        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+    //     p_simulator->Solve();
+    //     CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
 
 
-    }
+    // }
 
 
 
    void TestRunningArchieve2() throw(Exception)
     {
-
-        std::string output_dir = "StepChangeHetroCylinder/CollapseWithBending/SmallBending/";
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, 21);
-
-        double dt= 0.001;
-        double NewEndTime = 21;
-        double EndTime = 21;
+        double NewEndTime = 69;
+        double EndTime = 69;
         
-        double SamplingTimestepMultiple = 5000;
+        std::string output_dir = "StepChangeHetroCylinder/CollapseWithBending/SmallBending/";
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, EndTime);
+
+        double dt= 0.0001;
+        double SamplingTimestepMultiple = 50000;
 
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
