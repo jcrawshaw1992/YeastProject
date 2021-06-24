@@ -95,7 +95,7 @@ public:
         std::stringstream out;
         out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter1;
         std::string ParameterSet = out.str();
-        std::string output_dir = "ParameterSweepWithRemeshing3/"+ParameterSet;
+        std::string output_dir = "ParameterSweepWithRemeshing4/"+ParameterSet;
 
 
         double Length = 20e-6 * scale;
@@ -121,7 +121,7 @@ public:
         cell_population.SetTargetRemeshingEdgeLength(EdgeLength); //0.2e-6 * scale); 
         cell_population.SetTargetRemeshingIterations(TargetRemeshingIterations); //10
         cell_population.SetPrintRemeshedIC(1);
-        // cell_population.SetWriteVtkAsPoints(true);
+        cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
         cell_population.SetRemeshingSoftwear("CGAL");
         cell_population.SetOperatingSystem(OperatingSystem);
@@ -143,10 +143,11 @@ public:
         RemeshingTriggerOnHeteroMeshModifier
         ----------------------------
         */
+        double RemeshingIterations =  10000;
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
         std::map<double, c_vector<long double, 4> > GrowthMaps;
         GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter1), 0);
-        p_Mesh_modifier->SetRemeshingInterval(1000);
+        p_Mesh_modifier->SetRemeshingInterval(RemeshingIterations);
         p_Mesh_modifier->SetRemeshingTrigger("time");
         //Strength , hetro, stepsize, setupsolve
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
@@ -216,17 +217,20 @@ public:
         double DeformationParamter[8] = {6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10};
         for (unsigned D_index = 0; D_index <8; D_index++)
         {
+            dt/=5;
+            SecondSamplingTimestepMultiple *=5;
             PRINT_VARIABLE(DeformationParamter[D_index])
             std::map<double, c_vector<long double, 4> > GrowthMaps;
             GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter[D_index]), 0);
             //                                 Strength,hetro,stepsize, setupsolve
             p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
-            
+            RemeshingIterations*=5;
+            p_Mesh_modifier->SetRemeshingInterval(RemeshingIterations);
 
             std::stringstream outN;
             outN << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter[D_index];
             std::string ParameterSetN = outN.str();
-            std::string output_dir = "ParameterSweepWithRemeshing3/"+ParameterSetN;
+            std::string output_dir = "ParameterSweepWithRemeshing4/"+ParameterSetN;
 
             startime = EndTime;
             EndTime = EndTime +EndTime;

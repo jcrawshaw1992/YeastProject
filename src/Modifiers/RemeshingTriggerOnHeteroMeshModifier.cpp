@@ -115,45 +115,45 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
     // Here the remeshing happens
     if(mRemeshing)
     {
-        if (mRemeshingTrigger == "AspectRatio")
-        {
-            // Check all the aspect ratios  and trigger remeshing if needed
-            std::vector<double> AspectRatioVector = pCellPopulation->MinimumElementAspectRatio();
+        // if (mRemeshingTrigger == "AspectRatio")
+        // {
+        //     // Check all the aspect ratios  and trigger remeshing if needed
+        //     std::vector<double> AspectRatioVector = pCellPopulation->MinimumElementAspectRatio();
 
-            std::vector<double> quartilesNeeded = { 0.25, 0.5, 0.75};
-            std::vector<double> quartiles = pCellPopulation->Quantile(AspectRatioVector, quartilesNeeded);
-            double MinimumAspectRatio = *std::min_element( std::begin(AspectRatioVector), std::end(AspectRatioVector) );
+        //     std::vector<double> quartilesNeeded = { 0.25, 0.5, 0.75};
+        //     std::vector<double> quartiles = pCellPopulation->Quantile(AspectRatioVector, quartilesNeeded);
+        //     double MinimumAspectRatio = *std::min_element( std::begin(AspectRatioVector), std::end(AspectRatioVector) );
 
-            typename std::vector<double>::iterator Iterator = quartiles.begin();
-            double Quartile1 = *Iterator;
+        //     typename std::vector<double>::iterator Iterator = quartiles.begin();
+        //     double Quartile1 = *Iterator;
 
-            if (mStepsSinceLastRemesh>200) 
-            {
+        //     if (mStepsSinceLastRemesh>200) 
+        //     {
                 
-                // if (  MinimumAspectRatio <0.2 || Quartile1 < 0.5)
-                if (  MinimumAspectRatio <0.2 || Quartile1 < 0.5)
-                {
+        //         // if (  MinimumAspectRatio <0.2 || Quartile1 < 0.5)
+        //         if (  MinimumAspectRatio <0.2 || Quartile1 < 0.5)
+        //         {
                     
-                    // TRACE(" AR is too smalle, remeshing now :) ")
-                    pCellPopulation->ExecuteHistoryDependentRemeshing();
-                    UpdateCellData(rCellPopulation);
-                    if (mHetro) // Need to make sure that the stiffer regions get stiffer at the right step size
-                    {
-                        TRACE("Need to update the membrane strenght for the new mesh, this next method has not yet been written ")
-                        SetMembraneStrenghtOnNewMesh(rCellPopulation);
-                    }
-                    mStepsSinceLastRemesh =1;
-                 }
+        //             // TRACE(" AR is too smalle, remeshing now :) ")
+        //             pCellPopulation->ExecuteHistoryDependentRemeshing();
+        //             UpdateCellData(rCellPopulation);
+        //             if (mHetro) // Need to make sure that the stiffer regions get stiffer at the right step size
+        //             {
+        //                 TRACE("Need to update the membrane strenght for the new mesh, this next method has not yet been written ")
+        //                 SetMembraneStrenghtOnNewMesh(rCellPopulation);
+        //             }
+        //             mStepsSinceLastRemesh =1;
+        //          }
                  
 
-            }else
-            {
-                mStepsSinceLastRemesh +=1;
-            }
+        //     }else
+        //     {
+        //         mStepsSinceLastRemesh +=1;
+        //     }
         
                 
-        }else
-        {
+        // }else
+        // {
             if (mExecute>=mRemeshingInterval)
             {
                 pCellPopulation->ExecuteHistoryDependentRemeshing();
@@ -166,7 +166,7 @@ void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                 mExecute = 0;
             } 
             mExecute +=1;
-         }
+        //  }
     }
 
     // TRACE("IS hetero ?")
