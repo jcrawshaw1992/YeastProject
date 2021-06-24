@@ -38,6 +38,7 @@ void OutwardsPressureWithBreaks::AddForceContribution(AbstractCellPopulation<2, 
         Position[2] = 0;
         CurrentRadius = sqrt(Position[0]* Position[0]+Position[1]*Position[0]);
         PRINT_VARIABLE(CurrentRadius)
+        PRINT_VECTOR(Position)
         PRINT_VARIABLE(mNode)
         
         // // Growth = norm_2(Position-Position);
