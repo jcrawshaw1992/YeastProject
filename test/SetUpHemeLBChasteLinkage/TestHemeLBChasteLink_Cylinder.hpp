@@ -40,10 +40,10 @@
 class TestRemeshing  : public AbstractCellBasedTestSuite
 {
 public:
- void offTestGrowToEquiCylinder() throw (Exception)
+ void TestGrowToEquiCylinder() throw (Exception)
     {
   
-        double EndTime = 4;
+        double EndTime = 10;
         double scale = 1e3;
         double Length = 10e-6 * scale;
         double Radius = 1e-6 * scale;
@@ -142,7 +142,7 @@ public:
         CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
 }
 
- void TestCollapsingCylinder() throw (Exception)
+ void offTestCollapsingCylinder() throw (Exception)
     {        
         std::string output_dir = "TestHemeLBChaste/";
         double scale = 1e3; 
