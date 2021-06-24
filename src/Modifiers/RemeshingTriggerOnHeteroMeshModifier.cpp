@@ -29,16 +29,28 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::RemeshingTriggerOnHeteroMeshModifier()
         : AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM>()
 {
-    //AreaConstant           AreaDilationModulus        ShearModulus    
-        mGrowthMaps =  {  { 10, Create_c_vector(pow(10, -7), pow(10, -10), pow(10, -8), 1e-14) }, 
-        { 8, Create_c_vector(pow(10,-7), pow(10,-8),pow(10, -8.5) , 1e-14 ) },
-        { 6, Create_c_vector(pow(10,-6), pow(10,-10),pow(10, -7.5) , 1e-14 )},
-        {5, Create_c_vector(pow(10, -7), pow(10, -7.5), pow(10, -8), 1e-14) },
-        {4, Create_c_vector(pow(10, -7), pow(10, -7.5), pow(10, -7.5), 1e-14) },
-        {3, Create_c_vector(pow(10, -6), pow(10, -10), pow(10, -6.5), 1e-14) },
-        {2, Create_c_vector(pow(10, -5.500), pow(10, -7.5), pow(10, -6.5), 1e-14) },
-        {1, Create_c_vector(pow(10, -5.5000), pow(10, -5.5000), pow(10, -5.5000), 1e-14)}
-    };
+    // //AreaConstant           AreaDilationModulus        ShearModulus    
+    //     mGrowthMaps =  {  { 10, Create_c_vector(pow(10, -7), pow(10, -10), pow(10, -8), 1e-14) }, 
+    //     { 8, Create_c_vector(pow(10,-7), pow(10,-8),pow(10, -8.5) , 1e-14 ) },
+    //     { 6, Create_c_vector(pow(10,-6), pow(10,-10),pow(10, -7.5) , 1e-14 )},
+    //     {5, Create_c_vector(pow(10, -7), pow(10, -7.5), pow(10, -8), 1e-14) },
+    //     {4, Create_c_vector(pow(10, -7), pow(10, -7.5), pow(10, -7.5), 1e-14) },
+    //     {3, Create_c_vector(pow(10, -6), pow(10, -10), pow(10, -6.5), 1e-14) },
+    //     {2, Create_c_vector(pow(10, -5.500), pow(10, -7.5), pow(10, -6.5), 1e-14) },
+    //     {1, Create_c_vector(pow(10, -5.5000), pow(10, -5.5000), pow(10, -5.5000), 1e-14)}
+    // };
+
+          //AreaConstant           AreaDilationModulus        ShearModulus    
+        mGrowthMaps =  { {1, Create_c_vector(pow(10, -7), pow(10, -8.4), pow(10, -8), 1e-11) },
+        // {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-10)}
+        {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-11)}
+         };
+    // mGrowthMaps =  { {1, Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -5), 1e-14) },
+    //     {0, Create_c_vector(pow(10, -6), pow(10, -5.5), pow(10, -4), 1e-14)}
+    // };
+    PRINT_VECTOR(mGrowthMaps[0])
+
+
 //    10.0000    5.5000    5.5000    5.5000
 //     9.0000    5.5000    7.5000    6.5000
 //     8.0000    6.0000    7.5000    7.0000

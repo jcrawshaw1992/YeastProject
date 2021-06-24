@@ -82,24 +82,24 @@ public:
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
         
-        // /*
-        // -----------------------------
-        // RemeshingTriggerOnHeteroMeshModifier
-        // ----------------------------
-        // */  
-        // boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
-        // p_Mesh_modifier->SetMembraneStrength(5);
-        // simulator.AddSimulationModifier(p_Mesh_modifier);
-
-
         /*
         -----------------------------
-        StepHeteroModifier
+        RemeshingTriggerOnHeteroMeshModifier
         ----------------------------
-        */
-        boost::shared_ptr<StepHeteroModifier<2, 3> > p_Mesh_modifier(new StepHeteroModifier<2, 3>());
+        */  
+        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
         p_Mesh_modifier->SetMembraneStrength(1);
         simulator.AddSimulationModifier(p_Mesh_modifier);
+
+
+        // /*
+        // -----------------------------
+        // StepHeteroModifier
+        // ----------------------------
+        // */
+        // boost::shared_ptr<StepHeteroModifier<2, 3> > p_Mesh_modifier(new StepHeteroModifier<2, 3>());
+        // p_Mesh_modifier->SetMembraneStrength(1);
+        // simulator.AddSimulationModifier(p_Mesh_modifier);
 
 
         /*
