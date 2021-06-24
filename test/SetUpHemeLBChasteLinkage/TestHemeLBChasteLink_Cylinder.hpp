@@ -190,15 +190,15 @@ public:
         p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(100);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForceCalculations/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
 
 
         /*
-        // -----------------------------
-        // Membrane forces
-        // ----------------------------
-        // */
+        -----------------------------
+        Membrane forces
+        ----------------------------
+        */
         // boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
         // p_simulator->AddForce(p_shear_force);
 
@@ -208,8 +208,8 @@ public:
         Membrane forces
         ----------------------------
         */
-        // boost::shared_ptr<MembraneDeformationForceOnCylinder> p_shear_force(new MembraneDeformationForceOnCylinder());
-        // p_simulator->AddForce(p_shear_force);
+        boost::shared_ptr<MembraneDeformationForceOnCylinder> p_shear_force(new MembraneDeformationForceOnCylinder());
+        p_simulator->AddForce(p_shear_force);
 
 
 
