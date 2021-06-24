@@ -83,13 +83,13 @@ public:
         simulator.SetEndTime(EndTime);
         
         /*
-        // -----------------------------
-        // RemeshingTriggerOnHeteroMeshModifier
-        // ----------------------------
-        // */  
-        // boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
-        // p_Mesh_modifier->SetMembraneStrength(1);
-        // simulator.AddSimulationModifier(p_Mesh_modifier);
+        -----------------------------
+        RemeshingTriggerOnHeteroMeshModifier
+        ----------------------------
+        */  
+        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
+        p_Mesh_modifier->SetMembraneStrength(1);
+        simulator.AddSimulationModifier(p_Mesh_modifier);
 
 
         // // /*
