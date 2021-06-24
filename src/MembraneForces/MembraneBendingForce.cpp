@@ -111,6 +111,17 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
 {
     HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
 
+
+    // std::map<unsigned, c_vector<double, 3> > BendingForceMap;
+    // for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
+    //     cell_iter != rCellPopulation.End();
+    //     ++cell_iter)
+    // {
+    //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+    //     BendingForceMap[node_index] = Create_c_vector(0,0,0);
+    // }
+
+
     // Iterate over all springs and add force contributions
     for (MeshBasedCellPopulation<2,3>::SpringIterator spring_iterator = p_cell_population->SpringsBegin();
          spring_iterator != p_cell_population->SpringsEnd();
@@ -210,71 +221,74 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         double Boundary1 = p_cell1->GetCellData()->GetItem("Boundary"); double Boundary2 = p_cell2->GetCellData()->GetItem("Boundary");
         double Boundary3 = p_cell3->GetCellData()->GetItem("Boundary"); double Boundary4 = p_cell4->GetCellData()->GetItem("Boundary");
         // Add the force contribution to each node
-        if (Boundary1 ==0 && Boundary2 ==0 && Boundary3 ==0 && Boundary4 ==0)
-        {
-            // assert(norm_2(node1_contribution)<10000);
-            // assert(norm_2(node2_contribution)<10000);
-            // assert(norm_2(node3_contribution)<10000);
-            // assert(norm_2(node4_contribution)<10000);
-
-            p_cell1->GetCellData()->SetItem("BendingForce", norm_2(node1_contribution));
-            p_cell2->GetCellData()->SetItem("BendingForce", norm_2(node2_contribution));
-            p_cell3->GetCellData()->SetItem("BendingForce", norm_2(node3_contribution));
-            p_cell4->GetCellData()->SetItem("BendingForce", norm_2(node4_contribution));
+   
+        p_cell1->GetCellData()->SetItem("BendingForce", norm_2(node1_contribution));
+        p_cell2->GetCellData()->SetItem("BendingForce", norm_2(node2_contribution));
+        p_cell3->GetCellData()->SetItem("BendingForce", norm_2(node3_contribution));
+        p_cell4->GetCellData()->SetItem("BendingForce", norm_2(node4_contribution));
 
 
-            if (norm_2(node1_contribution)>1000 || norm_2(node2_contribution)>1000 ||norm_2(node3_contribution)>1000 || norm_2(node4_contribution)>1000  )
-            {
-                PRINT_VECTOR(node1_contribution);
-                PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
-                
-
-                // PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
-                    node1_contribution =Create_c_vector(0,0,0);
-                    node2_contribution= Create_c_vector(0,0,0);
-                    node3_contribution= Create_c_vector(0,0,0);
-                    node4_contribution= Create_c_vector(0,0,0);
-                    p_cell1->GetCellData()->SetItem("BendingForce", -100);
-                    p_cell2->GetCellData()->SetItem("BendingForce", -100);
-                    p_cell3->GetCellData()->SetItem("BendingForce", -100);
-                    p_cell4->GetCellData()->SetItem("BendingForce", -100);
-            }
-
-            pNode1->AddAppliedForceContribution(node1_contribution);
-            pNode2->AddAppliedForceContribution(node2_contribution);
-            pNode3->AddAppliedForceContribution(node3_contribution);
-            pNode4->AddAppliedForceContribution(node4_contribution);
-            
-        }
-        else{
-        p_cell1->GetCellData()->SetItem("BendingForce", 0);
-        p_cell2->GetCellData()->SetItem("BendingForce", 0);
-        p_cell3->GetCellData()->SetItem("BendingForce", 0);
-        p_cell4->GetCellData()->SetItem("BendingForce", 0);
-
-        }
-        
-
-        
-        // if (Boundary2 ==0)
+        // if (norm_2(node1_contribution)>1000 || norm_2(node2_contribution)>1000 ||norm_2(node3_contribution)>1000 || norm_2(node4_contribution)>1000  )
         // {
-        //     pNode2->AddAppliedForceContribution(node2_contribution);
-        // }
+        //     PRINT_VECTOR(node1_contribution);
+        //     PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
         
-        // if (Boundary3 ==0)
-        // {
-        //     pNode3->AddAppliedForceContribution(node3_contribution);
+        //     // PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
+        //         node1_contribution =Create_c_vector(0,0,0);
+        //         node2_contribution= Create_c_vector(0,0,0);
+        //         node3_contribution= Create_c_vector(0,0,0);
+        //         node4_contribution= Create_c_vector(0,0,0);
+        //         p_cell1->GetCellData()->SetItem("BendingForce", -100);
+        //         p_cell2->GetCellData()->SetItem("BendingForce", -100);
+        //         p_cell3->GetCellData()->SetItem("BendingForce", -100);
+        //         p_cell4->GetCellData()->SetItem("BendingForce", -100);
         // }
-        
-        // if (Boundary4 ==0)
-        // {
-        //     pNode4->AddAppliedForceContribution(node4_contribution);
-        // }
-        
-        // pNode2->AddAppliedForceContribution(node2_contribution);
-        // pNode3->AddAppliedForceContribution(node3_contribution);
-        // pNode4->AddAppliedForceContribution(node4_contribution);
+
+        // BendingForceMap[node_index1] += node1_contribution; 
+        // BendingForceMap[node_index2] += node2_contribution; 
+        // BendingForceMap[node_index3] += node3_contribution; 
+        // BendingForceMap[node_index4] += node4_contribution; 
+
+        pNode1->AddAppliedForceContribution(node1_contribution);
+        pNode2->AddAppliedForceContribution(node2_contribution);
+        pNode3->AddAppliedForceContribution(node3_contribution);
+        pNode4->AddAppliedForceContribution(node4_contribution);
     }
+
+
+    // double Nc = 50;
+    // // THis bit takes care of the edges ...
+    // for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
+    //         cell_iter != rCellPopulation.End();
+    //         ++cell_iter)
+    // {
+    //     unsigned ReferenceNode = 0;
+    //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+    //     Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
+
+    //     if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
+    //     {     
+    //         if (node_index < Nc + 1) // if on lower edge
+    //         {
+    //             ReferenceNode = node_index + (2 * Nc); // select node from two rows up
+    //         }
+    //         else if (node_index > Nc) // if on upper edge
+    //         {
+    //             ReferenceNode = node_index - (2 * Nc); // select node from two rows down
+    //         }
+    //         cell_iter->GetCellData()->SetItem("BendingForce", norm_2(BendingForceMap[ReferenceNode] ));
+    //         pNode->AddAppliedForceContribution(BendingForceMap[ReferenceNode]); // Add the new force
+
+    //     }
+    //     else
+    //     {
+    //         cell_iter->GetCellData()->SetItem("BendingForce", norm_2(BendingForceMap[node_index] ));
+    //         pNode->AddAppliedForceContribution(BendingForceMap[node_index] ); // Add the new force
+    //     }
+
+    // }
+
+
 }
 
 

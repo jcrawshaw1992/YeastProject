@@ -39,10 +39,10 @@ public:
     void TestSetUpCylinderArchive() throw(Exception)
     {
         TRACE("START")
-        double EndTime = 0.2;
+        double EndTime = 0;
         double scale = 0.00006684491/1.29;
 
-        double SamplingStep = 1000;
+        double SamplingStep = 10000;
         double dt = 0.000001;
 
 
@@ -159,15 +159,12 @@ public:
         }
 
         TRACE("First Solve ")
-        simulator.Solve();
-        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
 
-
-         for (int i =1; i<=5; i++)
+         for (int i =1; i<=50; i++)
         { 
             PRINT_VARIABLE(EndTime)
             cell_population.SetStartTime(EndTime);
-            EndTime +=0.2;
+            EndTime +=0.1;
             simulator.SetEndTime(EndTime);
             
             simulator.Solve();

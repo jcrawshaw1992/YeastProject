@@ -31,7 +31,7 @@ RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::RemeshingTriggerOn
 {
              //AreaConstant           AreaDilationModulus        ShearModulus    
         mGrowthMaps =  { {1, Create_c_vector(pow(10, -7), pow(10, -8.4), pow(10, -8), 1e-14) },
-        {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-14)}
+        {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-8)}
     };
 }
 
