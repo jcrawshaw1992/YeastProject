@@ -116,36 +116,36 @@ public:
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
 
-        // /*
-        // -----------------------------
-        // Constant Compressive tissue pressure
-        // ----------------------------
-        // */        
+        /*
+        -----------------------------
+        Constant Compressive tissue pressure
+        ----------------------------
+        */        
 
-        // boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
-        // p_ForceOut->SetPressure((P_blood-P_tissue)/1);
-        // p_ForceOut->SetRadiusThreshold(5*Radius);
-        // simulator.AddForce(p_ForceOut);
+        boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
+        p_ForceOut->SetPressure((P_blood-P_tissue)/1);
+        p_ForceOut->SetRadiusThreshold(5*Radius);
+        simulator.AddForce(p_ForceOut);
  
-        // /*
-        // -----------------------------
-        // Boundary conditions
-        // ----------------------------
-        // */
-        // std::vector<c_vector<double,3> > boundary_plane_points;
-        // std::vector<c_vector<double,3> > boundary_plane_normals;
+        /*
+        -----------------------------
+        Boundary conditions
+        ----------------------------
+        */
+        std::vector<c_vector<double,3> > boundary_plane_points;
+        std::vector<c_vector<double,3> > boundary_plane_normals;
 
-        // boundary_plane_points.push_back(Point1);
-        // boundary_plane_normals.push_back(PlaneNormal1);
+        boundary_plane_points.push_back(Point1);
+        boundary_plane_normals.push_back(PlaneNormal1);
 
-        // boundary_plane_points.push_back(Point2);
-        // boundary_plane_normals.push_back(PlaneNormal2);
+        boundary_plane_points.push_back(Point2);
+        boundary_plane_normals.push_back(PlaneNormal2);
 
-        // for(unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
-        // {
-        //   boost::shared_ptr<FixedRegionBoundaryCondition<2,3> > p_condition(new FixedRegionBoundaryCondition<2,3>(&cell_population, boundary_plane_points[boundary_id],boundary_plane_normals[boundary_id],0.5));
-        //   simulator.AddCellPopulationBoundaryCondition(p_condition);
-        // }
+        for(unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
+        {
+          boost::shared_ptr<FixedRegionBoundaryCondition<2,3> > p_condition(new FixedRegionBoundaryCondition<2,3>(&cell_population, boundary_plane_points[boundary_id],boundary_plane_normals[boundary_id],0.5));
+          simulator.AddCellPopulationBoundaryCondition(p_condition);
+        }
       
      	  // simulator.Solve();
         // CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
