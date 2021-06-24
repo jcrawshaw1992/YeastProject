@@ -51,7 +51,7 @@ public:
         unsigned N_D = 30;
         unsigned N_Z = 30;
         
-        std::string output_dir = "HemeLBChaste/";
+        std::string output_dir = "TestHemeLBChaste/";
 
         // this simulaiton is in mm. Have chosen this magnitude because um in m will give me numbers too close to machince presision, and movment
         // in um will be too large and break chaste without carefull playing with or a tiny time step
