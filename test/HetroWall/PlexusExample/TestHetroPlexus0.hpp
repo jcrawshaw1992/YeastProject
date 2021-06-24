@@ -42,7 +42,7 @@ public:
         double EndTime = 0;
         double scale = 0.00006684491/1.29;
 
-        double SamplingStep = 10000;
+        double SamplingStep = 50000;
         double dt = 0.000001;
 
 
