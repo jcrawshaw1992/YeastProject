@@ -58,7 +58,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
         unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
         Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
         c_vector<double, 3> ForceOnNode = mForceMap[node_index]/1;
-        rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(ForceOnNode); 
+        rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(-ForceOnNode); 
     }
 }
 
