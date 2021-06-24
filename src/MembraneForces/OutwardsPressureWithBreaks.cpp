@@ -30,6 +30,7 @@ void OutwardsPressureWithBreaks::AddForceContribution(AbstractCellPopulation<2, 
 {
     double Growth =0;
     double CurrentRadius =0;
+    PRINT_VARIABLES(CurrentRadius)
     if (mGrowthThreshold!=0)
     {
          Node<3>* p_node = rCellPopulation.GetNode(mNode);
