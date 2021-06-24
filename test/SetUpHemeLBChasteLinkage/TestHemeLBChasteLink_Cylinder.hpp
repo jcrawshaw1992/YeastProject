@@ -181,15 +181,15 @@ public:
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
 
-        double InletPressure = (0.002133152 - 0.001466542)*1.01; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later 
-        double OutletPressure = (0.002133152 - 0.001466542)*(0.99);
+        double InletPressure = (0.002133152 - 0.001466542)*1.001; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later 
+        double OutletPressure = (0.002133152 - 0.001466542)*(0.999);
 
 
         boost::shared_ptr<HemeLBForce<2,3>> p_ForceOut(new HemeLBForce<2, 3>());
         p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
         p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
-        p_ForceOut->SetFluidSolidIterations(10);
+        p_ForceOut->SetFluidSolidIterations(100);
         p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
 
