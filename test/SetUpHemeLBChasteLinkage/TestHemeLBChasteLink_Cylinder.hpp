@@ -92,29 +92,29 @@ public:
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
 
-        // // /*
-        // // -----------------------------
-        // // StepHeteroModifier
-        // // ----------------------------
-        // // */
-        // // boost::shared_ptr<StepHeteroModifier<2, 3> > p_Mesh_modifier(new StepHeteroModifier<2, 3>());
-        // // p_Mesh_modifier->SetMembraneStrength(1);
-        // // simulator.AddSimulationModifier(p_Mesh_modifier);
+        /*
+        -----------------------------
+        StepHeteroModifier
+        ----------------------------
+        */
+        // boost::shared_ptr<StepHeteroModifier<2, 3> > p_Mesh_modifier(new StepHeteroModifier<2, 3>());
+        // p_Mesh_modifier->SetMembraneStrength(1);
+        // simulator.AddSimulationModifier(p_Mesh_modifier);
 
 
-        // /*
-        // -----------------------------
-        // HemeLB Force
-        // ----------------------------
-        // */        
-        // c_vector<double, 3> PlaneNormal1 = Create_c_vector(0,0,1);
-        // c_vector<double, 3> Point1 = Create_c_vector(0,0,1e-6 * scale);
+        /*
+        -----------------------------
+        HemeLB Force
+        ----------------------------
+        */        
+        c_vector<double, 3> PlaneNormal1 = Create_c_vector(0,0,1);
+        c_vector<double, 3> Point1 = Create_c_vector(0,0,1e-6 * scale);
 
-        // c_vector<double, 3> PlaneNormal2 = Create_c_vector(0,0,-1);
-        // c_vector<double, 3> Point2 = Create_c_vector(0,0,Length - 1e-6 * scale);
+        c_vector<double, 3> PlaneNormal2 = Create_c_vector(0,0,-1);
+        c_vector<double, 3> Point2 = Create_c_vector(0,0,Length - 1e-6 * scale);
 
-        // double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
-        // double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
 
         // /*
         // -----------------------------
