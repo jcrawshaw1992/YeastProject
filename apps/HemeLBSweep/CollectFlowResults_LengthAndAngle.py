@@ -20,9 +20,8 @@ if __name__=="__main__":
     TerminalOutputFolder = '/data/vascrem/testoutput/HemeLBSweep/VariableEdgeLengthAndAngle/'
    
  
-    Collapse = [ '0','1','2', '3','4','5', '6', '7','8','9','10']
-    #BifucationAngles = [ 'PI_2_2']   # [ 'PI_2.2','PI_3','PI_5','PI_4']   
-    BifucationAngles = [ 'PI_6/']   
+    # Collapse = [ '0','1','2', '3','4','5', '6', '7','8','9','10']
+    BifucationAngles = [ 'PI_2.2','PI_3','PI_5','PI_4','PI_6']    
     Length = ['0.2', '0.4', '0.6', '0.8', '1.2', '1.4', '1.6', '1.8', '2']  
 
     Collapse = [ '0', '0.1227', '0.2248' , '0.3178', '0.417','0.5124', '0.6119', '0.708', '0.8059', '0.9032' , '1.0' ]
@@ -52,23 +51,30 @@ if __name__=="__main__":
                 print CurrentPath
                 if os.path.exists(CurrentPath):
                    
-                    Velocity = CurrentPath+'/Results/Extracted/wholegeometry-velocity_10800.vtu'
-                    #Velocity = CurrentPath+'/Results/Extracted/wholegeometry-velocity_9000.vtu'
-                    #Velocity = CurrentPath+'/Results/Extracted/wholegeometry-velocity_7200.vtu'
-
-                    #Velocity = CurrentPath+'/Results/Extracted/wholegeometry-velocity_4500.vtu'
-                    Mesh    =  CurrentPath+'/config.stl'
-
+                    Velocity = CurrentPath+'/Results/Extracted/wholegeometry-velocity_12600.vtu' # 10800  # 8100 # 12600 
+                    # Mesh    =  CurrentPath+'/config.stl'
                     NewVelocity = NewPath+'/wholegeometry-velocity_'+NewNumbering[counter]+'.vtu'
-                    NewMesh = NewPath+'/mesh_'+NewNumbering[counter]+'.stl'
-
-    
+                    # NewMesh = NewPath+'/mesh_'+NewNumbering[counter]+'.stl'
                     mv =  'cp ' +Velocity +' '+NewVelocity
                     subprocess.call(mv, shell=True)
 
-                    # mv =  'cp ' +Mesh +' '+NewMesh
-                    # subprocess.call(mv, shell=True)
 
+                    Velocity = CurrentPath+'/Results/Extracted/wholegeometry-velocity_10800.vtu' # 10800  # 8100 # 12600 
+                    NewVelocity = NewPath+'/wholegeometry-velocity_'+NewNumbering[counter]+'.vtu'
+                    mv =  'cp ' +Velocity +' '+NewVelocity
+                    subprocess.call(mv, shell=True)
+
+
+                    Velocity = CurrentPath+'/Results/Extracted/wholegeometry-velocity_8100.vtu' # 10800  # 8100 # 12600 
+                    NewVelocity = NewPath+'/wholegeometry-velocity_'+NewNumbering[counter]+'.vtu'
+                    mv =  'cp ' +Velocity +' '+NewVelocity
+                    subprocess.call(mv, shell=True)
+
+
+                    Velocity = CurrentPath+'/Results/Extracted/wholegeometry-velocity_12600.vtu' # 10800  # 8100 # 12600 
+                    NewVelocity = NewPath+'/wholegeometry-velocity_'+NewNumbering[counter]+'.vtu'
+                    mv =  'cp ' +Velocity +' '+NewVelocity
+                    subprocess.call(mv, shell=True)
 
 
 

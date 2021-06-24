@@ -37,6 +37,9 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
+
+ 
+
     void TestParametersOverCylinder() throw(Exception)
     {
 
@@ -89,7 +92,7 @@ public:
             N_D = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-N_D");
         }
 
-// vmtksurfaceremeshing -ifile CurrentMesh.stl -ofile CurretMesh3.stl -connectivityiterations 10 -maxarea 0.0000001 -elementsizemode area -relaxation 4
+        // vmtksurfaceremeshing -ifile CurrentMesh.stl -ofile CurretMesh3.stl -connectivityiterations 10 -maxarea 0.0000001 -elementsizemode area -relaxation 4
 
         double DeformationParamter1 = 6;
         std::stringstream out;
@@ -143,7 +146,7 @@ public:
         RemeshingTriggerOnHeteroMeshModifier
         ----------------------------
         */
-        double RemeshingIterations =  10000;
+        double RemeshingIterations =  25000;
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
         std::map<double, c_vector<long double, 4> > GrowthMaps;
         GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter1), 0);
@@ -154,12 +157,7 @@ public:
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
 
-         
-
-
-
-
-
+        
         /*
         -----------------------------
         Constant Compressive tissue pressure
@@ -217,14 +215,14 @@ public:
         double DeformationParamter[8] = {6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10};
         for (unsigned D_index = 0; D_index <8; D_index++)
         {
-            dt/=5;
-            SecondSamplingTimestepMultiple *=5;
+            // dt/=5;
+            // SecondSamplingTimestepMultiple *=5;
             PRINT_VARIABLE(DeformationParamter[D_index])
             std::map<double, c_vector<long double, 4> > GrowthMaps;
             GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter[D_index]), 0);
             //                                 Strength,hetro,stepsize, setupsolve
             p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
-            RemeshingIterations*=5;
+            // RemeshingIterations*=5;
             p_Mesh_modifier->SetRemeshingInterval(RemeshingIterations);
 
             std::stringstream outN;
