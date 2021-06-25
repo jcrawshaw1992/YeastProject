@@ -94,7 +94,7 @@ public:
 
         // vmtksurfaceremeshing -ifile CurrentMesh.stl -ofile CurretMesh3.stl -connectivityiterations 10 -maxarea 0.0000001 -elementsizemode area -relaxation 4
 
-        double DeformationParamter1 = 6;
+        double DeformationParamter1 = 7;
         std::stringstream out;
         out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter1;
         std::string ParameterSet = out.str();
@@ -139,7 +139,7 @@ public:
         simulator.SetSamplingTimestepMultiple(SamplingTimestepMultiple);//100);
         simulator.SetDt(dt); // 0.008
         simulator.SetUpdateCellPopulationRule(false);
-        simulator.SetEndTime(EndTime);
+        simulator.SetEndTime(EndTime+5);
 
         /*
         -----------------------------
@@ -212,8 +212,8 @@ public:
 
         // Now I have done the first one, going to iterate over all the others
 
-        double DeformationParamter[8] = {6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10};
-        for (unsigned D_index = 0; D_index <8; D_index++)
+        double DeformationParamter[6] = {7.5, 8, 8.5, 9, 9.5, 10};
+        for (unsigned D_index = 0; D_index <6; D_index++)
         {
             // dt/=5;
             // SecondSamplingTimestepMultiple *=5;
