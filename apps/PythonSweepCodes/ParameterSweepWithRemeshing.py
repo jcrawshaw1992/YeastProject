@@ -37,11 +37,12 @@ if __name__=="__main__":
 
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
-    AreaParameter = [7, 8 ] # 8 
-    DilationParameter = [6,6.5,7,7.5,8,8.5,9,10]
-    DeformationParamter = [6,6.5,7,7.5,8,8.5,9,10]
+    AreaParameter = [7 ] # 8 , 8
+    DilationParameter = [8,8.5,9,10, 6,6.5,7,7.5]
+    # DeformationParamter = [8,8.5,9,10, 6,6.5,7,7.5]
+    DeformationParamter = [8,8.5,9,10,6,6.5,7,7.5]
 
-    Parallel = 28
+    Parallel = 5
     SleepyTime = 200
 
   
