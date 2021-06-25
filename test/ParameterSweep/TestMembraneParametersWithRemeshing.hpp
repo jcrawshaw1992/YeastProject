@@ -124,6 +124,7 @@ public:
         cell_population.SetChasteOutputDirectory(output_dir, startime);
         cell_population.SetTargetRemeshingEdgeLength(EdgeLength); //0.2e-6 * scale); 
         cell_population.SetTargetRemeshingIterations(TargetRemeshingIterations); //10
+        cell_population.SetBinningIntervals(3, 2,2);
         cell_population.SetPrintRemeshedIC(1);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
@@ -155,7 +156,6 @@ public:
         p_Mesh_modifier->SetRemeshingTrigger("time");
         //Strength , hetro, stepsize, setupsolve
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1, 0, 100, 1);
-        p_Mesh_modifier->SetBinningIntervals(3, 2,2);
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
 
