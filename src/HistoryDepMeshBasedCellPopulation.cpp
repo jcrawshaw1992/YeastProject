@@ -607,7 +607,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningRegion
     // Clear the map so I dont have the old elements and the new elements messing the binning up
     mBin.clear();
     mEdgeBin.clear();
-    double BlurryRegion = 10;
+    double BlurryRegion = 30;
     double X = (mMaxX - mMinX)/BlurryRegion;
     double Y = (mMaxY - mMinY)/BlurryRegion;
     double Z = (mMaxZ - mMinZ)/BlurryRegion;
@@ -847,16 +847,17 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElem
     std::vector<int> Bin = GetBin(NewNodeLocation);
     std::vector<unsigned> ElementsInDaBin= mBin[Bin];
 
-    // for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
-    // {
-
-    for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
-    elem_iter != this->rGetMesh().GetElementIteratorEnd();
-    ++elem_iter)
+    for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
     {
+
+    // for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
+    // elem_iter != this->rGetMesh().GetElementIteratorEnd();
+    // ++elem_iter)
+    // {
         // c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
         unsigned elem_index = elem_iter->GetIndex();
         double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, elem_index) ;
+        PRINT_VARIABLE(DistanceFromContainingElement)
         if (std::abs(DistanceFromContainingElement) < ClosestElementDistance)
         {
             ClosestElementDistance = std::abs(DistanceFromContainingElement);
