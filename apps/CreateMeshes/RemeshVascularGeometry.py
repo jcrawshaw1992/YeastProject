@@ -120,9 +120,9 @@ if __name__=="__main__":
     # # ScalledMeshVTUN = args.ifile + 'PlexusNew.vtu'
 
 
-# #     # # Remove the ends from the mesh 
-#     RemoveInletCaps = 'vmtkmeshclipper -ifile '+ScalledMeshVTU +' -ofile '+ScalledMeshVTUN
-#     subprocess.call(RemoveInletCaps, shell=True)
+#     # # Remove the ends from the mesh 
+    RemoveInletCaps = 'vmtkmeshclipper -ifile '+ScalledMeshVTU +' -ofile '+ScalledMeshVTUN
+    subprocess.call(RemoveInletCaps, shell=True)
 
 
 

@@ -112,6 +112,7 @@ def clip_surface_with_plane(vtkFile, plane_origin, plane_normal, save_name):
     clipper.SetInputConnection(reader.GetOutputPort())
     
     clipper.SetClipFunction(plane)
+    clipper.SetValue(0.001)
     clipper.GenerateClipScalarsOn()
     clipper.GenerateClippedOutputOn()
     clipper.SetValue(0)

@@ -123,28 +123,25 @@ void TestSetUpCylinderArchive() throw(Exception)
         std::vector<c_vector<double,3> > boundary_plane_normals;
 
 
-        boundary_plane_normals.push_back(Create_c_vector( 0.6876729091145614, -0.723181705399979, -0.06414196009395387 ));
-        boundary_plane_points.push_back(Create_c_vector( 0.0724675362704713, 0.031054003292400725, -0.0009112922663102466  )/1.29 );
+        boundary_plane_points.push_back(Create_c_vector(0.04445307579525465, 0.05162259742566157, -0.001990588305433403)/1.29 );
+        boundary_plane_points.push_back(Create_c_vector(0.045098203892165734,0.05064189958380424,0.0011589943289266515)/1.29 );
+        boundary_plane_points.push_back(Create_c_vector(0.03656403371703994,0.049415287040463565,0.0005315046730622214)/1.29 );
+        boundary_plane_points.push_back(Create_c_vector(0.028133553209430767,0.04062601993172238,0.0010395808490631854)/1.29 );
+        boundary_plane_points.push_back(Create_c_vector(0.03817188881578499, 0.019092013302893857, -0.0003001335411293224)/1.29 );
+        boundary_plane_points.push_back(Create_c_vector(0.047632004415947796, 0.018907967775871823, 0.0015750103541767799)/1.29 );
+        boundary_plane_points.push_back(Create_c_vector(0.06539797148540963, 0.025939351832405394, 0.0038007231009339957)/1.29 );
+        boundary_plane_points.push_back(Create_c_vector(0.027592706932313197, 0.03520549399450725, 0.0007548304121448202)/1.29 );
 
-        boundary_plane_points.push_back(Create_c_vector( 0.07302015950969878,  0.04929005203304943 ,  -0.0009321324379871255  )/1.29 );
-        boundary_plane_normals.push_back(Create_c_vector(0.8099647858285579, 0.583291387999826, -0.061059007549540904 ));
 
-        boundary_plane_points.push_back(Create_c_vector(0.06070135750737772, 0.06678712447635708 , -0.0012765098114253428  )/1.29 );
-        boundary_plane_normals.push_back(Create_c_vector( 0.8198804013531591,0.5725347541133972, -0.0002877660418513367 ));
-
-        boundary_plane_points.push_back(Create_c_vector( 0.0492631187864004, 0.06635229901428957,  -0.0006305583601383584 )/1.29 );
-        boundary_plane_normals.push_back(Create_c_vector(-0.6515501955094116, 0.7583557214561671, 0.01946644462514594 ));
-
-        boundary_plane_points.push_back(Create_c_vector(0.03616972612522409,  0.048916381517621316,0.001733557990624898)/1.29 );
-        boundary_plane_normals.push_back(Create_c_vector(-0.9994345263050555, 0.033620433310641906, 0.000542303784124859 ));
-
-        boundary_plane_points.push_back(Create_c_vector( 0.03945803742561154, 0.03159871732688262, -0.001004170736673922  )/1.29 );
-        boundary_plane_normals.push_back(Create_c_vector(-0.7275651727083541, -0.6859435736276984, -0.011416359346371455 ));
-
-        boundary_plane_points.push_back(Create_c_vector( 0.05271817828553492, 0.023925699842467642,  0.0007781234886797855 )/1.29 );
-        boundary_plane_normals.push_back(Create_c_vector(-0.13175654960891212, -0.9844249178554848, 0.11639498589018506 ));
-
-        // -------------------------------------------
+        boundary_plane_normals.push_back(Create_c_vector(-0.8105631234548122,-0.5853191641674113,0.019720521127546863)   );
+        boundary_plane_normals.push_back(Create_c_vector(0.8081276713886205,-0.5856195847394546,-0.06308223763940606));
+        boundary_plane_normals.push_back(Create_c_vector(0.6955018850657018,-0.7184806801140912,0.007914554494637781));
+        boundary_plane_normals.push_back(Create_c_vector(0.983017698694772,-0.1828596366438072,-0.015445301529249871));
+        boundary_plane_normals.push_back(Create_c_vector(0.03619867499024044,0.9989466830122159,-0.02819894373));
+        boundary_plane_normals.push_back(Create_c_vector(-0.6183178411933676,0.7845743897013229,0.04610937309019025));
+        boundary_plane_normals.push_back(Create_c_vector(-0.8188719509487834,-0.5731501839108796,0.030783025066716225));
+        boundary_plane_normals.push_back(Create_c_vector(0.9930115746535606,-0.1034408880150438, -0.05681544940168478));
+        
 
 
         for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
