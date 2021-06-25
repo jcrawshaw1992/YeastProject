@@ -148,7 +148,7 @@ public:
         RemeshingTriggerOnHeteroMeshModifier
         ----------------------------
         */
-        double RemeshingIterations =  EndTime/dt*0.6;
+        double RemeshingIterations =  EndTime/dt*0.5;
         boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
         std::map<double, c_vector<long double, 4> > GrowthMaps;
         GrowthMaps[1] = Create_c_vector(pow(10, -AreaParameter), pow(10, -DilationParameter), pow(10, -DeformationParamter), 0);

@@ -49,7 +49,7 @@ if __name__=="__main__":
     TargetRemeshingIterations = 15
     SamplingTimestepMultiple = 1000
     SecondSamplingTimestepMultiple = 1000
-    EdgeLength =  0.3
+    EdgeLength =  0.25
     ND =20
     AvaliablePaths = range(Parallel)
     for i in AreaParameter:
@@ -62,7 +62,7 @@ if __name__=="__main__":
                 Input1a = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j) +' -DeformationParamter '+str(k)+ ' -dt ' + str(dt) + ' -EndTime '+ str(EndTime) +' -SamplingTimestepMultiple '+ str(SamplingTimestepMultiple) 
                 Input1b = ' -TargetRemeshingIterations ' +str(TargetRemeshingIterations) + ' -EdgeLength ' +str(EdgeLength) + ' -SecondSamplingTimestepMultiple ' +str(SecondSamplingTimestepMultiple) + ' -N_D '+ str(ND)
                 Input1 = Input1a+Input1b
-                Input2 = TerminalOutputFolder+'AreaParameter_'+str(i)+'_DilationParameter_'+str(j)+'.txt'
+                Input2 = TerminalOutputFolder+'AreaParameter_'+str(i)+'_DilationParameter_'+str(j)+' -DeformationParamter '+str(k)+'.txt'
                 Input3 = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
                 subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
                     
