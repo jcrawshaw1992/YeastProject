@@ -95,7 +95,6 @@ public:
             N_D = CommandLineArguments::Instance()->GetDoubleCorrespondingToOption("-N_D");
         }
 
-        // vmtksurfaceremeshing -ifile CurrentMesh.stl -ofile CurretMesh3.stl -connectivityiterations 10 -maxarea 0.0000001 -elementsizemode area -relaxation 4
 
         std::stringstream out;
         out << "Param_" << AreaParameter << "_DilationParam_" << DilationParameter << "_DeformationParam_" << DeformationParamter;

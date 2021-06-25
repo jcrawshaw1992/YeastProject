@@ -264,8 +264,8 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
         SystemOutput = std::system(CGALRemeshingCommand.c_str()); // system only takes char *
     } 
 
-       cd  ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/;
-       ./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Downloads/PlexusExampleSmall/results_from_time_0/ClippedMesh.off -output /Users/jcrawshaw/Downloads/PlexusExampleSmall/results_from_time_0/Remesh.off -target_edge_length 0.0005 -iterations 5
+    //    cd  ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/;
+    //    ./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Downloads/PlexusExampleSmall/results_from_time_0/ClippedMesh.off -output /Users/jcrawshaw/Downloads/PlexusExampleSmall/results_from_time_0/Remesh.off -target_edge_length 0.0005 -iterations 5
     // cd  ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/;./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Documents/Projects/Meshes/Plexus.off  -output  /Users/jcrawshaw/Documents/Projects/Meshes/PlexusRemeshed.off -target_edge_length 0.001  -iterations  5
 
 
