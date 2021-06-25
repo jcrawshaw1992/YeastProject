@@ -366,7 +366,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     std::vector<double> RadiVector;
     std::vector<double> XValue;
     double MinRadius = 1000000;
-    double Radius_0 =  1e-3;
+    double Radius_0 =  0.5e-3;
     for (unsigned i = 0; i < NumberOfDataPoints; i++)
     {
         double* data = p_scalars->GetTuple(i); //RadiVector.push_back(*data);

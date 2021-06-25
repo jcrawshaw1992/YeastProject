@@ -45,10 +45,10 @@ public:
   
         double EndTime = 10;
         double scale = 1e3;
-        double Length = 10e-6 * scale;
-        double Radius = 1e-6 * scale;
+        double Length = 30e-6 * scale;
+        double Radius = 0.5e-6 * scale;
 
-        unsigned N_D = 30;
+        unsigned N_D = 50;
         unsigned N_Z = 30;
         
         std::string output_dir = "TestHemeLBChaste/";
@@ -115,7 +115,7 @@ public:
 
         boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
         p_ForceOut->SetPressure(P_blood-P_tissue);
-        p_ForceOut->SetRadiusThreshold(5*Radius);
+        p_ForceOut->SetRadiusThreshold(10*Radius);
         simulator.AddForce(p_ForceOut);
  
         /*
@@ -142,8 +142,8 @@ public:
         CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(&simulator);
 }
 
- void TestCollapsingCylinder() throw (Exception)
-    {        
+    void TestCollapsingCylinder() throw (Exception)
+      {        
         std::string output_dir = "TestHemeLBChaste/";
         double scale = 1e3; 
         double EndTime = 10;        
@@ -169,8 +169,8 @@ public:
         ----------------------------
         */        
 
-        double Length = 10e-6 * scale;
-        double Radius = 1e-6 * scale;
+        double Length = 30e-6 * scale;
+        double Radius = 0.5e-6 * scale;
 
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(0,0,1);
         c_vector<double, 3> Point1 = Create_c_vector(0,0,0.1e-6 * scale);

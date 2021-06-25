@@ -75,7 +75,7 @@ public:
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
         cell_population.SetRemeshingSoftwear("CGAL");
-        cell_population.SetOperatingSystem("mac");
+        cell_population.SetOperatingSystem("server");
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
 
