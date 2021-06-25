@@ -139,7 +139,7 @@ public:
         simulator.SetSamplingTimestepMultiple(SamplingTimestepMultiple);//100);
         simulator.SetDt(dt); // 0.008
         simulator.SetUpdateCellPopulationRule(false);
-        simulator.SetEndTime(EndTime+5);
+        simulator.SetEndTime(EndTime+20);
 
         /*
         -----------------------------
