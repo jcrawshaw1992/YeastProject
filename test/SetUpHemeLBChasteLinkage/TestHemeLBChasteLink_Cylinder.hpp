@@ -40,7 +40,7 @@
 class TestRemeshing  : public AbstractCellBasedTestSuite
 {
 public:
- void offTestGrowToEquiCylinder() throw (Exception)
+ void TestGrowToEquiCylinder() throw (Exception)
     {
   
         double EndTime = 10;
