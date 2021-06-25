@@ -36,7 +36,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
         MutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh = p_cell_population->rGetMesh();
         mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
 
-        WriteOutVtuFile(mOutputDirectory);
+        // WriteOutVtuFile(mOutputDirectory);
 
         // /* Run HemeLB */
         ExecuteHemeLB();
@@ -50,7 +50,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
         mExecuteHemeLBCounter += 1;
     }
 
-   MAKE_PTR(EmptyBasementMatrix, p_Basement);
+//    MAKE_PTR(EmptyBasementMatrix, p_Basement);
     for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
          cell_iter != rCellPopulation.End();
          ++cell_iter)
@@ -58,7 +58,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
         unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
         Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
         c_vector<double, 3> ForceOnNode = mForceMap[node_index]/1;
-        rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(-ForceOnNode); 
+        rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(ForceOnNode); 
     }
 }
 
@@ -115,6 +115,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
 
         std::rename(mResultsDirectory.c_str(), OldResultsDirectory.c_str());
         SystemOutput = system(mRemoveResultsDirectory.c_str());
+        
     }
     else
     {
@@ -156,30 +157,55 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     {
         SystemOutput = std::system("open ./projects/VascularRemodelling/apps/RunHemeLB");
     }
-    
+
+    TRACE("GmyUnstructuredGridReader")
+    std::string GmyUnstructuredGridReader = "python " +mHemeLBPath+ "Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >nul"; 
+    SystemOutput = std::system(GmyUnstructuredGridReader.c_str());
+
+
+    // PRINT_VARIABLE(boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
+    while(! boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
+    {
+        TRACE("waiting within C")
+        sleep(30); 
+    }
+
 
     /*  Step 3a: 
         While the current HemeLB simulation is running, sort some things out 
         i) get the files from the last time step moved and duplication (only the last file is duplicated, this one is and easy & stable flow result to grab)
     */
 
+    // if (mFlowVtus)
+    // {
+        TRACE("GmyUnstructuredGridReader")
+        std::string GmyUnstructuredGridReader = "python " +mHemeLBPath+ "Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >nul"; 
+        SystemOutput = std::system(GmyUnstructuredGridReader.c_str());
+
+        // For the not first ones here is what I will do, this one is the set up so I wont bother here, but in future reps have the vtu sorting when HemelB is going
+        std::string GenerateFlowVtus = "python " +mHemeLBPath+ "Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory + "results/Extracted/surface-traction.xtr >nul";
+        SystemOutput = std::system(GenerateFlowVtus.c_str());
+    // }
+
  
     // Sort vtus files  --- still need to properly set up the file directories, but I think this will happen later
-    if (mCenterlinesNumber >1)
-    {
-        TRACE("mCenterlinesNumber HemeLB")
-        std::ostringstream strs1;
-        strs1 << mStartTime;
-        std::string StartTime = strs1.str();
-        PRINT_VARIABLE(StartTime)
-        std::string vtuFileSorting = "python projects/VascularRemodelling/apps/SortVtuFiles.py -Directory " + mChasteOutputDirectory+mOutputDirectory + " -CurrentNumberOfFiles " + std::to_string(mLatestFinialHemeLBVTU) + " -Time " + StartTime+ " >nul";
-        SystemOutput =  std::system(vtuFileSorting.c_str());
-        if (mFlowVtus)
-        {
-            UpdateCurrentyFlowVtuCount();  
-        }
+    // if (mCenterlinesNumber >1)
+    // {
+    //     TRACE("mCenterlinesNumber HemeLB")
+    //     std::ostringstream strs1;
+    //     strs1 << mStartTime;
+    //     std::string StartTime = strs1.str();
+    //     PRINT_VARIABLE(StartTime)
+    //     std::string vtuFileSorting = "python projects/VascularRemodelling/apps/SortVtuFiles.py -Directory " + mChasteOutputDirectory+mOutputDirectory + " -CurrentNumberOfFiles " + std::to_string(mLatestFinialHemeLBVTU) + " -Time " + StartTime+ " >nul";
+    //     SystemOutput =  std::system(vtuFileSorting.c_str());
+    //     if (mFlowVtus)
+    //     {
+    //         UpdateCurrentyFlowVtuCount();  
+    //     }
         
-    }
+    // }
+
+    CopyFile(mHemeLBDirectory + "results/Extracted/surface-pressure_"+Period+".vtu", mHemeLB_output + "surface-pressure_"+std::to_string(mCenterlinesNumber)+".vtp");
     CopyFile(mHemeLBDirectory + "centerlines.vtp", mHemeLB_output + "Centerlines_"+std::to_string(mCenterlinesNumber)+".vtp");
     mCenterlinesNumber +=1;
 
@@ -187,16 +213,11 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     /* Now wait*/
     // std::string WaitCommand = "./projects/VascularRemodelling/apps/wait_file " + mHemeLBDirectory + "WaitFile.txt >nul";
     // SystemOutput =  std::system(WaitCommand.c_str());
-    // TRACE("Have waited long enough :)") 
+    // // TRACE("Have waited long enough :)") 
 
-    // PRINT_VARIABLE(boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
-    // while(! boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
-    // {
-    //     TRACE("waiting within C")
-    //     sleep(10); 
-    // }
     
-        /* Generate a new stl file from the vtu while HemeLB is going*/
+    
+    // /* Generate a new stl file from the vtu while HemeLB is going*/
     // std::string ConvertVTUtoSTL = "python projects/VascularRemodelling/apps/vtuTostl.py -Directory " + mHemeLBDirectory + " >nul";
     // SystemOutput = std::system(ConvertVTUtoSTL.c_str());
 
@@ -213,13 +234,13 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     // Set up to generate the vtu files -> SHould have a vtu generated here, i think from the gmy file 
     // if (mFlowVtus)
     // {
-        TRACE("GmyUnstructuredGridReader")
-        std::string GmyUnstructuredGridReader = "python " +mHemeLBPath+ "Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >nul"; 
-        SystemOutput = std::system(GmyUnstructuredGridReader.c_str());
+        // TRACE("GmyUnstructuredGridReader")
+        // std::string GmyUnstructuredGridReader = "python " +mHemeLBPath+ "Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >nul"; 
+        // SystemOutput = std::system(GmyUnstructuredGridReader.c_str());
 
-        // For the not first ones here is what I will do, this one is the set up so I wont bother here, but in future reps have the vtu sorting when HemelB is going
-        std::string GenerateFlowVtus = "python " +mHemeLBPath+ "Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory + "results/Extracted/surface-traction.xtr >nul";
-        SystemOutput = std::system(GenerateFlowVtus.c_str());
+        // // For the not first ones here is what I will do, this one is the set up so I wont bother here, but in future reps have the vtu sorting when HemelB is going
+        // std::string GenerateFlowVtus = "python " +mHemeLBPath+ "Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory + "results/Extracted/surface-traction.xtr >nul";
+        // SystemOutput = std::system(GenerateFlowVtus.c_str());
     // }
 
 }
@@ -293,17 +314,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Inlets(c_vector<double, 3> PlaneNormal
 }
 
 
-// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-// void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::CollapsedRegions(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> LowerPoint)
-// {
-//     // Set the boundary planes for this hetro region, set an upper and a lower bound.
-//     c_vector<c_vector<double, 3> , 4> mCollapsedRegion;
-//     mCollapsedRegion[0] = UpperPlaneNormal * mHemeLBScalling;
-//     mCollapsedRegion[1] = UpperPoint * mHemeLBScalling;
-//     mCollapsedRegion[2] = LowerPlaneNormal * mHemeLBScalling;
-//     mCollapsedRegion[3] = LowerPoint * mHemeLBScalling;
 
-// }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOutVtuFile(std::string outputDirectory)
@@ -393,7 +404,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
      */
 
     double V = 4; // Kinematic viscosity -- 4 mm^2/s  V = eta/rho
-    double deltaX = 2*mRadius/15;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
+    double deltaX = 2*mRadius/41;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
     double deltaT = 0.1 * deltaX * deltaX / V;
    
     double MaxPressure = *std::min_element(mPressure.begin(), mPressure.end());
@@ -440,7 +451,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
         config_pr2 << "  Normal: {x: " + std::to_string(Normal[0]) + ", y: " + std::to_string(Normal[1]) + ", z: " + std::to_string(Normal[2]) + "}\n";
         config_pr2 << "  Pressure: {x: " + std::to_string(mPressure[i]) + ", y: 0.0, z: 0.0}\n";
         mEstimatedIC+=mPressure[i];
-        config_pr2 << "  Radius: " + std::to_string(mRadius * 3) + "\n";
+        config_pr2 << "  Radius: " + std::to_string(mRadius * 10) + "\n";
         config_pr2 << "  Type: " + mType[i] + "\n";
     }
 
@@ -794,7 +805,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 
             NormalVector  += VectorProduct(vector_12, vector_13);
         }
-		NormalVector /=-norm_2(NormalVector); // I think the normal is inwards facing 
+		NormalVector /=norm_2(NormalVector); // I think the normal is inwards facing 
 
 		// Get the HemeLB force at the closest lattice site 
 		c_vector<double,3> force = mAppliedTractions[nearest_fluid_site]/133.3223874;//*voronoi_cell_area;  Convert to Pas
@@ -842,16 +853,16 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("Pressure", Pressure);
-		cell_iter->GetCellData()->SetItem("applied_force_x", Force[0]);
+		// cell_iter->GetCellData()->SetItem("applied_force_x", Force[0]);
 		// PRINT_VECTOR(Force);
-		cell_iter->GetCellData()->SetItem("applied_force_y", Force[1]);
-		cell_iter->GetCellData()->SetItem("applied_force_z", Force[2]);
-		cell_iter->GetCellData()->SetItem("applied_force_mag", norm_2(Force));
-		cell_iter->GetCellData()->SetItem("voronoi_cell_area", voronoi_cell_area);
-		cell_iter->GetCellData()->SetItem("applied_shear_stress_x", shear_stress[0]);
-		cell_iter->GetCellData()->SetItem("applied_shear_stress_y", shear_stress[1]);
-		cell_iter->GetCellData()->SetItem("applied_shear_stress_z", shear_stress[2]);
-		cell_iter->GetCellData()->SetItem("applied_shear_stress_mag", norm_2(shear_stress));
+		// cell_iter->GetCellData()->SetItem("applied_force_y", Force[1]);
+		// cell_iter->GetCellData()->SetItem("applied_force_z", Force[2]);
+		// cell_iter->GetCellData()->SetItem("applied_force_mag", norm_2(Force));
+		// cell_iter->GetCellData()->SetItem("voronoi_cell_area", voronoi_cell_area);
+		// cell_iter->GetCellData()->SetItem("applied_shear_stress_x", shear_stress[0]);
+		// cell_iter->GetCellData()->SetItem("applied_shear_stress_y", shear_stress[1]);
+		// cell_iter->GetCellData()->SetItem("applied_shear_stress_z", shear_stress[2]);
+		// cell_iter->GetCellData()->SetItem("applied_shear_stress_mag", norm_2(shear_stress));
 	}
 }
 
