@@ -19,14 +19,14 @@ if __name__=="__main__":
     GenerateRunner =1
     print GenerateRunner
     if GenerateRunner ==1:
-        command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUp.hpp"
+        command = "cd ~/Chaste && scons b=GccOpt projects/VascularRemodelling/test/ParameterSweep/TestMembraneParametersWithRemeshing.hpp"
         subprocess.call(command, shell=True)
     Server = 1
     if Server ==1:
-        chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUpRunner '
+        chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshingRunner '
         TerminalOutputFolder = "/data/vascrem/testoutput/ParameterSweepWithRemeshing5/SweepTerminalOutputs/"
     else:
-        chaste_run_exe =  '/Users/jcrawshaw/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUpRunner '
+        chaste_run_exe =  '/Users/jcrawshaw/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshingRunner '
         TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/ParameterSweepWithRemeshing/Cylinder2/SweepTerminalOutputs/"
 
     if path.isdir("/data/vascrem/testoutput/ParameterSweepWithRemeshing5")==0:
