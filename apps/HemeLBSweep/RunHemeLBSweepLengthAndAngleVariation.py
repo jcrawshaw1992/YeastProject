@@ -141,42 +141,42 @@ def write_pr2(outputDirectory, SimulationDuration, MinRadii, Seed, Boundaries):
     f.write("DurationSeconds: "+ str(Duration) +"\n")
     f.write("Iolets:\n"+ \
     # ------Inlets ----
-    "- Centre: {x: "+str(Boundaries[0]+0.000001)+", y: 0.000000, z: 0.000000}\n"+ \
+    "- Centre: {x: "+str(Boundaries[0]+0.00001)+", y: 0.000000, z: 0.000000}\n"+ \
     "  Name: Inlet1\n"+ \
     "  Normal: {x: 1.000000, y: 0.000000, z: 0.000000}\n"+ \
     "  Pressure: {x: "+str(InletPressure)+", y: 0.0, z: 0.0}\n"+ \
     "  Radius: 0.5\n"+ \
     "  Type: Inlet\n"+ \
     # ------
-    "- Centre: {x: "+str(Boundaries[0]+0.000001)+", y: -0.27, z: 0.000000}\n"+ \
+    "- Centre: {x: "+str(Boundaries[0]+0.00001)+", y: -0.27, z: 0.000000}\n"+ \
     "  Name: Inlet2\n"+ \
     "  Normal: {x: 1.000000, y: 0.000000, z: 0.000000}\n"+ \
     "  Pressure: {x: "+str(InletPressure)+", y: 0.0, z: 0.0}\n"+ \
     "  Radius: 0.5\n"+ \
     "  Type: Inlet\n"+ \
     # ------
-    "- Centre: {x: "+str(Boundaries[0]+0.000001)+", y: 0.27, z: 0.000000}\n"+ \
+    "- Centre: {x: "+str(Boundaries[0]+0.00001)+", y: 0.27, z: 0.000000}\n"+ \
     "  Name: Inlet3\n"+ \
     "  Normal: {x: 1.000000, y: 0.000000, z: 0.000000}\n"+ \
     "  Pressure: {x: "+str(InletPressure)+", y: 0.0, z: 0.0}\n"+ \
     "  Radius: 0.5\n"+ \
     "  Type: Inlet\n"+ \
     # -----Outlets -----
-    "- Centre: {x: "+str(Boundaries[1]-0.000001)+", y: -0.27, z: 0.000000}\n"+ \
+    "- Centre: {x: "+str(Boundaries[1]-0.00001)+", y: -0.27, z: 0.000000}\n"+ \
     "  Name: Outlet1\n"+ \
     "  Normal: {x: -1.000000, y: 0.000000, z: 0.000000}\n"+ \
     "  Pressure: {x: "+str(OutletPressure)+", y: 0.0, z: 0.0}\n"+ \
     "  Radius: 0.5\n"+ \
     "  Type: Outlet\n"+ \
     # -----Outlets -----
-    "- Centre: {x: "+str(Boundaries[1]-0.000001)+", y: 0, z: 0.000000}\n"+ \
+    "- Centre: {x: "+str(Boundaries[1]-0.00001)+", y: 0, z: 0.000000}\n"+ \
     "  Name: Outlet2\n"+ \
     "  Normal: {x: -1.000000, y: 0.000000, z: 0.000000}\n"+ \
     "  Pressure: {x: "+str(OutletPressure)+", y: 0.0, z: 0.0}\n"+ \
     "  Radius: 0.5\n"+ \
     "  Type: Outlet\n"+ \
     # ------
-    "- Centre: {x: "+str(Boundaries[1]-0.000001)+", y: 0.270, z: 0.000000}\n"+ \
+    "- Centre: {x: "+str(Boundaries[1]-0.00001)+", y: 0.270, z: 0.000000}\n"+ \
     "  Name: Outlet3\n"+ \
     "  Normal: {x: -1.000000, y: 0.000000, z: 0.000000}\n"+ \
     "  Pressure: {x: "+str(OutletPressure)+", y: 0.0, z: 0.0}\n"+ \
@@ -247,17 +247,19 @@ def CreateNewFolder(Directory):
 
 if __name__=="__main__":
     t0 = time.time()
-
     TerminalOutputFolder = '/data/vascrem/testoutput/HemeLBSweep/VariableEdgeLengthAndAngle/'
     MeshFolder = '/data/vascrem/MeshCollection/IdealisedNetwork/VaryingLengthAndAngle/'
     CreateNewFolder(TerminalOutputFolder)
 
     Collapse = ['0.3178', '0.417','0.5124', '0.6119', '0.708', '0.8059']  
-    BifucationAngles = [ 'PI_3']  
-    Lengths = ['1.4', '1.6', '1.8', '2']
+    BifucationAngles = ['PI_2_2', 'PI_3', 'PI_4', 'PI_5', 'PI_6'] 
+    
+    # Lengths = [ '0.4', '0.6', '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2'] # '0.2'
+    Lengths = [ '0.4', '0.6', '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2']
+    Collapse = [ '0.2248','0.3178', '0.417','0.5124','0.6119', '0.708','0.8059', '0.9032'] #  '0.3178', 
 
     Parallel = 4
-    SleepyTime = 200
+    SleepyTime = 300
     AvaliablePaths = range(Parallel)
     counter = 1
 
@@ -265,25 +267,34 @@ if __name__=="__main__":
         AngleMeshDirectory = MeshFolder+Angle
         CreateNewFolder(TerminalOutputFolder+Angle)
         for length in Lengths:
-            CreateNewFolder(TerminalOutputFolder+Angle+'/HorizontalLength_'+length)
             LengthMeshDirectory = AngleMeshDirectory+'/HorizontalLength_'+length
-            for i in Collapse:
-                if Angle == '/PI_6/' and float(i) > 0.7:
-                    continue
-                if Angle == '/PI_2.2/' and float(i) < 0.4:
-                    continue
-                if float(length) < 0.85 and float(i) > 0.65:
-                    continue
-                if float(length) > 1.5 and float(i) < 0.65:
-                    continue
+
+            CreateNewFolder(TerminalOutputFolder+Angle+'/HorizontalLength_'+length)
             
-                Core = AvaliablePaths[0] 
+            for i in Collapse:
+            
+                # if Angle == '/PI_6/' and float(i) > 0.55:
+                #     continue
+                # if Angle == '/PI_2.2/' and float(i) < 0.4:
+                #     continue
+                # if float(length) < 0.85 and float(i) > 0.65:
+                #     continue
+                # if float(length) > 1.5 and float(i) < 0.65:
+                #     continue
+
+                ScaledMeshstl = LengthMeshDirectory+'/ScaledMesh.' +i+ '.stl'
+                if os.path.isfile(ScaledMeshstl) ==0:
+                    continue
+
                 mHemeLBDirectory = TerminalOutputFolder+Angle+'/HorizontalLength_'+length+'/'+i+'/'
+                if os.path.isdir(mHemeLBDirectory):
+                    continue
+
+                Core = AvaliablePaths[0] 
                 print mHemeLBDirectory
                 CreateNewFolder(mHemeLBDirectory)
                 CheckToReplaceResultsFolder(mHemeLBDirectory)
                                                 
-                ScaledMeshstl = LengthMeshDirectory+'/ScaledMesh.' +i+ '.stl'
                 MeshFile = mHemeLBDirectory + 'config.stl'
                 shutil.copyfile(ScaledMeshstl, MeshFile)
                 
@@ -292,15 +303,15 @@ if __name__=="__main__":
                 Seed = MeshData[2:5]
 
                 dX = 0.08/41.0
-                SimulationTime = 12000
+                SimulationTime = 14000
                 if float(length) < 0.3:
-                    SimulationTime = 5000
+                    SimulationTime = 6000
                 elif float(length) < 0.63:
-                    SimulationTime = 8000
-                elif float(length) < 0.7:
                     SimulationTime = 9000
-                elif float(length) < 1.1:
+                elif float(length) < 0.7:
                     SimulationTime = 10000
+                elif float(length) < 1.1:
+                    SimulationTime = 12000
         
                 
                 write_pr2(mHemeLBDirectory, SimulationTime, dX, Seed, Boundaries)
@@ -310,14 +321,14 @@ if __name__=="__main__":
                 update_xml_file(int(SimulationTime*0.9), mHemeLBDirectory)
             
                 # # Run HemeLB
-                RunHemeLB = 'mpirun -np 4 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
+                RunHemeLB = 'mpirun -np 5 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
                 TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
                 # # Generate the new config.vtu
                 GmyUnstructuredGridReader =" python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
                 # Generate the flow vtus
                 GenerateFlowVtus = " python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "Results/Extracted/wholegeometry-velocity.xtr "
                 # Generate waitFile
-                WaitFileGeneration = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
+                WaitFileGeneration = TerminalOutputFolder+'WaitFileVar2'+str(Core)+'.txt'
                 subprocess.Popen(['./RunHemeLBSweepBash', RunHemeLB, TerminalOutput, GmyUnstructuredGridReader, GenerateFlowVtus, WaitFileGeneration ])
             
             
@@ -328,92 +339,7 @@ if __name__=="__main__":
                     # print "Awake and checking for spare cores" 
                     print "Sleep Time"
                     for P in range(Parallel):
-                        OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
-                        if path.exists(OutputFile):
-                            AvaliablePaths.append(P)
-                            os.remove(OutputFile)
-                    if len(AvaliablePaths) >0:
-                        print AvaliablePaths, "Have found a spare core or two :-) " 
-                        print time.time() - t0, "seconds time"
-
-
-    Collapse = ['0.3178', '0.417','0.5124', '0.6119', '0.708', '0.8059']  
-    BifucationAngles = ['PI_4', 'PI_5'] 
-    # BifucationAngles = ['PI_2_2', 'PI_3', 'PI_4', 'PI_5', 'PI_6'] 
-    Lengths = ['0.2', '0.4', '0.6', '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2']
-
-    Parallel = 4
-    SleepyTime = 200
-    AvaliablePaths = range(Parallel)
-    counter = 1
-
-    for Angle in BifucationAngles:
-        AngleMeshDirectory = MeshFolder+Angle
-        CreateNewFolder(TerminalOutputFolder+Angle)
-        for length in Lengths:
-            CreateNewFolder(TerminalOutputFolder+Angle+'/HorizontalLength_'+length)
-            LengthMeshDirectory = AngleMeshDirectory+'/HorizontalLength_'+length
-            for i in Collapse:
-                if Angle == '/PI_6/' and float(i) > 0.7:
-                    continue
-                if Angle == '/PI_2.2/' and float(i) < 0.4:
-                    continue
-                if float(length) < 0.85 and float(i) > 0.65:
-                    continue
-                if float(length) > 1.5 and float(i) < 0.65:
-                    continue
-            
-                Core = AvaliablePaths[0] 
-                mHemeLBDirectory = TerminalOutputFolder+Angle+'/HorizontalLength_'+length+'/'+i+'/'
-                CreateNewFolder(mHemeLBDirectory)
-                CheckToReplaceResultsFolder(mHemeLBDirectory)
-                                                
-                ScaledMeshstl = LengthMeshDirectory+'/ScaledMesh.' +i+ '.stl'
-                MeshFile = mHemeLBDirectory + 'config.stl'
-                shutil.copyfile(ScaledMeshstl, MeshFile)
-                
-                MeshData = GetTheDetailsOfTheMesh(MeshFile)
-                Boundaries =  MeshData[0:2]
-                Seed = MeshData[2:5]
-
-                dX = 0.08/41.0
-                SimulationTime = 12000
-                if float(length) < 0.3:
-                    SimulationTime = 5000
-                elif float(length) < 0.63:
-                    SimulationTime = 8000
-                elif float(length) < 0.7:
-                    SimulationTime = 9000
-                elif float(length) < 1.1:
-                    SimulationTime = 10000
-        
-                
-                write_pr2(mHemeLBDirectory, SimulationTime, dX, Seed, Boundaries)
-                run_hemelb_setup(mHemeLBDirectory)
-
-                #  Update the xml file
-                update_xml_file(int(SimulationTime*0.9), mHemeLBDirectory)
-            
-                # # Run HemeLB
-                RunHemeLB = 'mpirun -np 6 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
-                TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
-                # # Generate the new config.vtu
-                GmyUnstructuredGridReader =" python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
-                # Generate the flow vtus
-                GenerateFlowVtus = " python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "Results/Extracted/wholegeometry-velocity.xtr "
-                # Generate waitFile
-                WaitFileGeneration = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
-                subprocess.Popen(['./RunHemeLBSweepBash', RunHemeLB, TerminalOutput, GmyUnstructuredGridReader, GenerateFlowVtus, WaitFileGeneration ])
-            
-            
-                AvaliablePaths.remove(Core) 
-                # Check if all positions are taken
-                while len(AvaliablePaths) ==0:
-                    time.sleep(SleepyTime)
-                    # print "Awake and checking for spare cores" 
-                    print "Sleep Time"
-                    for P in range(Parallel):
-                        OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
+                        OutputFile = TerminalOutputFolder+'WaitFileVar2'+str(P)+'.txt'
                         if path.exists(OutputFile):
                             AvaliablePaths.append(P)
                             os.remove(OutputFile)
