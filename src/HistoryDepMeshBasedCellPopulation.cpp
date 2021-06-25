@@ -857,7 +857,7 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElem
         // c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
         // unsigned elem_index = elem_iter->GetIndex();
         double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, *elem_index) ;
-        PRINT_VARIABLE(DistanceFromContainingElement)
+        // PRINT_VARIABLE(DistanceFromContainingElement)
         if (std::abs(DistanceFromContainingElement) < ClosestElementDistance)
         {
             ClosestElementDistance = std::abs(DistanceFromContainingElement);
