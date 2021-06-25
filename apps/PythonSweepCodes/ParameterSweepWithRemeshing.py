@@ -24,13 +24,13 @@ if __name__=="__main__":
     Server = 1
     if Server ==1:
         chaste_run_exe = '/home/vascrem/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUpRunner '
-        TerminalOutputFolder = "/data/vascrem/testoutput/ParameterSweepWithRemeshing4/SweepTerminalOutputs/"
+        TerminalOutputFolder = "/data/vascrem/testoutput/ParameterSweepWithRemeshing5/SweepTerminalOutputs/"
     else:
         chaste_run_exe =  '/Users/jcrawshaw/Chaste/projects/VascularRemodelling/build/optimised/ParameterSweep/TestMembraneParametersWithRemeshing_buildingUpRunner '
         TerminalOutputFolder = "/Users/jcrawshaw/Documents/testoutput/ParameterSweepWithRemeshing/Cylinder2/SweepTerminalOutputs/"
 
-    if path.isdir("/data/vascrem/testoutput/ParameterSweepWithRemeshing4")==0:
-        os.mkdir("/data/vascrem/testoutput/ParameterSweepWithRemeshing4")
+    if path.isdir("/data/vascrem/testoutput/ParameterSweepWithRemeshing5")==0:
+        os.mkdir("/data/vascrem/testoutput/ParameterSweepWithRemeshing5")
 
     if path.isdir(TerminalOutputFolder)==0:
         os.mkdir(TerminalOutputFolder)
@@ -38,13 +38,13 @@ if __name__=="__main__":
     # subprocess.call("chmod 700 RunChaste", shell=True)
 
     AreaParameter = [7, 8 ] # 8 
-    DilationParameter = [10,9.5, 9, 8.5, 8,7.5,7,6.5,6  ]
+    DilationParameter = [6,6.5,7,7.5,8,8.5,9,10]
+    DeformationParamter = [6,6.5,7,7.5,8,8.5,9,10]
 
     Parallel = 28
     SleepyTime = 200
 
-
-    EndTime =4
+  
     dt = 0.001
     TargetRemeshingIterations = 15
     SamplingTimestepMultiple = 1000
@@ -54,36 +54,31 @@ if __name__=="__main__":
     AvaliablePaths = range(Parallel)
     for i in AreaParameter:
         for j in DilationParameter:
-            Core = AvaliablePaths[0]
-            EndTime =10
-            # if i < 8:
-            #     EndTime = 8
-            # else:
-            #     EndTime = 10
-
-            # if j > 9:
-            #     EndTime = 15
-
-            Input1a = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j) + ' -dt ' + str(dt) + ' -EndTime '+ str(EndTime) +' -SamplingTimestepMultiple '+ str(SamplingTimestepMultiple) 
-            Input1b = ' -TargetRemeshingIterations ' +str(TargetRemeshingIterations) + ' -EdgeLength ' +str(EdgeLength) + ' -SecondSamplingTimestepMultiple ' +str(SecondSamplingTimestepMultiple) + ' -N_D '+ str(ND)
-            Input1 = Input1a+Input1b
-            Input2 = TerminalOutputFolder+'AreaParameter_'+str(i)+'_DilationParameter_'+str(j)+'.txt'
-            Input3 = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
-            subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
-                
-            AvaliablePaths.remove(Core) 
-            # # Check if all positions are taken
-            while len(AvaliablePaths) ==0:
-                time.sleep(SleepyTime)
-                # print "Awake and checking for spare cores" 
-                for P in range(Parallel):
-                    OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
-                    if path.exists(OutputFile):
-                        AvaliablePaths.append(P)
-                        os.remove(OutputFile)
-                if len(AvaliablePaths) >0:
-                    print AvaliablePaths, "Have found a spare core or two :-) " 
-                    print time.time() - t0, "seconds time"
+            EndTime =5
+            for k in DeformationParamter:
+                Core = AvaliablePaths[0]
+                EndTime =EndTime+5
+            
+                Input1a = chaste_run_exe +' -AreaParameter '+str(i)+' -DilationParameter '+str(j) +' -DeformationParamter '+str(k)+ ' -dt ' + str(dt) + ' -EndTime '+ str(EndTime) +' -SamplingTimestepMultiple '+ str(SamplingTimestepMultiple) 
+                Input1b = ' -TargetRemeshingIterations ' +str(TargetRemeshingIterations) + ' -EdgeLength ' +str(EdgeLength) + ' -SecondSamplingTimestepMultiple ' +str(SecondSamplingTimestepMultiple) + ' -N_D '+ str(ND)
+                Input1 = Input1a+Input1b
+                Input2 = TerminalOutputFolder+'AreaParameter_'+str(i)+'_DilationParameter_'+str(j)+'.txt'
+                Input3 = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
+                subprocess.Popen(['./RunChaste', Input1,Input2,Input3 ])
+                    
+                AvaliablePaths.remove(Core) 
+                # # Check if all positions are taken
+                while len(AvaliablePaths) ==0:
+                    time.sleep(SleepyTime)
+                    # print "Awake and checking for spare cores" 
+                    for P in range(Parallel):
+                        OutputFile = TerminalOutputFolder+'WaitFile'+str(P)+'.txt'
+                        if path.exists(OutputFile):
+                            AvaliablePaths.append(P)
+                            os.remove(OutputFile)
+                    if len(AvaliablePaths) >0:
+                        print AvaliablePaths, "Have found a spare core or two :-) " 
+                        print time.time() - t0, "seconds time"
 
 
     # print '\n ********* ------ Completed Sweep ------ ********* \n'
