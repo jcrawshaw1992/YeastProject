@@ -205,7 +205,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
         
     // }
 
-    CopyFile(mHemeLBDirectory + "results/Extracted/surface-pressure_"+Period+".vtu", mHemeLB_output + "surface-pressure_"+std::to_string(mCenterlinesNumber)+".vtp");
+    CopyFile(mHemeLBDirectory + "results/Extracted/surface-pressure_"+std::to_string(Period)+".vtu", mHemeLB_output + "surface-pressure_"+std::to_string(mCenterlinesNumber)+".vtp");
     CopyFile(mHemeLBDirectory + "centerlines.vtp", mHemeLB_output + "Centerlines_"+std::to_string(mCenterlinesNumber)+".vtp");
     mCenterlinesNumber +=1;
 
