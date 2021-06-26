@@ -1725,7 +1725,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MarkBoundaryNode
             Node<SPACE_DIM>* pNode = this->rGetMesh().GetNode(node_index);
             c_vector<long double, SPACE_DIM> CellLocation = pNode->rGetLocation();
 
-            c_vector<unsigned, 3> NearestNodes;
+            c_vector<unsigned, 2> NearestNodes;
 
             double Distance3 = 0.5;
             double Distance2 = 0.5;
@@ -1752,11 +1752,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MarkBoundaryNode
                         NearestNodes[1] = node_index_Search;
                         Distance2 = Distance;
                     }
-                    else if (Distance <= Distance3)
-                    {
-                        NearestNodes[2] = node_index_Search;
-                        Distance3 = Distance;
-                    }
                 }
             }
        
@@ -1766,7 +1761,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MarkBoundaryNode
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-c_vector<unsigned, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetNearestInternalNodes(unsigned node_index)
+c_vector<unsigned, 2> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetNearestInternalNodes(unsigned node_index)
 {
     return mNearestNodesMap[node_index];
 }
