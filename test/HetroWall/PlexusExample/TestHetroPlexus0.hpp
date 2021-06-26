@@ -131,23 +131,23 @@ void TestSetUpCylinderArchive() throw(Exception)
         boundary_plane_points.push_back(Create_c_vector(0.27307,0.0370,0) );
         boundary_plane_normals.push_back(Create_c_vector(1,0,0)   );
 
-        boundary_plane_points.push_back(Create_c_vector( 0.0315,0.0228,0 ) );
-        boundary_plane_normals.push_back(Create_c_vector(0.736,0.676899,0.004    )   );
+        // boundary_plane_points.push_back(Create_c_vector( 0.0315,0.0228,0 ) );
+        // boundary_plane_normals.push_back(Create_c_vector(0.736,0.676899,0.004    )   );
 
-        boundary_plane_points.push_back(Create_c_vector(0.040546,0.017794655,0.000   ) );
-        boundary_plane_normals.push_back(Create_c_vector(0.14,0.989,-0.041)   );
+        // boundary_plane_points.push_back(Create_c_vector(0.040546,0.017794655,0.000   ) );
+        // boundary_plane_normals.push_back(Create_c_vector(0.14,0.989,-0.041)   );
 
-        boundary_plane_points.push_back(Create_c_vector(0.05477978651493961, 0.02138,-0.0 ) );
-        boundary_plane_normals.push_back(Create_c_vector( -0.70832,0.7052,0.0316)   );
+        // boundary_plane_points.push_back(Create_c_vector(0.05477978651493961, 0.02138,-0.0 ) );
+        // boundary_plane_normals.push_back(Create_c_vector( -0.70832,0.7052,0.0316)   );
 
-        boundary_plane_points.push_back(Create_c_vector( 0.05685,0.03858858,0.00  ) );
-        boundary_plane_normals.push_back(Create_c_vector(-0.80377,-0.59037,0.0735048    )   );
+        // boundary_plane_points.push_back(Create_c_vector( 0.05685,0.03858858,0.00  ) );
+        // boundary_plane_normals.push_back(Create_c_vector(-0.80377,-0.59037,0.0735048    )   );
 
-        boundary_plane_points.push_back(Create_c_vector(0.03831,0.0529,-0.00   ) );
-        boundary_plane_normals.push_back(Create_c_vector(0.62439,-0.78101,0.01234));
+        // boundary_plane_points.push_back(Create_c_vector(0.03831,0.0529,-0.00   ) );
+        // boundary_plane_normals.push_back(Create_c_vector(0.62439,-0.78101,0.01234));
 
-        boundary_plane_points.push_back(Create_c_vector(0.044388,0.0510,-0   ) );
-        boundary_plane_normals.push_back(Create_c_vector(-0.81117,-0.58399,0.03076    )   );
+        // boundary_plane_points.push_back(Create_c_vector(0.044388,0.0510,-0   ) );
+        // boundary_plane_normals.push_back(Create_c_vector(-0.81117,-0.58399,0.03076    )   );
 
 
         for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)

@@ -63,7 +63,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
 	{
         unsigned ReferenceNode = 0;
         unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-        Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
+        Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
 
         if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
         {     
