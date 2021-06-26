@@ -42,8 +42,8 @@ void TestSetUpCylinderArchive() throw(Exception)
         double EndTime = 0;
         double scale = 0.00006684491/1.29;
 
-        double SamplingStep = 500;
-        double dt = 0.0001;
+        double SamplingStep = 5;
+        double dt = 0.001;
 
 
         std::string output_dir = "PlexusExampleSmall/";
@@ -126,73 +126,92 @@ void TestSetUpCylinderArchive() throw(Exception)
         boundary_plane_points.push_back(Create_c_vector(0.27307,0.0370,1.026   ) );
         boundary_plane_normals.push_back(Create_c_vector(1,0,0)   );
 
+        boundary_plane_points.push_back(Create_c_vector( 0.0315,0.0228,0.0004  ) );
+        boundary_plane_normals.push_back(Create_c_vector(0.736,0.676899,0.004    )   );
 
-        // boundary_plane_points.push_back(Create_c_vector(   ) );
-        // boundary_plane_normals.push_back(Create_c_vector(    )   );
+        boundary_plane_points.push_back(Create_c_vector(0.040546,0.017794655,0.000   ) );
+        boundary_plane_normals.push_back(Create_c_vector(0.14,0.989,-0.041)   );
 
-        // boundary_plane_points.push_back(Create_c_vector(   ) );
-        // boundary_plane_normals.push_back(Create_c_vector(    )   );
+        boundary_plane_points.push_back(Create_c_vector(0.05477978651493961, 0.02138,-0.002   ) );
+        boundary_plane_normals.push_back(Create_c_vector( -0.70832,0.7052,0.0316)   );
 
-        // boundary_plane_points.push_back(Create_c_vector(   ) );
-        // boundary_plane_normals.push_back(Create_c_vector(    )   );
+        boundary_plane_points.push_back(Create_c_vector( 0.05685,0.03858858,0.00056  ) );
+        boundary_plane_normals.push_back(Create_c_vector(-0.80377,-0.59037,0.0735048    )   );
 
-        // boundary_plane_points.push_back(Create_c_vector(   ) );
-        // boundary_plane_normals.push_back(Create_c_vector(    )   );
+   
+
+        boundary_plane_points.push_back(Create_c_vector(0.03831,0.0529,-0.001105   ) );
+        boundary_plane_normals.push_back(Create_c_vector(0.62439,-0.78101,0.01234));
+
+        boundary_plane_points.push_back(Create_c_vector(0.044388,0.0510,-0.00157   ) );
+        boundary_plane_normals.push_back(Create_c_vector(-0.81117,-0.58399,0.03076    )   );
 
 
         for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
         {
-            boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 5));
-            simulator.AddCellPopulationBoundaryCondition(p_condition);
+            if (boundary_id == boundary_plane_points.size() -1)
+            {
+                 boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.008));
+                 simulator.AddCellPopulationBoundaryCondition(p_condition);
+            }else
+            {
+                boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 5));
+                simulator.AddCellPopulationBoundaryCondition(p_condition);
+
+            }
+            
         }
+
+        
+
 
         TRACE("First Solve ")
 
-         for (int i =1; i<=50; i++)
+         for (int i =1; i<=2; i++)
         { 
             PRINT_VARIABLE(EndTime)
             cell_population.SetStartTime(EndTime);
-            EndTime +=0.1;
+            EndTime +=1;
             simulator.SetEndTime(EndTime);
             
             simulator.Solve();
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
         }
 
-        SamplingStep *= 10;
-        dt /= 10;
+        // SamplingStep *= 10;
+        // dt /= 10;
 
-        simulator.SetSamplingTimestepMultiple(SamplingStep);
-        simulator.SetDt(dt);
+        // simulator.SetSamplingTimestepMultiple(SamplingStep);
+        // simulator.SetDt(dt);
 
-        for (int i =1; i<=5; i++)
-        { 
-            PRINT_VARIABLE(EndTime)
-            cell_population.SetStartTime(EndTime);
-            EndTime +=0.5;
-            simulator.SetEndTime(EndTime);
+        // for (int i =1; i<=5; i++)
+        // { 
+        //     PRINT_VARIABLE(EndTime)
+        //     cell_population.SetStartTime(EndTime);
+        //     EndTime +=0.5;
+        //     simulator.SetEndTime(EndTime);
    
-            simulator.Solve();
-            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
-        }
+        //     simulator.Solve();
+        //     CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+        // }
         
-        SamplingStep *= 10;
-        dt /= 10;
+        // SamplingStep *= 10;
+        // dt /= 10;
 
-        simulator.SetSamplingTimestepMultiple(SamplingStep);
-        simulator.SetDt(dt);
+        // simulator.SetSamplingTimestepMultiple(SamplingStep);
+        // simulator.SetDt(dt);
         
 
-        for (int i =1; i<=20; i++)
-        { 
-            PRINT_VARIABLE(EndTime)
-            cell_population.SetStartTime(EndTime);
-            EndTime +=1;
-            simulator.SetEndTime(EndTime);
+        // for (int i =1; i<=20; i++)
+        // { 
+        //     PRINT_VARIABLE(EndTime)
+        //     cell_population.SetStartTime(EndTime);
+        //     EndTime +=1;
+        //     simulator.SetEndTime(EndTime);
 
-            simulator.Solve();
-            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
-        }
+        //     simulator.Solve();
+        //     CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+        // }
 
 
 
