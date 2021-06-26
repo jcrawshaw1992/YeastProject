@@ -811,7 +811,14 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
          mForceMap[node_index] = Force;
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
-        cell_iter->AddAppliedForceContribution(Force); 
+        *cell_iter->AddAppliedForceContribution(Force); 
+
+
+        // unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+        //     Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
+        //     c_vector<double, 3> ForceOnNode = mForceMap[node_index]/1;
+        //     rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(ForceOnNode); 
+
 
 		// double Angle = abs(acos(inner_prod(forceDirection, NormalVector) )) ;
 
