@@ -56,7 +56,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
 
     // TRACE("Adding HemeLB Force to the nodes :) ")
 	// MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-    double Nc =30;
+    double Nc =50;
 	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
 		 cell_iter != rCellPopulation.End();
 		 ++cell_iter)
