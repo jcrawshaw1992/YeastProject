@@ -17,14 +17,15 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
 {
    HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
 
-    // std::map<unsigned, c_vector<double, 3> > MembraneForceMap;
-    // for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
-    //     cell_iter != rCellPopulation.End();
-    //     ++cell_iter)
-    // {
-    //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-    //     MembraneForceMap[node_index] = Create_c_vector(0,0,0);
-    // }
+    std::map<unsigned, c_vector<double, 3> > MembraneForceMap;
+    for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
+        cell_iter != rCellPopulation.End();
+        ++cell_iter)
+    {
+        // unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+        // MembraneForceMap[node_index] = Create_c_vector(0,0,0);
+        cell_iter->GetCellData()->SetItem("MembraneForce",0);
+    }
 
     for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
          elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
@@ -197,6 +198,17 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
         pNode0->AddAppliedForceContribution(ForceOnNode[0]);
         pNode1->AddAppliedForceContribution(ForceOnNode[1]);
         pNode2->AddAppliedForceContribution(ForceOnNode[2]);
+        
+        double currentForce;
+        for (int i = 0; i < 3; i++) 
+        {
+            node_index = elem_iter->GetNodeGlobalIndex(i);
+            CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
+
+            currentForce = p_cell->GetCellData()->GetItem("MembraneForce");
+            p_cell->GetCellData()->SetItem("MembraneForce",currentForce + norm_2(ForceOnNode[i]));
+        }
+
         
        
     }
