@@ -208,8 +208,8 @@ public:
         Membrane forces
         ----------------------------
         */
-        boost::shared_ptr<MembraneDeformationForceOnCylinder> p_shear_force(new MembraneDeformationForceOnCylinder());
-        p_simulator->AddForce(p_shear_force);
+        // boost::shared_ptr<MembraneDeformationForceOnCylinder> p_shear_force(new MembraneDeformationForceOnCylinder());
+        // p_simulator->AddForce(p_shear_force);
 
 
 

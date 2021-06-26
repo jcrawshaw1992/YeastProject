@@ -128,7 +128,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         // boundary_plane_normals.push_back(Create_c_vector(1,0,0)   );
 
 
-        boundary_plane_points.push_back(Create_c_vector(0.27307,0.0370,0) );
+        boundary_plane_points.push_back(Create_c_vector(0.027770352769064723,0.03614395844493642,-4.4981354819628033e-7) );
         boundary_plane_normals.push_back(Create_c_vector(1,0,0)   );
 
         // boundary_plane_points.push_back(Create_c_vector( 0.0315,0.0228,0 ) );
@@ -154,7 +154,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         {
             if (boundary_id == boundary_plane_points.size() -1)
             {
-                 boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id],boundary_plane_normals[boundary_id], 0.008));
+                 boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id],boundary_plane_normals[boundary_id], 1));
                  simulator.AddCellPopulationBoundaryCondition(p_condition);
             }else
             {

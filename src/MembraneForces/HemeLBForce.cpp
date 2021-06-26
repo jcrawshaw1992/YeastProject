@@ -54,7 +54,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
     // I also dont know if the cylinder should be going in or out, but we will find out soo 
     // THis bit takes care of the edges ...
 
-    TRACE("Adding HemeLB Force to the nodes :) ")
+    // TRACE("Adding HemeLB Force to the nodes :) ")
 	// MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
     double Nc =30;
 	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
@@ -835,7 +835,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 
             NormalVector  += VectorProduct(vector_12, vector_13);
         }
-		NormalVector /=-norm_2(NormalVector); // I think the normal is inwards facing 
+		NormalVector /=norm_2(NormalVector); // I think the normal is inwards facing 
 
 		// Get the HemeLB force at the closest lattice site 
 		c_vector<double,3> force = mAppliedTractions[nearest_fluid_site]/133.3223874;//*voronoi_cell_area;  Convert to Pas
