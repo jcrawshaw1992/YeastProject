@@ -811,7 +811,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
          mForceMap[node_index] = Force;
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
-        *cell_iter->AddAppliedForceContribution(Force); 
+        pNode->AddAppliedForceContribution(Force); 
 
 
         // unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
