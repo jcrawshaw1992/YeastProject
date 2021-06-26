@@ -159,7 +159,7 @@ public:
         // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
         p_simulator->RemoveAllForces();
         p_simulator->SetEndTime(EndTime+800);
-        p_simulator->SetSamplingTimestepMultiple(100);
+        p_simulator->SetSamplingTimestepMultiple(500);
         p_simulator->SetDt(0.002);
         p_simulator->SetOutputDirectory(output_dir+"HemeLBForce/");
 
@@ -208,8 +208,8 @@ public:
         Membrane forces
         ----------------------------
         */
-        // boost::shared_ptr<MembraneDeformationForceOnCylinder> p_shear_force(new MembraneDeformationForceOnCylinder());
-        // p_simulator->AddForce(p_shear_force);
+        boost::shared_ptr<MembraneDeformationForceOnCylinder> p_shear_force(new MembraneDeformationForceOnCylinder());
+        p_simulator->AddForce(p_shear_force);
 
 
 
