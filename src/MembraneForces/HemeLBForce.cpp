@@ -53,10 +53,14 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
     // I have an edges issues in the hemelB force. I think it is hemelb, but not sure, so here is what I am doing. 
     // I also dont know if the cylinder should be going in or out, but we will find out soo 
     // THis bit takes care of the edges ...
-    for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
-            cell_iter != rCellPopulation.End();
-            ++cell_iter)
-    {
+
+
+	// MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+
+	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+		 cell_iter != rCellPopulation.End();
+		 ++cell_iter)
+	{
         unsigned ReferenceNode = 0;
         unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
         Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
