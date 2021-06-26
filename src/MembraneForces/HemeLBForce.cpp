@@ -48,16 +48,52 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
     else
     {
         mExecuteHemeLBCounter += 1;
-        for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+    }
+
+    // I have an edges issues in the hemelB force. I think it is hemelb, but not sure, so here is what I am doing. 
+    // I also dont know if the cylinder should be going in or out, but we will find out soo 
+    // THis bit takes care of the edges ...
+    for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
             cell_iter != rCellPopulation.End();
             ++cell_iter)
-        {
-            unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-            Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
-            c_vector<double, 3> ForceOnNode = mForceMap[node_index]/1;
-            rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(ForceOnNode); 
+    {
+        unsigned ReferenceNode = 0;
+        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+        Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
+
+        if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
+        {     
+            if (node_index < Nc + 1) // if on lower edge
+            {
+                ReferenceNode = node_index + (2 * Nc); // select node from two rows up
+            }
+            else if (node_index > Nc) // if on upper edge
+            {
+                ReferenceNode = node_index - (2 * Nc); // select node from two rows down
+            }
+            pNode->AddAppliedForceContribution(mForceMap[ReferenceNode]); // Add the new force
+            cell_iter->GetCellData()->SetItem("HemeLBForce", norm_2(mForceMap[ReferenceNode]));
         }
+        else
+        {
+            pNode->AddAppliedForceContribution(mForceMap[node_index]); 
+        }
+
+
     }
+
+    
+    // Need to figure this out later
+    // for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+    //     cell_iter != rCellPopulation.End();
+    //     ++cell_iter)
+    // {
+    //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+    //     Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
+    //     c_vector<double, 3> ForceOnNode = mForceMap[node_index]/1;
+    //     rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(ForceOnNode); 
+    // }
+
 
 
 }
@@ -204,8 +240,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     //     }
         
     // }
-
-    CopyFile(mHemeLBDirectory + "results/Extracted/surface-pressure_"+std::to_string(Period)+".vtu", mHemeLB_output + "surface-pressure_"+std::to_string(mCenterlinesNumber)+".vtp");
+    CopyFile(mHemeLBDirectory + "results/Extracted/wholegeometry-velocity_"+std::to_string(Period)+".vtu", mHemeLB_output + "wholegeometry-velocity_"+std::to_string(mCenterlinesNumber)+".vtu");
+    CopyFile(mHemeLBDirectory + "results/Extracted/surface-pressure_"+std::to_string(Period)+".vtu", mHemeLB_output + "surface-pressure_"+std::to_string(mCenterlinesNumber)+".vtu");
     CopyFile(mHemeLBDirectory + "centerlines.vtp", mHemeLB_output + "Centerlines_"+std::to_string(mCenterlinesNumber)+".vtp");
     mCenterlinesNumber +=1;
 
@@ -795,7 +831,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 
             NormalVector  += VectorProduct(vector_12, vector_13);
         }
-		NormalVector /=norm_2(NormalVector); // I think the normal is inwards facing 
+		NormalVector /=-norm_2(NormalVector); // I think the normal is inwards facing 
 
 		// Get the HemeLB force at the closest lattice site 
 		c_vector<double,3> force = mAppliedTractions[nearest_fluid_site]/133.3223874;//*voronoi_cell_area;  Convert to Pas
@@ -811,7 +847,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
          mForceMap[node_index] = Force;
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
-        pNode->AddAppliedForceContribution(Force); 
+        // pNode->AddAppliedForceContribution(Force); 
 
 
         // unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);

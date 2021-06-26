@@ -42,11 +42,11 @@ void TestSetUpCylinderArchive() throw(Exception)
         double EndTime = 0;
         double scale = 0.00006684491/1.29;
 
-        double SamplingStep = 5;
+        double SamplingStep = 500;
         double dt = 0.001;
 
 
-        std::string output_dir = "PlexusForceDirectIssues/";
+        std::string output_dir = "HomoPlexus/";
         // std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
          std::string mesh_file = "/data/vascrem/MeshCollection/Plexus.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
@@ -124,14 +124,12 @@ void TestSetUpCylinderArchive() throw(Exception)
 
 
 
-        boundary_plane_points.push_back(Create_c_vector(0.042,0.036,0 ) );
-        boundary_plane_normals.push_back(Create_c_vector(1,0,0)   );
-
-
-        // boundary_plane_points.push_back(Create_c_vector(0.27307,0.0370,0) );
+        // boundary_plane_points.push_back(Create_c_vector(0.042,0.036,0 ) );
         // boundary_plane_normals.push_back(Create_c_vector(1,0,0)   );
 
 
+        boundary_plane_points.push_back(Create_c_vector(0.27307,0.0370,0) );
+        boundary_plane_normals.push_back(Create_c_vector(1,0,0)   );
 
         boundary_plane_points.push_back(Create_c_vector( 0.0315,0.0228,0 ) );
         boundary_plane_normals.push_back(Create_c_vector(0.736,0.676899,0.004    )   );
@@ -145,8 +143,6 @@ void TestSetUpCylinderArchive() throw(Exception)
         boundary_plane_points.push_back(Create_c_vector( 0.05685,0.03858858,0.00  ) );
         boundary_plane_normals.push_back(Create_c_vector(-0.80377,-0.59037,0.0735048    )   );
 
-   
-
         boundary_plane_points.push_back(Create_c_vector(0.03831,0.0529,-0.00   ) );
         boundary_plane_normals.push_back(Create_c_vector(0.62439,-0.78101,0.01234));
 
@@ -158,27 +154,24 @@ void TestSetUpCylinderArchive() throw(Exception)
         {
             if (boundary_id == boundary_plane_points.size() -1)
             {
-                 boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id],-boundary_plane_normals[boundary_id], 0.008));
+                 boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id],boundary_plane_normals[boundary_id], 0.008));
                  simulator.AddCellPopulationBoundaryCondition(p_condition);
             }else
             {
-                boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], -boundary_plane_normals[boundary_id], 2));
+                boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 2));
                 simulator.AddCellPopulationBoundaryCondition(p_condition);
 
             }
             
         }
 
-        
-
-
         TRACE("First Solve ")
 
-         for (int i =1; i<=1; i++)
+         for (int i =1; i<=100; i++)
         { 
             PRINT_VARIABLE(EndTime)
             cell_population.SetStartTime(EndTime);
-            EndTime +=0.1;
+            EndTime +=1;
             simulator.SetEndTime(EndTime);
             
             simulator.Solve();
