@@ -46,7 +46,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         double dt = 0.001;
 
 
-        std::string output_dir = "PlexusExampleSmall/";
+        std::string output_dir = "PlexusForceDirectIssues/";
         // std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
          std::string mesh_file = "/data/vascrem/MeshCollection/Plexus.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
@@ -151,11 +151,11 @@ void TestSetUpCylinderArchive() throw(Exception)
         {
             if (boundary_id == boundary_plane_points.size() -1)
             {
-                 boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.008));
+                 boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id],-boundary_plane_normals[boundary_id], 0.008));
                  simulator.AddCellPopulationBoundaryCondition(p_condition);
             }else
             {
-                boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 5));
+                boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], -boundary_plane_normals[boundary_id], 5));
                 simulator.AddCellPopulationBoundaryCondition(p_condition);
 
             }
@@ -167,11 +167,11 @@ void TestSetUpCylinderArchive() throw(Exception)
 
         TRACE("First Solve ")
 
-         for (int i =1; i<=2; i++)
+         for (int i =1; i<=1; i++)
         { 
             PRINT_VARIABLE(EndTime)
             cell_population.SetStartTime(EndTime);
-            EndTime +=1;
+            EndTime +=0.1;
             simulator.SetEndTime(EndTime);
             
             simulator.Solve();
