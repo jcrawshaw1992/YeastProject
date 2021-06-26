@@ -40,7 +40,7 @@
 class TestRemeshing  : public AbstractCellBasedTestSuite
 {
 public:
- void TestGrowToEquiCylinder() throw (Exception)
+ void offTestGrowToEquiCylinder() throw (Exception)
     {
   
         double EndTime = 10;
@@ -159,7 +159,7 @@ public:
         // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
         p_simulator->RemoveAllForces();
         p_simulator->SetEndTime(EndTime+800);
-        p_simulator->SetSamplingTimestepMultiple(1000);
+        p_simulator->SetSamplingTimestepMultiple(100);
         p_simulator->SetDt(0.002);
         p_simulator->SetOutputDirectory(output_dir+"HemeLBForce/");
 
@@ -189,7 +189,7 @@ public:
         p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
         p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
-        p_ForceOut->SetFluidSolidIterations(100);
+        p_ForceOut->SetFluidSolidIterations(500);
         p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
 

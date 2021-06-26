@@ -48,18 +48,18 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
     else
     {
         mExecuteHemeLBCounter += 1;
+        for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+            cell_iter != rCellPopulation.End();
+            ++cell_iter)
+        {
+            unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+            Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
+            c_vector<double, 3> ForceOnNode = mForceMap[node_index]/1;
+            rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(ForceOnNode); 
+        }
     }
 
-//    MAKE_PTR(EmptyBasementMatrix, p_Basement);
-    for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
-         cell_iter != rCellPopulation.End();
-         ++cell_iter)
-    {
-        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-        Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
-        c_vector<double, 3> ForceOnNode = mForceMap[node_index]/1;
-        rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(ForceOnNode); 
-    }
+
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -127,7 +127,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     WriteOutVtuFile(mOutputDirectory);
 
     /*  Step 0: Create the HemeLB config.pr2 file */
-    double HemeLBSimulationTime = 5000; //
+    double HemeLBSimulationTime = 10000; //
     int Period = HemeLBSimulationTime*0.8;
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
       
@@ -364,20 +364,12 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     assert(p_scalars->GetNumberOfComponents() == 1); // Radi are scalars, so should only have one component for each data point, otherwise there is a problem
 
     std::vector<double> RadiVector;
-    std::vector<double> XValue;
     double MinRadius = 1000000;
-    double Radius_0 =  0.5e-3;
     for (unsigned i = 0; i < NumberOfDataPoints; i++)
     {
         double* data = p_scalars->GetTuple(i); //RadiVector.push_back(*data);
         double Radius_t = *data; 
-        double RadiusChange = (Radius_t-Radius_0)/Radius_0*100;//-> Lets go for a 10% decrease -- change this descrese percent later and need to have some understanding of what the last radius was 
 
-        if (abs(RadiusChange) >30 & * data> 0)
-        {
-            // Want to add a 0 pressure boundary here 
-           XValue.push_back(*(Reader->GetOutput()->GetPoints()->GetPoint(i)));
-        }
         if (*data < MinRadius & *data  >0)
         {
             MinRadius = *data;
@@ -386,8 +378,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     mRadius = MinRadius * mHemeLBScalling;
     PRINT_2_VARIABLES(mRadius, mHemeLBScalling)
 
-
-    
     // Here I want to be able to say if there has been a descrese from the initials ---
     
     /* I have the max radius, this will be important for the discretisation and the cap sizes 
@@ -816,9 +806,14 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		// Vector and making sure the normal and the force vector are goin in the same direcvtion 
 		// DO this by checking the angle betweem these two vectors is below a certain value -- basic dot proudct thing
 
-		c_vector<long double,3> forceDirection = force / Pressure;
+		// c_vector<long double,3> forceDirection = force / Pressure;
+        c_vector<long double,3> Force = Pressure * NormalVector; 
+         mForceMap[node_index] = Force;
+		// Store the force in CellData
+		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
+        cell_iter->AddAppliedForceContribution(Force); 
 
-		double Angle = abs(acos(inner_prod(forceDirection, NormalVector) )) ;
+		// double Angle = abs(acos(inner_prod(forceDirection, NormalVector) )) ;
 
 		// if (Angle > M_PI/2)
 		// {
@@ -829,7 +824,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 
 		// Calculate the approximate area of the voronoi region around the cell by including a third of the area
 		// of all surrounding triangles. Useful for turning stresses into forces.
-		double voronoi_cell_area = rCellPopulation.GetVolumeOfCell(*cell_iter);
+		// double voronoi_cell_area = rCellPopulation.GetVolumeOfCell(*cell_iter);
 		
 
 		// PRINT_VARIABLE(Pressure);
@@ -837,22 +832,19 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		// location = location - centroid;
 		// location /= norm_2(location);
 		
-		c_vector<long double,3> Force = Pressure * NormalVector; 
+		
        
 
-		c_vector<double,3> shear_stress = mAppliedTangentTractions[nearest_fluid_site];
+		// c_vector<double,3> shear_stress = mAppliedTangentTractions[nearest_fluid_site];
 
-		assert(fabs(Force[0])<1e10);
-		assert(fabs(Force[1])<1e10);
-		assert(fabs(Force[2])<1e10);
-		assert(fabs(shear_stress[0])<1e10);
-		assert(fabs(shear_stress[1])<1e10);
-		assert(fabs(shear_stress[2])<1e10);
+		// assert(fabs(Force[0])<1e10);
+		// assert(fabs(Force[1])<1e10);
+		// assert(fabs(Force[2])<1e10);
+		// assert(fabs(shear_stress[0])<1e10);
+		// assert(fabs(shear_stress[1])<1e10);
+		// assert(fabs(shear_stress[2])<1e10);
 
-        mForceMap[node_index] = Force;
-
-		// Store the force in CellData
-		cell_iter->GetCellData()->SetItem("Pressure", Pressure);
+       
 		// cell_iter->GetCellData()->SetItem("applied_force_x", Force[0]);
 		// PRINT_VECTOR(Force);
 		// cell_iter->GetCellData()->SetItem("applied_force_y", Force[1]);
