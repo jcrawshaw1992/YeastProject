@@ -170,7 +170,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         { 
             PRINT_VARIABLE(EndTime)
             cell_population.SetStartTime(EndTime);
-            EndTime +=0.5;
+            EndTime +=1;
             simulator.SetEndTime(EndTime);
             
             simulator.Solve();
