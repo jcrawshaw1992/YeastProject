@@ -40,7 +40,7 @@
 class TestRemeshing  : public AbstractCellBasedTestSuite
 {
 public:
- void offTestGrowToEquiCylinder() throw (Exception)
+ void TestGrowToEquiCylinder() throw (Exception)
     {
   
         double EndTime = 10;
@@ -51,7 +51,7 @@ public:
         unsigned N_D = 50;
         unsigned N_Z = 30;
         
-        std::string output_dir = "TestHemeLBChaste/";
+        std::string output_dir = "TestHemeLBChasteSecond/";
 
         // this simulaiton is in mm. Have chosen this magnitude because um in m will give me numbers too close to machince presision, and movment
         // in um will be too large and break chaste without carefull playing with or a tiny time step
@@ -144,7 +144,7 @@ public:
 
     void TestCollapsingCylinder() throw (Exception)
       {        
-        std::string output_dir = "TestHemeLBChaste/";
+        std::string output_dir = "TestHemeLBChasteSecond/";
         double scale = 1e3; 
         double EndTime = 10;        
 
@@ -234,9 +234,9 @@ public:
         CellBasedSimulationArchiver<2,OffLatticeSimulation<2,3>, 3>::Save(p_simulator);
   }
 
-//   void offTestHemeLBChasteLinkageCylinder() throw (Exception)
+//   void offTestHemeLBChasteSecondLinkageCylinder() throw (Exception)
 //     {        
-//         std::string output_dir = "TestHemeLBChasteLinkageLarger2/";
+//         std::string output_dir = "TestHemeLBChasteSecondLinkageLarger2/";
 //         double scale = 1e3; double EndTime = 30;
 
 //         // Load and fix any settings in the simulator 
@@ -309,7 +309,7 @@ public:
 //         double EndTime = 150;
 //         double scale = 1e3;
         
-//         std::string output_dir = "TestHemeLBChasteIdealNetwork2/";
+//         std::string output_dir = "TestHemeLBChasteSecondIdealNetwork2/";
 //         std::string mesh_file = "/Users/jcrawshaw/docker-polnet-master/IdealiseNetworks/7_by_7/mesh.vtu";
           
 //         VtkMeshReader<2, 3> mesh_reader(mesh_file);
@@ -403,7 +403,7 @@ public:
 
 //  void offTestCollapsingIdeaNework() throw (Exception)
 //     {        
-//         std::string output_dir = "TestHemeLBChasteIdealNetwork/";
+//         std::string output_dir = "TestHemeLBChasteSecondIdealNetwork/";
       
 //         double scale = 1e3; double EndTime = 100;
 
