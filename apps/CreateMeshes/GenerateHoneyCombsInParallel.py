@@ -40,7 +40,7 @@ def Waiting(AvaliablePaths,SleepyTime,Parallel, TerminalOutputFolder, t0):
             print time.time() - t0, "seconds time"
 
     
-        
+#   Length = [ 0.2, 0.4, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2]      
 
 if __name__=="__main__":
     t0 = time.time()
@@ -49,17 +49,44 @@ if __name__=="__main__":
     TerminalOutputFolder = Directory + "TerminalOutputFolder/"
     CreateNewFolder(TerminalOutputFolder) 
 
-    Parallel = 2
+    Parallel = 1
     SleepyTime = 50
     AvaliablePaths = range(Parallel)
-        
-    FileLabels = ['PI_2_2', 'PI_3', 'PI_4', 'PI_5', 'PI_6'] 
-    Alpha = [m.pi/2.2, m.pi/3, m.pi/4,m.pi/5, m.pi/6] 
 
-    # FileLabels = [ 'PI_5'] 
-    # Alpha = [m.pi/5] 
+    FileLabels = ['PI_2_2'] 
+    Alpha = [m.pi/2.2] 
+
+    
+    Length = [ 0.6]
+    Collapse = [ 0.5124, 0.6119, 0.7080, 0.8059, 0.9032]
+    counter = -1
+    for A in Alpha:
+        counter = counter+1
+        AngleDirectory = Directory+FileLabels[counter]+'/'
+        CreateNewFolder(AngleDirectory) 
+        Lengthcounter = -1
+        for L in Length:
+            LengthDirectory = AngleDirectory+'HorizontalLength_'+str(L)+'/'
+            CreateNewFolder(LengthDirectory) 
+    
+            for i in Collapse:
+                Core = AvaliablePaths[0] 
+                AvaliablePaths.remove(Core) 
+
+                WaitFileGeneration = TerminalOutputFolder+'WaitFile'+str(Core)+'.txt'
+                Command = 'python CreateHoneycombMesh.py -Directory ' + LengthDirectory + ' -Collapse ' +str(i) + ' -Length '+str(L) + ' -Angle ' + str(A)  + ' -WaitFileGeneration ' + WaitFileGeneration 
+                subprocess.Popen(Command, shell=True)
+
+                Waiting(AvaliablePaths,SleepyTime,Parallel, TerminalOutputFolder, t0)
+
+
+    # ---------------------------------
+        
+    FileLabels = [ 'PI_3', 'PI_4', 'PI_5', 'PI_6'] 
+    Alpha = [ m.pi/3, m.pi/4,m.pi/5, m.pi/6] 
+
     Length = [ 0.2, 0.4, 0.8, 1, 1.2, 1.4, 1.6, 1.8, 2]
-    Collapse = [0.2248, 0.3178, 0.4170 , 0.5124, 0.6119, 0.7080, 0.8059, 0.9032]
+    Length = [ 0.6]
     counter = -1
     for A in Alpha:
         counter = counter+1

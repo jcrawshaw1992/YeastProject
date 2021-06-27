@@ -29,6 +29,64 @@ from argparse import ArgumentParser
 def pause():
     programPause = raw_input("Press the <ENTER> key to continue...")
 
+
+def convertFile(vtkFile, VTUfile):
+    if os.path.isfile(vtkFile):
+        basename = os.path.basename(vtkFile)
+        print "converting VTK to VTU"
+
+        reader = vtk.vtkPolyDataReader() 
+   
+        reader.SetFileName(vtkFile)
+        reader.Update()
+        output = reader.GetOutput()
+
+        Nodes = []
+        ElementList = []
+        # Add the first Node so this isnt an emtpy list
+        Nodes.append(output.GetCell(0).GetPoints().GetPoint(0))
+        print output.GetNumberOfCells()
+        
+        # loop over all of the elements in the vtk polydata file 
+        # For each element, the polydata has recorded the location of each node, but not the node index. As such here we loop over the elements   and select out the node, which are put in the Node list.  As I loop over the elements I will also record which node indices are in each element
+        for i in range(output.GetNumberOfCells()):
+            Element = []
+            pts = output.GetCell(i).GetPoints()  
+            np_pts = np.array([pts.GetPoint(i) for i in range(pts.GetNumberOfPoints())]) 
+            
+            # Saving each of the nodes in this element
+            for j in [0,1,2]:
+                AddNodeToList = 1 
+                # want to add the Node to the Nodes list, But need to check if it is in the list yet,  Do this by looping over list and seeing if it is in there
+                for k in Nodes: 
+                    #if Nodes.count(pts.GetPoint(j)) > 0:
+                    if(k == pts.GetPoint(j)):
+                        AddNodeToList =0
+                        break
+                if (AddNodeToList ==1):
+                    # print 'Adding Node'
+                        # Filling in the array storing Node locations
+                    Nodes.append(pts.GetPoint(j))
+                NodeIndex = Nodes.index(pts.GetPoint(j))
+                Element.append(NodeIndex)
+                # This works to fill in Nodes
+            ElementList.append(Element)
+    
+        # Save the nodes as points and elements for the meshio writer
+        points = np.array(Nodes)
+        elements = {
+        "triangle": np.array(ElementList
+        )
+        }    
+
+        meshio.write_points_cells(
+        VTUfile,
+        points,
+        elements,
+        )
+
+        print 'Finished'
+
 def UpdateNodesAndEdges(NewNodes,Nodes,Edges):
     # Index = [[]]
     Index = [ 0 ,0 ]
@@ -234,18 +292,15 @@ if __name__=="__main__":
     # # ---- Interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller -------------# 
     Scale = 'vmtkmeshscaling -ifile '+ Outputvtu + ' -scale 0.20  --pipe vmtkmeshwriter -entityidsarray CellEntityIds -ofile '+ ScaledMesh
     subprocess.call(Scale, shell=True)
-    print "Meshio covert 1 "
 
     ScaledMeshstl = Directory+"ScaledMesh."+i+".stl"
     convert = 'meshio-convert '+ ScaledMesh +'  '+ ScaledMeshstl
     subprocess.call(convert, shell=True)
 
-    print "Meshio covert 2 "
     # ----  Scale files  -------------# 
     Scale = 'vmtkmeshscaling -ifile '+ Outputvtu + ' -scale 0.20  --pipe vmtkmeshwriter -entityidsarray CellEntityIds -ofile '+ ScaledMesh
     subprocess.call(Scale, shell=True)
 
-    print "Meshio covert 2 "
     # ----  Convert files  -------------# 
     convert = 'meshio-convert '+ ScaledMesh +'  '+ ScaledMeshstl
     subprocess.call(convert, shell=True)

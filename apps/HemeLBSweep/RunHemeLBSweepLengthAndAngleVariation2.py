@@ -255,39 +255,48 @@ if __name__=="__main__":
     BifucationAngles = ['PI_2_2', 'PI_3', 'PI_4', 'PI_5', 'PI_6'] 
     
     # Lengths = [ '0.4', '0.6', '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2'] # '0.2'
-    Lengths = [  '0.6', '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2']
-    Collapse = [ '0.3178', '0.417','0.5124','0.6119', '0.708','0.8059'] #  '0.3178', 
+    Lengths = [ '0.4', '0.6', '0.8', '1', '1.2', '1.4', '1.6', '1.8', '2']
+    Collapse = [ '0.2248','0.3178', '0.417','0.5124','0.6119', '0.708','0.8059', '0.9032'] #  '0.3178', 
+    Lengths = [  '0.6']
 
-    Parallel = 3
+    Parallel = 4
     SleepyTime = 300
     AvaliablePaths = range(Parallel)
     counter = 1
 
     for Angle in BifucationAngles:
+        print Angle
         AngleMeshDirectory = MeshFolder+Angle
         CreateNewFolder(TerminalOutputFolder+Angle)
         for length in Lengths:
+            print length
             LengthMeshDirectory = AngleMeshDirectory+'/HorizontalLength_'+length
 
             CreateNewFolder(TerminalOutputFolder+Angle+'/HorizontalLength_'+length)
             
             for i in Collapse:
-                if Angle == '/PI_6/' and float(i) > 0.55:
-                    continue
-                if Angle == '/PI_2.2/' and float(i) < 0.4:
-                    continue
-                if float(length) < 0.85 and float(i) > 0.65:
-                    continue
-                if float(length) > 1.5 and float(i) < 0.65:
-                    continue
+                print i
+            
+                # if Angle == '/PI_6/' and float(i) > 0.55:
+                #     continue
+                # if Angle == '/PI_2.2/' and float(i) < 0.4:
+                #     continue
+                # if float(length) < 0.85 and float(i) > 0.65:
+                #     continue
+                # if float(length) > 1.5 and float(i) < 0.65:
+                #     continue
 
                 ScaledMeshstl = LengthMeshDirectory+'/ScaledMesh.' +i+ '.stl'
+                print ScaledMeshstl
+                print os.path.isfile(ScaledMeshstl)
                 if os.path.isfile(ScaledMeshstl) ==0:
                     continue
 
-            
-                Core = AvaliablePaths[0] 
                 mHemeLBDirectory = TerminalOutputFolder+Angle+'/HorizontalLength_'+length+'/'+i+'/'
+                # if os.path.isdir(mHemeLBDirectory):
+                #     continue
+
+                Core = AvaliablePaths[0] 
                 print mHemeLBDirectory
                 CreateNewFolder(mHemeLBDirectory)
                 CheckToReplaceResultsFolder(mHemeLBDirectory)
@@ -302,7 +311,7 @@ if __name__=="__main__":
                 dX = 0.08/41.0
                 SimulationTime = 14000
                 if float(length) < 0.3:
-                    SimulationTime = 6000
+                    SimulationTime = 8000
                 elif float(length) < 0.63:
                     SimulationTime = 9000
                 elif float(length) < 0.7:
@@ -318,7 +327,7 @@ if __name__=="__main__":
                 update_xml_file(int(SimulationTime*0.9), mHemeLBDirectory)
             
                 # # Run HemeLB
-                RunHemeLB = 'mpirun -np 8 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
+                RunHemeLB = 'mpirun -np 2 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
                 TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
                 # # Generate the new config.vtu
                 GmyUnstructuredGridReader =" python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
