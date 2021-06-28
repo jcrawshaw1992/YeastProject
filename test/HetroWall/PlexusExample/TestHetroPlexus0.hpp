@@ -239,10 +239,10 @@ void offTestSetUpCylinderArchive() throw(Exception)
         p_simulator->SetOutputDirectory(output_dir);
         for (int j =0; j <10 ; j++ )
         {    
-            for (int i =1; i<=5; i++)
+            for (int i =1; i<=50; i++)
             { 
                 static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
-                EndTime +=1;
+                EndTime +=0.1;
                 p_simulator->SetEndTime(EndTime);
                 p_simulator->Solve();
                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
