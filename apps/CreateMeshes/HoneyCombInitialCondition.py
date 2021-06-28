@@ -185,10 +185,10 @@ if __name__=="__main__":
     # --------------------------
 
     CenterLines_filename = Directory + "Centerlines_"+i+".vtp"
-    Boundaries = CreateIdealSkeleton(Directory, 3, 2, Height, HorizonatalEdgeLength, Alpha, 0, 1, Bounds)
+    Boundaries = CreateIdealSkeleton(Directory, 2, 2, Height, HorizonatalEdgeLength, Alpha, 0, 1, Bounds)
     
     # # ---- Read points into the vtp writer to generate a centerlines.vtp file -------------# 
-    command = CPP_Centerlines_vtp_writer + ' -ofile ' + CenterLines_filename + ' -CenterlinePoints ' +Directory+ 'CenterlinePoints.txt -CenterlineEdges ' + Directory +'CenterlineEdges.txt -Radius 0.02 -LeftBound '+str(Boundaries[0]+0.001)+' -RightBound '+str(Boundaries[1]-0.01)+' -Collapse ' + i + ' -Branch 1'
+    command = CPP_Centerlines_vtp_writer + ' -ofile ' + CenterLines_filename + ' -CenterlinePoints ' +Directory+ 'CenterlinePoints.txt -CenterlineEdges ' + Directory +'CenterlineEdges.txt -Radius 0.05 -LeftBound '+str(Boundaries[0]+0.001)+' -RightBound '+str(Boundaries[1]-0.01)+' -Collapse ' + i + ' -Branch 1'
     
     subprocess.call(command, shell=True)
 
@@ -205,12 +205,12 @@ if __name__=="__main__":
 
     # # ----  Generate a mesh from the centerlines file -------------# 
 
-    command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 210 200 200 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
+    command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 250 250 250 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
     subprocess.call(command, shell=True)
 
     # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
 
-    command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.01 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
+    command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.005 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
     subprocess.call(command, shell=True)
 
     # ----  Clip Edges -------------# 
