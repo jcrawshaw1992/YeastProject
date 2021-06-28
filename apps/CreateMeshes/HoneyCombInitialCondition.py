@@ -91,41 +91,9 @@ def CreateIdealSkeleton(Directory, Generations,GenerationsX,Height,HorizonatalEd
     Branch = []
     NumberOfNodes = len(Nodes)
     counter = 0
-    if CollapseBranch:
-        for i in Nodes:
-            if len(i)>1:
-                counter =  counter +1
-                if (i[1] ==1.4 and  i[0]>LeftBound-0.01 and i[0]< RightBound+0.01):
-                    Branch.append(counter)
-    # pdb.set_trace()
-    Edges.remove(Branch)
-    
-    RightCollpaseBoundary =  Nodes[Branch[1]][0]
-    LeftCollpaseBoundary = Nodes[Branch[0]][0]
-    NumberOfIntervals = 100
-    for k in range(1, NumberOfIntervals):
-        # NewNodes =  np.array(Nodes[Branch[0]]) + k*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/NumberOfIntervals
-        NewNodes =  np.array(Nodes[Branch[0]]) + k*(np.array(Nodes[Branch[1]]) - np.array(Nodes[Branch[0]]))/NumberOfIntervals
 
-        Nodes.append(NewNodes)
-
-        NodeNumber = NumberOfNodes+k
-        if k == 1:
-            LeftCollpaseBoundary = NewNodes[0]
-            NewEdge = [Branch[0],NodeNumber]
-            Edges.append(NewEdge)
-            
-        elif k == NumberOfIntervals-1:
-            NewEdge = [NodeNumber-1, Branch[1]]
-            Edges.append(NewEdge)
-            RightCollpaseBoundary = NewNodes[0]
-        else: 
-            NewEdge = [NodeNumber-1, NodeNumber]
-            Edges.append(NewEdge)
-
-
-    RightCollpaseBoundary =  Nodes[Branch[1]][0]
-    LeftCollpaseBoundary = Nodes[Branch[0]][0]
+    RightCollpaseBoundary =  1
+    LeftCollpaseBoundary = 0
         
         
 
