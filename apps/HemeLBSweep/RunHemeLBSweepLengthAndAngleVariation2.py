@@ -327,7 +327,7 @@ if __name__=="__main__":
                 update_xml_file(int(SimulationTime*0.9), mHemeLBDirectory)
             
                 # # Run HemeLB
-                RunHemeLB = 'mpirun -np 2 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
+                RunHemeLB = 'mpirun -np 8 hemelb -in ' + mHemeLBDirectory+ 'config.xml -out '+mHemeLBDirectory +'Results/'
                 TerminalOutput = mHemeLBDirectory+'HemeLBTerminalOutput.txt'
                 # # Generate the new config.vtu
                 GmyUnstructuredGridReader =" python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml "
