@@ -156,9 +156,9 @@ if __name__=="__main__":
     Boundaries = CreateIdealSkeleton(Directory, 2, 2, Height, HorizonatalEdgeLength, Alpha, 0, 0, Bounds)
     
     # # ---- Read points into the vtp writer to generate a centerlines.vtp file -------------# 
-    command = CPP_Centerlines_vtp_writer + ' -ofile ' + CenterLines_filename + ' -CenterlinePoints ' +Directory+ 'CenterlinePoints.txt -CenterlineEdges ' + Directory +'CenterlineEdges.txt -Radius 0.05 -LeftBound '+str(Boundaries[0]+0.001)+' -RightBound '+str(Boundaries[1]-0.01)+' -Collapse ' + i + ' -Branch 1'
+    # command = CPP_Centerlines_vtp_writer + ' -ofile ' + CenterLines_filename + ' -CenterlinePoints ' +Directory+ 'CenterlinePoints.txt -CenterlineEdges ' + Directory +'CenterlineEdges.txt -Radius 0.05 -LeftBound '+str(Boundaries[0]+0.001)+' -RightBound '+str(Boundaries[1]-0.01)+' -Collapse ' + i + ' -Branch 1'
     
-    subprocess.call(command, shell=True)
+    # subprocess.call(command, shell=True)
 
     # --------------------------
     VTK_Mesh = Directory+"Meshinital_"+i+".vtp"
@@ -168,54 +168,83 @@ if __name__=="__main__":
     Outputstl = Directory+"Mesh_"+i+".stl" 
 
     # ---- Interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller -------------# 
-    SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ CenterLines_filename + ' -length 0.01 -ofile '+ CenterLines_filename
-    subprocess.call(SmoothCenterlinesCommond, shell=True)
+    # SmoothCenterlinesCommond = 'vmtkcenterlineresampling -ifile '+ CenterLines_filename + ' -length 0.01 -ofile '+ CenterLines_filename
+    # subprocess.call(SmoothCenterlinesCommond, shell=True)
 
     # # ----  Generate a mesh from the centerlines file -------------# 
 
-    command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 250 250 250 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
-    subprocess.call(command, shell=True)
+    # command = 'vmtk vmtkcenterlinemodeller -ifile ' + CenterLines_filename +' -radiusarray Radius -dimensions 250 250 250 --pipe vmtkmarchingcubes -ofile '+ VTK_Mesh
+    # subprocess.call(command, shell=True)
 
     # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
 
-    command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.005 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
+    # command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.005 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
+    # subprocess.call(command, shell=True)
+
+    # # ----  Clip Edges -------------# 
+
+    # clip.clip_surface_with_plane(VTK_Meshremeshed,(ends[0],0,0), (1,0,0), Clipped_Mesh)
+    # clip.clip_surface_with_plane(Clipped_Mesh,(ends[1],0,0), (-1,0,0), Clipped_Mesh)
+    
+    # # ----  Convert files vtk to stl :)   -------------#    
+
+    # Outputstl = Directory+"Mesh_PreScale"+i+".stl"
+    # ConvertVTKtoSTL.convert(Clipped_Mesh, Outputstl)
+
+    # Outputvtu = Directory+"Mesh_PreScale"+i+".vtu"
+    # command = 'meshio-convert  ' + Outputstl + ' ' +Outputvtu
+    # subprocess.call(command, shell=True)
+
+    # ScaledMesh = Directory+"Mesh_Scaled"+i+".vtu"
+    # # # ---- Interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller -------------# 
+    # Scale = 'vmtkmeshscaling -ifile '+ Outputvtu + ' -scale 0.20  --pipe vmtkmeshwriter -entityidsarray CellEntityIds -ofile '+ ScaledMesh
+    # subprocess.call(Scale, shell=True)
+    # print "Meshio covert 1 "
+
+    # ScaledMeshstl = Directory+"ScaledMesh."+i+".stl"
+    # convert = 'meshio-convert '+ ScaledMesh +'  '+ ScaledMeshstl
+    # subprocess.call(convert, shell=True)
+
+    # print "Meshio covert 2 "
+    # # ----  Scale files  -------------# 
+    # Scale = 'vmtkmeshscaling -ifile '+ Outputvtu + ' -scale 0.20  --pipe vmtkmeshwriter -entityidsarray CellEntityIds -ofile '+ ScaledMesh
+    # subprocess.call(Scale, shell=True)
+
+    # print "Meshio covert 2 "
+    # # ----  Convert files  -------------# 
+    # convert = 'meshio-convert '+ ScaledMesh +'  '+ ScaledMeshstl
+    # subprocess.call(convert, shell=True)
+
+    # print "----  Initial mesh generated  ------------- "
+
+    VTK_Meshremeshed2 = Directory+"mesh.vtk"
+    command = 'vmtksurfaceremeshing -ifile '+VTK_Meshremeshed +' -iterations 5 -edgelength 0.005 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed2
     subprocess.call(command, shell=True)
 
     # ----  Clip Edges -------------# 
-
-    clip.clip_surface_with_plane(VTK_Meshremeshed,(ends[0],0,0), (1,0,0), Clipped_Mesh)
+    Clipped_Mesh =Directory+"meshclipped.vtk" 
+    clip.clip_surface_with_plane(VTK_Meshremeshed2,(ends[0],0,0), (1,0,0), Clipped_Mesh)
     clip.clip_surface_with_plane(Clipped_Mesh,(ends[1],0,0), (-1,0,0), Clipped_Mesh)
     
     # ----  Convert files vtk to stl :)   -------------#    
 
-    Outputstl = Directory+"Mesh_PreScale"+i+".stl"
+    Outputstl = Directory+"Mesh_PreScale.stl"
     ConvertVTKtoSTL.convert(Clipped_Mesh, Outputstl)
 
-    Outputvtu = Directory+"Mesh_PreScale"+i+".vtu"
+    Outputvtu = Directory+"Mesh_PreScale.vtu"
     command = 'meshio-convert  ' + Outputstl + ' ' +Outputvtu
     subprocess.call(command, shell=True)
 
-    ScaledMesh = Directory+"Mesh_Scaled"+i+".vtu"
+    ScaledMesh = Directory+"Mesh_Scaled.vtu"
     # # ---- Interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller -------------# 
     Scale = 'vmtkmeshscaling -ifile '+ Outputvtu + ' -scale 0.20  --pipe vmtkmeshwriter -entityidsarray CellEntityIds -ofile '+ ScaledMesh
     subprocess.call(Scale, shell=True)
     print "Meshio covert 1 "
 
-    ScaledMeshstl = Directory+"ScaledMesh."+i+".stl"
+    ScaledMeshstl = Directory+"ScaledMesh.stl"
     convert = 'meshio-convert '+ ScaledMesh +'  '+ ScaledMeshstl
     subprocess.call(convert, shell=True)
 
-    print "Meshio covert 2 "
-    # ----  Scale files  -------------# 
-    Scale = 'vmtkmeshscaling -ifile '+ Outputvtu + ' -scale 0.20  --pipe vmtkmeshwriter -entityidsarray CellEntityIds -ofile '+ ScaledMesh
-    subprocess.call(Scale, shell=True)
-
-    print "Meshio covert 2 "
-    # ----  Convert files  -------------# 
-    convert = 'meshio-convert '+ ScaledMesh +'  '+ ScaledMeshstl
-    subprocess.call(convert, shell=True)
-
-    print "----  Initial mesh generated  ------------- "
     
 
 
