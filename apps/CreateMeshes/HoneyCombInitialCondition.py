@@ -159,7 +159,7 @@ if __name__=="__main__":
        
     # # Parse arguments (this will create args.flow_to_vtu etc. variables)
     # args = parser.parse_args()
-    i = 1
+    i = "1"
     Directory = "/data/vascrem/MeshCollection/InitialHoneycombNetworkForFSI/"
     CreateNewFolder(Directory) 
 
