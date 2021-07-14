@@ -254,7 +254,7 @@ public:
        
         p_simulator->SetEndTime(EndTime+60);
         p_simulator->SetSamplingTimestepMultiple(500);
-        p_simulator->SetDt(0.002);
+        p_simulator->SetDt(0.001);
         p_simulator->SetOutputDirectory(output_dir);
 
         /*
