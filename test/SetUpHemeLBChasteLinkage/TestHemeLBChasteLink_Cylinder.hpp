@@ -251,7 +251,7 @@ public:
     
         /* Remove the constant pressure force   */ 
         // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
-       
+        p_simulator->RemoveAllForces();
         p_simulator->SetEndTime(EndTime+60);
         p_simulator->SetSamplingTimestepMultiple(1);
         p_simulator->SetDt(0.001);
@@ -263,29 +263,29 @@ public:
         ----------------------------
         */        
 
-        // double Length = 30e-6 * scale;
-        // double Radius = 0.5e-6 * scale;
+        double Length = 30e-6 * scale;
+        double Radius = 0.5e-6 * scale;
 
-        // c_vector<double, 3> PlaneNormal1 = Create_c_vector(0,0,1);
-        // c_vector<double, 3> Point1 = Create_c_vector(0,0,0.1e-6 * scale);
+        c_vector<double, 3> PlaneNormal1 = Create_c_vector(0,0,1);
+        c_vector<double, 3> Point1 = Create_c_vector(0,0,0.1e-6 * scale);
 
-        // c_vector<double, 3> PlaneNormal2 = Create_c_vector(0,0,-1);
-        // c_vector<double, 3> Point2 = Create_c_vector(0,0,Length -0.1e-6 * scale);
+        c_vector<double, 3> PlaneNormal2 = Create_c_vector(0,0,-1);
+        c_vector<double, 3> Point2 = Create_c_vector(0,0,Length -0.1e-6 * scale);
 
-        // double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
-        // double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
 
-        // double InletPressure = (0.002133152 - 0.001466542)*1.001; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later 
-        // double OutletPressure = (0.002133152 - 0.001466542)*(0.999);
+        double InletPressure = (0.002133152 - 0.001466542)*1.001; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later 
+        double OutletPressure = (0.002133152 - 0.001466542)*(0.999);
 
 
-        // boost::shared_ptr<HemeLBForce<2,3>> p_ForceOut(new HemeLBForce<2, 3>());
-        // p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
-        // p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
-        // p_ForceOut->SetStartTime(EndTime);
-        // p_ForceOut->SetFluidSolidIterations(2000);
-        // p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
-        // p_simulator->AddForce(p_ForceOut);
+        boost::shared_ptr<HemeLBForce<2,3>> p_ForceOut(new HemeLBForce<2, 3>());
+        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
+        p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
+        p_ForceOut->SetStartTime(EndTime);
+        p_ForceOut->SetFluidSolidIterations(2000);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_simulator->AddForce(p_ForceOut);
 
 
         /*
@@ -302,8 +302,8 @@ public:
         Membrane forces
         ----------------------------
         */
-        // boost::shared_ptr<MembraneDeformationForceOnCylinder> p_shear_force(new MembraneDeformationForceOnCylinder());
-        // p_simulator->AddForce(p_shear_force);
+        boost::shared_ptr<MembraneDeformationForceOnCylinder> p_shear_force(new MembraneDeformationForceOnCylinder());
+        p_simulator->AddForce(p_shear_force);
 
 
 

@@ -40,28 +40,12 @@ RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::RemeshingTriggerOn
     //     {1, Create_c_vector(pow(10, -5.5000), pow(10, -5.5000), pow(10, -5.5000), 1e-14)}
     // };
 
-          //AreaConstant           AreaDilationModulus        ShearModulus    
+                                            //AreaConstant AreaDilation    ShearModulus    
         mGrowthMaps =  { {1, Create_c_vector(pow(10, -7.5), pow(10, -9), pow(10, -8.1), 1e-11) },
         // mGrowthMaps =  { {1, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -9), 1e-11) },
-        // {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-10)}
-        {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-11)}
+        {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-11)}// {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-10)}
          };
-    // mGrowthMaps =  { {1, Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -5), 1e-14) },
-    //     {0, Create_c_vector(pow(10, -6), pow(10, -5.5), pow(10, -4), 1e-14)}
-    // };
     PRINT_VECTOR(mGrowthMaps[0])
-
-
-//    10.0000    5.5000    5.5000    5.5000
-//     9.0000    5.5000    7.5000    6.5000
-//     8.0000    6.0000    7.5000    7.0000
-//     7.0000    7.0000    7.5000    7.5000
-//     6.0000    7.0000    7.5000    8.0000
-//     5.0000    6.0000   10.0000    7.5000
-//     4.0000    7.0000    8.0000    8.0000
-//     3.0000    7.0000    8.0000    8.5000
-//     2.0000    7.0000    8.0000    9.0000
-//     1.0000    7.0000   10.0000    8.0000
 
 }
 
@@ -73,10 +57,6 @@ RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::~RemeshingTriggerO
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnHeteroMeshModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, std::string outputDirectory)
 {
-
-    // mGrowthMaps =  { {1, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -9), 1e-11) },
-    //                {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-11)}
-    //                };
 
     if (mSetUpSolve ==1)
     {
