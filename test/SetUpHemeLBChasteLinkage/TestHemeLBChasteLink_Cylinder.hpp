@@ -313,7 +313,7 @@ public:
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
     }
 
-    void TestCollapsingCylinderToAnEqui2() throw(Exception)
+    void offTestCollapsingCylinderToAnEqui2() throw(Exception)
     {
         std::string output_dir = "TestHemeLBChasteSecond/HemeLBForce/";
         double scale = 1e3;
@@ -375,6 +375,142 @@ public:
         p_simulator->Solve();
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
     }
+
+
+  void TestCollapsingCylinderToAnEqui3() throw(Exception)
+    {
+        // Send Back to equi 
+        std::string output_dir = "TestHemeLBChasteSecond/HemeLBForce/";
+        double scale = 1e3;
+        double EndTime =100;
+
+        // Load and fix any settings in the simulator
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, EndTime);
+
+        /* Update the ouput directory for the population  */
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+
+        /* Remove the constant pressure force   */
+        // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
+        p_simulator->RemoveAllForces();
+        p_simulator->SetEndTime(EndTime + 90);
+        p_simulator->SetSamplingTimestepMultiple(500);
+        p_simulator->SetDt(0.002);
+        p_simulator->SetOutputDirectory(output_dir);
+
+        /*
+        -----------------------------
+        Add the HemeLB Force
+        ----------------------------
+        */
+
+        double Length = 30e-6 * scale;
+        double Radius = 0.5e-6 * scale;
+
+        c_vector<double, 3> PlaneNormal1 = Create_c_vector(0, 0, 1);
+        c_vector<double, 3> Point1 = Create_c_vector(0, 0, 0.1e-6 * scale);
+
+        c_vector<double, 3> PlaneNormal2 = Create_c_vector(0, 0, -1);
+        c_vector<double, 3> Point2 = Create_c_vector(0, 0, Length - 0.1e-6 * scale);
+
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
+
+        double InletPressure = (0.002133152 - 0.001466542) * 1.001; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
+        double OutletPressure = (0.002133152 - 0.001466542) * (0.999);
+
+        boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
+        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
+        p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
+        p_ForceOut->SetStartTime(EndTime);
+        p_ForceOut->SetFluidSolidIterations(1000);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir + "HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_simulator->AddForce(p_ForceOut);
+        /*
+        -----------------------------
+        Membrane forces
+        ----------------------------
+        */
+        boost::shared_ptr<MembraneDeformationForceOnCylinder> p_shear_force(new MembraneDeformationForceOnCylinder());
+        p_simulator->AddForce(p_shear_force);
+
+        
+
+        p_simulator->Solve();
+        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+    }
+
+
+
+void offTestCollapsingCylinderToAnEqui4() throw(Exception)
+    {
+        // I want think to go right back to 0.001:) 
+        std::string output_dir = "TestHemeLBChasteSecond/HemeLBForce/";
+        double scale = 1e3;
+        double EndTime =190;
+
+        // Load and fix any settings in the simulator
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, EndTime);
+
+        /* Update the ouput directory for the population  */
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+
+        /* Remove the constant pressure force   */
+        // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
+        p_simulator->RemoveAllForces();
+        p_simulator->SetEndTime(EndTime + 90);
+        p_simulator->SetSamplingTimestepMultiple(5000);
+        p_simulator->SetDt(0.0002);
+        p_simulator->SetOutputDirectory(output_dir);
+
+        /*
+        -----------------------------
+        Add the HemeLB Force
+        ----------------------------
+        */
+
+        double Length = 30e-6 * scale;
+        double Radius = 0.5e-6 * scale;
+
+        c_vector<double, 3> PlaneNormal1 = Create_c_vector(0, 0, 1);
+        c_vector<double, 3> Point1 = Create_c_vector(0, 0, 0.1e-6 * scale);
+
+        c_vector<double, 3> PlaneNormal2 = Create_c_vector(0, 0, -1);
+        c_vector<double, 3> Point2 = Create_c_vector(0, 0, Length - 0.1e-6 * scale);
+
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
+
+        double InletPressure = (0.002133152 - 0.001466542) * 1.001; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
+        double OutletPressure = (0.002133152 - 0.001466542) * (0.999);
+
+        boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
+        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
+        p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
+        p_ForceOut->SetStartTime(EndTime);
+        p_ForceOut->SetFluidSolidIterations(1000);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir + "HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_simulator->AddForce(p_ForceOut);
+        /*
+        -----------------------------
+        Membrane forces
+        ----------------------------
+        */
+        boost::shared_ptr<MembraneDeformationForceOnCylinder> p_shear_force(new MembraneDeformationForceOnCylinder());
+        p_simulator->AddForce(p_shear_force);
+
+        
+
+        p_simulator->Solve();
+        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+    }
+
+
+
+
+
 };
 
 #endif /*TESTRELAXATION_HPP_*/
