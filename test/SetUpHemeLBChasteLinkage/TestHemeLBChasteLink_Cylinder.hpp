@@ -251,7 +251,7 @@ public:
     
         /* Remove the constant pressure force   */ 
         // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
-        p_simulator->RemoveAllForces();
+       
         p_simulator->SetEndTime(EndTime+60);
         p_simulator->SetSamplingTimestepMultiple(500);
         p_simulator->SetDt(0.002);
