@@ -22,7 +22,7 @@ if __name__=="__main__":
  
     # Collapse = [ '0','1','2', '3','4','5', '6', '7','8','9','10']
     BifucationAngles = [ 'PI_2.2','PI_3','PI_5','PI_4','PI_6']   
-    BifucationAngles = ['PI_6']    
+    BifucationAngles = ['PI_2_2']    
     Length = ['0.2', '0.4', '0.6', '0.8', '1.2', '1.4', '1.6', '1.8', '2']  
 
     Collapse = [ '0', '0.1227', '0.2248' , '0.3178', '0.417','0.5124', '0.6119', '0.708', '0.8059', '0.9032' , '1.0' ]
@@ -53,6 +53,7 @@ if __name__=="__main__":
                 if os.path.exists(CurrentPath):
                    
                     Velocity = CurrentPath+'/Results/Extracted/wholegeometry-velocity_12600.vtu' # 10800  # 8100 # 12600 
+                    print os.path.exists(Velocity)
                     if os.path.exists(Velocity):
                         # Mesh    =  CurrentPath+'/config.stl'
                         NewVelocity = NewPath+'/wholegeometry-velocity_'+NewNumbering[counter]+'.vtu'
@@ -62,6 +63,7 @@ if __name__=="__main__":
 
 
                     Velocity = CurrentPath+'/Results/Extracted/wholegeometry-velocity_10800.vtu' # 10800  # 8100 # 12600 
+                    print os.path.exists(Velocity)
                     if os.path.exists(Velocity):
                         NewVelocity = NewPath+'/wholegeometry-velocity_'+NewNumbering[counter]+'.vtu'
                         mv =  'cp ' +Velocity +' '+NewVelocity
@@ -69,6 +71,7 @@ if __name__=="__main__":
 
                      
                     Velocity = CurrentPath+'/Results/Extracted/wholegeometry-velocity_8100.vtu' # 10800  # 8100 # 12600 
+                    print os.path.exists(Velocity)
                     if os.path.exists(Velocity):
                         NewVelocity = NewPath+'/wholegeometry-velocity_'+NewNumbering[counter]+'.vtu'
                         mv =  'cp ' +Velocity +' '+NewVelocity
@@ -76,6 +79,7 @@ if __name__=="__main__":
 
 
                     Velocity = CurrentPath+'/Results/Extracted/wholegeometry-velocity_12600.vtu' # 10800  # 8100 # 12600 
+                    print os.path.exists(Velocity)
                     if os.path.exists(Velocity):
                         NewVelocity = NewPath+'/wholegeometry-velocity_'+NewNumbering[counter]+'.vtu'
                         mv =  'cp ' +Velocity +' '+NewVelocity
