@@ -36,6 +36,9 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
+./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Downloads/InitialHoneycombNetworkForFSI/DeformingHoneyComb.off -output /Users/jcrawshaw/Downloads/InitialHoneycombNetworkForFSI/DeformingHoneyCombRemeshed.off -target_edge_length 7 -iterations 5
+
+
 void TestSetUpCylinderArchive() throw(Exception)
     {
         TRACE("START")
@@ -43,12 +46,12 @@ void TestSetUpCylinderArchive() throw(Exception)
         double scale = 0.00006684491/1.29;
 
         double SamplingStep = 500;
-        double dt = 0.001;
+        double dt = 0.01;
 
 
-        std::string output_dir = "DeformingPlexus2/";
+        std::string output_dir = "DeformingHoneyComb/";
         // std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
-         std::string mesh_file = "/data/vascrem/MeshCollection/PlexusRemeshed.vtu";
+         std::string mesh_file = "/data/vascrem/MeshCollection/DeformingHoneyComb.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
@@ -226,11 +229,11 @@ void TestSetUpCylinderArchive() throw(Exception)
 
     void offTestContinuingHomoArchieve() throw(Exception)
     {
-        std::string Archieved = "DeformingPlexus2/";
+        std::string Archieved = "DeformingHoneyComb/";
 
         double SamplingStep = 10000;
         double dt = 0.000001;
-        std::string output_dir = "DeformingPlexus2/";
+        std::string output_dir = "DeformingHoneyComb/";
 
         double EndTime = 1;
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved,EndTime);        
@@ -263,7 +266,7 @@ void TestSetUpCylinderArchive() throw(Exception)
 
  void offTestIntroduceHetro() throw(Exception)
     {
-        std::string Archieved = "PlexusExample/";
+        std::string Archieved = "DeformingHoneyComb/";
         double EndTime = 15;
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved,EndTime);
 
@@ -278,7 +281,7 @@ void TestSetUpCylinderArchive() throw(Exception)
     
         double SamplingTimestepMultiple = 1000;
     
-        std::string output_dir = "PlexusExample/HetroCollapse/";
+        std::string output_dir = "DeformingHoneyComb/HetroCollapse/";
         
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
