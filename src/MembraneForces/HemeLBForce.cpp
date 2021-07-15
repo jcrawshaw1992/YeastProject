@@ -585,11 +585,11 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirec
     std::string directory;
     directory += C ;
     mChasteOutputDirectory = directory +"/" ;
-    
+
     mOutputDirectory = outputDirectory;
     
     mHemeLBDirectory = mChasteOutputDirectory + mOutputDirectory + "HemeLBFluid/";
-    mHemeLB_output = mChasteOutputDirectory + mOutputDirectory + "HemeLB_results_from_time_0/";
+    mHemeLB_output = mChasteOutputDirectory + mOutputDirectory + "HemeLB_results_from_time_"+std::to_string(mStartTime0)+"/";
     // PINRT_VARIABLE(mHemeLB_output)
     // PINRT_VARIABLE(mHemeLBDirectory)
     if (CreateFiles ==1)

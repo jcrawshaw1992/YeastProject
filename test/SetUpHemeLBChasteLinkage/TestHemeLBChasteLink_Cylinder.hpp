@@ -377,7 +377,7 @@ public:
     }
 
 
-  void TestCollapsingCylinderToAnEqui3() throw(Exception)
+  void offTestCollapsingCylinderToAnEqui3() throw(Exception)
     {
         // Send Back to equi 
         std::string output_dir = "TestHemeLBChasteSecond/HemeLBForce/";
@@ -443,7 +443,7 @@ public:
 
 
 
-void offTestCollapsingCylinderToAnEqui4() throw(Exception)
+void TestCollapsingCylinderToAnEqui4() throw(Exception)
     {
         // I want think to go right back to 0.001:) 
         std::string output_dir = "TestHemeLBChasteSecond/HemeLBForce/";
