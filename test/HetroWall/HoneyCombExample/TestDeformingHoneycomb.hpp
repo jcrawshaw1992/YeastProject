@@ -36,7 +36,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
-./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Downloads/InitialHoneycombNetworkForFSI/DeformingHoneyComb.off -output /Users/jcrawshaw/Downloads/InitialHoneycombNetworkForFSI/DeformingHoneyCombRemeshed.off -target_edge_length 7 -iterations 5
+./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Downloads/InitialHoneycombNetworkForFSI/DeformingHoneyComb.off -output /Users/jcrawshaw/Downloads/InitialHoneycombNetworkForFSI/DeformingHoneyCombRemeshed.off -target_edge_length 0.07 -iterations 5
 
 
 void TestSetUpCylinderArchive() throw(Exception)
@@ -51,7 +51,7 @@ void TestSetUpCylinderArchive() throw(Exception)
 
         std::string output_dir = "DeformingHoneyComb/";
         // std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
-         std::string mesh_file = "/data/vascrem/MeshCollection/DeformingHoneyComb.vtu";
+         std::string mesh_file = "/data/vascrem/MeshCollection/Remeshsed.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
