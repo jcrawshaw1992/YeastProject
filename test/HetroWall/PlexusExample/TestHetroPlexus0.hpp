@@ -86,7 +86,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         ----------------------------
         */
         boost::shared_ptr<StepHeteroModifier<2, 3> > p_Mesh_modifier(new StepHeteroModifier<2, 3>());
-        p_Mesh_modifier->SetMembraneStrength(1);
+        p_Mesh_modifier->SetMembraneStrength(0.5);
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
         /*
@@ -124,48 +124,48 @@ void TestSetUpCylinderArchive() throw(Exception)
 
 
 
-        boundary_plane_points.push_back(Create_c_vector(0.027516035952649214,0.03612191636841659,-2.5619153430265183e-7) );
-        boundary_plane_normals.push_back(Create_c_vector(-1,0,0)   );
+        // boundary_plane_points.push_back(Create_c_vector(0.027516035952649214,0.03612191636841659,-2.5619153430265183e-7) );
+        // boundary_plane_normals.push_back(Create_c_vector(-1,0,0)   );
 
 
-        boundary_plane_points.push_back(Create_c_vector(0.030916947422591885,0.023385783064993303,-5.6128979930167666e-5) );
-        boundary_plane_normals.push_back(Create_c_vector(-0.7310312318072982,-0.6817252865329189,-0.02905119315818307)   );
+        // boundary_plane_points.push_back(Create_c_vector(0.030916947422591885,0.023385783064993303,-5.6128979930167666e-5) );
+        // boundary_plane_normals.push_back(Create_c_vector(-0.7310312318072982,-0.6817252865329189,-0.02905119315818307)   );
 
-        boundary_plane_points.push_back(Create_c_vector(0.04031542582540166,0.017805862807742805,-0.0006858558338639898 ) );
-        boundary_plane_normals.push_back(Create_c_vector(-0.22279661741414758,-0.9662081451629887,0.12962826655290505 )   );
+        // boundary_plane_points.push_back(Create_c_vector(0.04031542582540166,0.017805862807742805,-0.0006858558338639898 ) );
+        // boundary_plane_normals.push_back(Create_c_vector(-0.22279661741414758,-0.9662081451629887,0.12962826655290505 )   );
 
-        boundary_plane_points.push_back(Create_c_vector(0.05549474466182004,0.020375638162577887, 0.0005263227148536897) );
-        boundary_plane_normals.push_back(Create_c_vector(0.7241763167589632, -0.6874100872259559, 0.05510021983100965)   );
+        // boundary_plane_points.push_back(Create_c_vector(0.05549474466182004,0.020375638162577887, 0.0005263227148536897) );
+        // boundary_plane_normals.push_back(Create_c_vector(0.7241763167589632, -0.6874100872259559, 0.05510021983100965)   );
 
-        boundary_plane_points.push_back(Create_c_vector(0.05687886073444408, 0.038390887505265536, 0.0010906907114440318 ) );
-        boundary_plane_normals.push_back(Create_c_vector( 0.794835692061135,0.6054405707057209, -0.0409626411407724)   );
+        // boundary_plane_points.push_back(Create_c_vector(0.05687886073444408, 0.038390887505265536, 0.0010906907114440318 ) );
+        // boundary_plane_normals.push_back(Create_c_vector( 0.794835692061135,0.6054405707057209, -0.0409626411407724)   );
 
-        boundary_plane_points.push_back(Create_c_vector(0.03814937838642002,0.052942168998578835,-0.0005491630560590082) );
-        boundary_plane_normals.push_back(Create_c_vector(-0.6313376972766904,0.7751778142123436,-0.022628927290961734));
+        // boundary_plane_points.push_back(Create_c_vector(0.03814937838642002,0.052942168998578835,-0.0005491630560590082) );
+        // boundary_plane_normals.push_back(Create_c_vector(-0.6313376972766904,0.7751778142123436,-0.022628927290961734));
 
-        boundary_plane_points.push_back(Create_c_vector(0.04127266890226009,0.01885961520968956,0.0007232045314343617) );
-        boundary_plane_normals.push_back(Create_c_vector(-0.057879903604992705,-0.997388116052124,-0.04320720676775996)   );
+        // boundary_plane_points.push_back(Create_c_vector(0.04127266890226009,0.01885961520968956,0.0007232045314343617) );
+        // boundary_plane_normals.push_back(Create_c_vector(-0.057879903604992705,-0.997388116052124,-0.04320720676775996)   );
 
 
-        boundary_plane_points.push_back(Create_c_vector(0.04446426823469359,0.05090490430943361,-0.00030088272407919107) );
-        boundary_plane_normals.push_back(Create_c_vector(0.82773209050952,0.5606455184541284,-0.023155754749839615 )   );
+        // boundary_plane_points.push_back(Create_c_vector(0.04446426823469359,0.05090490430943361,-0.00030088272407919107) );
+        // boundary_plane_normals.push_back(Create_c_vector(0.82773209050952,0.5606455184541284,-0.023155754749839615 )   );
 
     
 
-        for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
-        {
-            if (boundary_id == boundary_plane_points.size() -1)
-            {
-                 boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id],boundary_plane_normals[boundary_id], 0.008));
-                 simulator.AddCellPopulationBoundaryCondition(p_condition);
-            }else
-            {
-                boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 2));
-                simulator.AddCellPopulationBoundaryCondition(p_condition);
+        // for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
+        // {
+        //     if (boundary_id == boundary_plane_points.size() -1)
+        //     {
+        //          boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id],boundary_plane_normals[boundary_id], 0.008));
+        //          simulator.AddCellPopulationBoundaryCondition(p_condition);
+        //     }else
+        //     {
+        //         boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 2));
+        //         simulator.AddCellPopulationBoundaryCondition(p_condition);
 
-            }
+        //     }
             
-        }
+        // }
 
         TRACE("First Solve ")
 
