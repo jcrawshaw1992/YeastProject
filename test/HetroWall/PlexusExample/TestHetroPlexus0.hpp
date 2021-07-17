@@ -46,7 +46,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         double dt = 0.0001;
 
 
-        std::string output_dir = "DeformingPlexus/";
+        std::string output_dir = "DeformingPlexus/WithoutBending";
         // std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
          std::string mesh_file = "/data/vascrem/MeshCollection/PlexusRemeshed.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
@@ -102,9 +102,9 @@ void TestSetUpCylinderArchive() throw(Exception)
         simulator.AddForce(p_ForceOut);
 
 
-        boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        p_membrane_force->SetMembraneStiffness(pow(10, -9));
-        simulator.AddForce(p_membrane_force);
+        // boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
+        // p_membrane_force->SetMembraneStiffness(pow(10, -9));
+        // simulator.AddForce(p_membrane_force);
         /*
         -----------------------------
         Membrane forces
