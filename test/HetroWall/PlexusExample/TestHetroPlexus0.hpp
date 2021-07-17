@@ -42,7 +42,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         double EndTime = 0;
         double scale = 0.00006684491/1.29;
 
-        double SamplingStep = 500;
+        double SamplingStep = 10;
         double dt = 0.0001;
 
 
@@ -103,7 +103,7 @@ void TestSetUpCylinderArchive() throw(Exception)
 
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        p_membrane_force->SetMembraneStiffness(pow(10, -8));
+        p_membrane_force->SetMembraneStiffness(pow(10, -9));
         simulator.AddForce(p_membrane_force);
         /*
         -----------------------------
