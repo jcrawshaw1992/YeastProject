@@ -460,9 +460,9 @@ void TestCollapsingCylinderToAnEqui4() throw(Exception)
         /* Remove the constant pressure force   */
         // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
         p_simulator->RemoveAllForces();
-        p_simulator->SetEndTime(EndTime + 90);
-        p_simulator->SetSamplingTimestepMultiple(5000);
-        p_simulator->SetDt(0.0002);
+        p_simulator->SetEndTime(EndTime + 20);
+        p_simulator->SetSamplingTimestepMultiple(100);
+        p_simulator->SetDt(0.002);
         p_simulator->SetOutputDirectory(output_dir);
 
         /*
@@ -490,7 +490,7 @@ void TestCollapsingCylinderToAnEqui4() throw(Exception)
         p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
         p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
-        p_ForceOut->SetFluidSolidIterations(1000);
+        p_ForceOut->SetFluidSolidIterations(500);
         p_ForceOut->SetUpHemeLBConfiguration(output_dir + "HemeLBForce/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
         /*
