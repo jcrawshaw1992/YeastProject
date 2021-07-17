@@ -11,10 +11,10 @@ StepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepHeteroModifier()
         : AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM>()
 {
              //AreaConstant           AreaDilationModulus        ShearModulus    
-    mGrowthMaps =  { {1, Create_c_vector(pow(10, -7), pow(10, -8.4), pow(10, -8), 1e-11) },
-                    {0.5, Create_c_vector(pow(10, -7), pow(10, -8), pow(10, -7), 1e-11) },
+    mGrowthMaps =  { {1, Create_c_vector(pow(10, -7), pow(10, -8.4), pow(10, -8), 1e-9) },
+                    {0.5, Create_c_vector(pow(10, -7), pow(10, -8), pow(10, -7),  1e-9) },
                     // {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-10)}
-                      {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-11)}
+                      {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-8)}
                      };  
     // mGrowthMaps =  { {1, Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -5), 1e-14) },
     //     {0, Create_c_vector(pow(10, -6), pow(10, -5.5), pow(10, -4), 1e-14)}

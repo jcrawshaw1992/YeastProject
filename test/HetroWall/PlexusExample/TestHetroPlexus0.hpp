@@ -43,7 +43,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         double scale = 0.00006684491/1.29;
 
         double SamplingStep = 500;
-        double dt = 0.001;
+        double dt = 0.0001;
 
 
         std::string output_dir = "DeformingPlexus2/";
@@ -103,7 +103,7 @@ void TestSetUpCylinderArchive() throw(Exception)
 
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        p_membrane_force->SetMembraneStiffness(pow(10, -10));
+        p_membrane_force->SetMembraneStiffness(pow(10, -8));
         simulator.AddForce(p_membrane_force);
         /*
         -----------------------------
@@ -173,7 +173,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         { 
             PRINT_VARIABLE(EndTime)
             cell_population.SetStartTime(EndTime);
-            EndTime +=1;
+            EndTime +=2;
             simulator.SetEndTime(EndTime);
             
             simulator.Solve();
