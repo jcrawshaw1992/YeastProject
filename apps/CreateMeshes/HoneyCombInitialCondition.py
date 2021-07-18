@@ -176,9 +176,9 @@ if __name__=="__main__":
     subprocess.call(command, shell=True)
 
     # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
-    # VTK_Meshremeshed = Directory+"Mesh_"+i+".vtk"
-    # command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.005 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
-    # subprocess.call(command, shell=True)
+    VTK_Meshremeshed = Directory+"Mesh_"+i+".vtk"
+    command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.005 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
+    subprocess.call(command, shell=True)
 
                         # # # ----  Clip Edges -------------# 
 
@@ -216,33 +216,33 @@ if __name__=="__main__":
 
                         # print "----  Initial mesh generated  ------------- "
 
-    # VTK_Meshremeshed2 = Directory+"mesh.vtk"
-    # command = 'vmtksurfaceremeshing -ifile '+VTK_Meshremeshed +' -iterations 5 -edgelength 0.05 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed2
-    # subprocess.call(command, shell=True)
+    VTK_Meshremeshed2 = Directory+"mesh.vtk"
+    command = 'vmtksurfaceremeshing -ifile '+VTK_Meshremeshed +' -iterations 5 -edgelength 0.05 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed2
+    subprocess.call(command, shell=True)
 
-    # # ----  Clip Edges -------------# 
-    # Clipped_Mesh =Directory+"meshclipped.vtk" 
-    # clip.clip_surface_with_plane(VTK_Meshremeshed2,(ends[0],0,0), (1,0,0), Clipped_Mesh)
-    # clip.clip_surface_with_plane(Clipped_Mesh,(ends[1],0,0), (-1,0,0), Clipped_Mesh)
+    # ----  Clip Edges -------------# 
+    Clipped_Mesh =Directory+"meshclipped.vtk" 
+    clip.clip_surface_with_plane(VTK_Meshremeshed2,(ends[0],0,0), (1,0,0), Clipped_Mesh)
+    clip.clip_surface_with_plane(Clipped_Mesh,(ends[1],0,0), (-1,0,0), Clipped_Mesh)
     
-    # # ----  Convert files vtk to stl :)   -------------#    
+    # ----  Convert files vtk to stl :)   -------------#    
 
-    # Outputstl = Directory+"Mesh_PreScale.stl"
-    # ConvertVTKtoSTL.convert(Clipped_Mesh, Outputstl)
+    Outputstl = Directory+"Mesh_PreScale.stl"
+    ConvertVTKtoSTL.convert(Clipped_Mesh, Outputstl)
 
-    # Outputvtu = Directory+"Mesh_PreScale.vtu"
-    # command = 'meshio-convert  ' + Outputstl + ' ' +Outputvtu
-    # subprocess.call(command, shell=True)
+    Outputvtu = Directory+"Mesh_PreScale.vtu"
+    command = 'meshio-convert  ' + Outputstl + ' ' +Outputvtu
+    subprocess.call(command, shell=True)
 
-    # ScaledMesh = Directory+"Mesh_Scaled.vtu"
-    # # # ---- Interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller -------------# 
-    # Scale = 'vmtkmeshscaling -ifile '+ Outputvtu + ' -scale 0.20  --pipe vmtkmeshwriter -entityidsarray CellEntityIds -ofile '+ ScaledMesh
-    # subprocess.call(Scale, shell=True)
-    # print "Meshio covert 1 "
+    ScaledMesh = Directory+"Mesh_Scaled.vtu"
+    # # ---- Interpolate the points in the centerlines file, this will reduce the refinment needed in the centerline modeller -------------# 
+    Scale = 'vmtkmeshscaling -ifile '+ Outputvtu + ' -scale 0.20  --pipe vmtkmeshwriter -entityidsarray CellEntityIds -ofile '+ ScaledMesh
+    subprocess.call(Scale, shell=True)
+    print "Meshio covert 1 "
 
-    # ScaledMeshstl = Directory+"ScaledMesh.stl"
-    # convert = 'meshio-convert '+ ScaledMesh +'  '+ ScaledMeshstl
-    # subprocess.call(convert, shell=True)
+    ScaledMeshstl = Directory+"ScaledMesh.stl"
+    convert = 'meshio-convert '+ ScaledMesh +'  '+ ScaledMeshstl
+    subprocess.call(convert, shell=True)
 
     
 
