@@ -222,27 +222,31 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         double Boundary3 = p_cell3->GetCellData()->GetItem("Boundary"); double Boundary4 = p_cell4->GetCellData()->GetItem("Boundary");
         // Add the force contribution to each node
    
-        p_cell1->GetCellData()->SetItem("BendingForce", norm_2(node1_contribution));
-        p_cell2->GetCellData()->SetItem("BendingForce", norm_2(node2_contribution));
-        p_cell3->GetCellData()->SetItem("BendingForce", norm_2(node3_contribution));
-        p_cell4->GetCellData()->SetItem("BendingForce", norm_2(node4_contribution));
+        double LastNodeContribution = p_cell1->GetCellData()->GetItem("BendingForce");
+        p_cell1->GetCellData()->SetItem("BendingForce", LastNodeContribution + norm_2(node1_contribution));
+        LastNodeContribution = p_cell2->GetCellData()->GetItem("BendingForce");
+        p_cell2->GetCellData()->SetItem("BendingForce", LastNodeContribution + norm_2(node2_contribution));
+        LastNodeContribution = p_cell3->GetCellData()->GetItem("BendingForce");
+        p_cell3->GetCellData()->SetItem("BendingForce", LastNodeContribution + norm_2(node3_contribution));
+        LastNodeContribution = p_cell4->GetCellData()->GetItem("BendingForce");
+        p_cell4->GetCellData()->SetItem("BendingForce", LastNodeContribution + norm_2(node4_contribution));
 
 
-        // if (norm_2(node1_contribution)>1000 || norm_2(node2_contribution)>1000 ||norm_2(node3_contribution)>1000 || norm_2(node4_contribution)>1000  )
-        // {
-        //     PRINT_VECTOR(node1_contribution);
-        //     PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
+        if (norm_2(node1_contribution)>1000 || norm_2(node2_contribution)>1000 ||norm_2(node3_contribution)>1000 || norm_2(node4_contribution)>1000  )
+        {
+            PRINT_VECTOR(node1_contribution);
+            PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
         
-        //     // PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
-        //         node1_contribution =Create_c_vector(0,0,0);
-        //         node2_contribution= Create_c_vector(0,0,0);
-        //         node3_contribution= Create_c_vector(0,0,0);
-        //         node4_contribution= Create_c_vector(0,0,0);
-        //         p_cell1->GetCellData()->SetItem("BendingForce", -100);
-        //         p_cell2->GetCellData()->SetItem("BendingForce", -100);
-        //         p_cell3->GetCellData()->SetItem("BendingForce", -100);
-        //         p_cell4->GetCellData()->SetItem("BendingForce", -100);
-        // }
+            PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
+                node1_contribution =Create_c_vector(0,0,0);
+                node2_contribution= Create_c_vector(0,0,0);
+                node3_contribution= Create_c_vector(0,0,0);
+                node4_contribution= Create_c_vector(0,0,0);
+                p_cell1->GetCellData()->SetItem("BendingForce", -100);
+                p_cell2->GetCellData()->SetItem("BendingForce", -100);
+                p_cell3->GetCellData()->SetItem("BendingForce", -100);
+                p_cell4->GetCellData()->SetItem("BendingForce", -100);
+        }
 
         // BendingForceMap[node_index1] += node1_contribution; 
         // BendingForceMap[node_index2] += node2_contribution; 

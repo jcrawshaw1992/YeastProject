@@ -45,8 +45,8 @@ void TestSetUpCylinderArchive() throw(Exception)
         double EndTime = 0;
         double scale = 0.00006684491/1.29;
 
-        double SamplingStep = 5;
-        double dt = 0.00001;
+        double SamplingStep = 1;
+        double dt = 0.0000000001;
 
 
         std::string output_dir = "DeformingHoneyComb/";
