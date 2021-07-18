@@ -729,7 +729,7 @@ std::vector<int> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetB
                 for (int k=0; k<mNz+1;++k)
                 {
                     // TRACE("I think this is the problem")
-                    PRINT_3_VARIABLES(i,j,k)
+                    // PRINT_3_VARIABLES(i,j,k)
                     double MinX = GetBinLowerX(mBinCoords[{ i,j,k }]); 
                     // TRACE("MinX")
                     double MaxX = GetBinUpperX(mBinCoords[{ i,j,k }]);
@@ -743,7 +743,7 @@ std::vector<int> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetB
                     double MaxZ = GetBinUpperZ(mBinCoords[{ i,j,k }]);
                     // TRACE("MaxZ")
 
-                    PRINT_3_VARIABLES(MinX, MinY, MinZ);
+                    // PRINT_3_VARIABLES(MinX, MinY, MinZ);
                     // Check if this element is in this bin (can be in multiple bins )
                     if (Location[0]>= MinX &&  Location[0]<= MaxX )
                       {if (Location[1]>= MinY &&  Location[1]<= MaxY )
