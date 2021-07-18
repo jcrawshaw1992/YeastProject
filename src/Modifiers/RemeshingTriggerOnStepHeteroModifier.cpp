@@ -49,12 +49,14 @@ RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::~RemeshingTriggerO
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, std::string outputDirectory)
 {
-
+    
     if (mSetUpSolve ==1)
     {
+        HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+   
       TRACE("SETUPSOLVE")
       UpdateCellData(rCellPopulation);
-      rCellPopulation.SetBinningRegions();
+      pCellPopulation->SetBinningRegions();
 
       for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
             cell_iter != rCellPopulation.End();
