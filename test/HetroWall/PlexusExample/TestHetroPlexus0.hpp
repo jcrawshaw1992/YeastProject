@@ -85,7 +85,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         StepHeteroModifier
         ----------------------------
         */
-        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new StepHeteroModifier<2, 3>());
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
         p_Mesh_modifier->SetMembraneStrength(0.5);
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
