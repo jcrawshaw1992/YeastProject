@@ -839,21 +839,21 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMe
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
 {
-    PRINT_VARIABLE("A")
+    // PRINT_VARIABLE("A")
     
     assert(SPACE_DIM == 3);
     // This method is super simple. -- Just find the closest element -- it isnt perfect,
     int ClosestElement; double ClosestElementDistance = 10;
 
     std::vector<int> Bin = GetBin(NewNodeLocation);
-     PRINT_VARIABLE("B")
-    PRINT_VECTOR(Bin)
+    //  PRINT_VARIABLE("B")
+    // PRINT_VECTOR(Bin)
     std::vector<unsigned> ElementsInDaBin= mBin[Bin];
-    PRINT_VARIABLE("C")
+    // PRINT_VARIABLE("C")
     for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
     {
 
-PRINT_VARIABLE("D")
+// PRINT_VARIABLE("D")
     // for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
     // elem_iter != this->rGetMesh().GetElementIteratorEnd();
     // ++elem_iter)
