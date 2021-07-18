@@ -74,7 +74,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
         this->TakeInPreAllocatedRemeshGeometry();
     }
 
-    TRACE('about to remesh')
+    TRACE("About to remesh")
     // this->SetBinningRegions();
     this->MappingAdaptedMeshToInitalGeometry();
     if (mPrintRemeshedIC)
@@ -719,10 +719,10 @@ std::vector<int> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetB
     std::vector<int> Bin;
 
     // Need to iterate over the elements and determine which bin each element centroid is in. I look for the cloesest old centeroid for each new node, so it fits that I will have the centroids sorted in the bins
-
+        PRINT_3_VARIABLE(mNx,mNy,mNz )
         for (int i=0; i<mNx+1;++i)
         {
-            TRACE("a")
+            TRACE("aa")
             for (int j=0; j<mNy+1;++j)
             {
                 TRACE("b")
