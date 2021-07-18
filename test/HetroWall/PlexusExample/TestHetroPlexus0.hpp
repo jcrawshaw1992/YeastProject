@@ -46,7 +46,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         double dt = 0.001;
 
 
-        std::string output_dir = "DeformingPlexus/WithBending";
+        std::string output_dir = "DeformingPlexus/WithBending2";
         // std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
          std::string mesh_file = "/data/vascrem/MeshCollection/PlexusRemeshed.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
