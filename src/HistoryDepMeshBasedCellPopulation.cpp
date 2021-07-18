@@ -74,7 +74,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
         this->TakeInPreAllocatedRemeshGeometry();
     }
 
-    PRINT_VARIABLE("about to remesh")
+    PRINT_VARIABLE('about to remesh')
     // this->SetBinningRegions();
     this->MappingAdaptedMeshToInitalGeometry();
     if (mPrintRemeshedIC)
@@ -713,6 +713,7 @@ std::map<std::vector<int>, std::vector<unsigned> > HistoryDepMeshBasedCellPopula
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 std::vector<int> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBin(c_vector<double, SPACE_DIM> Location)
 {
+    
     assert(SPACE_DIM == 3 &&ELEMENT_DIM == 2 );
 
     std::vector<int> Bin;
@@ -721,13 +722,18 @@ std::vector<int> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetB
 
         for (int i=0; i<mNx+1;++i)
         {
+            TRACE("a")
             for (int j=0; j<mNy+1;++j)
             {
+                TRACE("b")
                 for (int k=0; k<mNz+1;++k)
                 {
+                    TRACE("c")
                     double MinX = GetBinLowerX(mBinCoords[{ i,j,k }]); double MaxX = GetBinUpperX(mBinCoords[{ i,j,k }]);
                     double MinY = GetBinLowerY(mBinCoords[{ i,j,k }]); double MaxY = GetBinUpperY(mBinCoords[{ i,j,k }]);
                     double MinZ = GetBinLowerZ(mBinCoords[{ i,j,k }]); double MaxZ = GetBinUpperZ(mBinCoords[{ i,j,k }]);
+
+                    PRINT_3_VARIABLES(MinX, MinY, MinZ);
                     // Check if this element is in this bin (can be in multiple bins )
                     if (Location[0]>= MinX &&  Location[0]<= MaxX )
                       {if (Location[1]>= MinY &&  Location[1]<= MaxY )
