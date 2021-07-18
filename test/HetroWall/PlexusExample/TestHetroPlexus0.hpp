@@ -98,7 +98,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         */
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
         p_Mesh_modifier->SetMembraneStrength(0.5);
-        p_Mesh_modifier->SetRemeshingInterval(100);// I have turned this off because I need to know what will happen without remeshing, and then with remeshing        
+        p_Mesh_modifier->SetRemeshingInterval(10);// I have turned this off because I need to know what will happen without remeshing, and then with remeshing        
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
 
