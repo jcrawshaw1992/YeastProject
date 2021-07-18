@@ -43,7 +43,7 @@ void TestSetUpCylinderArchive() throw(Exception)
     {
         TRACE("START")
         double EndTime = 0;
-        double scale = 0.00006684491/1.29;
+        double scale = 0.1;
 
         double SamplingStep = 1;
         double dt = 0.0000000001;
