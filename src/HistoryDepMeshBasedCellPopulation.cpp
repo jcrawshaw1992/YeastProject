@@ -52,7 +52,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBoundaries(bo
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDependentRemeshing()
 {
-
+    this->SetBinningRegions();
     // TRACE("ExecuteHistoryDependentRemeshing")
     /*
      * 1) Remesh geometry
