@@ -112,14 +112,16 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
     HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
 
 
-    // std::map<unsigned, c_vector<double, 3> > BendingForceMap;
-    // for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
-    //     cell_iter != rCellPopulation.End();
-    //     ++cell_iter)
-    // {
-    //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-    //     BendingForceMap[node_index] = Create_c_vector(0,0,0);
-    // }
+    std::map<unsigned, c_vector<double, 3> > BendingForceMap;
+    for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
+        cell_iter != rCellPopulation.End();
+        ++cell_iter)
+    {
+        // unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+        // BendingForceMap[node_index] = Create_c_vector(0,0,0);
+        cell_iter->GetCellData()->SetItem("BendingForce", 0);
+
+    }
 
 
     // Iterate over all springs and add force contributions
