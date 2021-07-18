@@ -175,8 +175,8 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
         CellPtr p_cell = this->GetCellUsingLocationIndex(node_iter->GetIndex());
         p_cell->GetCellData()->SetItem("MappingMethod", mMapOfProbNodes[node_iter->GetIndex()]);
     }
-    // this->SetBinningRegions();//Remove this later :) 
-
+    
+    this->SetBinningRegions();
     mUpdateComplete = 0;
 }
 

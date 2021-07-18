@@ -54,6 +54,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(Ab
     {
       TRACE("SETUPSOLVE")
       UpdateCellData(rCellPopulation);
+      pCellPopulation->SetBinningRegions();
 
       for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
             cell_iter != rCellPopulation.End();
