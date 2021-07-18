@@ -74,7 +74,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
         this->TakeInPreAllocatedRemeshGeometry();
     }
 
-    PRINT_VARIABLE('about to remesh')
+    TRACE('about to remesh')
     // this->SetBinningRegions();
     this->MappingAdaptedMeshToInitalGeometry();
     if (mPrintRemeshedIC)
