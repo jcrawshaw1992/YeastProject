@@ -89,6 +89,7 @@ private:
         // archive& mGrowthMaps; 
         archive& mOn;
         archive& mSamplebasementNode;
+        archive& mThreshold;
         
         archive& mBasementNodes;
         archive& mStepSize;
@@ -215,6 +216,8 @@ public:
 
  
     std::string mRemeshingTrigger= "time";
+    double mThreshold;
+    double mBasementMembraneStrength;
 
 
 
