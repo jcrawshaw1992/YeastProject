@@ -2354,6 +2354,7 @@ bool HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SameSide(c_vecto
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinLowerX(std::vector<double> Bin)
 {
+    TRACE("GetBinLowerX")
     typename std::vector<double>::iterator iter = Bin.begin();
     return *iter;
 }
@@ -2361,6 +2362,7 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinLowerX(s
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinUpperX(std::vector<double> Bin)
 {
+    TRACE("GetBinUpperX")
     typename std::vector<double>::iterator iter = Bin.begin();
     std::advance(iter, 1);
     return *iter;
@@ -2368,6 +2370,7 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinUpperX(s
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinLowerY(std::vector<double> Bin)
 {
+    TRACE("GetBinLowerY")
     typename std::vector<double>::iterator iter = Bin.begin();
     std::advance(iter, 2);
     return *iter;
@@ -2375,6 +2378,7 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinLowerY(s
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinUpperY(std::vector<double> Bin)
 {
+    TRACE("GetBinUpperY")
     typename std::vector<double>::iterator iter = Bin.begin();
     std::advance(iter, 3);
     return *iter;
@@ -2383,6 +2387,7 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinUpperY(s
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinLowerZ(std::vector<double> Bin)
 {
+    TRACE("GetBinLowerZ")
     typename std::vector<double>::iterator iter = Bin.begin();
     std::advance(iter, 4);
     return *iter;
@@ -2391,6 +2396,7 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinLowerZ(s
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetBinUpperZ(std::vector<double> Bin)
 {
+    TRACE("GetBinUpperZ")
     typename std::vector<double>::iterator iter = Bin.begin();
     std::advance(iter, 5);
     double value = *iter;
