@@ -729,6 +729,7 @@ std::vector<int> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetB
                 for (int k=0; k<mNz+1;++k)
                 {
                     TRACE("I think this is the problem")
+                    PRINT_3_VARIABLES(i,j,k)
                     double MinX = GetBinLowerX(mBinCoords[{ i,j,k }]); 
                     TRACE("MinX")
                     double MaxX = GetBinUpperX(mBinCoords[{ i,j,k }]);
