@@ -595,7 +595,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningWidth(
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-// void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningRegions()
+void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningRegions()
 {
 
     assert(SPACE_DIM == 3 && ELEMENT_DIM == 2 );
