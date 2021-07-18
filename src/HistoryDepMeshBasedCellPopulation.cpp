@@ -612,7 +612,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningRegion
     double X = (mMaxX - mMinX)/BlurryRegion;
     double Y = (mMaxY - mMinY)/BlurryRegion;
     double Z = (mMaxZ - mMinZ)/BlurryRegion;
-    
+    PRINT_3_VARIABLES(mNx, mNy,mNz)
 
     // Need to iterate over the elements and determine which bin each element centroid is in. I look for the cloesest old centeroid for each new node, so it fits that I will have the centroids sorted in the bins
     for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
