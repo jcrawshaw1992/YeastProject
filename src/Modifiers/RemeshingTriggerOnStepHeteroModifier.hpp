@@ -187,7 +187,10 @@ public:
 	 * Set the member variable mGrowthMaps to be the paramters sent in 
 	 */
 
-    void SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps, double Strength, bool Hetrogeneous, double StepSize, double SetupSolve);
+    // void SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps, double Strength, bool Hetrogeneous, double StepSize, double SetupSolve);
+
+
+    void SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps, double Strength);
 
     void SetBendingForce(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, double BendingConstant);
 
