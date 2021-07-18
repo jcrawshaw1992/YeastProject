@@ -628,6 +628,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningRegion
             {
                 for (int k=0; k<mNz+1;++k)
                 {
+                    PRINT_3_VARIABLES(i,j,k)
                     // std::vector<double> BinLimits =mBinCoords[{ i,j,k }];
                     double MinX = GetBinLowerX(mBinCoords[{ i,j,k }])-X ; double MaxX = GetBinUpperX(mBinCoords[{ i,j,k }])+X ;
                     double MinY = GetBinLowerY(mBinCoords[{ i,j,k }])-Y; double MaxY = GetBinUpperY(mBinCoords[{ i,j,k }])+Y;
