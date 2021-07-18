@@ -64,9 +64,9 @@ void TestSetUpCylinderArchive() throw(Exception)
         // Create a cell population
         HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
 
-        cell_population.SetChasteOutputDirectory(output_dir, startime);
+        cell_population.SetChasteOutputDirectory(output_dir, 0);
         // cell_population.SetInitialAnlgesAcrossMembrane(); // Dont worry about this for now, I think there is something moff
-        cell_population.SetRelativePath(output_dir, startime);
+        cell_population.SetRelativePath(output_dir, 0);
         cell_population.SetTargetRemeshingEdgeLength(0.6e-6 * scale); 
         // cell_population.EdgeLengthVariable(1.2); 
         cell_population.SetPrintRemeshedIC(1);
