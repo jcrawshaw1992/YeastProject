@@ -42,7 +42,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         double EndTime = 0;
         double scale = 0.00006684491/1.29;
 
-        double SamplingStep = 200;
+        double SamplingStep = 100;
         double dt = 0.001;
 
 
