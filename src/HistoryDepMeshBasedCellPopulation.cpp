@@ -9,8 +9,8 @@ HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::HistoryDepMeshBasedCe
         : MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>(rMesh, rCells, locationIndices, deleteMesh, validate)
 {
     SaveInitalConditions();
-    // this->SetBinningRegions();
-    // SetBinningIntervals(1, 1, 1);
+    this->SetBinningRegions();
+    
     bool InitialRemesh =0;
     if (InitialRemesh)
     {
@@ -74,7 +74,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
         this->TakeInPreAllocatedRemeshGeometry();
     }
 
-    this->SetBinningRegions();
+    // this->SetBinningRegions();
     this->MappingAdaptedMeshToInitalGeometry();
     if (mPrintRemeshedIC)
     {
@@ -174,7 +174,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
         CellPtr p_cell = this->GetCellUsingLocationIndex(node_iter->GetIndex());
         p_cell->GetCellData()->SetItem("MappingMethod", mMapOfProbNodes[node_iter->GetIndex()]);
     }
-    this->SetBinningRegions();//Remove this later :) 
+    // this->SetBinningRegions();//Remove this later :) 
 
     mUpdateComplete = 0;
 }
@@ -595,7 +595,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningWidth(
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningRegions()
+// void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningRegions()
 {
 
     assert(SPACE_DIM == 3 && ELEMENT_DIM == 2 );
@@ -825,24 +825,24 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElem
     // This method is super simple. -- Just find the closest element -- it isnt perfect,
     int ClosestElement; double ClosestElementDistance = 10;
 
-    // std::vector<int> Bin = GetBin(NewNodeLocation);
-    // std::vector<unsigned> ElementsInDaBin= mBin[Bin];
+    std::vector<int> Bin = GetBin(NewNodeLocation);
+    std::vector<unsigned> ElementsInDaBin= mBin[Bin];
 
-    // for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
-    // {
-
-    for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
-    elem_iter != this->rGetMesh().GetElementIteratorEnd();
-    ++elem_iter)
+    for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
     {
+
+    // for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
+    // elem_iter != this->rGetMesh().GetElementIteratorEnd();
+    // ++elem_iter)
+    // {
         // c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
-        unsigned elem_index = elem_iter->GetIndex();
-        double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, elem_index) ;
+        // unsigned elem_index = elem_iter->GetIndex();
+        double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, *elem_index) ;
         // PRINT_VARIABLE(DistanceFromContainingElement)
         if (std::abs(DistanceFromContainingElement) < ClosestElementDistance)
         {
             ClosestElementDistance = std::abs(DistanceFromContainingElement);
-            ClosestElement = elem_index;
+            ClosestElement = *elem_index;
         }
     }
     mNewNodeToOldElementDistanceMap[node_index] = ClosestElementDistance;

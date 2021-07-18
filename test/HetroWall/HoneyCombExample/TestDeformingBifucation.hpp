@@ -45,8 +45,8 @@ void TestSetUpCylinderArchive() throw(Exception)
         double EndTime = 0;
         double scale = 0.1;
 
-        double SamplingStep = 100;
-        double dt = 0.0001;
+        double SamplingStep = 1000;
+        double dt = 0.0005;
 
 
         std::string output_dir = "DeformingBifucation/";
@@ -69,10 +69,11 @@ void TestSetUpCylinderArchive() throw(Exception)
         cell_population.SetChasteOutputDirectory(output_dir, 0);
         // cell_population.SetInitialAnlgesAcrossMembrane(); // Dont worry about this for now, I think there is something moff
         cell_population.SetRelativePath(output_dir, 0);
-        cell_population.SetTargetRemeshingEdgeLength(0.6e-6 * scale); 
+        cell_population.SetTargetRemeshingEdgeLength(0.002 * scale); 
         // cell_population.EdgeLengthVariable(1.2); 
         cell_population.SetPrintRemeshedIC(1);
         cell_population.SetTargetRemeshingIterations(10);
+        cell_population.SetBinningIntervals(4, 4, 1);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
         cell_population.SetRemeshingSoftwear("CGAL");
@@ -99,7 +100,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         */
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
         p_Mesh_modifier->SetMembraneStrength(0.5);
-        p_Mesh_modifier->SetRemeshingInterval(100);// I have turned this off because I need to know what will happen without remeshing, and then with remeshing
+        p_Mesh_modifier->SetRemeshingInterval(5000);// I have turned this off because I need to know what will happen without remeshing, and then with remeshing
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
         // simulator.SetEndTime(EndTime);
@@ -189,7 +190,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         { 
             PRINT_VARIABLE(EndTime)
             cell_population.SetStartTime(EndTime);
-            EndTime +=1;
+            EndTime +=10;
             simulator.SetEndTime(EndTime);
             
             simulator.Solve();
