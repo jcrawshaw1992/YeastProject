@@ -28,7 +28,7 @@
 #include "OutwardsPressure.hpp"
 #include "MembraneBendingForce.hpp"
 
-#include "StepHeteroModifier.hpp"
+#include "RemeshingTriggerOnStepHeteroModifier.hpp"
 
 
 class TestRemeshing : public AbstractCellBasedTestSuite
@@ -66,13 +66,22 @@ void TestSetUpCylinderArchive() throw(Exception)
 
         // Create a cell population
         HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
-        // cell_population.SetChasteOutputDirectory(output_dir, 0);
+        cell_population.SetChasteOutputDirectory(output_dir, 0);
+        // cell_population.SetInitialAnlgesAcrossMembrane(); // Dont worry about this for now, I think there is something moff
+        cell_population.SetRelativePath(output_dir, 0);
+        cell_population.SetTargetRemeshingEdgeLength(0.6e-6 * scale); 
+        // cell_population.EdgeLengthVariable(1.2); 
+        cell_population.SetPrintRemeshedIC(1);
+        cell_population.SetTargetRemeshingIterations(10);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
+        cell_population.SetRemeshingSoftwear("CGAL");
+        cell_population.SetOperatingSystem("server");
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
 
-        // Set up cell-based simulation
+
+       // Set up cell-based simulation
         OffLatticeSimulation<2, 3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
         simulator.SetSamplingTimestepMultiple(SamplingStep);
@@ -88,9 +97,13 @@ void TestSetUpCylinderArchive() throw(Exception)
         StepHeteroModifier
         ----------------------------
         */
-        boost::shared_ptr<StepHeteroModifier<2, 3> > p_Mesh_modifier(new StepHeteroModifier<2, 3>());
-        p_Mesh_modifier->SetMembraneStrength(1);
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
+        p_Mesh_modifier->SetMembraneStrength(0.5);
+        p_Mesh_modifier->SetRemeshingInterval(1000);// I have turned this off because I need to know what will happen without remeshing, and then with remeshing
         simulator.AddSimulationModifier(p_Mesh_modifier);
+
+        // simulator.SetEndTime(EndTime);
+
 
         /*
         -----------------------------
