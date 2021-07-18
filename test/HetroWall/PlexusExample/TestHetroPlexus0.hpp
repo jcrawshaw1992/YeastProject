@@ -43,7 +43,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         double scale = 0.00006684491/1.29;
 
         double SamplingStep = 10;
-        double dt = 0.0001;
+        double dt = 0.001;
 
 
         std::string output_dir = "DeformingPlexus/WithoutBending";
