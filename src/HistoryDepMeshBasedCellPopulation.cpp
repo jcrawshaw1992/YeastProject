@@ -719,7 +719,7 @@ std::vector<int> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetB
     std::vector<int> Bin;
 
     // Need to iterate over the elements and determine which bin each element centroid is in. I look for the cloesest old centeroid for each new node, so it fits that I will have the centroids sorted in the bins
-        PRINT_3_VARIABLE(mNx,mNy,mNz )
+        PRINT_3_VARIABLES(mNx,mNy,mNz )
         for (int i=0; i<mNx+1;++i)
         {
             TRACE("aa")
