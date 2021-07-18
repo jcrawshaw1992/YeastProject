@@ -73,7 +73,8 @@ void TestSetUpCylinderArchive() throw(Exception)
         // cell_population.EdgeLengthVariable(1.2); 
         cell_population.SetPrintRemeshedIC(1);
         cell_population.SetTargetRemeshingIterations(10);
-        cell_population.SetBinningIntervals(4, 4, 1);
+        
+        cell_population.SetBinningIntervals(2, 2, 1);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
         cell_population.SetRemeshingSoftwear("CGAL");

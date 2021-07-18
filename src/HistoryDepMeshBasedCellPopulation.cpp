@@ -826,6 +826,7 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElem
     int ClosestElement; double ClosestElementDistance = 10;
 
     std::vector<int> Bin = GetBin(NewNodeLocation);
+    PRINT_VECTOR(Bin)
     std::vector<unsigned> ElementsInDaBin= mBin[Bin];
 
     for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
