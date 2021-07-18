@@ -28,7 +28,7 @@
 #include "OutwardsPressure.hpp"
 #include "MembraneBendingForce.hpp"
 
-#include "StepHeteroModifier.hpp"
+#include "RemeshingTriggerOnStepHeteroModifier.hpp"
 
 
 class TestRemeshing : public AbstractCellBasedTestSuite
@@ -46,7 +46,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         double dt = 0.001;
 
 
-        std::string output_dir = "DeformingPlexus/WithBending2";
+        std::string output_dir = "DeformingPlexus/WIthRemeshing";
         // std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
          std::string mesh_file = "/data/vascrem/MeshCollection/PlexusRemeshed.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
@@ -85,7 +85,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         StepHeteroModifier
         ----------------------------
         */
-        boost::shared_ptr<StepHeteroModifier<2, 3> > p_Mesh_modifier(new StepHeteroModifier<2, 3>());
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new StepHeteroModifier<2, 3>());
         p_Mesh_modifier->SetMembraneStrength(0.5);
         simulator.AddSimulationModifier(p_Mesh_modifier);
 

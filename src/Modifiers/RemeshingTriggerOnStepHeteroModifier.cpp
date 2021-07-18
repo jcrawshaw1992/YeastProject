@@ -29,10 +29,16 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::RemeshingTriggerOnStepHeteroModifier()
         : AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM>()
 {
-             //AreaConstant           AreaDilationModulus        ShearModulus    
-        mGrowthMaps =  { {1, Create_c_vector(pow(10, -7), pow(10, -8.4), pow(10, -8), 1e-14) },
-        {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-8)}
-    };
+                   //AreaConstant           AreaDilationModulus        ShearModulus    
+    mGrowthMaps =  { {1, Create_c_vector(pow(10, -7), pow(10, -8.4), pow(10, -8), 1e-9) },
+                    {0.5, Create_c_vector(pow(10, -7), pow(10, -8), pow(10, -8),  1e-8) },
+                    // {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-10)}
+                      {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-8)}
+                     };  
+    // mGrowthMaps =  { {1, Create_c_vector(pow(10, -6), pow(10, -6), pow(10, -5), 1e-14) },
+    //     {0, Create_c_vector(pow(10, -6), pow(10, -5.5), pow(10, -4), 1e-14)}
+    // };
+    PRINT_VECTOR(mGrowthMaps[0])
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -55,6 +61,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(Ab
         {
                 cell_iter->GetCellData()->SetItem("CollpasingRegion", 0);
         }
+        mSetUpSolve = 0;
 
 
     }
@@ -191,7 +198,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
 {
         assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
         mBasementNodes.clear();
-        mDistanceToEndothelialRegion.clear();
+        // mDistanceToEndothelialRegion.clear();
 
         assert(SPACE_DIM ==3);
         MAKE_PTR(EmptyBasementMatrix, p_Basement);
@@ -238,7 +245,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
                             mBasementNodes.push_back(node_index);
                             mSamplebasementNode = node_index;
                                                                                     // DistanceToUpperPlane,DistanceToLowerPlane
-                            mDistanceToEndothelialRegion[node_index] = Create_c_vector(norm_2(NodeToUpperPlane),norm_2(NodeToLowerPlane));
+                            // mDistanceToEndothelialRegion[node_index] = Create_c_vector(norm_2(NodeToUpperPlane),norm_2(NodeToLowerPlane));
                             break;
                         }
                         
@@ -251,7 +258,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
                 cell_iter->GetCellData()->SetItem("ShearModulus", mStartingParameterForSlowIncrease);
                 cell_iter->GetCellData()->SetItem("AreaDilationModulus", mStartingParameterForSlowIncrease);
                 cell_iter->GetCellData()->SetItem("AreaConstant", mStartingParameterForSlowIncrease);
-                cell_iter->GetCellData()->SetItem("BendingConstant", 0);
+                cell_iter->GetCellData()->SetItem("BendingConstant", mGrowthMaps[mStrength](3));
                  
             }else // Set now
             {    
@@ -283,16 +290,24 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetStartingPa
 
 /////------------------------------------------------------------------
 
+// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+// void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps, double Strength, bool Hetrogeneous, double StepSize, double SetupSolve)
+// {
+//     mGrowthMaps = GrowthMaps;
+//     mStrength = Strength;
+//     mHetro = Hetrogeneous;
+//     // mStepSize = StepSize;
+//     mOn =  Hetrogeneous;
+//     mSetUpSolve = SetupSolve;
+// }
+
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps, double Strength, bool Hetrogeneous, double StepSize, double SetupSolve)
+void StepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps, double Strength)
 {
     mGrowthMaps = GrowthMaps;
     mStrength = Strength;
-    mHetro = Hetrogeneous;
-    // mStepSize = StepSize;
-    mOn =  Hetrogeneous;
-    mSetUpSolve = SetupSolve;
 }
+
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetMembraneStrength(double Strength)
@@ -310,7 +325,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetThreshold(
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::Boundaries(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPlanePoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> LowerPlanePoint)
+void StepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::Boundaries(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPlanePoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> LowerPlanePoint)
 {
 
     // Upper plane is defined as the one upstream and the lower is downstream
@@ -324,19 +339,11 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::Boundaries(c_
 
     mBoundaries.push_back(CurrentBoundary);
 
-    double Length = norm_2(UpperPlanePoint -LowerPlanePoint );
-    /*  M(x) = k/(1+x^2a) */
-    mMembraneFuctionSpatialConstants.push_back(PlateauDistributionFuction(Length));
-    PRINT_VARIABLE(Length)
-
-
     mHetro = 1;
-    // mStepSize = 1e-7;//1e-10;
-    mOn =  1;
+    mSetUpSolve =1;
     TRACE("GOt here")
     
 }
-
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetRemeshingInterval(int RemeshingInterval)
@@ -366,43 +373,27 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetSlowIncrea
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
+void StepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
     assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     /*
         Step Change -- linear change temporally 
 	*/
-    double c_bs =  mGrowthMaps[mStrength](2);
-    double c_ba =  mGrowthMaps[mStrength](1);
-    double c_bA =  mGrowthMaps[mStrength](0);
-    PRINT_VARIABLE(mStepSize)
+ 
     CellPtr p_Sample_Basement_cell = rCellPopulation.GetCellUsingLocationIndex(mSamplebasementNode);
     double Step_Kbs = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus") + mStepSize;
     double Step_Kba = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus") + mStepSize; // 1e-15;
     double Step_KbA = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant") + mStepSize; // 1e-12;
-    // if (mStepSize <1e-4)
-    // {
+ 
     mStepSize *=1.05;
-    // }
-
-    // double a  = mMembraneFuctionSpatialConstants[0][1][0];
-    double b  = mMembraneFuctionSpatialConstants[0][1][1];
-
-    // PRINT_2_VARIABLES(a,b)
-    PRINT_2_VARIABLES(ma,b)
-
-
 
     for (unsigned i = 0; i<mBoundaries.size(); i++)
     {   
         TRACE("Doing A step Change")
-   
-
-        // Just for shear 
-        double K_ShearMod         = mMembraneFuctionSpatialConstants[i][0][0]; // This needs temproal considerations with the K 
-        double K_AreaDilationMod  = mMembraneFuctionSpatialConstants[i][0][1];
-        double K_AreaMod          = mMembraneFuctionSpatialConstants[i][0][2];
-
+        double K_ShearMod         =  mGrowthMaps[0](2);
+        double K_AreaDilationMod  =  mGrowthMaps[0](1);
+        double K_AreaMod          =  mGrowthMaps[0](0);
+              
 
         K_ShearMod = std::min((double)Step_Kbs, K_ShearMod);
         K_AreaDilationMod = std::min((double)Step_Kba, K_AreaDilationMod);
@@ -415,11 +406,12 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
             cell_iter->GetCellData()->SetItem("ShearModulus", K_ShearMod);
             cell_iter->GetCellData()->SetItem("AreaDilationModulus", K_AreaDilationMod);
             cell_iter->GetCellData()->SetItem("AreaConstant", K_AreaMod);
-            // cell_iter->GetCellData()->SetItem("CollpasingRegion", 1);
         }
     }
 
 }
+
+
 
 
 
@@ -447,40 +439,40 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SlowIncreaseI
 
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-c_vector<c_vector<double, 3>, 2> RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::PlateauDistributionFuction(double Length)
-{
-    // The spatial smoothing in the changing Variables will spatially follow a PlateauDistributionFuction (temproally linear)
-    // I will need to do this for each boundary, so variables in each function will need to be saved in a vector of some sorts, but I will deal with that later 
-    // Unforunitly this will need to be done for each variable. the a value sould be the same, but k will change dependening on which variable, which I will be more clear about now 
+// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+// c_vector<c_vector<double, 3>, 2> RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::PlateauDistributionFuction(double Length)
+// {
+//     // The spatial smoothing in the changing Variables will spatially follow a PlateauDistributionFuction (temproally linear)
+//     // I will need to do this for each boundary, so variables in each function will need to be saved in a vector of some sorts, but I will deal with that later 
+//     // Unforunitly this will need to be done for each variable. the a value sould be the same, but k will change dependening on which variable, which I will be more clear about now 
 
-    // ks will be same for each function, which is good, a will vary on the width of the gap 
+//     // ks will be same for each function, which is good, a will vary on the width of the gap 
 
-     /*  M(x) = k/(1+(bx)^2a) +Me*/ 
+//      /*  M(x) = k/(1+(bx)^2a) +Me*/ 
 
-    double Basement_ShearMod = mGrowthMaps[mBasementMembraneStrength](2);
-    double Basement_AreaDilationMod = mGrowthMaps[mBasementMembraneStrength](1);
-    double Basement_AreaMod = mGrowthMaps[mBasementMembraneStrength](0);
+//     double Basement_ShearMod = mGrowthMaps[mBasementMembraneStrength](2);
+//     double Basement_AreaDilationMod = mGrowthMaps[mBasementMembraneStrength](1);
+//     double Basement_AreaMod = mGrowthMaps[mBasementMembraneStrength](0);
     
-    double Endo_ShearMod = mGrowthMaps[mStrength](2);
-    double Endo_AreaDilationMod = mGrowthMaps[mStrength](1);
-    double Endo_AreaMod = mGrowthMaps[mStrength](0);
+//     double Endo_ShearMod = mGrowthMaps[mStrength](2);
+//     double Endo_AreaDilationMod = mGrowthMaps[mStrength](1);
+//     double Endo_AreaMod = mGrowthMaps[mStrength](0);
 
-    double K_ShearMod = Basement_ShearMod- Endo_ShearMod;
-    double K_AreaDilationMod = Basement_AreaDilationMod- Endo_AreaDilationMod;
-    double K_AreaMod = Basement_AreaMod - Endo_AreaMod;
+//     double K_ShearMod = Basement_ShearMod- Endo_ShearMod;
+//     double K_AreaDilationMod = Basement_AreaDilationMod- Endo_AreaDilationMod;
+//     double K_AreaMod = Basement_AreaMod - Endo_AreaMod;
 
-    // double a = 8; // The larger a is, the steaper the increase is 
-    double b = 2/(Length) *std::log(1/0.01 -1)/std::log(ma*2);// Update this to be 2/L --- it is the same thing, just rounded for the thesis :) 
+//     // double a = 8; // The larger a is, the steaper the increase is 
+//     double b = 2/(Length) *std::log(1/0.01 -1)/std::log(ma*2);// Update this to be 2/L --- it is the same thing, just rounded for the thesis :) 
 
-    c_vector<c_vector<double, 3>, 2> SpatialFuncitonCoefficents;
-    SpatialFuncitonCoefficents[0]=Create_c_vector(K_ShearMod, K_AreaDilationMod, K_AreaMod);
-    SpatialFuncitonCoefficents[1]=Create_c_vector(ma,b,0);
-    // PRINT_VARIABLE(ma,b,Length)
+//     c_vector<c_vector<double, 3>, 2> SpatialFuncitonCoefficents;
+//     SpatialFuncitonCoefficents[0]=Create_c_vector(K_ShearMod, K_AreaDilationMod, K_AreaMod);
+//     SpatialFuncitonCoefficents[1]=Create_c_vector(ma,b,0);
+//     // PRINT_VARIABLE(ma,b,Length)
 
-    /*  M(x) = k/(1+x^2a) */
-    return SpatialFuncitonCoefficents;
-}
+//     /*  M(x) = k/(1+x^2a) */
+//     return SpatialFuncitonCoefficents;
+// }
 
 
 

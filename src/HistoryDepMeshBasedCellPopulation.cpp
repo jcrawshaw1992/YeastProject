@@ -808,23 +808,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMe
         double ClosestElement = GetClosestElementInOldMesh(node_index, NewNodeLocation);
         mNewNodeToOldElementMap[node_index] = ClosestElement;
         InitalPositionOfRemeshedNodes[node_index] = NewNodeInInitalConfigurationFromChangeOfBasis(ClosestElement, NewNodeLocation, node_index);
-
-        // if (ClosestElementOrEdge[0]==0)/* Closest thing is a element */
-        // {
-        //     double ClosestElement = ClosestElementOrEdge[1];
-        //     InitalPositionOfRemeshedNodes[node_index] = NewNodeInInitalConfigurationFromChangeOfBasis(ClosestElement, NewNodeLocation);
-        // }else if (ClosestElementOrEdge[0]==1)/* Closest thing is a edge */
-        // {
-        //     double EdgeNode1 = ClosestElementOrEdge[1];
-        //     double EdgeNode2 = ClosestElementOrEdge[2];
-        //     InitalPositionOfRemeshedNodes[node_index] = NewNodeInInitalConfigurationFromClosestEdge(EdgeNode1, EdgeNode2, NewNodeLocation, node_index);
-        // }
-        // else
-        // {
-        //     /* Should Not be triggered */
-        //     assert(ClosestElementOrEdge[0]==1 || ClosestElementOrEdge[0]==0);
-
-        // }
         
     }
     mInitalPositionOfRemeshedNodes = InitalPositionOfRemeshedNodes;
@@ -835,8 +818,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMe
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-// c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
-// {
 double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
 {
     
@@ -844,16 +825,16 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElem
     // This method is super simple. -- Just find the closest element -- it isnt perfect,
     int ClosestElement; double ClosestElementDistance = 10;
 
-    std::vector<int> Bin = GetBin(NewNodeLocation);
-    std::vector<unsigned> ElementsInDaBin= mBin[Bin];
+    // std::vector<int> Bin = GetBin(NewNodeLocation);
+    // std::vector<unsigned> ElementsInDaBin= mBin[Bin];
 
-    for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
-    {
-
-    // for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
-    // elem_iter != this->rGetMesh().GetElementIteratorEnd();
-    // ++elem_iter)
+    // for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
     // {
+
+    for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
+    elem_iter != this->rGetMesh().GetElementIteratorEnd();
+    ++elem_iter)
+    {
         // c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
         // unsigned elem_index = elem_iter->GetIndex();
         double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, *elem_index) ;
@@ -867,7 +848,7 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElem
     mNewNodeToOldElementDistanceMap[node_index] = ClosestElementDistance;
     // LocalElementOrEdge = Create_c_vector(ElementIdentifier,ClosestElement,0);
     return ClosestElement;//LocalElementOrEdge;
-  }
+}
 
 
 
@@ -877,6 +858,9 @@ double  HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::DistanceBetwe
     // Orthogal projection onto plane, if the point is in the plane, then we find the distance between this point and the new point, that will give us the distacce
     // If this point is not in the plane, then the closest point is on one of the edges, so just test the edges?? 
     // If these points are the same distance apart then lets say the closes this is the edge and go with that?>>? 
+
+
+    // I need to try test this code --- I might be wrong 
 
     double ClosestPoint;
     std::pair<double, c_vector<double, SPACE_DIM> >  ProjectionToTheElement = ProjectPointToPlane(NewPoint, OldElement);
@@ -943,7 +927,7 @@ double  HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::DistanceBetwe
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 std::pair<double, c_vector<double, SPACE_DIM> >  HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ProjectPointToPlane( c_vector<double, SPACE_DIM>  NewPoint, unsigned OldElement)
 {
-
+    std::pair<double, c_vector<double, SPACE_DIM> > ProjectionToTheElement;
     assert(SPACE_DIM == 3);
     Element<ELEMENT_DIM, SPACE_DIM>* p_element = this->rGetMesh().GetElement(OldElement);
     // Collect the intial configuration of the nodes, and the deformed config, send them into the mapping function
@@ -958,18 +942,14 @@ std::pair<double, c_vector<double, SPACE_DIM> >  HistoryDepMeshBasedCellPopulati
     c_vector<double, SPACE_DIM> u2 = x[2]-x[0];
 
     c_vector<double, SPACE_DIM> NormalToPlane = VectorProduct(u1, u2)/norm_2(VectorProduct(u1, u2));
-    // a is the vector between the first point of the element and the new point
-    c_vector<double, SPACE_DIM> a = NewPoint - x[0];
+    c_vector<double, SPACE_DIM> ProjectToNormal = inner_prod(NewPoint- x[0], NormalToPlane) *NormalToPlane;
 
-    double Distance = std::abs(inner_prod(NormalToPlane, a));
-    double AltDistance = std::abs(inner_prod(-NormalToPlane, a));
-    if (AltDistance <= Distance)
-    { 
-        Distance =AltDistance;
-        
-    }
-    c_vector<double, SPACE_DIM> NearestPointInThePlane = NewPoint -std::abs(Distance) * NormalToPlane;
-    std::pair<double, c_vector<double, SPACE_DIM> > ProjectionToTheElement = std::pair<double , c_vector<double, SPACE_DIM> >(Distance, NearestPointInThePlane);
+    c_vector<double, SPACE_DIM> NearestPointInThePlane = NewPoint - ProjectToNormal;
+  
+    double Distance = norm_2(NearestPointInThePlane - NewPoint);
+    assert(inner_prod( x[0] - NearestPointInThePlane,NormalToPlane) < 1e-15);
+    
+    ProjectionToTheElement = std::pair<double , c_vector<double, SPACE_DIM> >(Distance, NearestPointInThePlane);
   
     return ProjectionToTheElement;
 }
@@ -1008,8 +988,23 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ProjectPointTo
     double d1 = inner_prod(a, unitEdgeVector);
     c_vector<double, SPACE_DIM> NearestPointOnLine = d1 * unitEdgeVector + x1;
     double DistanceToLine = norm_2(NearestPointOnLine - NewPoint);
-    return DistanceToLine;
 
+    double DistanceBetweenNodes =  norm_2(x1-x2);
+    double D1  =  norm_2(x1-NewPoint);
+    double D2  =  norm_2(x2-NewPoint);
+    
+    if (DistanceBetweenNodes != D1+D2)
+    {
+        DistanceToLine = std::min(D1,D2);
+
+        // if DistanceToLine == D1
+        //     NearestPointOnLine = x1
+        // else
+        // NearestPointOnLine = x2
+        // end
+
+    }
+    return DistanceToLine;
 }
 
 

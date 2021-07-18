@@ -56,19 +56,17 @@ private:
     bool mOn = 0;
 
     unsigned mSamplebasementNode;
-    bool mAchievedTargetK = 0;
-    double mStrength = 2.5;
+    double mStrength =1;
     bool mHetro = 0;
-    double mStepSize = 1e-10;
+    double mStepSize =  pow(10,-10);
     double mCounter = 0;
     unsigned mSteps =1;
-    double mThreshold = 100;
     // double mSetupSolve;
     int mRemeshingInterval = 500;
     int mExecute = 0;
     bool mRemeshing = 0;
     int mStepsSinceLastRemesh = 1;
-    std::map<unsigned, c_vector<double, 2> > mDistanceToEndothelialRegion;
+    
 
     // std::vector<unsigned> mNodesNextToBasement;
     std::vector<unsigned> mBasementNodes;
@@ -102,15 +100,11 @@ private:
         archive& mRemeshingInterval;
         archive& mExecute;
         archive& mRemeshing;
-        archive& mDistanceToEndothelialRegion;
         archive& mRemeshingTrigger;
 
-        archive& ma;
-        archive& mB;
         archive& mMaxCounter;
         archive& mStartingParameterForSlowIncrease;
-        archive& mMembraneFuctionSpatialConstants;
-        archive& mBasementMembraneStrength;
+        // archive& mBasementMembraneStrength;
 //
         archive& mSlowIncreaseInMembraneStrength;
         archive& mTimeStepSize;
@@ -152,10 +146,9 @@ public:
      */
 
     void Boundaries(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPlanePoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> PlanePoint);
-    c_vector<c_vector<double, 3>, 2> PlateauDistributionFuction(double Length);
-    void SetPlateauParameters(double a, double B);
-    double ma = 8;
-    double mB = 2;
+    // c_vector<c_vector<double, 3>, 2> PlateauDistributionFuction(double Length);
+
+
     void SetUpdateFrequency(double MaxCounter);
     double mMaxCounter = 100;
     bool mSetUpSolve =1;
@@ -166,20 +159,12 @@ public:
     void SetStartingParameterForSlowIncrease(double StartingParameterForSlowIncrease);
     double mStartingParameterForSlowIncrease = 1e-8;
 
-
-
-    // Has spatial constants of the membrane function .. the ks and the as 
-    std::vector<c_vector<c_vector<double, 3>, 2>> mMembraneFuctionSpatialConstants;
-
-
     void SetMembraneStrength(double Strength);
 
     void SetBasementMembraneStrength(double Strength);
 
-    void SetMembraneParameters(double AreaParameter, double DilationParameter, double DeformationParamter, double BendingParameter);
+    // void SetMembraneParameters(double AreaParameter, double DilationParameter, double DeformationParamter, double BendingParameter);
 
-
-    double mBasementMembraneStrength;
 
     /**
      * Set remeshing interval
@@ -229,7 +214,7 @@ public:
     // double FindMinimumAspectRatioOverMesh(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
 
  
-    std::string mRemeshingTrigger= "AspectRatio";
+    std::string mRemeshingTrigger= "time";
 
 
 
