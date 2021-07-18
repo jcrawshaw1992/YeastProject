@@ -74,6 +74,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
         this->TakeInPreAllocatedRemeshGeometry();
     }
 
+    PRINT_VARIABLE("about to remesh")
     // this->SetBinningRegions();
     this->MappingAdaptedMeshToInitalGeometry();
     if (mPrintRemeshedIC)
@@ -785,6 +786,7 @@ std::map<unsigned,double > HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMeshToInitalGeometry()
 {
+    PRINT_VARIABLE("a")
     std::map<unsigned, c_vector<double, SPACE_DIM> > InitalPositionOfRemeshedNodes;
     mInitalPositionOfRemeshedNodes.clear();
     mNewNodeToOldElementMap.clear();
@@ -801,6 +803,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMe
          iter != mNew_mesh.GetNodeIteratorEnd();
          ++iter)
     {
+        PRINT_VARIABLE("b")
         unsigned node_index = iter->GetIndex();
         c_vector<double, SPACE_DIM> NewNodeLocation = iter->rGetLocation();
 
@@ -820,18 +823,21 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MappingAdaptedMe
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElementInOldMesh(unsigned node_index, c_vector<double, SPACE_DIM> NewNodeLocation)
 {
+    PRINT_VARIABLE("A")
     
     assert(SPACE_DIM == 3);
     // This method is super simple. -- Just find the closest element -- it isnt perfect,
     int ClosestElement; double ClosestElementDistance = 10;
 
     std::vector<int> Bin = GetBin(NewNodeLocation);
+     PRINT_VARIABLE("B")
     PRINT_VECTOR(Bin)
     std::vector<unsigned> ElementsInDaBin= mBin[Bin];
-
+    PRINT_VARIABLE("C")
     for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
     {
 
+PRINT_VARIABLE("D")
     // for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
     // elem_iter != this->rGetMesh().GetElementIteratorEnd();
     // ++elem_iter)
