@@ -241,7 +241,7 @@ public:
     {
         std::string Archieved = "DeformingPlexus/WIthRemeshing";
 
-        double SamplingStep = 1000;
+        double SamplingStep = 500;
         double dt = 0.0001;
         double RemeshingTime = 5000;
         std::string output_dir = "DeformingPlexus/WIthRemeshing";

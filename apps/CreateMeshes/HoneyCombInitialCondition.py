@@ -216,9 +216,9 @@ if __name__=="__main__":
 
                         # print "----  Initial mesh generated  ------------- "
 
-    VTK_Meshremeshed2 = Directory+"mesh.vtk"
+    VTK_Meshremeshed2 = VTK_Meshremeshed #Directory+"mesh.vtk"
     command = 'vmtksurfaceremeshing -ifile '+VTK_Meshremeshed +' -iterations 5 -edgelength 0.01 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed2
-    subprocess.call(command, shell=True)
+    # subprocess.call(command, shell=True)
 
     # ----  Clip Edges -------------# 
     Clipped_Mesh =Directory+"meshclipped.vtk" 
