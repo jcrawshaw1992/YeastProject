@@ -216,9 +216,9 @@ if __name__=="__main__":
 
                         # print "----  Initial mesh generated  ------------- "
 
-    VTK_Meshremeshed2 = VTK_Meshremeshed #Directory+"mesh.vtk"
+    VTK_Meshremeshed2 = Directory+"mesh.vtk"
     command = 'vmtksurfaceremeshing -ifile '+VTK_Meshremeshed +' -iterations 5 -edgelength 0.01 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed2
-    # subprocess.call(command, shell=True)
+    subprocess.call(command, shell=True)
 
     # ----  Clip Edges -------------# 
     Clipped_Mesh =Directory+"meshclipped.vtk" 
@@ -247,3 +247,9 @@ if __name__=="__main__":
     
 
 
+
+
+# ./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Downloads/Honeycomb.off -output /Users/jcrawshaw/Downloads/HoneycombRemeshsed.off -target_edge_length 0.002 -iterations 5
+
+
+# ./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Downloads/InitialHoneycombNetworkForFSI/Honeycomb.off -output /Users/jcrawshaw/Downloads/InitialHoneycombNetworkForFSI/HoneycombRemeshsed.off -target_edge_length 0.002 -iterations 5
