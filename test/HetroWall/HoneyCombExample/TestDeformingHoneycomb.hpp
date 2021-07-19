@@ -75,7 +75,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         cell_population.SetBinningIntervals(4, 4, 1);
         // cell_population.EdgeLengthVariable(1.2); 
         cell_population.SetPrintRemeshedIC(1);
-        cell_population.SetTargetRemeshingIterations(10);
+        cell_population.SetTargetRemeshingIterations(5);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
         cell_population.SetRemeshingSoftwear("CGAL");
@@ -102,7 +102,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         */
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
         p_Mesh_modifier->SetMembraneStrength(0.5);
-        p_Mesh_modifier->SetRemeshingInterval(1000);// I have turned this off because I need to know what will happen without remeshing, and then with remeshing
+        p_Mesh_modifier->SetRemeshingInterval(500);// I have turned this off because I need to know what will happen without remeshing, and then with remeshing
         simulator.AddSimulationModifier(p_Mesh_modifier);
         
         // simulator.SetEndTime(EndTime);

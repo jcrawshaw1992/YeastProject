@@ -69,7 +69,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         cell_population.SetChasteOutputDirectory(output_dir, 0);
         // cell_population.SetInitialAnlgesAcrossMembrane(); // Dont worry about this for now, I think there is something moff
         cell_population.SetRelativePath(output_dir, 0);
-        cell_population.SetTargetRemeshingEdgeLength(0.002 * scale); 
+        cell_population.SetTargetRemeshingEdgeLength(0.0025 * scale); 
         // cell_population.EdgeLengthVariable(1.2); 
         cell_population.SetPrintRemeshedIC(1);
         cell_population.SetTargetRemeshingIterations(10);
@@ -101,7 +101,7 @@ void TestSetUpCylinderArchive() throw(Exception)
         */
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
         p_Mesh_modifier->SetMembraneStrength(0.5);
-        p_Mesh_modifier->SetRemeshingInterval(1000);// I have turned this off because I need to know what will happen without remeshing, and then with remeshing
+        p_Mesh_modifier->SetRemeshingInterval(100);// I have turned this off because I need to know what will happen without remeshing, and then with remeshing
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
         // simulator.SetEndTime(EndTime);
