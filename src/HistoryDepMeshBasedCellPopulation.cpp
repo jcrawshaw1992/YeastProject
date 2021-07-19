@@ -254,6 +254,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
     // make isotropic_remeshing_ForChaste
     // Now excute the CGAL command to remesh the current geometry - not the input and output within this file have to be pre-set. I will explore if I can make this more neat later, should care.... dont care
     std::string CGALRemeshingCommand;
+    TRACE("ABOUT to remesh")
     if (mServer ==1)
     {
         CGALRemeshingCommand = "(cd  /home/vascrem/CGAL-5.0.2/Polygon_mesh_processing/examples/Polygon_mesh_processing/;./isotropic_remeshing_ForChaste -input " + offfile + " -output " + mChasteOutputDirectory + "CurrentPlexusRemeshed.off -target_edge_length " + std::to_string(mTargetRemeshingEdgeLength) + " -iterations " + std::to_string(mIterations) + " )";
@@ -265,6 +266,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::RemeshGeometry()
         SystemOutput = std::system(CGALRemeshingCommand.c_str()); // system only takes char *
     } 
 
+TRACE("Remeshing Done")
 
     // cd  ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/;./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Documents/Projects/Meshes/Plexus.off  -output  /Users/jcrawshaw/Documents/Projects/Meshes/PlexusRemeshed.off -target_edge_length 0.001  -iterations  5
 

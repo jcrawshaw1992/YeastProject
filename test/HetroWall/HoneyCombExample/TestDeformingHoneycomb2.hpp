@@ -38,8 +38,8 @@ public:
         double EndTime = 0;
         double scale = 0.1;
         double SamplingStep = 50;
-        double dt = 0.001;
-        double RemeshingTime = 150;
+        double dt = 0.002;
+        double RemeshingTime = 10;
         double EdgeLength = (0.6e-6 * scale);
 
         
