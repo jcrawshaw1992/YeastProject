@@ -461,7 +461,7 @@ void TestCollapsingCylinderToAnEqui4() throw(Exception)
         // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
         p_simulator->RemoveAllForces();
         p_simulator->SetEndTime(EndTime + 20);
-        p_simulator->SetSamplingTimestepMultiple(100);
+        p_simulator->SetSamplingTimestepMultiple(10);
         p_simulator->SetDt(0.002);
         p_simulator->SetOutputDirectory(output_dir);
 
