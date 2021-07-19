@@ -210,7 +210,7 @@ if __name__=="__main__":
 
     # The Mesh is currently dense and messy, remesh to get a nicer mesh, can control the target size of each element
 
-    command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.01 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
+    command = 'vmtksurfaceremeshing -ifile '+VTK_Mesh +' -iterations 5 -edgelength 0.001 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed
     subprocess.call(command, shell=True)
 
     # ----  Clip Edges -------------# 

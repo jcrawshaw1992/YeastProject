@@ -36,7 +36,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
-void TestSetUpCylinderArchive() throw(Exception)
+   void offTestSetUpCylinderArchive() throw(Exception)
     {
         TRACE("START")
         double EndTime = 0;
@@ -237,37 +237,44 @@ void TestSetUpCylinderArchive() throw(Exception)
 
 
 
-//     void offTestContinuingHomoArchieve() throw(Exception)
-//     {
-//         std::string Archieved = "DeformingPlexus2/";
+    void TestContinuingHomoArchieve() throw(Exception)
+    {
+        std::string Archieved = "DeformingPlexus/WIthRemeshing";
 
-//         double SamplingStep = 10000;
-//         double dt = 0.000001;
-//         std::string output_dir = "DeformingPlexus2/";
+        double SamplingStep = 1000;
+        double dt = 0.0001;
+        double RemeshingTime = 5000;
+        std::string output_dir = "DeformingPlexus/WIthRemeshing";
 
-//         double EndTime = 1;
-//         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved,EndTime);        
-//         /* Update the ouput directory for the population  */
-//         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+        double EndTime = 2;
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved,EndTime);        
+        /* Update the ouput directory for the population  */
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
     
-//         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
-//         p_simulator->SetDt(dt);
-//         p_simulator->SetOutputDirectory(output_dir);
-//         for (int j =0; j <10 ; j++ )
-//         {    
-//             for (int i =1; i<=50; i++)
-//             { 
-//                 static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
-//                 EndTime +=0.1;
-//                 p_simulator->SetEndTime(EndTime);
-//                 p_simulator->Solve();
-//                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-//             }
-//             dt/=10;SamplingStep *= 10;    
-//             p_simulator->SetSamplingTimestepMultiple(SamplingStep);
-//             p_simulator->SetDt(dt);
-//         }
-//     }
+        p_simulator->SetSamplingTimestepMultiple(SamplingStep);
+        p_simulator->SetDt(dt);
+        p_simulator->SetOutputDirectory(output_dir);
+
+
+        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);
+        p_Mesh_modifier->SetRemeshingInterval(RemeshingTime);
+     
+        for (int j =0; j <10 ; j++ )
+        {    
+            for (int i =0; i<=5; i++)
+            { 
+                static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+                EndTime +=1;
+                p_simulator->SetEndTime(EndTime);
+                p_simulator->Solve();
+                CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+            }
+            dt/=10;SamplingStep *= 10; RemeshingTime /= 10; 
+            p_simulator->SetSamplingTimestepMultiple(SamplingStep);
+            p_simulator->SetDt(dt);
+        }
+    }
 
 
 
