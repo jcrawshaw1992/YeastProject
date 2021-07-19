@@ -215,15 +215,17 @@ if __name__=="__main__":
                         # subprocess.call(convert, shell=True)
 
                         # print "----  Initial mesh generated  ------------- "
-
-    VTK_Meshremeshed2 = Directory+"mesh.vtk"
-    command = 'vmtksurfaceremeshing -ifile '+VTK_Meshremeshed +' -iterations 5 -edgelength 0.01 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed2
+    
+    
+    VTK_Meshremeshed = Directory+"mesh.vtk"
+    VTK_Meshremeshed2 = Directory+"mesh2.vtk"
+    command = 'vmtksurfaceremeshing -ifile '+VTK_Meshremeshed +' -iterations 4 -edgelength 0.03 -elementsizemode "edgelength" -ofile ' + VTK_Meshremeshed2
     subprocess.call(command, shell=True)
 
     # ----  Clip Edges -------------# 
     Clipped_Mesh =Directory+"meshclipped.vtk" 
-    clip.clip_surface_with_plane(VTK_Meshremeshed2,(ends[0]+0.1,0,0), (1,0,0), Clipped_Mesh)
-    clip.clip_surface_with_plane(Clipped_Mesh,(ends[1]-0.1,0,0), (-1,0,0), Clipped_Mesh)
+    clip.clip_surface_with_plane(VTK_Meshremeshed2,(ends[0]+0.2,0,0), (1,0,0), Clipped_Mesh)
+    clip.clip_surface_with_plane(Clipped_Mesh,(ends[1]-0.2,0,0), (-1,0,0), Clipped_Mesh)
     
     # ----  Convert files vtk to stl :)   -------------#    
 
@@ -252,4 +254,7 @@ if __name__=="__main__":
 # ./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Downloads/Honeycomb.off -output /Users/jcrawshaw/Downloads/HoneycombRemeshsed.off -target_edge_length 0.002 -iterations 5
 
 
-# ./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Downloads/InitialHoneycombNetworkForFSI/Honeycomb.off -output /Users/jcrawshaw/Downloads/InitialHoneycombNetworkForFSI/HoneycombRemeshsed.off -target_edge_length 0.002 -iterations 5
+# ./isotropic_remeshing_ForChaste -input /data/vascrem/MeshCollection/InitialHoneycombNetworkForFSI2/HoneyComb.off  -output /data/vascrem/MeshCollection/InitialHoneycombNetworkForFSI2/HoneycombRemeshsed.off -target_edge_length 0.002 -iterations 5
+
+
+# ./isotropic_remeshing_ForChaste -input " + offfile + " -output " + mChasteOutputDirectory + "CurrentPlexusRemeshed.off -target_edge_length " + std::to_string(mTargetRemeshingEdgeLength) + " -iterations " + std::to_string(mIterations) + " > null)";

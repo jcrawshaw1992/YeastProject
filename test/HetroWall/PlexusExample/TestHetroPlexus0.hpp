@@ -241,8 +241,8 @@ public:
     {
         std::string Archieved = "DeformingPlexus/WIthRemeshing";
 
-        double SamplingStep = 500;
-        double dt = 0.0001;
+        double SamplingStep = 100;
+        double dt = 0.001;
         double RemeshingTime = 5000;
         std::string output_dir = "DeformingPlexus/WIthRemeshing";
 
@@ -255,6 +255,8 @@ public:
         p_simulator->SetDt(dt);
         p_simulator->SetOutputDirectory(output_dir);
 
+        (p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(0.0003); 
+
 
         std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);
@@ -265,7 +267,7 @@ public:
             for (int i =0; i<=5; i++)
             { 
                 static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
-                EndTime +=1;
+                EndTime +=0.5;
                 p_simulator->SetEndTime(EndTime);
                 p_simulator->Solve();
                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
