@@ -222,8 +222,8 @@ if __name__=="__main__":
 
     # ----  Clip Edges -------------# 
     Clipped_Mesh =Directory+"meshclipped.vtk" 
-    clip.clip_surface_with_plane(VTK_Meshremeshed2,(ends[0],0,0), (1,0,0), Clipped_Mesh)
-    clip.clip_surface_with_plane(Clipped_Mesh,(ends[1],0,0), (-1,0,0), Clipped_Mesh)
+    clip.clip_surface_with_plane(VTK_Meshremeshed2,(ends[0]+0.01,0,0), (1,0,0), Clipped_Mesh)
+    clip.clip_surface_with_plane(Clipped_Mesh,(ends[1]-0.01,0,0), (-1,0,0), Clipped_Mesh)
     
     # ----  Convert files vtk to stl :)   -------------#    
 
