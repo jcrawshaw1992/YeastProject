@@ -254,7 +254,5 @@ if __name__=="__main__":
 # ./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Downloads/Honeycomb.off -output /Users/jcrawshaw/Downloads/HoneycombRemeshsed.off -target_edge_length 0.002 -iterations 5
 
 
-# ./isotropic_remeshing_ForChaste -input /data/vascrem/MeshCollection/InitialHoneycombNetworkForFSI2/HoneyComb.off  -output /data/vascrem/MeshCollection/InitialHoneycombNetworkForFSI2/HoneycombRemeshsed.off -target_edge_length 0.002 -iterations 5
-
-
-# ./isotropic_remeshing_ForChaste -input " + offfile + " -output " + mChasteOutputDirectory + "CurrentPlexusRemeshed.off -target_edge_length " + std::to_string(mTargetRemeshingEdgeLength) + " -iterations " + std::to_string(mIterations) + " > null)";
+# ./isotropic_remeshing_ForChaste -input /data/vascrem/testoutput/DeformingHoneyComb/results_from_time_0/CurrentMesh.off  
+-output /data/vascrem/testoutput/DeformingHoneyComb/results_from_time_0/CurrentMeshRemeshsed.off -target_edge_length 0.002 -iterations 5

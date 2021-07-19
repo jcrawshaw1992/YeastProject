@@ -37,13 +37,13 @@ public:
         TRACE("Jess is good")
         double EndTime = 0;
         double scale = 0.1;
-        double SamplingStep = 100;
+        double SamplingStep = 50;
         double dt = 0.001;
         double RemeshingTime = 150;
         double EdgeLength = (0.6e-6 * scale);
 
         
-        std::string output_dir = "DeformingHoneyComb/";
+        std::string output_dir = "DeformingHoneyComb";
         std::string mesh_file = "/data/vascrem/MeshCollection/DeformingHoneyComb.vtu";
 
     

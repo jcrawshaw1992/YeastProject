@@ -32,7 +32,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void TestSetUpCylinderArchive() throw(Exception)
+    void offTestSetUpCylinderArchive() throw(Exception)
     {
         TRACE("Jess is good")
         double EndTime = 0;
@@ -187,16 +187,16 @@ public:
         }
     }
 
-    void offTestContinuingHomoArchieve() throw(Exception)
+    void TestContinuingHomoArchieve() throw(Exception)
     {
-        std::string Archieved = "DeformingPlexus/WIthRemeshing";
+        std::string Archieved =  "DeformingPlexus/WIthRemeshingAndBoundaryConditions";
 
         double SamplingStep = 100;
-        double dt = 0.005;
-        double RemeshingTime = 500;
-        std::string output_dir = "DeformingPlexus/WIthRemeshing";
+        double dt = 0.001;
+        double RemeshingTime = 1000;
+        std::string output_dir = "DeformingPlexus/WIthRemeshingAndBoundaryConditions";
 
-        double EndTime = 2;
+        double EndTime = 1.5;
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
