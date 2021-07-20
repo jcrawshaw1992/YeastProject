@@ -39,7 +39,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void TestGrowToEquiCylinder() throw(Exception)
+    void offTestGrowToEquiCylinder() throw(Exception)
     {
 
         double EndTime = 15;
@@ -167,7 +167,7 @@ public:
         p_simulator->RemoveAllForces();
         p_simulator->SetEndTime(EndTime + 20);
         p_simulator->SetSamplingTimestepMultiple(500);
-        p_simulator->SetDt(0.002);
+        p_simulator->SetDt(0.001);
         p_simulator->SetOutputDirectory(output_dir + "HemeLBForce/");
 
         /*
@@ -232,8 +232,8 @@ public:
                     };
 
 
-        // p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 2);
-        p_Mesh_modifier->SetMembraneStrength(2);
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 2);
+        // p_Mesh_modifier->SetMembraneStrength(2);
 
 
         // Upstream 
