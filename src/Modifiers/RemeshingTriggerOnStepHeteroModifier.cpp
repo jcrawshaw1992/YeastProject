@@ -312,20 +312,11 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetStartingPa
 //     mSetUpSolve = SetupSolve;
 // }
 
-// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-// void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps, double Strength)
-// {
-//     mGrowthMaps = GrowthMaps;
-//     mStrength = Strength;
-// }
-
-
-
-
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps)
+void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps, double Strength)
 {
     mGrowthMaps = GrowthMaps;
+    mStrength = Strength;
 }
 
 

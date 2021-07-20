@@ -33,7 +33,7 @@
 #include "MembraneDeformationForce.hpp"
 #include "MembraneDeformationForceOnCylinder.hpp"
 #include "OutwardsPressureWithBreaks.hpp"
-#include "RemeshingTriggerOnHeteroMeshModifier.hpp"
+#include "RemeshingTriggerOnStepHeteroModifier.hpp"
 #include "StepHeteroModifier.hpp"
 
 class TestRemeshing : public AbstractCellBasedTestSuite
@@ -83,10 +83,10 @@ public:
 
         /*
         -----------------------------
-        RemeshingTriggerOnHeteroMeshModifier
+        RemeshingTriggerOnStepHeteroModifier
         ----------------------------
         */
-        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnHeteroMeshModifier<2, 3>());
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
         
 
         //  std::map<double, c_vector<long double, 4> > GrowthMaps =  { {1, Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7), 1e-11) }, // Trying to Collapse
@@ -226,12 +226,12 @@ public:
 
         /* 
         -----------------------------
-        Edit  RemeshingTriggerOnHeteroMeshModifier
+        Edit  RemeshingTriggerOnStepHeteroModifier
         ----------------------------
          */
 
         std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
-        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2,3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2,3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);
 
 
 
@@ -319,12 +319,12 @@ public:
 
         /* 
         -----------------------------
-        Edit  RemeshingTriggerOnHeteroMeshModifier
+        Edit  RemeshingTriggerOnStepHeteroModifier
         ----------------------------
          */
 
         // std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
-        // boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2,3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
+        // boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2,3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);
 
         // Upstream
         // c_vector<double, 3> UpperPlanePoint = Create_c_vector(0,0,1e-6* scale);
