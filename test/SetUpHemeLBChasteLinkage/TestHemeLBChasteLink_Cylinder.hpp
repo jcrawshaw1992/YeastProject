@@ -87,16 +87,7 @@ public:
         ----------------------------
         */
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
-        
-
-        //  std::map<double, c_vector<long double, 4> > GrowthMaps =  { {1, Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7), 1e-11) }, // Trying to Collapse
-        // // mGrowthMaps =  { {1, Create_c_vector(pow(10, -7.5), pow(10, -9), pow(10, -8.1), 1e-11) },// INitial state
-        // // mGrowthMaps =  { {1, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -9), 1e-11) },// Allowed deformation
-        // //  mGrowthMaps =  { {1, Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7.5), 1e-11) },
-        // {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-11)}// {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-10)}
-        //  };
-
-
+    
         std::map<double, c_vector<long double, 4> > GrowthMaps =  { {4, Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7), 1e-11) }, // Trying to Collapse
                          {3, Create_c_vector(pow(10, -7.5), pow(10, -9), pow(10, -8.1), 1e-11) },// Initial state 
                          {2, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -9), 1e-11) },// Allowed deformation
@@ -104,8 +95,8 @@ public:
                          {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -15), 1e-11)}// {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-10)}
                         };
 
-        p_Mesh_modifier->SetMembranePropeties(GrowthMaps);
-        p_Mesh_modifier->SetMembraneStrength(3);
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps,3);
+        // p_Mesh_modifier->SetMembraneStrength(3);
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
 
@@ -233,6 +224,12 @@ public:
         std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2,3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);
 
+        std::map<double, c_vector<long double, 4> > GrowthMaps =  { {4, Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7), 1e-11) }, // Trying to Collapse
+                        {3, Create_c_vector(pow(10, -7.5), pow(10, -9), pow(10, -8.1), 1e-11) },// Initial state 
+                        {2, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -9), 1e-11) },// Allowed deformation
+                        {1, Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7.5), 1e-11) },
+                        {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -15), 1e-11)}// {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-10)}
+                    };
 
 
         // p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 2);
