@@ -39,10 +39,10 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestGrowToEquiCylinder() throw(Exception)
+    void TestGrowToEquiCylinder() throw(Exception)
     {
 
-        double EndTime = 10;
+        double EndTime = 15;
         double scale = 1e3;
         double Length = 30e-6 * scale;
         double Radius = 0.5e-6 * scale;
@@ -50,7 +50,7 @@ public:
         unsigned N_D = 50;
         unsigned N_Z = 30;
 
-        std::string output_dir = "TestHemeLBChasteSecond/";
+        std::string output_dir = "FSICylinder/";
 
         // this simulaiton is in mm. Have chosen this magnitude because um in m will give me numbers too close to machince presision, and movment
         // in um will be too large and break chaste without carefull playing with or a tiny time step
@@ -77,7 +77,7 @@ public:
         OffLatticeSimulation<2, 3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
         simulator.SetSamplingTimestepMultiple(100);
-        simulator.SetDt(0.02);
+        simulator.SetDt(0.05);
         simulator.SetUpdateCellPopulationRule(false);
         simulator.SetEndTime(EndTime);
 
@@ -96,8 +96,16 @@ public:
         // {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-11)}// {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-10)}
         //  };
 
-        // p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
-        p_Mesh_modifier->SetMembraneStrength(1);
+
+        std::map<double, c_vector<long double, 4> > GrowthMaps =  { {4, Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7), 1e-11) }, // Trying to Collapse
+                         {3, Create_c_vector(pow(10, -7.5), pow(10, -9), pow(10, -8.1), 1e-11) },// Initial state 
+                         {2, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -9), 1e-11) },// Allowed deformation
+                         {1, Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7.5), 1e-11) },
+                         {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -15), 1e-11)}// {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-10)}
+                        };
+
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 3);
+        // p_Mesh_modifier->SetMembraneStrength(3);
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
 
@@ -150,11 +158,11 @@ public:
         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
     }
 
-    void offTestCollapsingCylinderToAnEqui() throw(Exception)
+    void TestCollapsingCylinderToAnEqui() throw(Exception)
     {
-        std::string output_dir = "TestHemeLBChasteSecond/";
+        std::string output_dir = "FSICylinder/";
         double scale = 1e3;
-        double EndTime = 10;
+        double EndTime = 15;
 
         // Load and fix any settings in the simulator
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, EndTime);
@@ -222,10 +230,21 @@ public:
         ----------------------------
          */
 
-        // std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
-        // boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2,3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
+        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
+        boost::shared_ptr<RemeshingTriggerOnHeteroMeshModifier<2,3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnHeteroMeshModifier<2, 3> >(*iter);
 
-        // Upstream
+
+        std::map<double, c_vector<long double, 4> > GrowthMaps =  { {4, Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7), 1e-11) }, // Trying to Collapse
+                         {3, Create_c_vector(pow(10, -7.5), pow(10, -9), pow(10, -8.1), 1e-11) },// Initial state 
+                         {2, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -9), 1e-11) },// Allowed deformation
+                         {1, Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7.5), 1e-11) },
+                         {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -15), 1e-11)}// {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-10)}
+                        };
+
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 2);
+
+
+        // Upstream 
         // c_vector<double, 3> UpperPlanePoint = Create_c_vector(0,0,1e-6* scale);
         // c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0,0,1);
         // // Down stream
@@ -239,7 +258,7 @@ public:
 
     void offTestCollapsingCylinderToAnEqui1() throw(Exception)
     {
-        std::string output_dir = "TestHemeLBChasteSecond/HemeLBForce/";
+        std::string output_dir = "FSICylinder/HemeLBForce/";
         double scale = 1e3;
         double EndTime = 30;
 
@@ -326,7 +345,7 @@ public:
 
     void offTestCollapsingCylinderToAnEqui2() throw(Exception)
     {
-        std::string output_dir = "TestHemeLBChasteSecond/HemeLBForce/";
+        std::string output_dir = "FSICylinder/HemeLBForce/";
         double scale = 1e3;
         double EndTime = 90;
 
@@ -391,7 +410,7 @@ public:
   void offTestCollapsingCylinderToAnEqui3() throw(Exception)
     {
         // Send Back to equi 
-        std::string output_dir = "TestHemeLBChasteSecond/HemeLBForce/";
+        std::string output_dir = "FSICylinder/HemeLBForce/";
         double scale = 1e3;
         double EndTime =100;
 
@@ -454,10 +473,10 @@ public:
 
 
 
-void TestCollapsingCylinderToAnEqui4() throw(Exception)
+void offTestCollapsingCylinderToAnEqui4() throw(Exception)
     {
         // I want think to go right back to 0.001:) 
-        std::string output_dir = "TestHemeLBChasteSecond/HemeLBForce/";
+        std::string output_dir = "FSICylinder/HemeLBForce/";
         double scale = 1e3;
         double EndTime =190;
 

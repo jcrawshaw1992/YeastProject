@@ -147,48 +147,83 @@ def doClipCylinderSimple(vtkFile, cylinderImplicit, Save_name):
 
 
 if __name__=="__main__":
+
+
     print "B"
-    file_basename = '/Users/jcrawshaw/Downloads/Plexus.vtk'
-    Save_name ='/Users/jcrawshaw/Downloads/PlexusClipped.vtk'
+    file_basename = '/Volumes/Hardrive/Projects/MeshCollection/Plexus/Mesh.vtk'
+    Save_name ='/Volumes/Hardrive/Projects/MeshCollection/Plexus/PlexusClipped.vtk'
 
-    Origin = (0.04445307579525465/0.00006684491*1.29, 0.05162259742566157/0.00006684491*1.29, -0.001990588305433403/0.00006684491*1.29)
-    Normal = (-0.8105631234548122,-0.5853191641674113,0.019720521127546863)
 
-    Origin2nd = (0.05/0.00006684491*1.29,  0.04/0.00006684491*1.29, -0.0006/0.00006684491*1.29)
-    Normal2nd = (0.6382554028840824, -0.7675489817154649, 0.059148975957581465)
     
+    Origin = (1110.894386904974,808.4094298763815, 8.323439239179478)
+    Normal = (-0.7783818821396531,-0.6268681467750207, 0.034028989341186935)
 
-    plane_origin = (0.04127266890226009/0.00006684491*1.29,00.01885961520968956/0.00006684491*1.29, 0.0007232045314343617/0.00006684491*1.29)
-    plane_normal = (0.057879903604992705,0.997388116052124,0.04320720676775996)
-
- 
+    Origin2nd = (983.9808516638338,  839.552561006235,  -22.894111318321865)
+    Normal2nd = (-0.6645013185210131 , 0.7297434020228992, -0.16097380186813168)
+    
 
     Plane = getBoundedPlaneFunction(Origin, Normal, Origin2nd, Normal2nd)
     doClipCylinderSimple(file_basename, Plane, Save_name)
-    clip_surface_with_plane(Save_name, plane_origin, plane_normal, Save_name)
 
-    # clip_surface_with_plane(Save_name, (0.045098203892165734,0.05064189958380424,0.0011589943289266515), (0.8081276713886205,-0.5856195847394546,-0.06308223763940606), Save_name)
-    # clip_surface_with_plane(Save_name, (0.03656403371703994,0.049415287040463565,0.0005315046730622214), (0.6955018850657018,-0.7184806801140912,0.007914554494637781), Save_name)
-    clip_surface_with_plane(Save_name, (0.028133553209430767,0.04062601993172238,0.0010395808490631854), (0.983017698694772,-0.1828596366438072,-0.015445301529249871), Save_name)
 
-    clip_surface_with_plane(Save_name, (0.03817188881578499, 0.019092013302893857, -0.0003001335411293224), (0.03619867499024044,0.9989466830122159,-0.02819894373), Save_name)
-    # clip_surface_with_plane(Save_name, (1162.8189537477685, 573.6140054014987, -1.5705496953176452), (-0.6612833830623196,0.7436053470763407, 0.09876930234201606), Save_name)
-    clip_surface_with_plane(Save_name, (524.0685139327954, 701.4029880692041, 2.251895091415726), (0.9976171514538998, -0.05816030877723643, 0.03711330769337815), Save_name)
+    clip_surface_with_plane(Save_name, ( 1010, 1042,7), (-0.8709183029618605,-0.4809790373672097 ,0.1007991824339135), Save_name)
+    clip_surface_with_plane(Save_name, (1090.8726224077695, 386.65008377697416,-37.0477635245306), (-0.7140998645058261, 0.6995727686648051,  -0.025677321811670033 ), Save_name)
+    clip_surface_with_plane(Save_name, (763.312256020283, 281.6644070253781, -0.6775506578929273 ), ( 0.1364481049924214, 0.9847840159428821, -0.10762135748719488 ), Save_name)
+    clip_surface_with_plane(Save_name, ( 559.1283011751534,423.1255206814268, -26.794575923521524 ), ( 0.6776766306086994,0.7345836835944588,  -0.0337815944507723 ), Save_name)
+    clip_surface_with_plane(Save_name, (518.8753038528874, 760.6127053516323, -7.110152513590179 ), ( 0.9965690763001236, -0.08276446638855689, -0.0003453487164468649), Save_name)
+    clip_surface_with_plane(Save_name, (665.0432957950629, 981.6807410955373,  -44.817318346023995 ), ( 0.6740219165688873,-0.7338695102268226, -0.08443931515738179), Save_name)
+    # clip_surface_with_plane(Save_name, (  ), ( ), Save_name)
+    # clip_surface_with_plane(Save_name, (  ), ( ), Save_name)
+    # clip_surface_with_plane(Save_name, (  ), ( ), Save_name)
+
+ 
+
+
+
+#     print "B"
+#     file_basename = '/Users/jcrawshaw/Downloads/Plexus.vtk'
+#     Save_name ='/Users/jcrawshaw/Downloads/PlexusClipped.vtk'
+
+#     Origin = (0.04445307579525465/0.00006684491*1.29, 0.05162259742566157/0.00006684491*1.29, -0.001990588305433403/0.00006684491*1.29)
+#     Normal = (-0.8105631234548122,-0.5853191641674113,0.019720521127546863)
+
+#     Origin2nd = (0.05/0.00006684491*1.29,  0.04/0.00006684491*1.29, -0.0006/0.00006684491*1.29)
+#     Normal2nd = (0.6382554028840824, -0.7675489817154649, 0.059148975957581465)
+    
+
+#     plane_origin = (0.04127266890226009/0.00006684491*1.29,00.01885961520968956/0.00006684491*1.29, 0.0007232045314343617/0.00006684491*1.29)
+#     plane_normal = (0.057879903604992705,0.997388116052124,0.04320720676775996)
+
+ 
+
+#     Plane = getBoundedPlaneFunction(Origin, Normal, Origin2nd, Normal2nd)
+#     doClipCylinderSimple(file_basename, Plane, Save_name)
+#     clip_surface_with_plane(Save_name, plane_origin, plane_normal, Save_name)
+
+#     # clip_surface_with_plane(Save_name, (0.045098203892165734,0.05064189958380424,0.0011589943289266515), (0.8081276713886205,-0.5856195847394546,-0.06308223763940606), Save_name)
+#     # clip_surface_with_plane(Save_name, (0.03656403371703994,0.049415287040463565,0.0005315046730622214), (0.6955018850657018,-0.7184806801140912,0.007914554494637781), Save_name)
+#     clip_surface_with_plane(Save_name, (0.028133553209430767,0.04062601993172238,0.0010395808490631854), (0.983017698694772,-0.1828596366438072,-0.015445301529249871), Save_name)
+
+#     clip_surface_with_plane(Save_name, (0.03817188881578499, 0.019092013302893857, -0.0003001335411293224), (0.03619867499024044,0.9989466830122159,-0.02819894373), Save_name)
+#     # clip_surface_with_plane(Save_name, (1162.8189537477685, 573.6140054014987, -1.5705496953176452), (-0.6612833830623196,0.7436053470763407, 0.09876930234201606), Save_name)
+#     clip_surface_with_plane(Save_name, (524.0685139327954, 701.4029880692041, 2.251895091415726), (0.9976171514538998, -0.05816030877723643, 0.03711330769337815), Save_name)
     
 
 
 
-    # clip_surface_with_plane(Save_name, (0.047632004415947796, 0.018907967775871823, 0.0015750103541767799), (-0.6183178411933676,0.7845743897013229,0.04610937309019025), Save_name)
-    # clip_surface_with_plane(Save_name, (0.06539797148540963, 0.025939351832405394, 0.0038007231009339957), (-0.8188719509487834,-0.5731501839108796,0.030783025066716225), Save_name)
-    clip_surface_with_plane(Save_name, (0.027592706932313197, 0.03520549399450725, 0.0007548304121448202), (0.9930115746535606,-0.1034408880150438, -0.05681544940168478), Save_name)
-    # 
-    # print "B"
+#     # clip_surface_with_plane(Save_name, (0.047632004415947796, 0.018907967775871823, 0.0015750103541767799), (-0.6183178411933676,0.7845743897013229,0.04610937309019025), Save_name)
+#     # clip_surface_with_plane(Save_name, (0.06539797148540963, 0.025939351832405394, 0.0038007231009339957), (-0.8188719509487834,-0.5731501839108796,0.030783025066716225), Save_name)
+#     clip_surface_with_plane(Save_name, (0.027592706932313197, 0.03520549399450725, 0.0007548304121448202), (0.9930115746535606,-0.1034408880150438, -0.05681544940168478), Save_name)
+#     # 
+#     # print "B"
 
-    # # convertFile(Save_name, ScalledMeshVTU)
-
-
+#     # # convertFile(Save_name, ScalledMeshVTU)
 
 
-#  cd  ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/;
 
-# ./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Downloads/PlexusClipped.off -output /Users/jcrawshaw/Downloads/PlexusRemeshed.off -target_edge_length 10 -iterations 5
+
+# #  cd  ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/;
+
+# # ./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Downloads/PlexusClipped.off -output /Users/jcrawshaw/Downloads/PlexusRemeshed.off -target_edge_length 10 -iterations 5
+
+./isotropic_remeshing_ForChaste -input /Volumes/Hardrive/Projects/MeshCollection/Plexus/Mesh.off -output /Volumes/Hardrive/Projects/MeshCollection/Plexus/Remesh.off -target_edge_length 5 -iterations 5

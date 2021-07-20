@@ -38,13 +38,13 @@ public:
         double EndTime = 0;
         double scale = 0.1;
         double SamplingStep = 50;
-        double dt = 0.002;
-        double RemeshingTime = 10;
-        double EdgeLength = (0.6e-6 * scale);
+        double dt = 0.001;
+        double RemeshingTime = 1;
+        double EdgeLength = (1e-6 * scale);
 
         
-        std::string output_dir = "DeformingHoneyComb";
-        std::string mesh_file = "/data/vascrem/MeshCollection/DeformingHoneyComb.vtu";
+        std::string output_dir = "DeformingHoneyComb/Course";
+        std::string mesh_file = "/data/vascrem/MeshCollection/CouseHoneycomb.vtu";
 
     
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
@@ -72,7 +72,7 @@ public:
         cell_population.SetTargetRemeshingIterations(5);
         cell_population.SetWriteVtkAsPoints(true);
         cell_population.SetOutputMeshInVtk(true);
-        cell_population.SetRemeshingSoftwear("CGAL");
+        cell_population.SetRemeshingSoftwear("VMTK");
         cell_population.SetOperatingSystem("server");
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();

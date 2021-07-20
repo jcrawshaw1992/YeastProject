@@ -39,13 +39,13 @@ public:
         double scale = 0.00006684491 / 1.29;
 
         double SamplingStep = 100;
-        double dt = 0.002;
+        double dt = 0.005;
         double RemeshingTime = 500;
         double EdgeLength =0.0003;
 
-        std::string output_dir = "DeformingPlexus/WIthRemeshingAndBoundaryConditions";
+        std::string output_dir = "DeformingPlexus/NewMeshes";
         // std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
-        std::string mesh_file = "/data/vascrem/MeshCollection/PlexusRemeshed.vtu";
+        std::string mesh_file = "/data/vascrem/MeshCollection/PlexusDense.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
@@ -127,42 +127,45 @@ public:
         std::vector<c_vector<double, 3> > boundary_plane_points;
         std::vector<c_vector<double, 3> > boundary_plane_normals;
 
-        boundary_plane_points.push_back(Create_c_vector(0.027516035952649214, 0.03612191636841659, -2.5619153430265183e-7));
-        boundary_plane_normals.push_back(Create_c_vector(-1, 0, 0));
 
-        boundary_plane_points.push_back(Create_c_vector(0.030916947422591885, 0.023385783064993303, -5.6128979930167666e-5));
-        boundary_plane_normals.push_back(Create_c_vector(-0.7310312318072982, -0.6817252865329189, -0.02905119315818307));
+      
+        boundary_plane_points.push_back(Create_c_vector(0.027140660617562044,0.036973768064703115, -0.00047456267187380495  ));
+        boundary_plane_normals.push_back(Create_c_vector( -0.9960244752066172, 0.08271636085439482,  -0.03306430758973257 ));
 
-        boundary_plane_points.push_back(Create_c_vector(0.04031542582540166, 0.017805862807742805, -0.0006858558338639898));
-        boundary_plane_normals.push_back(Create_c_vector(-0.22279661741414758, -0.9662081451629887, 0.12962826655290505));
+        boundary_plane_points.push_back(Create_c_vector(0.03764964694156643,  0.05222470833038645, 0.0016941809396443254  ));
+        boundary_plane_normals.push_back(Create_c_vector( -0.6338079607717249, 0.764333299583887,   0.11866792325475212   ));
 
-        boundary_plane_points.push_back(Create_c_vector(0.05549474466182004, 0.020375638162577887, 0.0005263227148536897));
-        boundary_plane_normals.push_back(Create_c_vector(0.7241763167589632, -0.6874100872259559, 0.05510021983100965));
+    
+        boundary_plane_points.push_back(Create_c_vector(0.02878558745417337,  0.023261832846674428  , 0.00017672599322794395  ));
+        boundary_plane_normals.push_back(Create_c_vector(  -0.6616088163689594,-0.7421944722364939 , 0.1068697313763676    ));
 
-        boundary_plane_points.push_back(Create_c_vector(0.05687886073444408, 0.038390887505265536, 0.0010906907114440318));
-        boundary_plane_normals.push_back(Create_c_vector(0.794835692061135, 0.6054405707057209, -0.0409626411407724));
+        boundary_plane_points.push_back(Create_c_vector(0.03950059938867273, 0.014855152735794807, -0.0007883854850717944     ));
+        boundary_plane_normals.push_back(Create_c_vector( -0.12062810349739984, -0.9756638557367499 , 0.1831089873695974   ));
 
-        boundary_plane_points.push_back(Create_c_vector(0.03814937838642002, 0.052942168998578835, -0.0005491630560590082));
-        boundary_plane_normals.push_back(Create_c_vector(-0.6313376972766904, 0.7751778142123436, -0.022628927290961734));
+        boundary_plane_points.push_back(Create_c_vector( 0.05539431732016594, 0.020086260733151867 , -0.0024422080758460855   ));
+        boundary_plane_normals.push_back(Create_c_vector( 0.71846202913131, -0.694579637590522  ,0.03703295479893501   ));
 
-        boundary_plane_points.push_back(Create_c_vector(0.04127266890226009, 0.01885961520968956, 0.0007232045314343617));
-        boundary_plane_normals.push_back(Create_c_vector(-0.057879903604992705, -0.997388116052124, -0.04320720676775996));
+        boundary_plane_points.push_back(Create_c_vector(0.05830129201814445,0.04008861675208597,-0.00200348898677463 ));
+        boundary_plane_normals.push_back(Create_c_vector( 0.7869462971812073,  0.6168544315631546, -0.014357423643696438    ));
 
-        boundary_plane_points.push_back(Create_c_vector(0.04446426823469359, 0.05090490430943361, -0.00030088272407919107));
-        boundary_plane_normals.push_back(Create_c_vector(0.82773209050952, 0.5606455184541284, -0.023155754749839615));
+        boundary_plane_points.push_back(Create_c_vector( 0.051840057186913716,  0.05437284766087955, -0.0029047509892544516   ));
+        boundary_plane_normals.push_back(Create_c_vector( 0.8805564024088457,  0.4681029111939312,  0.07416256945762792   ));
+       
+        
 
+     
         for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
         {
-            if (boundary_id == boundary_plane_points.size() - 1)
-            {
-                boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.008));
-                simulator.AddCellPopulationBoundaryCondition(p_condition);
-            }
-            else
-            {
+            // if (boundary_id == boundary_plane_points.size() - 1)
+            // {
+            //     boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.008));
+            //     simulator.AddCellPopulationBoundaryCondition(p_condition);
+            // }
+            // else
+            // {
                 boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.01));
                 simulator.AddCellPopulationBoundaryCondition(p_condition);
-            }
+            // }
         }
 
         TRACE("First Solve ")
@@ -189,14 +192,16 @@ public:
 
     void TestContinuingHomoArchieve() throw(Exception)
     {
-        std::string Archieved =  "DeformingPlexus/WIthRemeshingAndBoundaryConditions";
+        std::string Archieved = "DeformingPlexus/NewMeshes";
+        std::string output_dir = "DeformingPlexus/NewMeshes";
+
 
         double SamplingStep = 100;
-        double dt = 0.001;
+        double dt = 0.00001;
         double RemeshingTime = 1000;
-        std::string output_dir = "DeformingPlexus/WIthRemeshingAndBoundaryConditions";
+        double EdgeLength =0.00035;
 
-        double EndTime = 1.5;
+        double EndTime = 2;
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
