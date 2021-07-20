@@ -39,10 +39,10 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestGrowToEquiCylinder() throw(Exception)
+    void TestGrowToEquiCylinder() throw(Exception)
     {
 
-        double EndTime = 15;
+        double EndTime = 30;
         double scale = 1e3;
         double Length = 30e-6 * scale;
         double Radius = 0.5e-6 * scale;
@@ -153,7 +153,7 @@ public:
     {
         std::string output_dir = "FSICylinder/";
         double scale = 1e3;
-        double EndTime = 15;
+        double EndTime = 30;
 
         // Load and fix any settings in the simulator
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, EndTime);
@@ -165,10 +165,10 @@ public:
         /* Remove the constant pressure force   */
         // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
         p_simulator->RemoveAllForces();
-        p_simulator->SetEndTime(EndTime + 20);
+        p_simulator->SetEndTime(EndTime + 60);
         p_simulator->SetSamplingTimestepMultiple(500);
         p_simulator->SetDt(0.001);
-        p_simulator->SetOutputDirectory(output_dir + "HemeLBForce/");
+        p_simulator->SetOutputDirectory(output_dir);
 
         /*
         -----------------------------
@@ -195,7 +195,7 @@ public:
         p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
         p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
-        p_ForceOut->SetFluidSolidIterations(2000);
+        p_ForceOut->SetFluidSolidIterations(500);
         p_ForceOut->SetUpHemeLBConfiguration(output_dir + "HemeLBForce/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
 
