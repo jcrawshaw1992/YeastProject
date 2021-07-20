@@ -190,7 +190,7 @@ public:
     // void SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps, double Strength, bool Hetrogeneous, double StepSize, double SetupSolve);
 
 
-    void SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps, double Strength);
+    void SetMembranePropeties(std::map<double, c_vector<long double, 4> > GrowthMaps);
 
     void SetBendingForce(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, double BendingConstant);
 
