@@ -252,7 +252,7 @@ public:
     {
         std::string output_dir = "FSICylinder/Fine/Hetero";
     
-        double SamplingTimestepMultiple = 500;
+        double SamplingTimestepMultiple = 200;
         double EndTime = 65;
         double scale = 1e3;
         double Length = 50e-6 * scale;
@@ -325,11 +325,11 @@ public:
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2,3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);
 
         
-        std::map<double, c_vector<long double, 4> >  GrowthMaps =  { {1, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -8.05), 1e-9) },
-                                                                    {0,  Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7), 1e-9)}    };
+        // std::map<double, c_vector<long double, 4> >  GrowthMaps =  { {1, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -8.05), 1e-9) },
+        //                                                              {0,  Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7), 1e-9)}    };
+ 
 
-
-        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
+        // p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
         // Upstream 
         c_vector<double, 3> UpperPlanePoint = Create_c_vector(0,0,20e-6* scale);
         c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0,0,1);
@@ -338,6 +338,8 @@ public:
         c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0,0,-1);
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
         p_Mesh_modifier->SetUpdateFrequency(10/dt);
+        p_Mesh_modifier->SetmSetUpSolve(0);
+
 
         
         for (int j =1; j<=40; j++)

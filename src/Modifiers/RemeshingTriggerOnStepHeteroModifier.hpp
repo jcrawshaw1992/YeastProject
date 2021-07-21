@@ -183,6 +183,11 @@ public:
 
     void SetThreshold(double Threshold);
 
+
+
+    void SetmSetUpSolve(double SetUpSolve);
+
+
     
     /**
 	 * Set mResetTractionsOnCells.

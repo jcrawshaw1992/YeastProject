@@ -86,6 +86,15 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(Ab
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetmSetUpSolve(double SetUpSolve)
+{
+mSetUpSolve = SetUpSolve;
+}
+
+
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOfTimeStep(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
   
