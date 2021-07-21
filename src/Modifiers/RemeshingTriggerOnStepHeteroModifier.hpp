@@ -105,14 +105,10 @@ private:
 
         archive& mMaxCounter;
         archive& mStartingParameterForSlowIncrease;
-        archive& mBasementMembraneStrength;
+        // archive& mBasementMembraneStrength;
 //
         archive& mSlowIncreaseInMembraneStrength;
         archive& mTimeStepSize;
-        archive&  mSetUpSolve;
-        archive& mStepsSinceLastRemesh;
-        archive& mSteps;
- 
     }
 
 public:
@@ -167,6 +163,9 @@ public:
     void SetMembraneStrength(double Strength);
 
     void SetBasementMembraneStrength(double Strength);
+
+    // void SetStepSize(double StepSize);
+
 
     // void SetMembraneParameters(double AreaParameter, double DilationParameter, double DeformationParamter, double BendingParameter);
 
@@ -224,7 +223,7 @@ public:
  
     std::string mRemeshingTrigger= "time";
     double mThreshold;
-    double mBasementMembraneStrength =0;
+    double mBasementMembraneStrength;
 
 
 

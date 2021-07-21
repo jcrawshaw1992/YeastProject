@@ -383,6 +383,13 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetSlowIncrea
   
 
 
+// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+// void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetStepSize(double StepSize)
+// {
+//     mStepSize = StepSize;
+// }
+
+
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
