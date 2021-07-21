@@ -250,21 +250,22 @@ public:
     
     void TestFSICylinder_Hetero() throw(Exception)
     {
-        std::string output_dir = "FSICylinder/Fine/";
+        std::string output_dir = "FSICylinder/Fine/Hetero";
     
         double SamplingTimestepMultiple = 500;
-        double EndTime = 45;
+        double EndTime = 65;
         double scale = 1e3;
         double Length = 50e-6 * scale;
         double Radius = 0.5e-6 * scale;
-        double dt = 0.0001;
+        double dt = 0.001/5;
+        double FSIIterations = 2000;
 
 
         // Load and fix any settings in the simulator
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, EndTime);
 
         /* Update the ouput directory for the population  */
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir+"Hetero/", EndTime);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
 
         /* Remove the constant pressure force   */
@@ -273,7 +274,7 @@ public:
         // p_simulator->SetEndTime(EndTime + 100);
         p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
         p_simulator->SetDt(dt);
-        p_simulator->SetOutputDirectory(output_dir+"Hetero/");
+        p_simulator->SetOutputDirectory(output_dir);
 
         /*
         -----------------------------
@@ -298,8 +299,8 @@ public:
         p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
         p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
-        p_ForceOut->SetFluidSolidIterations(1000);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"Hetero/HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetFluidSolidIterations(FSIIterations);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"/HemeLBForce/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
 
         /*
@@ -336,14 +337,14 @@ public:
         c_vector<double, 3> LowerPlanePoint = Create_c_vector(0,0,30e-6 * scale);
         c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0,0,-1);
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-        p_Mesh_modifier->SetUpdateFrequency(50/dt);
+        p_Mesh_modifier->SetUpdateFrequency(10/dt);
 
-        double FSIIterations = 1000;
+        
         for (int j =1; j<=40; j++)
         {
 
             
-            for (int i =1; i<=5; i++)
+            for (int i =1; i<=10; i++)
             { 
                 // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(NewEndTime);
                 EndTime +=1;
@@ -358,7 +359,7 @@ public:
             p_ForceOut->SetFluidSolidIterations(FSIIterations);
             p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
             p_simulator->SetDt(dt);
-            p_Mesh_modifier->SetUpdateFrequency(50/dt);
+            p_Mesh_modifier->SetUpdateFrequency(10/dt);
 
 
         }

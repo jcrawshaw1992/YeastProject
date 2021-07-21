@@ -36,7 +36,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
-    void TestNoRestraint() throw(Exception)
+    void offTestNoRestraint() throw(Exception)
     {
         TRACE("Jess is good")
         double EndTime = 0;
@@ -175,6 +175,67 @@ public:
             simulator.SetSamplingTimestepMultiple(SamplingStep);
             simulator.SetDt(dt);
             cell_population.SetTargetRemeshingEdgeLength(EdgeLength);
+        }
+    }
+
+
+
+   void TestContinuoing() throw(Exception)
+   {
+
+        TRACE("Jess is good")
+        double EndTime = 0.1;
+        double scale = 0.05;
+        double SamplingStep = 100;
+        double dt = 0.0001;
+        double RemeshingTime = 600;
+        double EdgeLength = 0.0003/2;//(2e-6 * scale);
+
+        
+        std::string output_dir = "DeformingHoneyComb/NoMembraneForce";
+        std::string Archieved ="DeformingHoneyComb/NoMembraneForce";
+
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
+        /* Update the ouput directory for the population  */
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+
+        p_simulator->SetSamplingTimestepMultiple(SamplingStep);
+        p_simulator->SetDt(dt);
+        p_simulator->SetOutputDirectory(output_dir);
+
+        /*
+        -----------------------------
+        Update membrane properties
+        ----------------------------
+        */
+        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
+        p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
+
+        std::map<double, c_vector<long double, 4> >  GrowthMaps =  { {1, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -8.05), 1e-10) },
+                                                                    {0,  Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7), 1e-9)}    };
+
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
+      
+
+
+
+        for (int j = 0; j < 10; j++)
+        {
+            for (int i = 0; i <= 5; i++)
+            {
+                static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+                EndTime += 0.1;
+                p_simulator->SetEndTime(EndTime);
+                p_simulator->Solve();
+                CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+            }
+            dt /= 2;
+            SamplingStep *= 2;
+            RemeshingTime /= 2;
+            p_simulator->SetSamplingTimestepMultiple(SamplingStep);
+            p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
+            p_simulator->SetDt(dt);
         }
     }
 

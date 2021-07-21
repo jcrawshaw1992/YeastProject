@@ -83,6 +83,7 @@ public:
         simulator.SetDt(dt);
 
         simulator.SetUpdateCellPopulationRule(false);
+        // p_simulator->RemoveAllForces();
         // simulator.SetEndTime(EndTime);
 
         /*
@@ -191,13 +192,13 @@ public:
     }
 
     void TestContinuingHomoArchieve() throw(Exception)
-    {
+   {
         std::string Archieved = "DeformingPlexus/BendingForceOnly/";
         std::string output_dir = "DeformingPlexus/BendingForceOnly/";
 
-        double SamplingStep = 20;
+        double SamplingStep = 500;
         double dt = 0.00005;
-        double RemeshingTime = 16000;
+        double RemeshingTime = 15000;
         double EdgeLength =0.0003;
 
 
@@ -209,6 +210,21 @@ public:
         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
         p_simulator->SetDt(dt);
         p_simulator->SetOutputDirectory(output_dir);
+        p_simulator->RemoveAllForces();
+
+        /*
+        -----------------------------
+        Constant Compressive tissue pressure
+        ----------------------------
+        */
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
+
+        boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
+        p_ForceOut->SetPressure(2 * (P_blood - P_tissue) / 3);
+        p_simulator->AddForce(p_ForceOut);
+
+
 
         /*
         -----------------------------

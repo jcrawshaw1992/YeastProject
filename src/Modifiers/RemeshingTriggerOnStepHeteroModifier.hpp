@@ -105,10 +105,14 @@ private:
 
         archive& mMaxCounter;
         archive& mStartingParameterForSlowIncrease;
-        // archive& mBasementMembraneStrength;
+        archive& mBasementMembraneStrength;
 //
         archive& mSlowIncreaseInMembraneStrength;
         archive& mTimeStepSize;
+        archive&  mSetUpSolve;
+        archive& mStepsSinceLastRemesh;
+        archive& mSteps;
+ 
     }
 
 public:
@@ -220,7 +224,7 @@ public:
  
     std::string mRemeshingTrigger= "time";
     double mThreshold;
-    double mBasementMembraneStrength;
+    double mBasementMembraneStrength =0;
 
 
 
