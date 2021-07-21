@@ -32,165 +32,20 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-
-
-    void TestNoRestraint() throw(Exception)
-    {
-        TRACE("Jess is good")
-        double EndTime = 0;
-        double scale = 0.05;
-        double SamplingStep = 50;
-        double dt = 0.005;
-        double RemeshingTime = 100;
-        double EdgeLength = 0.0003/2;//(2e-6 * scale);
-
-        
-        std::string output_dir = "DeformingHoneyComb/Course";
-        std::string mesh_file = "/data/vascrem/MeshCollection/CouseHoneycomb.vtu";
-
-    
-        VtkMeshReader<2, 3> mesh_reader(mesh_file);
-        MutableMesh<2, 3> mesh;
-        mesh.ConstructFromMeshReader(mesh_reader);
-
-        mesh.Scale(scale, scale, scale);
-
-        // Create the cells
-        MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
-        std::vector<CellPtr> cells;
-        CellsGenerator<FixedG1GenerationalCellCycleModel, 2> cells_generator;
-        cells_generator.GenerateBasicRandom(cells, mesh.GetNumNodes(), p_differentiated_type);
-
-        // Create a cell population
-        HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
-
-        cell_population.SetChasteOutputDirectory(output_dir, 0);
-        // cell_population.SetInitialAnlgesAcrossMembrane(); // Dont worry about this for now, I think there is something moff
-        cell_population.SetRelativePath(output_dir, 0);
-        cell_population.SetTargetRemeshingEdgeLength(EdgeLength);
-        cell_population.SetBinningIntervals(10 ,3, 1);
-        // cell_population.EdgeLengthVariable(1.2);
-        cell_population.SetPrintRemeshedIC(1);
-        cell_population.SetTargetRemeshingIterations(5);
-        cell_population.SetWriteVtkAsPoints(true);
-        cell_population.SetOutputMeshInVtk(true);
-        cell_population.SetRemeshingSoftwear("CGAL");
-        cell_population.SetOperatingSystem("server");
-        // Set population to output all data to results files
-        cell_population.AddCellWriter<CellProliferativeTypesWriter>();
-
-        // Set up cell-based simulation
-        OffLatticeSimulation<2, 3> simulator(cell_population);
-        simulator.SetOutputDirectory(output_dir);
-        simulator.SetSamplingTimestepMultiple(SamplingStep);
-        simulator.SetDt(dt);
-
-        simulator.SetUpdateCellPopulationRule(false);
-    
-    
-        /*
-        -----------------------------
-        StepHeteroModifier
-        ----------------------------
-        */
-        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
-        p_Mesh_modifier->SetMembraneStrength(0.5);
-        p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); // I have turned this off because I need to know what will happen without remeshing, and then with remeshing
-        simulator.AddSimulationModifier(p_Mesh_modifier);
-
-        /*
-        -----------------------------
-        Constant Compressive tissue pressure
-        ----------------------------
-        */
-        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
-        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
-
-        // boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        // p_ForceOut->SetPressure(2 * (P_blood - P_tissue) / 3);
-        // simulator.AddForce(p_ForceOut);
-
-        boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
-        p_ForceOut->SetPressure(P_blood - P_tissue);
-        p_ForceOut->SetRadiusThreshold(10 * 0.0005);
-        simulator.AddForce(p_ForceOut);
-
-
-        // boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        // // p_membrane_force->SetMembraneStiffness(pow(10, -9));
-        // simulator.AddForce(p_membrane_force);
-        /*
-        -----------------------------
-        Membrane forces
-        ----------------------------
-        */
-        // boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        // simulator.AddForce(p_shear_force);
-
-        /*
-        -----------------------------
-        Boundary conditions
-        ----------------------------
-        */
-
-        std::vector<c_vector<double, 3> > boundary_plane_points;
-        std::vector<c_vector<double, 3> > boundary_plane_normals;
-
-        boundary_plane_points.push_back(Create_c_vector(0.007,0,0 ));
-        boundary_plane_normals.push_back(Create_c_vector(-1, 0, 0));
-
-        boundary_plane_points.push_back(Create_c_vector(0.074,0,0));
-        boundary_plane_normals.push_back(Create_c_vector(1,0,0));
-
-    
-        for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
-        {
-   
-                boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id],2));
-                simulator.AddCellPopulationBoundaryCondition(p_condition);
-
-        }
-
-        TRACE("First Solve ")
-
-        for (int j = 0; j < 10; j++)
-        {
-            for (int i = 0; i < 2; i++)
-            {
-                PRINT_VARIABLE(EndTime)
-                cell_population.SetStartTime(EndTime);
-                EndTime += 0.5;
-                simulator.SetEndTime(EndTime);
-
-                simulator.Solve();
-                CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
-            }
-            
-            dt /= 5;  SamplingStep *= 5; RemeshingTime /= 5; EdgeLength*=1.01;
-            simulator.SetSamplingTimestepMultiple(SamplingStep);
-            simulator.SetDt(dt);
-            cell_population.SetTargetRemeshingEdgeLength(EdgeLength);
-        }
-    }
-
-
- 
- 
     void offTestSetUpCylinderArchive() throw(Exception)
     {
         TRACE("Jess is good")
         double EndTime = 0;
-        double scale = 0.05;
-        double SamplingStep = 50;
-        double dt = 0.005;
-        double RemeshingTime = 100;
-        double EdgeLength = 0.0003/2;//(2e-6 * scale);
+        double scale = 0.00006684491 / 1.29;
 
-        
-        std::string output_dir = "DeformingHoneyComb/Course";
-        std::string mesh_file = "/data/vascrem/MeshCollection/CouseHoneycomb.vtu";
+        double SamplingStep = 10;
+        double dt = 0.001;
+        double RemeshingTime = 800;
+        double EdgeLength =0.0003;
 
-    
+        std::string output_dir = "DeformingPlexus/BendingForceOnly/";
+        // std::string mesh_file = "/Users/jcrawshaw/Documents/Projects/Meshes/Plexus2.vtu";
+        std::string mesh_file = "/data/vascrem/MeshCollection/PlexusDense.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
@@ -210,7 +65,7 @@ public:
         // cell_population.SetInitialAnlgesAcrossMembrane(); // Dont worry about this for now, I think there is something moff
         cell_population.SetRelativePath(output_dir, 0);
         cell_population.SetTargetRemeshingEdgeLength(EdgeLength);
-        cell_population.SetBinningIntervals(10 ,3, 1);
+        cell_population.SetBinningIntervals(6, 6, 1);
         // cell_population.EdgeLengthVariable(1.2);
         cell_population.SetPrintRemeshedIC(1);
         cell_population.SetTargetRemeshingIterations(5);
@@ -228,8 +83,8 @@ public:
         simulator.SetDt(dt);
 
         simulator.SetUpdateCellPopulationRule(false);
-    
-    
+        // simulator.SetEndTime(EndTime);
+
         /*
         -----------------------------
         StepHeteroModifier
@@ -260,8 +115,8 @@ public:
         Membrane forces
         ----------------------------
         */
-        boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        simulator.AddForce(p_shear_force);
+        // boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
+        // simulator.AddForce(p_shear_force);
 
         /*
         -----------------------------
@@ -272,19 +127,45 @@ public:
         std::vector<c_vector<double, 3> > boundary_plane_points;
         std::vector<c_vector<double, 3> > boundary_plane_normals;
 
-        boundary_plane_points.push_back(Create_c_vector(0.011839659156333001,0,0 ));
-        boundary_plane_normals.push_back(Create_c_vector(-1, 0, 0));
 
-        boundary_plane_points.push_back(Create_c_vector(0.145298053629932060,0,0));
-        boundary_plane_normals.push_back(Create_c_vector(1,0,0));
+      
+        boundary_plane_points.push_back(Create_c_vector(0.027140660617562044,0.036973768064703115, -0.00047456267187380495  ));
+        boundary_plane_normals.push_back(Create_c_vector( -0.9960244752066172, 0.08271636085439482,  -0.03306430758973257 ));
+
+        boundary_plane_points.push_back(Create_c_vector(0.03764964694156643,  0.05222470833038645, 0.0016941809396443254  ));
+        boundary_plane_normals.push_back(Create_c_vector( -0.6338079607717249, 0.764333299583887,   0.11866792325475212   ));
 
     
+        boundary_plane_points.push_back(Create_c_vector(0.02878558745417337,  0.023261832846674428  , 0.00017672599322794395  ));
+        boundary_plane_normals.push_back(Create_c_vector(  -0.6616088163689594,-0.7421944722364939 , 0.1068697313763676    ));
+
+        boundary_plane_points.push_back(Create_c_vector(0.03950059938867273, 0.014855152735794807, -0.0007883854850717944     ));
+        boundary_plane_normals.push_back(Create_c_vector( -0.12062810349739984, -0.9756638557367499 , 0.1831089873695974   ));
+
+        boundary_plane_points.push_back(Create_c_vector( 0.05539431732016594, 0.020086260733151867 , -0.0024422080758460855   ));
+        boundary_plane_normals.push_back(Create_c_vector( 0.71846202913131, -0.694579637590522  ,0.03703295479893501   ));
+
+        boundary_plane_points.push_back(Create_c_vector(0.05830129201814445,0.04008861675208597,-0.00200348898677463 ));
+        boundary_plane_normals.push_back(Create_c_vector( 0.7869462971812073,  0.6168544315631546, -0.014357423643696438    ));
+
+        boundary_plane_points.push_back(Create_c_vector( 0.051840057186913716,  0.05437284766087955, -0.0029047509892544516   ));
+        boundary_plane_normals.push_back(Create_c_vector( 0.8805564024088457,  0.4681029111939312,  0.07416256945762792   ));
+       
+        
+
+     
         for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
         {
-   
-                boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id],2));
+            // if (boundary_id == boundary_plane_points.size() - 1)
+            // {
+            //     boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.008));
+            //     simulator.AddCellPopulationBoundaryCondition(p_condition);
+            // }
+            // else
+            // {
+                boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.01));
                 simulator.AddCellPopulationBoundaryCondition(p_condition);
-
+            // }
         }
 
         TRACE("First Solve ")
@@ -309,54 +190,54 @@ public:
         }
     }
 
-    void offTestContinuingHomoArchieve() throw(Exception)
+    void TestContinuingHomoArchieve() throw(Exception)
     {
+        std::string Archieved = "DeformingPlexus/BendingForceOnly/";
+        std::string output_dir = "DeformingPlexus/BendingForceOnly/";
 
-        TRACE("Jess is good")
-        double EndTime = 0.5;
-        double scale = 0.05;
-        double SamplingStep = 100;
-        double dt = 0.0001;
-        double RemeshingTime = 2000;
-        double EdgeLength = 0.00035/2;//(2e-6 * scale);
+        double SamplingStep = 20;
+        double dt = 0.00005;
+        double RemeshingTime = 16000;
+        double EdgeLength =0.0003;
 
-        
-        std::string output_dir = "DeformingHoneyComb/Course";
-        std::string Archieved = "DeformingHoneyComb/Course";
-  
+
+        double EndTime = 0.7;
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
-
-
-        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
-        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);
-        // p_Mesh_modifier->Boundaries(UpperPlaneNormal,UpperPlanePoint,  LowerPlaneNormal,LowerPlanePoint );
-        p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); // I have turned this off because I need to know what will happen without remeshing, and then with remeshing
-        
-
 
         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
         p_simulator->SetDt(dt);
         p_simulator->SetOutputDirectory(output_dir);
 
-        for (int j = 0; j < 50; j++)
+        /*
+        -----------------------------
+        Update membrane properties
+        ----------------------------
+        */
+        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
+        p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
+
+
+
+        for (int j = 0; j < 10; j++)
         {
-            for (int i = 0; i <= 10; i++)
+            for (int i = 0; i <= 5; i++)
             {
                 static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
-                EndTime += 0.2;
+                EndTime += 0.1;
                 p_simulator->SetEndTime(EndTime);
                 p_simulator->Solve();
                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
             }
+            // (p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(0.0003);
             dt /= 2;
             SamplingStep *= 2;
             RemeshingTime /= 2;
             p_simulator->SetSamplingTimestepMultiple(SamplingStep);
+            p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
             p_simulator->SetDt(dt);
-            p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); // I have turned this off because I need to know what will happen without remeshing, and then with remeshing
-        
         }
     }
 

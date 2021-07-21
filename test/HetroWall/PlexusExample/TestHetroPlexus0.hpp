@@ -196,12 +196,12 @@ public:
         std::string output_dir = "DeformingPlexus/NewMeshes";
 
 
-        double SamplingStep = 100;
-        double dt = 0.00001;
-        double RemeshingTime = 1000;
-        double EdgeLength =0.00035;
+        double SamplingStep = 10000;
+        double dt = 0.00002;
+        double RemeshingTime = 5000000;
+        double EdgeLength =0.0004;
 
-        double EndTime = 2;
+        double EndTime = 2.3;
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
@@ -215,15 +215,15 @@ public:
             for (int i = 0; i <= 5; i++)
             {
                 static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
-                EndTime += 0.5;
+                EndTime += 0.1;
                 p_simulator->SetEndTime(EndTime);
                 p_simulator->Solve();
                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
             }
             // (p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(0.0003);
-            dt /= 10;
-            SamplingStep *= 10;
-            RemeshingTime /= 10;
+            dt /= 2;
+            SamplingStep *= 2;
+            RemeshingTime /= 2;
             p_simulator->SetSamplingTimestepMultiple(SamplingStep);
             p_simulator->SetDt(dt);
         }

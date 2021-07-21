@@ -26,6 +26,8 @@
 #include "MembraneBendingForce.hpp"
 #include "MembraneDeformationForce.hpp"
 #include "OutwardsPressure.hpp"
+#include "OutwardsPressureWithBreaks.hpp"
+
 
 #include "RemeshingTriggerOnStepHeteroModifier.hpp"
 
@@ -40,12 +42,12 @@ public:
         double EndTime = 0;
         double scale = 0.05;
         double SamplingStep = 50;
-        double dt = 0.005;
-        double RemeshingTime = 100;
+        double dt = 0.001;
+        double RemeshingTime = 60;
         double EdgeLength = 0.0003/2;//(2e-6 * scale);
 
         
-        std::string output_dir = "DeformingHoneyComb/Course";
+        std::string output_dir = "DeformingHoneyComb/NoMembraneForce";
         std::string mesh_file = "/data/vascrem/MeshCollection/CouseHoneycomb.vtu";
 
     
@@ -94,9 +96,16 @@ public:
         ----------------------------
         */
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
-        p_Mesh_modifier->SetMembraneStrength(0.5);
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); // I have turned this off because I need to know what will happen without remeshing, and then with remeshing
+       
+
+        std::map<double, c_vector<long double, 4> >  GrowthMaps =  { {1, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -8.05), 1e-8) },
+                                                                    {0,  Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7), 1e-9)}    };
+
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
         simulator.AddSimulationModifier(p_Mesh_modifier);
+
+
 
         /*
         -----------------------------
@@ -106,19 +115,15 @@ public:
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
-        // boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        // p_ForceOut->SetPressure(2 * (P_blood - P_tissue) / 3);
-        // simulator.AddForce(p_ForceOut);
-
-        boost::shared_ptr<OutwardsPressureWithBreaks> p_ForceOut(new OutwardsPressureWithBreaks());
-        p_ForceOut->SetPressure(P_blood - P_tissue);
-        p_ForceOut->SetRadiusThreshold(10 * 0.0005);
+        boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
+        p_ForceOut->SetPressure(2 * (P_blood - P_tissue) / 3);
         simulator.AddForce(p_ForceOut);
 
 
-        // boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        // // p_membrane_force->SetMembraneStiffness(pow(10, -9));
-        // simulator.AddForce(p_membrane_force);
+
+        boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
+        // p_membrane_force->SetMembraneStiffness(pow(10, -9));
+        simulator.AddForce(p_membrane_force);
         /*
         -----------------------------
         Membrane forces
@@ -155,18 +160,18 @@ public:
 
         for (int j = 0; j < 10; j++)
         {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < 5; i++)
             {
                 PRINT_VARIABLE(EndTime)
                 cell_population.SetStartTime(EndTime);
-                EndTime += 0.5;
+                EndTime +=0.1;
                 simulator.SetEndTime(EndTime);
 
                 simulator.Solve();
                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
             }
             
-            dt /= 5;  SamplingStep *= 5; RemeshingTime /= 5; EdgeLength*=1.01;
+            dt /= 5;  SamplingStep *= 5; RemeshingTime /= 5; EdgeLength*=1.05;
             simulator.SetSamplingTimestepMultiple(SamplingStep);
             simulator.SetDt(dt);
             cell_population.SetTargetRemeshingEdgeLength(EdgeLength);
