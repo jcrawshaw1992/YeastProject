@@ -254,7 +254,7 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
 
 
 
-         if (isnan(norm_2(node1_contribution)) || isnan(norm_2(node2_contribution))  || isnan(norm_2(node3_contribution))  || isnan(norm_2(node4_contribution)) )
+         if (std::isnan(norm_2(node1_contribution)) || std::isnan(norm_2(node2_contribution))  || std::isnan(norm_2(node3_contribution))  || std::isnan(norm_2(node4_contribution)) )
         {
             PRINT_VECTOR(node1_contribution);
             PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
