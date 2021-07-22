@@ -186,9 +186,9 @@ public:
         TRACE("Jess is good")
         double EndTime = 0.1;
         double scale = 0.05;
-        double SamplingStep = 100;
-        double dt = 0.0001;
-        double RemeshingTime = 600;
+        double SamplingStep = 500;
+        double dt = 0.00001;
+        double RemeshingTime = 6000;
         double EdgeLength = 0.0003/2;//(2e-6 * scale);
 
         
@@ -212,20 +212,37 @@ public:
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
 
-        std::map<double, c_vector<long double, 4> >  GrowthMaps =  { {1, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -8.05), 1e-10) },
-                                                                    {0,  Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7), 1e-9)}    };
 
-        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
+        p_simulator->RemoveAllForces();
+
+        /*
+        -----------------------------
+        Constant Compressive tissue pressure
+        ----------------------------
+        */
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
+
+        boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
+        p_ForceOut->SetPressure(2 * (P_blood - P_tissue) / 3);
+        p_simulator->AddForce(p_ForceOut);
+
+
+
+        // std::map<double, c_vector<long double, 4> >  GrowthMaps =  { {1, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -8.05), 1e-14) },
+        //                                                             {0,  Create_c_vector(pow(10, -6), pow(10, -7), pow(10, -7), 1e-9)}    };
+
+        // p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
       
 
 
 
         for (int j = 0; j < 10; j++)
         {
-            for (int i = 0; i <= 5; i++)
+            for (int i = 0; i <= 2; i++)
             {
-                static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
-                EndTime += 0.1;
+                // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
+                EndTime += 0.05;
                 p_simulator->SetEndTime(EndTime);
                 p_simulator->Solve();
                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);

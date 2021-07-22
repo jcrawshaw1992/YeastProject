@@ -196,13 +196,13 @@ public:
         std::string Archieved = "DeformingPlexus/BendingForceOnly/";
         std::string output_dir = "DeformingPlexus/BendingForceOnly/";
 
-        double SamplingStep = 500;
-        double dt = 0.00005;
+        double SamplingStep = 5000;
+        double dt = 0.000005;
         double RemeshingTime = 15000;
         double EdgeLength =0.0003;
 
 
-        double EndTime = 0.7;
+        double EndTime = 2;
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
@@ -226,6 +226,8 @@ public:
 
 
 
+
+
         /*
         -----------------------------
         Update membrane properties
@@ -239,7 +241,7 @@ public:
 
         for (int j = 0; j < 10; j++)
         {
-            for (int i = 0; i <= 5; i++)
+            for (int i = 0; i <= 2; i++)
             {
                 static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
                 EndTime += 0.1;

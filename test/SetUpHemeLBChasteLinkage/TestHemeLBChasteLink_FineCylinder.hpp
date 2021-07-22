@@ -253,7 +253,7 @@ public:
         std::string output_dir = "FSICylinder/Fine/Hetero";
     
         double SamplingTimestepMultiple = 200;
-        double EndTime = 65;
+        double EndTime = 66;
         double scale = 1e3;
         double Length = 50e-6 * scale;
         double Radius = 0.5e-6 * scale;
@@ -346,10 +346,10 @@ public:
         {
 
             
-            for (int i =1; i<=10; i++)
+            for (int i =1; i<=4; i++)
             { 
                 // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(NewEndTime);
-                EndTime +=1;
+                EndTime +=0.1;
                 p_simulator->SetEndTime(EndTime);
 
                 p_simulator->Solve();

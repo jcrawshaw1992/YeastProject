@@ -250,6 +250,26 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
                 p_cell4->GetCellData()->SetItem("BendingForce", -100);
         }
 
+
+
+
+
+         if (isnan(norm_2(node1_contribution)) || isnan(norm_2(node2_contribution))  || isnan(norm_2(node3_contribution))  || isnan(norm_2(node4_contribution)) )
+        {
+            PRINT_VECTOR(node1_contribution);
+            PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
+        
+            PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
+                node1_contribution =Create_c_vector(0,0,0);
+                node2_contribution= Create_c_vector(0,0,0);
+                node3_contribution= Create_c_vector(0,0,0);
+                node4_contribution= Create_c_vector(0,0,0);
+                p_cell1->GetCellData()->SetItem("BendingForce", -100);
+                p_cell2->GetCellData()->SetItem("BendingForce", -100);
+                p_cell3->GetCellData()->SetItem("BendingForce", -100);
+                p_cell4->GetCellData()->SetItem("BendingForce", -100);
+        }
+
         // BendingForceMap[node_index1] += node1_contribution; 
         // BendingForceMap[node_index2] += node2_contribution; 
         // BendingForceMap[node_index3] += node3_contribution; 

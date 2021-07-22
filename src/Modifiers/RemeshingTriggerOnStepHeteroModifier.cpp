@@ -296,7 +296,7 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetUpdateFrequency(double MaxCounter)
 {
     mMaxCounter = MaxCounter ;
-    mCounter = MaxCounter-1;
+    // mCounter = MaxCounter-1;
 }
 
 
