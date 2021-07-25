@@ -44,13 +44,13 @@ public:
         std::string output_dir = "FSICylinder/Fine/Hetero4";
         std::string Archieve = "FSICylinder/Fine";
     
-        double SamplingTimestepMultiple = 500;
+        double SamplingTimestepMultiple = 2000;
         double EndTime = 45;
         double scale = 1e3;
         double Length = 50e-6 * scale;
         double Radius = 0.5e-6 * scale;
         double dt = 0.001;
-        double FSIIterations = 1000;
+        double FSIIterations = 2000;
 
 
         // Load and fix any settings in the simulator
