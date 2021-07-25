@@ -360,7 +360,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::Boundaries(c_
     mBoundaries.push_back(CurrentBoundary);
 
     mHetro = 1;
-    mSetUpSolve =1;
+    mSetUpSolve =0;
     TRACE("GOt here")
     
 }
