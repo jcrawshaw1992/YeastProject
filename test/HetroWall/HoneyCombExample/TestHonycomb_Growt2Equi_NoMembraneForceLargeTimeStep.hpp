@@ -188,7 +188,7 @@ public:
         double scale = 0.05;
         double SamplingStep = 100;
         double dt = 0.005/2;
-        double RemeshingTime = 300;
+        double RemeshingTime = 100;
         double EdgeLength = 0.00035/2;//(2e-6 * scale);
 
         
