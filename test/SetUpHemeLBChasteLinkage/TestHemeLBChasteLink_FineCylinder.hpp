@@ -41,7 +41,7 @@ public:
     
     void TestFSICylinder_Hetero() throw(Exception)
     {
-        std::string output_dir = "FSICylinder/Fine/Hetero3";
+        std::string output_dir = "FSICylinder/Fine/Hetero4";
         std::string Archieve = "FSICylinder/Fine";
     
         double SamplingTimestepMultiple = 500;
