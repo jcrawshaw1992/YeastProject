@@ -154,7 +154,7 @@ public:
 
             dt/=2 ;  SamplingTimestepMultiple*= 2;// FSIIterations*=2;
  
-            p_ForceOut->SetFluidSolidIterations(FSIIterations);
+            // p_ForceOut->SetFluidSolidIterations(FSIIterations);
             p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
             p_simulator->SetDt(dt);
             p_Mesh_modifier->SetUpdateFrequency(10/dt);
