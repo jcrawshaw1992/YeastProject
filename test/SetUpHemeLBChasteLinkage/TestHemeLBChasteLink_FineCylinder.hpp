@@ -152,7 +152,7 @@ public:
                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
             }
 
-            dt/=2 ;  SamplingTimestepMultiple*= 2; FSIIterations*=2;
+            dt/=2 ;  SamplingTimestepMultiple*= 2;// FSIIterations*=2;
  
             p_ForceOut->SetFluidSolidIterations(FSIIterations);
             p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
