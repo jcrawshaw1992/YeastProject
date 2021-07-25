@@ -36,7 +36,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
-    void offTestNoRestraint() throw(Exception)
+    void TestNoRestraint() throw(Exception)
     {
         TRACE("Jess is good")
         double EndTime = 0;
@@ -116,14 +116,14 @@ public:
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        p_ForceOut->SetPressure(2 * (P_blood - P_tissue) / 3);
+        p_ForceOut->SetPressure(2 * (P_blood - P_tissue) / 10);
         simulator.AddForce(p_ForceOut);
 
 
 
-        boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        // p_membrane_force->SetMembraneStiffness(pow(10, -9));
-        simulator.AddForce(p_membrane_force);
+        // boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
+        // // p_membrane_force->SetMembraneStiffness(pow(10, -9));
+        // simulator.AddForce(p_membrane_force);
         /*
         -----------------------------
         Membrane forces
@@ -180,7 +180,7 @@ public:
 
 
 
-   void TestContinuoing() throw(Exception)
+   void offTestContinuoing() throw(Exception)
    {
 
         TRACE("Jess is good")
