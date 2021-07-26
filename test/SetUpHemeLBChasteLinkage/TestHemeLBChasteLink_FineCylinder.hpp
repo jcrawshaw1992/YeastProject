@@ -41,16 +41,16 @@ public:
     
     void TestFSICylinder_Hetero() throw(Exception)
     {
-        std::string output_dir = "FSICylinder/Fine/Hetero4";
-        std::string Archieve = "FSICylinder/Fine";
+        std::string output_dir = "FSICylinder/Medium/Hetero";
+        std::string Archieve = "FSICylinder/Medium";
     
-        double SamplingTimestepMultiple = 2000;
-        double EndTime = 45;
+        double SamplingTimestepMultiple = 1000;
+        double EndTime = 20;
         double scale = 1e3;
         double Length = 50e-6 * scale;
         double Radius = 0.5e-6 * scale;
-        double dt = 0.001;
-        double FSIIterations = 2000;
+        double dt = 0.005;
+        double FSIIterations = 1000;
 
 
         // Load and fix any settings in the simulator
@@ -170,15 +170,15 @@ public:
      void offTestFSICylinder_GrowToEqui() throw(Exception)
     {
 
-        double EndTime = 30;
+        double EndTime = 10;
         double scale = 1e3;
         double Length = 50e-6 * scale;
         double Radius = 0.5e-6 * scale;
 
-        unsigned N_D = 80;
-        unsigned N_Z = 100;
+        unsigned N_D = 45;
+        unsigned N_Z = 75;
 
-        std::string output_dir = "FSICylinder/Fine/";
+        std::string output_dir = "FSICylinder/Medium/";
 
         // this simulaiton is in mm. Have chosen this magnitude because um in m will give me numbers too close to machince presision, and movment
         // in um will be too large and break chaste without carefull playing with or a tiny time step
@@ -281,10 +281,10 @@ public:
     
     void offTestFSICylinder_AssertEqui() throw(Exception)
     {
-        std::string output_dir = "FSICylinder/Fine/";
+        std::string output_dir = "FSICylinder/Medium/";
     
 
-        double EndTime = 30;
+        double EndTime = 10;
         double scale = 1e3;
         double Length = 50e-6 * scale;
         double Radius = 0.5e-6 * scale;
@@ -300,8 +300,8 @@ public:
         /* Remove the constant pressure force   */
         // p_simulator->RemoveForce(0); // TRACE("RemoveForce will only work with the edit I made in OffLatticeSimulation.cpp line 69" )
         p_simulator->RemoveAllForces();
-        p_simulator->SetEndTime(EndTime + 15);
-        p_simulator->SetSamplingTimestepMultiple(500);
+        p_simulator->SetEndTime(EndTime + 10);
+        p_simulator->SetSamplingTimestepMultiple(200);
         p_simulator->SetDt(0.005);
         p_simulator->SetOutputDirectory(output_dir);
 

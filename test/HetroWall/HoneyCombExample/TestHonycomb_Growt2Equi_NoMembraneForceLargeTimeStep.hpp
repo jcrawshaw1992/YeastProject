@@ -184,16 +184,16 @@ public:
    {
 
          TRACE("Jess is good")
-        double EndTime = 6;
+        double EndTime = 7;
         double scale = 0.05;
         double SamplingStep = 50;
-        double dt = 0.005/2;
-        double RemeshingTime = 60;
-        double EdgeLength = 0.00035/2;//(2e-6 * scale);
+        double dt = 0.006/2;
+        double RemeshingTime =70;
+        double EdgeLength = 0.0004/2;//(2e-6 * scale);
 
         
-        std::string output_dir = "DeformingHoneyComb/NoMembraneForceLargeTS2";
-        std::string Archieved ="DeformingHoneyComb/NoMembraneForceLargeTS";
+        std::string output_dir = "DeformingHoneyComb/NoMembraneForceLargeTS3";
+        std::string Archieved ="DeformingHoneyComb/NoMembraneForceLargeTS2";
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
         /* Update the ouput directory for the population  */
