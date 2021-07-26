@@ -58,7 +58,7 @@ private:
     unsigned mSamplebasementNode;
     double mStrength =1;
     bool mHetro = 0;
-    double mStepSize =  pow(10,-10);
+    double mStepSize =  pow(10,-9);
     double mCounter = 0;
     unsigned mSteps =1;
     // double mSetupSolve;
@@ -164,7 +164,7 @@ public:
 
     void SetBasementMembraneStrength(double Strength);
 
-    // void SetStepSize(double StepSize);
+    void SetStepSize(double StepSize);
 
 
     // void SetMembraneParameters(double AreaParameter, double DilationParameter, double DeformationParamter, double BendingParameter);

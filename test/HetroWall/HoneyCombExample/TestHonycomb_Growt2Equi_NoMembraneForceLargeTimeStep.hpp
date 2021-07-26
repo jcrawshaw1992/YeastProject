@@ -186,9 +186,9 @@ public:
          TRACE("Jess is good")
         double EndTime = 7;
         double scale = 0.05;
-        double SamplingStep = 50;
-        double dt = 0.006/2;
-        double RemeshingTime =70;
+        double SamplingStep = 10;
+        double dt = 0.008/2;
+        double RemeshingTime =100;
         double EdgeLength = 0.0004/2;//(2e-6 * scale);
 
         
