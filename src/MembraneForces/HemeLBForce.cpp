@@ -191,6 +191,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     // Run HemeLB
     TRACE(" Step 3: run HemeLB simulation")
     std::string HemeLBCommand =  "open ./"+mChasteOutputDirectory + mOutputDirectory + "/RunHemeLB";
+    PRINT_VARIABLE(HemeLBCommand)
     if(mMachine =="server")
     {
         SystemOutput = std::system(HemeLBCommand.c_str());  //////SystemOutput = std::system("./projects/VascularRemodelling/apps/RunHemeLB");
