@@ -136,10 +136,10 @@ public:
         c_vector<double, 3> LowerPlanePoint = Create_c_vector(0,0,30e-6 * scale);
         c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0,0,-1);
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-        p_Mesh_modifier->SetUpdateFrequency(50*dt);
+        p_Mesh_modifier->SetUpdateFrequency(200);
         p_Mesh_modifier->SetmSetUpSolve(1);
 
-
+       
         for (int j =1; j<=40; j++)
         {
 
