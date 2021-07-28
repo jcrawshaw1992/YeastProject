@@ -44,13 +44,13 @@ public:
         std::string output_dir = "FSICylinder/Medium/PROBINGCOLLAPSEPROBLEM";
         std::string Archieve = "FSICylinder/Medium";
     
-        double SamplingTimestepMultiple = 500;
+        double SamplingTimestepMultiple = 250;
         double EndTime = 20;
         double scale = 1e3;
         double Length = 50e-6 * scale;
         double Radius = 0.5e-6 * scale;
         double dt = 0.005;
-        double FSIIterations = 500;
+        double FSIIterations = 250;
 
 
         // Load and fix any settings in the simulator
@@ -73,11 +73,11 @@ public:
         */
 
 
-        // c_vector<double, 3> PlaneNormal1 = Create_c_vector(0, 0, 1);
-        // c_vector<double, 3> Point1 = Create_c_vector(0, 0, 0.0002e-6 * scale);
+        c_vector<double, 3> PlaneNormal1 = Create_c_vector(0, 0, 1);
+        c_vector<double, 3> Point1 = Create_c_vector(0, 0, 0.0002e-6 * scale);
 
-        // c_vector<double, 3> PlaneNormal2 = Create_c_vector(0, 0, -1);
-        // c_vector<double, 3> Point2 = Create_c_vector(0, 0, Length - 0.0002e-6 * scale);
+        c_vector<double, 3> PlaneNormal2 = Create_c_vector(0, 0, -1);
+        c_vector<double, 3> Point2 = Create_c_vector(0, 0, Length - 0.0002e-6 * scale);
 
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
@@ -85,18 +85,18 @@ public:
         double InletPressure = (0.002133152 - 0.001466542) * 1.001; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
         double OutletPressure = (0.002133152 - 0.001466542) * (0.999);
 
-        // boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
-        // p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
-        // p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
-        // p_ForceOut->SetStartTime(EndTime);
-        // p_ForceOut->SetFluidSolidIterations(FSIIterations);
-        // p_ForceOut->SetUpHemeLBConfiguration(output_dir+"/HemeLBForce/", p_simulator->rGetCellPopulation());
-        // p_simulator->AddForce(p_ForceOut);
-
-        boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        p_ForceOut->SetPressure(P_blood - P_tissue);
-        // p_ForceOut->SetRadiusThreshold(10 * Radius);
+        boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
+        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
+        p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
+        p_ForceOut->SetStartTime(EndTime);
+        p_ForceOut->SetFluidSolidIterations(FSIIterations);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"/HemeLBForce/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
+
+        // boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
+        // p_ForceOut->SetPressure(P_blood - P_tissue);
+        // // p_ForceOut->SetRadiusThreshold(10 * Radius);
+        // p_simulator->AddForce(p_ForceOut);
 
 
         /*
@@ -155,9 +155,9 @@ public:
             }
 
             dt/=2 ;  SamplingTimestepMultiple*= 2; 
-            // FSIIterations*=2;
+            FSIIterations*=2;
  
-            // p_ForceOut->SetFluidSolidIterations(FSIIterations);
+            p_ForceOut->SetFluidSolidIterations(FSIIterations);
             p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
             p_simulator->SetDt(dt);
             p_Mesh_modifier->SetUpdateFrequency(50/dt);
