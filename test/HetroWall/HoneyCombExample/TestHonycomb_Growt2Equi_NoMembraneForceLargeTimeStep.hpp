@@ -184,20 +184,23 @@ public:
    {
 
          TRACE("Jess is good")
-        double EndTime = 7;
+        double EndTime = 9;
         double scale = 0.05;
-        double SamplingStep = 10;
-        double dt = 0.008/2;
-        double RemeshingTime =100;
+        double SamplingStep = 25;
+        double dt = 0.006;
+        double RemeshingTime =50;
         double EdgeLength = 0.0004/2;//(2e-6 * scale);
 
+    
         
-        std::string output_dir = "DeformingHoneyComb/NoMembraneForceLargeTS3";
+        std::string output_dir = "DeformingHoneyComb/NoMembraneForceLargeTS4";
         std::string Archieved ="DeformingHoneyComb/NoMembraneForceLargeTS2";
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
         /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
 
         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
         p_simulator->SetDt(dt);
@@ -210,6 +213,7 @@ public:
         */
         std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
+        
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
 
 

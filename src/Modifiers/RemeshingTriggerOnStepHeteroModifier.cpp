@@ -100,7 +100,8 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
   
     assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-   
+   PRINT_3_VARIABLE(mHetro, mMaxCounter,mCounter );
+
     if (mHetro) // Need to make sure that the stiffer regions get stiffer at the right step size
     {
         //  TRACE("hetero")
@@ -112,6 +113,8 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
         {
             mCounter+=1;
         }
+        CellPtr p_Sample_Basement_cell = rCellPopulation.GetCellUsingLocationIndex(mSamplebasementNode);
+        p_Sample_Basement_cell->GetCellData()->SetItem("COunter",mCounter) ;
     }
 
 
@@ -297,6 +300,8 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetUpdateFreq
 {
     mMaxCounter = MaxCounter ;
     mCounter = MaxCounter-1;
+
+    PRINT_2_VARIABLE(mMaxCounter,mCounter );
 }
 
 
@@ -406,7 +411,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
     /*
         Step Change -- linear change temporally 
 	*/
- 
+    TRACE("VARIABLE CHANGE!!!!")
     CellPtr p_Sample_Basement_cell = rCellPopulation.GetCellUsingLocationIndex(mSamplebasementNode);
     double Step_Kbs = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus") + mStepSize;
     double Step_Kba = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus") + mStepSize; // 1e-15;
