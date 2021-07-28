@@ -195,7 +195,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     // Run HemeLB
     TRACE(" Step 3: run HemeLB simulation")
     // std::string HemeLBCommand =  "open "+mChasteOutputDirectory + mOutputDirectory + "RunHemeLB";
-    std::string HemeLBCommand =  "cd  /data/vascrem/testoutput/FSICylinder/Medium/Hetro5/HemeLBForce/ & open ./RunHemeLB";
+    std::string HemeLBCommand =  "cd  /data/vascrem/testoutput/FSICylinder/Medium/Hetro5/HemeLBForce & open ./RunHemeLB";
 
     PRINT_VARIABLE(HemeLBCommand)
     if(mMachine =="server")
