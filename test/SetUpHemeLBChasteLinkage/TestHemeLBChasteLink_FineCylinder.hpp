@@ -41,7 +41,7 @@ public:
     
     void TestFSICylinder_Hetero() throw(Exception)
     {
-        std::string output_dir = "FSICylinder/Medium/PROBINGCOLLAPSEPROBLEM";
+        std::string output_dir = "FSICylinder/Medium/Hetro4";
         std::string Archieve = "FSICylinder/Medium";
     
         double SamplingTimestepMultiple = 250;
