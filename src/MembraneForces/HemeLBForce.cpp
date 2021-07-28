@@ -562,10 +562,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
     if(mMachine =="server")
     {
             // Need to write bash scrip .... issue here 
-            int Cores = 24;
+            int Cores = 15;
             ofstream bash_script;
 
-            std::string BashFile =  mChasteOutputDirectory + mOutputDirectory + "/RunHemeLB";
+            std::string BashFile =  mChasteOutputDirectory + mOutputDirectory + "RunHemeLB";
             PRINT_VARIABLE(BashFile)
             bash_script.open(BashFile);
             bash_script << "#!/bin/bash\n# chmod 700 RunHemeLB\n";
