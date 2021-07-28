@@ -441,6 +441,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
 
     std::vector<double> RadiVector;
     double MinRadius = 1000000;
+    double MaxRadius = 0;
     for (unsigned i = 0; i < NumberOfDataPoints; i++)
     {
         double* data = p_scalars->GetTuple(i); //RadiVector.push_back(*data);
@@ -450,8 +451,15 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
         {
             MinRadius = *data;
         }
+        else if(*data > MaxRadius & *data  >0)
+        {
+            MaxRadius = *data;
+        }
+
+
     }
-    mRadius = MinRadius * mHemeLBScalling;
+    mRadius = MaxRadius * mHemeLBScalling;
+    // mRadius = MinRadius * mHemeLBScalling;
     PRINT_2_VARIABLES(mRadius, mHemeLBScalling)
 
     // Here I want to be able to say if there has been a descrese from the initials ---
