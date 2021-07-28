@@ -111,7 +111,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
     mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
 
     SetUpFilePaths(outputDirectory, 1,0);
-    WriteHemeLBBashScript();  
+    // WriteHemeLBBashScript();  
     ExecuteHemeLB();
     LoadTractionFromFile();
     UpdateCellData(rCellPopulation);
@@ -128,7 +128,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
     /*  Need to generate the HemeLB bash script first */
 
     TRACE("A WRITE HEMELB RUN FILE")
-    WriteHemeLBBashScript();   
+    // WriteHemeLBBashScript();   
     if (RunInitalHemeLB ==1)
     {
         ExecuteHemeLB();
@@ -161,6 +161,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     {
         OldResultsDirectory = mResultsDirectory;
     }
+
+    // Set up bash script to run HemeLB
+    WriteHemeLBBashScript();  
+
 
     // Setup HemeLB 
     /*  Step -1: Generate the inital vtu and stl files  ... Need mesh here, call it config file and save somewhere paralle   */
