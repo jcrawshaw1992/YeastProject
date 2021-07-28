@@ -44,7 +44,7 @@ public:
         std::string output_dir = "FSICylinder/Medium/Hetro5";
         std::string Archieve = "FSICylinder/Medium/Hetro4";
     
-        double SamplingTimestepMultiple = 500;
+        double SamplingTimestepMultiple = 100;
         double EndTime = 30;
         double scale = 1e3;
         double Length = 50e-6 * scale;
