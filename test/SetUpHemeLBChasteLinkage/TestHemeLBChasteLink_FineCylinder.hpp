@@ -44,13 +44,13 @@ public:
         std::string output_dir = "FSICylinder/Medium/PROBINGCOLLAPSEPROBLEM";
         std::string Archieve = "FSICylinder/Medium";
     
-        double SamplingTimestepMultiple = 100;
+        double SamplingTimestepMultiple = 50;
         double EndTime = 20;
         double scale = 1e3;
         double Length = 50e-6 * scale;
         double Radius = 0.5e-6 * scale;
         double dt = 0.005;
-        double FSIIterations = 100;
+        double FSIIterations = 50;
 
 
         // Load and fix any settings in the simulator
@@ -82,8 +82,8 @@ public:
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
 
-        // double InletPressure = (0.002133152 - 0.001466542) * 1.001; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
-        // double OutletPressure = (0.002133152 - 0.001466542) * (0.999);
+        double InletPressure = (0.002133152 - 0.001466542) * 1.001; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
+        double OutletPressure = (0.002133152 - 0.001466542) * (0.999);
 
         // boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
         // p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
@@ -122,7 +122,7 @@ public:
 
         
         std::map<double, c_vector<long double, 4> >  GrowthMaps =  { {1, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -8.05), 1e-10 ) },
-                                                                     {0,  Create_c_vector(pow(10, -3), pow(10, -4), pow(10, -5), 1e-10 )}    };
+                                                                     {0,  Create_c_vector(pow(10, -5), pow(10, -4), pow(10, -5), 1e-10 )}    };
  
 
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
