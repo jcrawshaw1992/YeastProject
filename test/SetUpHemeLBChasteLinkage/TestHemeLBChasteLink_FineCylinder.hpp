@@ -44,13 +44,13 @@ public:
         std::string output_dir = "FSICylinder/Medium/Hetro4";
         std::string Archieve = "FSICylinder/Medium";
     
-        double SamplingTimestepMultiple = 250;
+        double SamplingTimestepMultiple = 100;
         double EndTime = 20;
         double scale = 1e3;
         double Length = 50e-6 * scale;
         double Radius = 0.5e-6 * scale;
         double dt = 0.005;
-        double FSIIterations = 250;
+        double FSIIterations = 200;
 
 
         // Load and fix any settings in the simulator
@@ -136,7 +136,7 @@ public:
         c_vector<double, 3> LowerPlanePoint = Create_c_vector(0,0,30e-6 * scale);
         c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0,0,-1);
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-        p_Mesh_modifier->SetUpdateFrequency(50/dt);
+        p_Mesh_modifier->SetUpdateFrequency(2/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
 
        
@@ -147,7 +147,7 @@ public:
             for (int i =1; i<=10; i++)
             { 
                 // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(NewEndTime);
-                EndTime +=1;
+                EndTime +=5;
                 p_simulator->SetEndTime(EndTime);
 
                 p_simulator->Solve();
@@ -160,7 +160,7 @@ public:
             p_ForceOut->SetFluidSolidIterations(FSIIterations);
             p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
             p_simulator->SetDt(dt);
-            p_Mesh_modifier->SetUpdateFrequency(50/dt);
+            p_Mesh_modifier->SetUpdateFrequency(2/dt);
 
 
         }
