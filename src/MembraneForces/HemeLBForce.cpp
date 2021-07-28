@@ -221,7 +221,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
 
 
     WriteOpenVtus(Period, mCenterlinesNumber);
-    std::string GetVUtus =   "open ./"+mChasteOutputDirectory + mOutputDirectory + "/OpenVtus";
+    std::string GetVUtus =   "cd "+mChasteOutputDirectory + mOutputDirectory + ";./OpenVtus";
     SystemOutput = std::system(GetVUtus.c_str() );
     mCenterlinesNumber +=1;
 
