@@ -201,7 +201,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
         SystemOutput = std::system(HemeLBCommand.c_str());  //////SystemOutput = std::system("./projects/VascularRemodelling/apps/RunHemeLB");
     }else
     {
-        SystemOutput = std::system("open ./projects/VascularRemodelling/apps/RunHemeLB");
+        SystemOutput = std::system("open /projects/VascularRemodelling/apps/RunHemeLB");
     }
 
     TRACE("GmyUnstructuredGridReader")
