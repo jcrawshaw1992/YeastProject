@@ -301,7 +301,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOpenVtus(double Period, double mCenterlinesNumber)
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOpenVtus(int Period, int mCenterlinesNumber)
 {  
         ofstream bash_script;
 

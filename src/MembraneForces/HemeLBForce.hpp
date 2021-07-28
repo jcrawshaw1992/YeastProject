@@ -125,7 +125,7 @@ public:
     void SetConstantPressure(double Pressure);
 
     void WriteOutVtuFile(std::string outputDirectory); 
-    void WriteOpenVtus(double Period, double mCenterlinesNumber);
+    void WriteOpenVtus(int Period, int mCenterlinesNumber);
 
 
     HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM> *mMesh;
