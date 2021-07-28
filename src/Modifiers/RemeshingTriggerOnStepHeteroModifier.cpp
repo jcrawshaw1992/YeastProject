@@ -100,7 +100,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
   
     assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-//    PRINT_3_VARIABLES(mHetro, mMaxCounter,mCounter );
+    PRINT_3_VARIABLES(mHetro, mMaxCounter,mCounter );
 
     if (mHetro) // Need to make sure that the stiffer regions get stiffer at the right step size
     {
@@ -112,9 +112,15 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
         }else 
         {
             mCounter+=1;
+            if (mCounter > mMaxCounter)
+            {   
+                PRINT_3_VARIABLES(mHetro, mMaxCounter,mCounter );
+                mCounter = mMaxCounter -1;
+            }
         }
         CellPtr p_Sample_Basement_cell = rCellPopulation.GetCellUsingLocationIndex(mSamplebasementNode);
-        p_Sample_Basement_cell->GetCellData()->SetItem("COunter",mCounter) ;
+        p_Sample_Basement_cell->GetCellData()->SetItem("Counter",mCounter) ;
+        p_Sample_Basement_cell->GetCellData()->SetItem("MacCounter",mMaxCounter) ;
     }
 
 
