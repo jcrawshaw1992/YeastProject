@@ -136,7 +136,7 @@ public:
         c_vector<double, 3> LowerPlanePoint = Create_c_vector(0,0,30e-6 * scale);
         c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0,0,-1);
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-        p_Mesh_modifier->SetUpdateFrequency(400);
+        p_Mesh_modifier->SetUpdateFrequency(50/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
 
        
@@ -144,23 +144,23 @@ public:
         {
 
             
-            // for (int i =1; i<=1; i++)
-            // { 
+            for (int i =1; i<=10; i++)
+            { 
                 // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(NewEndTime);
-                EndTime +=10;
+                EndTime +=1;
                 p_simulator->SetEndTime(EndTime);
 
                 p_simulator->Solve();
                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-            // }
+            }
 
-            // dt/=5 ;  SamplingTimestepMultiple*= 5; 
-            // FSIIterations*=5;
+            dt/=2 ;  SamplingTimestepMultiple*= 2; 
+            FSIIterations*=2;
  
-            // p_ForceOut->SetFluidSolidIterations(FSIIterations);
-            // p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
-            // p_simulator->SetDt(dt);
-            // p_Mesh_modifier->SetUpdateFrequency(50*dt);
+            p_ForceOut->SetFluidSolidIterations(FSIIterations);
+            p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
+            p_simulator->SetDt(dt);
+            p_Mesh_modifier->SetUpdateFrequency(50/dt);
 
 
         }
