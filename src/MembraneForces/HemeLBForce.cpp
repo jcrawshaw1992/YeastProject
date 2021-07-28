@@ -167,7 +167,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     WriteOutVtuFile(mOutputDirectory);
 
     /*  Step 0: Create the HemeLB config.pr2 file */
-    double HemeLBSimulationTime = 6000; //
+    double HemeLBSimulationTime = 3000; //
     int Period = HemeLBSimulationTime*0.95;
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
       
@@ -189,16 +189,18 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     */
 
     // Run HemeLB
-     TRACE(" Step 3: run HemeLB simulation")
+    TRACE(" Step 3: run HemeLB simulation")
+    std::string HemeLBCommand =  "open ./"+mChasteOutputDirectory + mOutputDirectory + "/RunHemeLB";
     if(mMachine =="server")
     {
-        SystemOutput = std::system("./projects/VascularRemodelling/apps/RunHemeLB");
+        SystemOutput = std::system(HemeLBCommand.c_str());  //////SystemOutput = std::system("./projects/VascularRemodelling/apps/RunHemeLB");
     }else
     {
         SystemOutput = std::system("open ./projects/VascularRemodelling/apps/RunHemeLB");
     }
 
     TRACE("GmyUnstructuredGridReader")
+    
     std::string GmyUnstructuredGridReader = "python " +mHemeLBPath+ "Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >nul"; 
     SystemOutput = std::system(GmyUnstructuredGridReader.c_str());
 
@@ -210,6 +212,11 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
         sleep(30); 
     }
 
+
+    WriteOpenVtus(double Period, double mCenterlinesNumber);
+    std::string GetVUtus =   "open ./"+mChasteOutputDirectory + mOutputDirectory + "/OpenVtus";
+    SystemOutput = std::system(GetVUtus.c_str() );
+    mCenterlinesNumber +=1;
 
     /*  Step 3a: 
         While the current HemeLB simulation is running, sort some things out 
@@ -223,8 +230,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
         // SystemOutput = std::system(GmyUnstructuredGridReader.c_str());
 
         // For the not first ones here is what I will do, this one is the set up so I wont bother here, but in future reps have the vtu sorting when HemelB is going
-        std::string GenerateFlowVtus = "python " +mHemeLBPath+ "Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory + "results/Extracted/surface-traction.xtr >nul";
-        SystemOutput = std::system(GenerateFlowVtus.c_str());
+        // std::string GenerateFlowVtus = "python " +mHemeLBPath+ "Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory + "config.vtu " + mHemeLBDirectory + "results/Extracted/surface-pressure.xtr " + mHemeLBDirectory + "results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory + "results/Extracted/surface-traction.xtr >nul";
+        // SystemOutput = std::system(GenerateFlowVtus.c_str());
     // }
 
  
@@ -243,11 +250,11 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     //         UpdateCurrentyFlowVtuCount();  
     //     }
         
-    // }
-    CopyFile(mHemeLBDirectory + "results/Extracted/wholegeometry-velocity_"+std::to_string(Period)+".vtu", mHemeLB_output + "wholegeometry-velocity_"+std::to_string(mCenterlinesNumber)+".vtu");
-    CopyFile(mHemeLBDirectory + "results/Extracted/surface-pressure_"+std::to_string(Period)+".vtu", mHemeLB_output + "surface-pressure_"+std::to_string(mCenterlinesNumber)+".vtu");
-    CopyFile(mHemeLBDirectory + "centerlines.vtp", mHemeLB_output + "Centerlines_"+std::to_string(mCenterlinesNumber)+".vtp");
-    mCenterlinesNumber +=1;
+    // // }
+    // CopyFile(mHemeLBDirectory + "results/Extracted/wholegeometry-velocity_"+std::to_string(Period)+".vtu", mHemeLB_output + "wholegeometry-velocity_"+std::to_string(mCenterlinesNumber)+".vtu");
+    // CopyFile(mHemeLBDirectory + "results/Extracted/surface-pressure_"+std::to_string(Period)+".vtu", mHemeLB_output + "surface-pressure_"+std::to_string(mCenterlinesNumber)+".vtu");
+    // CopyFile(mHemeLBDirectory + "centerlines.vtp", mHemeLB_output + "Centerlines_"+std::to_string(mCenterlinesNumber)+".vtp");
+    // mCenterlinesNumber +=1;
 
     // ---- I can other things Chaste needs running in the background here Maybe have some potts things going on
     /* Now wait*/
@@ -284,6 +291,35 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     // }
 
 }
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOpenVtus(double Period, double mCenterlinesNumber)
+{  
+
+        /// Wana do the same for running the vtu opting 
+        std::string BashFile2 =  mChasteOutputDirectory + mOutputDirectory + "/OpenVtus";
+        PRINT_VARIABLE(BashFile2)
+        bash_script2.open(BashFile2);
+        bash_script2 << "#!/bin/bash\n# chmod 700 OpenVtus\n";
+        // bash_script2 << "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >" + mHemeLBDirectory + "OpenVTUS.txt\n";
+        bash_script2 << " python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory +"results/Results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory +"results/Results/Extracted/surface-pressure.xtr " + mHemeLBDirectory +"results/Results/Extracted/surface-traction.xtr  > " + mHemeLBDirectory + "OpenVTUS.txt\n";
+        // bash_script2 << "echo 'HemeLB has finished' > " + mHemeLBDirectory + "WaitFile.txt \n";
+        bash_script2 << "cp " + mHemeLBDirectory +"results/Extracted/wholegeometry-velocity_"+std::to_string(Period)+".vtu " +mHemeLB_output + "wholegeometry-velocity_"+std::to_string(mCenterlinesNumber)+".vtu \n";
+        bash_script2 << "cp " + mHemeLBDirectory +"results/Extracted/surface-pressure_"+std::to_string(Period)+".vtu " +mHemeLB_output + "surface-pressure_"+std::to_string(mCenterlinesNumber)+".vtu \n";
+        bash_script2 << "cp " + mHemeLBDirectory +"results/Extracted/surface-traction_"+std::to_string(Period)+".vtu " +mHemeLB_output + "surface-traction_"+std::to_string(mCenterlinesNumber)+".vtu \n";
+        bash_script2 << "echo 'HemeLB simulation complete' \n";
+        // bash_script2 << "osascript -e 'tell application \"Terminal\" to close first window' & exit";  Need to think about with with application to linux 
+        bash_script2.close();
+        std::string compileBashScript = "chmod 700 " + BashFile2 + " >nul";
+        int SystemOutput = std::system(compileBashScript.c_str());
+}
+
+
+
+
+
+
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ReRunHemeLB()
@@ -521,7 +557,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
             int Cores = 25;
             ofstream bash_script;
 
-            std::string BashFile = "projects/VascularRemodelling/apps/RunHemeLB";
+            std::string BashFile =  mChasteOutputDirectory + mOutputDirectory + "/RunHemeLB";
+            PRINT_VARIABLE(BashFile)
             bash_script.open(BashFile);
             bash_script << "#!/bin/bash\n# chmod 700 RunHemeLB\n";
             bash_script << "mpirun -np " + std::to_string(Cores) + " hemelb -in " + mHemeLBDirectory + "config.xml -out " + mHemeLBDirectory +"results/ >" + mHemeLBDirectory + "HemeLBTerminalOutput.txt\n";
@@ -531,6 +568,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
             bash_script.close();
             std::string compileBashScript = "chmod 700 " + BashFile + " >nul";
             int SystemOutput = std::system(compileBashScript.c_str());
+
     }else
     {
         // Need to write bash scrip .... issue here 

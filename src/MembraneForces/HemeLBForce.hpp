@@ -19,6 +19,7 @@
 
 #include <iostream>
 
+
 #include <cstdio>
 #include <memory>
 #include <string>
@@ -123,7 +124,10 @@ public:
 
     void SetConstantPressure(double Pressure);
 
-    void WriteOutVtuFile(std::string outputDirectory);
+    void WriteOutVtuFile(std::string outputDirectory); 
+    void WriteOpenVtus(double Period, double mCenterlinesNumber);
+
+
     HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM> *mMesh;
 
     void SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);

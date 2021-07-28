@@ -39,9 +39,9 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
     
     
-      void TestFSICylinder_HeteroContinued() throw(Exception)
+    void TestFSICylinder_HeteroContinued() throw(Exception)
     {
-        std::string output_dir = "FSICylinder/Medium/Hetro4";
+        std::string output_dir = "FSICylinder/Medium/Hetro5";
         std::string Archieve = "FSICylinder/Medium/Hetro4";
     
         double SamplingTimestepMultiple = 500;
@@ -61,7 +61,7 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(EndTime);
 
         /* Remove the constant pressure force   */
-        // p_simulator->RemoveAllForces();
+        p_simulator->RemoveAllForces();
         p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
         p_simulator->SetDt(dt);
         p_simulator->SetOutputDirectory(output_dir);
@@ -73,25 +73,25 @@ public:
         */
 
 
-        // c_vector<double, 3> PlaneNormal1 = Create_c_vector(0, 0, 1);
-        // c_vector<double, 3> Point1 = Create_c_vector(0, 0, 0.0002e-6 * scale);
+        c_vector<double, 3> PlaneNormal1 = Create_c_vector(0, 0, 1);
+        c_vector<double, 3> Point1 = Create_c_vector(0, 0, 0.0002e-6 * scale);
 
-        // c_vector<double, 3> PlaneNormal2 = Create_c_vector(0, 0, -1);
-        // c_vector<double, 3> Point2 = Create_c_vector(0, 0, Length - 0.0002e-6 * scale);
+        c_vector<double, 3> PlaneNormal2 = Create_c_vector(0, 0, -1);
+        c_vector<double, 3> Point2 = Create_c_vector(0, 0, Length - 0.0002e-6 * scale);
 
-        // double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
-        // double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
 
-        // double InletPressure = (0.002133152 - 0.001466542) * 1.001; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
-        // double OutletPressure = (0.002133152 - 0.001466542) * (0.999);
+        double InletPressure = (0.002133152 - 0.001466542) * 1.001; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
+        double OutletPressure = (0.002133152 - 0.001466542) * (0.999);
 
-        // boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
-        // p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
-        // p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
-        // p_ForceOut->SetStartTime(EndTime);
-        // p_ForceOut->SetFluidSolidIterations(FSIIterations);
-        // p_ForceOut->SetUpHemeLBConfiguration(output_dir+"/HemeLBForce/", p_simulator->rGetCellPopulation());
-        // p_simulator->AddForce(p_ForceOut);
+        boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
+        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
+        p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
+        p_ForceOut->SetStartTime(EndTime);
+        p_ForceOut->SetFluidSolidIterations(FSIIterations);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"/HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_simulator->AddForce(p_ForceOut);
 
         // boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
         // p_ForceOut->SetPressure(P_blood - P_tissue);
@@ -99,17 +99,17 @@ public:
         // p_simulator->AddForce(p_ForceOut);
 
 
-        // /*
-        // -----------------------------
-        // Membrane forces
-        // ----------------------------
-        // */
-        // boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        // p_simulator->AddForce(p_shear_force);
+        /*
+        -----------------------------
+        Membrane forces
+        ----------------------------
+        */
+        boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
+        p_simulator->AddForce(p_shear_force);
 
 
-        // boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        // p_simulator->AddForce(p_membrane_force);
+        boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
+        p_simulator->AddForce(p_membrane_force);
  
         /* 
         -----------------------------
@@ -128,16 +128,10 @@ public:
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
 
         p_Mesh_modifier->SetStepSize(pow(10, -8));
-        p_Mesh_modifier->SetUpdateFrequency(2/dt);
 
-        // // Upstream 
-        // c_vector<double, 3> UpperPlanePoint = Create_c_vector(0,0,20e-6* scale);
-        // c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0,0,1);
-        // // Down stream
-        // c_vector<double, 3> LowerPlanePoint = Create_c_vector(0,0,30e-6 * scale);
-        // c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0,0,-1);
+        // Upstream
         // p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-        
+        p_Mesh_modifier->SetUpdateFrequency(2/dt);
         // p_Mesh_modifier->SetmSetUpSolve(1);
 
        
@@ -156,9 +150,9 @@ public:
             }
 
             dt/=2 ;  SamplingTimestepMultiple*= 2; 
-            // FSIIterations*=2;
+            FSIIterations*=2;
  
-            // p_ForceOut->SetFluidSolidIterations(FSIIterations);
+            p_ForceOut->SetFluidSolidIterations(FSIIterations);
             p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
             p_simulator->SetDt(dt);
             p_Mesh_modifier->SetUpdateFrequency(2/dt);
