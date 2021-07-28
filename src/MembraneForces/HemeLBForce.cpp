@@ -305,11 +305,13 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOpenVtus(int Period, int mCenterl
 {  
         ofstream bash_script;
 
-        std::string BashFile =  mChasteOutputDirectory + mOutputDirectory + "/OpenVtus";
+        std::string BashFile =  mChasteOutputDirectory + mOutputDirectory + "OpenVtus";
         PRINT_VARIABLE(BashFile)
         bash_script.open(BashFile);
         bash_script << "#!/bin/bash\n# chmod 700 OpenVtus\n";
         // bash_script << "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >" + mHemeLBDirectory + "OpenVTUS.txt\n";
+        std::cout<<" python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory +"results/Results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory +"results/Results/Extracted/surface-pressure.xtr " + mHemeLBDirectory +"results/Results/Extracted/surface-traction.xtr  > " + mHemeLBDirectory + "OpenVTUS.txt\n"
+        
         bash_script << " python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory +"results/Results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory +"results/Results/Extracted/surface-pressure.xtr " + mHemeLBDirectory +"results/Results/Extracted/surface-traction.xtr  > " + mHemeLBDirectory + "OpenVTUS.txt\n";
         // bash_script << "echo 'HemeLB has finished' > " + mHemeLBDirectory + "WaitFile.txt \n";
         bash_script << "cp " + mHemeLBDirectory +"results/Extracted/wholegeometry-velocity_"+std::to_string(Period)+".vtu " +mHemeLB_output + "wholegeometry-velocity_"+std::to_string(mCenterlinesNumber)+".vtu \n";

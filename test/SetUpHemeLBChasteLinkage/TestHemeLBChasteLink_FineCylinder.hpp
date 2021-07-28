@@ -132,7 +132,7 @@ public:
         // Upstream
         // p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
         p_Mesh_modifier->SetUpdateFrequency(2/dt);
-        // p_Mesh_modifier->SetmSetUpSolve(1);
+        p_Mesh_modifier->SetmSetUpSolve(0);
 
        
         for (int j =1; j<=40; j++)
