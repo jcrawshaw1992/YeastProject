@@ -100,7 +100,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
   
     assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-   PRINT_3_VARIABLES(mHetro, mMaxCounter,mCounter );
+//    PRINT_3_VARIABLES(mHetro, mMaxCounter,mCounter );
 
     if (mHetro) // Need to make sure that the stiffer regions get stiffer at the right step size
     {
