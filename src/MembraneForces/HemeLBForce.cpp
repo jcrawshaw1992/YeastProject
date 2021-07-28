@@ -296,22 +296,22 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOpenVtus(double Period, double mCenterlinesNumber)
 {  
+        ofstream bash_script;
 
-        /// Wana do the same for running the vtu opting 
-        std::string BashFile2 =  mChasteOutputDirectory + mOutputDirectory + "/OpenVtus";
-        PRINT_VARIABLE(BashFile2)
-        bash_script2.open(BashFile2);
-        bash_script2 << "#!/bin/bash\n# chmod 700 OpenVtus\n";
-        // bash_script2 << "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >" + mHemeLBDirectory + "OpenVTUS.txt\n";
-        bash_script2 << " python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory +"results/Results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory +"results/Results/Extracted/surface-pressure.xtr " + mHemeLBDirectory +"results/Results/Extracted/surface-traction.xtr  > " + mHemeLBDirectory + "OpenVTUS.txt\n";
-        // bash_script2 << "echo 'HemeLB has finished' > " + mHemeLBDirectory + "WaitFile.txt \n";
-        bash_script2 << "cp " + mHemeLBDirectory +"results/Extracted/wholegeometry-velocity_"+std::to_string(Period)+".vtu " +mHemeLB_output + "wholegeometry-velocity_"+std::to_string(mCenterlinesNumber)+".vtu \n";
-        bash_script2 << "cp " + mHemeLBDirectory +"results/Extracted/surface-pressure_"+std::to_string(Period)+".vtu " +mHemeLB_output + "surface-pressure_"+std::to_string(mCenterlinesNumber)+".vtu \n";
-        bash_script2 << "cp " + mHemeLBDirectory +"results/Extracted/surface-traction_"+std::to_string(Period)+".vtu " +mHemeLB_output + "surface-traction_"+std::to_string(mCenterlinesNumber)+".vtu \n";
-        bash_script2 << "echo 'HemeLB simulation complete' \n";
-        // bash_script2 << "osascript -e 'tell application \"Terminal\" to close first window' & exit";  Need to think about with with application to linux 
-        bash_script2.close();
-        std::string compileBashScript = "chmod 700 " + BashFile2 + " >nul";
+        std::string BashFile =  mChasteOutputDirectory + mOutputDirectory + "/OpenVtus";
+        PRINT_VARIABLE(BashFile)
+        bash_script.open(BashFile);
+        bash_script << "#!/bin/bash\n# chmod 700 OpenVtus\n";
+        // bash_script << "python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/GmyUnstructuredGridReader.py " + mHemeLBDirectory + "config.xml >" + mHemeLBDirectory + "OpenVTUS.txt\n";
+        bash_script << " python /home/vascrem/hemelb-dev/Tools/hemeTools/converters/ExtractedPropertyUnstructuredGridReader.py " + mHemeLBDirectory +"results/Results/Extracted/wholegeometry-velocity.xtr " + mHemeLBDirectory +"results/Results/Extracted/surface-pressure.xtr " + mHemeLBDirectory +"results/Results/Extracted/surface-traction.xtr  > " + mHemeLBDirectory + "OpenVTUS.txt\n";
+        // bash_script << "echo 'HemeLB has finished' > " + mHemeLBDirectory + "WaitFile.txt \n";
+        bash_script << "cp " + mHemeLBDirectory +"results/Extracted/wholegeometry-velocity_"+std::to_string(Period)+".vtu " +mHemeLB_output + "wholegeometry-velocity_"+std::to_string(mCenterlinesNumber)+".vtu \n";
+        bash_script << "cp " + mHemeLBDirectory +"results/Extracted/surface-pressure_"+std::to_string(Period)+".vtu " +mHemeLB_output + "surface-pressure_"+std::to_string(mCenterlinesNumber)+".vtu \n";
+        bash_script << "cp " + mHemeLBDirectory +"results/Extracted/surface-traction_"+std::to_string(Period)+".vtu " +mHemeLB_output + "surface-traction_"+std::to_string(mCenterlinesNumber)+".vtu \n";
+        bash_script << "echo 'HemeLB simulation complete' \n";
+        // bash_script << "osascript -e 'tell application \"Terminal\" to close first window' & exit";  Need to think about with with application to linux 
+        bash_script.close();
+        std::string compileBashScript = "chmod 700 " + BashFile + " >nul";
         int SystemOutput = std::system(compileBashScript.c_str());
 }
 
@@ -562,7 +562,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
     if(mMachine =="server")
     {
             // Need to write bash scrip .... issue here 
-            int Cores = 25;
+            int Cores = 24;
             ofstream bash_script;
 
             std::string BashFile =  mChasteOutputDirectory + mOutputDirectory + "/RunHemeLB";
