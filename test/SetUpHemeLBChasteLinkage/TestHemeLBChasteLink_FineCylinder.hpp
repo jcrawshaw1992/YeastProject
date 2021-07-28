@@ -44,13 +44,13 @@ public:
         std::string output_dir = "FSICylinder/Medium/PROBINGCOLLAPSEPROBLEM";
         std::string Archieve = "FSICylinder/Medium";
     
-        double SamplingTimestepMultiple = 50;
+        double SamplingTimestepMultiple = 500;
         double EndTime = 20;
         double scale = 1e3;
         double Length = 50e-6 * scale;
         double Radius = 0.5e-6 * scale;
-        double dt = 0.001;
-        double FSIIterations = 50;
+        double dt = 0.005;
+        double FSIIterations = 500;
 
 
         // Load and fix any settings in the simulator
@@ -127,7 +127,7 @@ public:
 
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
 
-        p_Mesh_modifier->SetStepSize(pow(10, -9));
+        p_Mesh_modifier->SetStepSize(pow(10, -8));
 
         // Upstream 
         c_vector<double, 3> UpperPlanePoint = Create_c_vector(0,0,20e-6* scale);
@@ -136,7 +136,7 @@ public:
         c_vector<double, 3> LowerPlanePoint = Create_c_vector(0,0,30e-6 * scale);
         c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0,0,-1);
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-        p_Mesh_modifier->SetUpdateFrequency(600);
+        p_Mesh_modifier->SetUpdateFrequency(400);
         p_Mesh_modifier->SetmSetUpSolve(1);
 
        
