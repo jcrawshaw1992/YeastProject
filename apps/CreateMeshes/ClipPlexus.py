@@ -151,7 +151,7 @@ if __name__=="__main__":
 
     print "B"
     file_basename = '/Volumes/Hardrive/Projects/MeshCollection/Plexus/Mesh.vtk'
-    Save_name ='/Volumes/Hardrive/Projects/MeshCollection/Plexus/PlexusClipped.vtk'
+    Save_name ='/Volumes/Hardrive/Projects/MeshCollection/Plexus/PlexusClipped2.vtk'
 
 
     
@@ -167,11 +167,26 @@ if __name__=="__main__":
 
 
     clip_surface_with_plane(Save_name, ( 1010, 1042,7), (-0.8709183029618605,-0.4809790373672097 ,0.1007991824339135), Save_name)
-    clip_surface_with_plane(Save_name, (1090.8726224077695, 386.65008377697416,-37.0477635245306), (-0.7140998645058261, 0.6995727686648051,  -0.025677321811670033 ), Save_name)
-    clip_surface_with_plane(Save_name, (763.312256020283, 281.6644070253781, -0.6775506578929273 ), ( 0.1364481049924214, 0.9847840159428821, -0.10762135748719488 ), Save_name)
-    clip_surface_with_plane(Save_name, ( 559.1283011751534,423.1255206814268, -26.794575923521524 ), ( 0.6776766306086994,0.7345836835944588,  -0.0337815944507723 ), Save_name)
-    clip_surface_with_plane(Save_name, (518.8753038528874, 760.6127053516323, -7.110152513590179 ), ( 0.9965690763001236, -0.08276446638855689, -0.0003453487164468649), Save_name)
-    clip_surface_with_plane(Save_name, (665.0432957950629, 981.6807410955373,  -44.817318346023995 ), ( 0.6740219165688873,-0.7338695102268226, -0.08443931515738179), Save_name)
+    # % This one is changed clip_surface_with_plane(Save_name, (1090.8726224077695, 386.65008377697416,-37.0477635245306), (-0.7140998645058261, 0.6995727686648051,  -0.025677321811670033 ), Save_name)
+    clip_surface_with_plane(Save_name, (697.2125372897602, 1066.406938426565, -20.958379963521214 ), (0.6828523218785223, -0.7299170453388031, -0.030558361032342513), Save_name)
+
+
+    # % Changed  clip_surface_with_plane(Save_name, (763.312256020283, 281.6644070253781, -0.6775506578929273 ), ( 0.1364481049924214, 0.9847840159428821, -0.10762135748719488 ), Save_name)
+    clip_surface_with_plane(Save_name, (419.84095634755994, 315.6196933463391,  33.28754730904756), ( 0.17141128939007141, 0.9838625070491166 , 0.05131020456654056), Save_name)
+     # % Changed clip_surface_with_plane(Save_name, ( 559.1283011751534,423.1255206814268, -26.794575923521524 ), ( 0.6776766306086994,0.7345836835944588,  -0.0337815944507723 ), Save_name)
+
+    clip_surface_with_plane(Save_name, ( 540.8366860635351, 407.1092437560297, 24.894512412031048 ), ( 0.6950164997280658, 0.7186792277628611, -0.021265763281038783 ), Save_name)
+
+
+      # % Changed c clip_surface_with_plane(Save_name, (518.8753038528874, 760.6127053516323, -7.110152513590179 ), ( 0.9965690763001236, -0.08276446638855689, -0.0003453487164468649), Save_name)
+    clip_surface_with_plane(Save_name, (439.81471502502916, 733.8728396178974,  -13.27935793053153), ( 0.9994724469172634,0.002984531550729407,  -0.032340693014232334), Save_name)
+    clip_surface_with_plane(Save_name, (1113.5662834759971, 403.1166605789478, -1.6280886513817014), ( -0.7085654340697811,0.7056316127222061,-0.004364947715771553  ), Save_name)
+    # clip_surface_with_plane(Save_name, (665.0432957950629, 981.6807410955373,  -44.817318346023995 ), ( 0.6740219165688873,-0.7338695102268226, -0.08443931515738179), Save_name)
+
+
+
+
+
     # clip_surface_with_plane(Save_name, (  ), ( ), Save_name)
     # clip_surface_with_plane(Save_name, (  ), ( ), Save_name)
     # clip_surface_with_plane(Save_name, (  ), ( ), Save_name)
@@ -226,4 +241,4 @@ if __name__=="__main__":
 
 # # ./isotropic_remeshing_ForChaste -input /Users/jcrawshaw/Downloads/PlexusClipped.off -output /Users/jcrawshaw/Downloads/PlexusRemeshed.off -target_edge_length 10 -iterations 5
 
-./isotropic_remeshing_ForChaste -input /Volumes/Hardrive/Projects/MeshCollection/Plexus/Mesh.off -output /Volumes/Hardrive/Projects/MeshCollection/Plexus/Remesh.off -target_edge_length 5 -iterations 5
+# ./isotropic_remeshing_ForChaste -input /Volumes/Hardrive/Projects/MeshCollection/Plexus/Mesh.off -output /Volumes/Hardrive/Projects/MeshCollection/Plexus/Remesh.off -target_edge_length 5 -iterations 5

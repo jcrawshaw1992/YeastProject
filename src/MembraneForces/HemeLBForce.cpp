@@ -223,6 +223,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     WriteOpenVtus(Period, mCenterlinesNumber);
     std::string GetVUtus =   "cd "+mChasteOutputDirectory + mOutputDirectory + ";./OpenVtus";
     SystemOutput = std::system(GetVUtus.c_str() );
+    CopyFile(mHemeLBDirectory + "centerlines.vtp", mHemeLB_output + "Centerlines_"+std::to_string(mCenterlinesNumber)+".vtp");
     mCenterlinesNumber +=1;
 
     /*  Step 3a: 
@@ -260,7 +261,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     // // }
     // CopyFile(mHemeLBDirectory + "results/Extracted/wholegeometry-velocity_"+std::to_string(Period)+".vtu", mHemeLB_output + "wholegeometry-velocity_"+std::to_string(mCenterlinesNumber)+".vtu");
     // CopyFile(mHemeLBDirectory + "results/Extracted/surface-pressure_"+std::to_string(Period)+".vtu", mHemeLB_output + "surface-pressure_"+std::to_string(mCenterlinesNumber)+".vtu");
-    // CopyFile(mHemeLBDirectory + "centerlines.vtp", mHemeLB_output + "Centerlines_"+std::to_string(mCenterlinesNumber)+".vtp");
+    
     // mCenterlinesNumber +=1;
 
     // ---- I can other things Chaste needs running in the background here Maybe have some potts things going on
@@ -328,6 +329,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOpenVtus(int Period, int mCenterl
         bash_script.close();
         std::string compileBashScript = "chmod 700 " + BashFile + " >nul";
         int SystemOutput = std::system(compileBashScript.c_str());
+
+        
+
+
 }
 
 

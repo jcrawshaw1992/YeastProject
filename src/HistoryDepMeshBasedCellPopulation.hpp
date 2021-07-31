@@ -438,6 +438,10 @@ public:
     double ProjectPointToLine(std::pair<unsigned, unsigned> edgeIndex , c_vector<double, SPACE_DIM>  NewPoint);
 
 
+    // Added to solve my mesh problem  .....mChasteOutputDirectory
+    void WriteVtkResultsToFile(const std::string& rDirectory);
+
+
     /**
      * Overridden WriteResultsToFiles() method.
      *

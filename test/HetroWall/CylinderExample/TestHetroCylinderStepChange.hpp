@@ -36,7 +36,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestSetUpCylinderArchive() throw(Exception)
+    void TestSetUpCylinderArchive() throw(Exception)
     {
         double EndTime = 5;
         double scale = 1e3;
@@ -46,7 +46,7 @@ public:
         unsigned N_D = 50;
         unsigned N_Z = 150;
 
-        std::string output_dir = "StepChangeHetroCylinder/";
+        std::string output_dir = "TestingPopulation/";
 
         Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, Radius, Length);
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
@@ -61,7 +61,7 @@ public:
         // Create a cell population
         HistoryDepMeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
         // cell_population.SetChasteOutputDirectory(output_dir, 0);
-        cell_population.SetWriteVtkAsPoints(true);
+        cell_population.SetWriteVtkAsPoints(false);
         cell_population.SetOutputMeshInVtk(true);
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
@@ -135,7 +135,7 @@ public:
 
 }
 
-    void TestRunningArchieve2() throw(Exception)
+    void offTestRunningArchieve2() throw(Exception)
     {
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load("StepChangeHetroCylinder", 5);
   

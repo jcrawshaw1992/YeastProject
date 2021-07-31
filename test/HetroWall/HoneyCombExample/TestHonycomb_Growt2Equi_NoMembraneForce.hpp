@@ -36,7 +36,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
-    void TestNoRestraint() throw(Exception)
+    void TestNoRestraintFlat() throw(Exception)
     {
         TRACE("Jess is good")
         double EndTime = 0;
