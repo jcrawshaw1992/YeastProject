@@ -36,7 +36,7 @@ public:
 
  
 
-    void offTestSetUpCylinderArchive() throw(Exception)
+    void TestSetUpCylinderArchive() throw(Exception)
     {
         TRACE("Jess is good")
         double EndTime = 0;
