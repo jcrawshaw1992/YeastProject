@@ -38,8 +38,6 @@ public:
 
     void offTestSetUpCylinderArchive() throw(Exception)
     {
-
-        
         TRACE("Jess is good")
         double EndTime = 0;
         double scale = 0.00006684491 / 1.29;
@@ -88,9 +86,6 @@ public:
         simulator.SetDt(dt);
 
         simulator.SetUpdateCellPopulationRule(false);
-        // p_simulator->RemoveAllForces();
-        // simulator.SetEndTime(EndTime);
-
         /*
         -----------------------------
         StepHeteroModifier
@@ -151,8 +146,6 @@ public:
         boundary_plane_points.push_back(Create_c_vector( 0.051840057186913716,  0.05437284766087955, -0.0029047509892544516   ));
         boundary_plane_normals.push_back(Create_c_vector( 0.8805564024088457,  0.4681029111939312,  0.07416256945762792   ));
        
-        
-
      
         for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
         {
