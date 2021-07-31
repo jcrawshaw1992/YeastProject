@@ -38,14 +38,14 @@ public:
    {
 
         TRACE("Jess is good")
-        double EndTime =2;
+        double EndTime =12;
         double SamplingStep = 100;
         double dt = 0.001;
         double RemeshingTime = 1000;
         double EdgeLength =0.0004;
 
-        std::string output_dir = "DeformingPlexus/FlatForce4/";
-        std::string Archieved = "DeformingPlexus/FlatForce3/";
+        std::string output_dir = "DeformingPlexus/FlatForce5/";
+        std::string Archieved = "DeformingPlexus/FlatForce4/";
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
         /* Update the ouput directory for the population  */
