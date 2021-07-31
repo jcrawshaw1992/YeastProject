@@ -34,59 +34,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
 
-    void TestContinuingHomoArchieveHetro() throw(Exception)
-   {
-
-        TRACE("Jess is good")
-        double EndTime =12;
-        double SamplingStep = 100;
-        double dt = 0.001;
-        double RemeshingTime = 1000;
-        double EdgeLength =0.0004;
-
-        std::string output_dir = "DeformingPlexus/FlatForce5/";
-        std::string Archieved = "DeformingPlexus/FlatForce4/";
-
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
-        /* Update the ouput directory for the population  */
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
-
-        p_simulator->SetSamplingTimestepMultiple(SamplingStep);
-        p_simulator->SetDt(dt);
-        p_simulator->SetOutputDirectory(output_dir);
-    
  
-        /* 
-        -----------------------------
-        Edit  RemeshingTriggerOnStepHeteroModifier
-        ----------------------------
-        */
-        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
-        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
-        p_Mesh_modifier->SetRemeshingInterval(RemeshingTime);                                                              
- 
-            
-        for (int i =1; i<=100; i++)
-        { 
-            EndTime +=2;
-            p_simulator->SetEndTime(EndTime);
-
-            p_simulator->Solve();
-            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-        }
-
-            // dt/=2 ;  SamplingStep*= 2; 
-            // // FSIIterations*=2;
-            // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
- 
-            // // p_ForceOut->SetFluidSolidIterations(FSIIterations);
-            // p_simulator->SetSamplingTimestepMultiple(SamplingStep);
-            // p_simulator->SetDt(dt);
-            // p_Mesh_modifier->SetUpdateFrequency(2/dt);
-    }
-
-
 
     void offTestSetUpCylinderArchive() throw(Exception)
     {
@@ -98,10 +46,10 @@ public:
 
         double SamplingStep = 100;
         double dt = 0.001;
-        double RemeshingTime = 1000;
+        double RemeshingTime = 1100;
         double EdgeLength =0.0004;
 
-        std::string output_dir = "DeformingPlexus/FlatForce4/";
+        std::string output_dir = "DeformingPlexus/FlatForce/";
         std::string mesh_file = "/data/vascrem/MeshCollection/Plexus_LongerInlets.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
@@ -166,16 +114,9 @@ public:
         simulator.AddForce(p_ForceOut);
 
         boost::shared_ptr<MembraneBendingForce0TargetAngle> p_membrane_force(new MembraneBendingForce0TargetAngle());
-        p_membrane_force->SetMembraneStiffness(pow(10, -7));
+        p_membrane_force->SetMembraneStiffness(pow(10, -9));
         simulator.AddForce(p_membrane_force);
-        /*
-        -----------------------------
-        Membrane forces
-        ----------------------------
-        */
-        // boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        // simulator.AddForce(p_shear_force);
-
+      
         /*
         -----------------------------
         Boundary conditions
@@ -186,12 +127,7 @@ public:
         std::vector<c_vector<double, 3> > boundary_plane_normals;
 
 
-      
-        // boundary_plane_points.push_back(Create_c_vector(0.027140660617562044,0.036973768064703115, -0.00047456267187380495  ));
-        // boundary_plane_normals.push_back(Create_c_vector( -0.9960244752066172, 0.08271636085439482,  -0.03306430758973257 ));
 
-
-      
         boundary_plane_points.push_back(Create_c_vector(0.023608419650940574, 0.03496569661535721, 3.7397383502752214e-5 ));
         boundary_plane_normals.push_back(Create_c_vector( -0.9997462099692079,0.013643955338633607,  0.017926464652066654));
 
@@ -220,16 +156,9 @@ public:
      
         for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
         {
-            // if (boundary_id == boundary_plane_points.size() - 1)
-            // {
-            //     boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.008));
-            //     simulator.AddCellPopulationBoundaryCondition(p_condition);
-            // }
-            // else
-            // {
+
                 boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.01));
                 simulator.AddCellPopulationBoundaryCondition(p_condition);
-            // }
         }
 
         TRACE("First Solve ")
@@ -247,12 +176,70 @@ public:
                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
             }
             
-            dt /= 5;  SamplingStep *= 5; RemeshingTime /= 5; EdgeLength*=1.01;
-            simulator.SetSamplingTimestepMultiple(SamplingStep);
-            simulator.SetDt(dt);
+            // dt /= 2;  SamplingStep *= 5; RemeshingTime /= 5; 
+            EdgeLength*=1.1; RemeshingTime*=2;
+            // simulator.SetSamplingTimestepMultiple(SamplingStep);
+            // simulator.SetDt(dt);
             cell_population.SetTargetRemeshingEdgeLength(EdgeLength);
+            p_Mesh_modifier->SetRemeshingInterval(RemeshingTime);
         }
     }
+
+
+
+   void offTestContinuingHomoArchieveHetro() throw(Exception)
+   {
+
+        TRACE("Jess is good")
+        double EndTime =12;
+        double SamplingStep = 100;
+        double dt = 0.001;
+        double RemeshingTime = 1000;
+        double EdgeLength =0.0004;
+
+        std::string output_dir = "DeformingPlexus/FlatForce5/";
+        std::string Archieved = "DeformingPlexus/FlatForce4/";
+
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
+        /* Update the ouput directory for the population  */
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
+
+        p_simulator->SetSamplingTimestepMultiple(SamplingStep);
+        p_simulator->SetDt(dt);
+        p_simulator->SetOutputDirectory(output_dir);
+    
+ 
+        /* 
+        -----------------------------
+        Edit  RemeshingTriggerOnStepHeteroModifier
+        ----------------------------
+        */
+        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
+        p_Mesh_modifier->SetRemeshingInterval(RemeshingTime);                                                              
+ 
+            
+        for (int i =1; i<=100; i++)
+        { 
+            EndTime +=2;
+            p_simulator->SetEndTime(EndTime);
+
+            p_simulator->Solve();
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+        }
+
+            // dt/=2 ;  SamplingStep*= 2; 
+            // // FSIIterations*=2;
+            // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
+ 
+            // // p_ForceOut->SetFluidSolidIterations(FSIIterations);
+            // p_simulator->SetSamplingTimestepMultiple(SamplingStep);
+            // p_simulator->SetDt(dt);
+            // p_Mesh_modifier->SetUpdateFrequency(2/dt);
+    }
+
+
 
 
 
