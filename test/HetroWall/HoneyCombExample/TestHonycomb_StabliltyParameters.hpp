@@ -34,7 +34,7 @@
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
-    void offTestMembraneParameters() throw(Exception)
+    void TestMembraneParameters() throw(Exception)
     {
 
         double N_D[5] = { -8, -8.5, -9, -9.5, -10 };
