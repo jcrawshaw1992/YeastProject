@@ -38,13 +38,13 @@ public:
   void TestMembraneParameters() throw(Exception)
     {
 
-        double N_D[5] = { -8, -8.5, -9, -9.5, -10 };
+        double N_D[3] = { -8, -6, -7 };
 
-        for (unsigned i = 0; i < 5; i++)
+        for (unsigned i = 0; i < 3; i++)
         {
-            for (unsigned j = 0; j < 5; j++)
+            for (unsigned j = 0; j < 3; j++)
             {
-                for (unsigned k = 0; k < 5; k++)
+                for (unsigned k = 0; k < 3; k++)
                 {
 
                     double DilationParameter = N_D[i];
