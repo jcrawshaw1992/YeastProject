@@ -62,6 +62,7 @@ public:
 
         /* Remove the constant pressure force   */
         p_simulator->RemoveAllForces();
+        p_simulator->RemoveAllCellPopulationBoundaryConditions();
         p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
         p_simulator->SetDt(dt);
         p_simulator->SetOutputDirectory(output_dir);
@@ -85,13 +86,13 @@ public:
         double InletPressure = (0.002133152 - 0.001466542) * 1.001; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
         double OutletPressure = (0.002133152 - 0.001466542) * (0.999);
 
-        boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
-        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
-        p_ForceOut->SetStartTime(EndTime);
-        p_ForceOut->SetFluidSolidIterations(FSIIterations);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"/HemeLBForce/", p_simulator->rGetCellPopulation());
-        p_simulator->AddForce(p_ForceOut);
+        // boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
+        // p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
+        // p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet");
+        // p_ForceOut->SetStartTime(EndTime);
+        // p_ForceOut->SetFluidSolidIterations(FSIIterations);
+        // p_ForceOut->SetUpHemeLBConfiguration(output_dir+"/HemeLBForce/", p_simulator->rGetCellPopulation());
+        // p_simulator->AddForce(p_ForceOut);
 
         // boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
         // p_ForceOut->SetPressure(P_blood - P_tissue);
@@ -105,11 +106,11 @@ public:
         ----------------------------
         */
         boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        p_simulator->AddForce(p_shear_force);
+        // p_simulator->AddForce(p_shear_force);
 
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        p_simulator->AddForce(p_membrane_force);
+        // p_simulator->AddForce(p_membrane_force);
  
         /* 
         -----------------------------
@@ -137,7 +138,39 @@ public:
         c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0,0,-1);
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
         p_Mesh_modifier->SetUpdateFrequency(1/dt);
-        p_Mesh_modifier->SetmSetUpSolve(0);
+        p_Mesh_modifier->SetmSetUpSolve(1);
+
+
+        /*
+        -----------------------------
+        Boundary conditions
+        ----------------------------
+        */
+
+        c_vector<double, 3> BPlaneNormal1 = Create_c_vector(0, 0, 1);
+        c_vector<double, 3> BPoint1 = Create_c_vector(0, 0, 0);
+
+        c_vector<double, 3> BPlaneNormal2 = Create_c_vector(0, 0, -1);
+        c_vector<double, 3> BPoint2 = Create_c_vector(0, 0, Length - 0.0002e-6 * scale);
+        std::vector<c_vector<double, 3> > boundary_plane_points;
+        std::vector<c_vector<double, 3> > boundary_plane_normals;
+
+        boundary_plane_points.push_back(BPoint1);
+        boundary_plane_normals.push_back(BPlaneNormal1);
+
+        // boundary_plane_points.push_back(BPoint2);
+        // boundary_plane_normals.push_back(BPlaneNormal2);
+
+        // for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
+        // {
+        //     // boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.5));
+        //     // simulator.AddCellPopulationBoundaryCondition(p_condition);
+
+        //      boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.5));
+        //      p_simulator->AddCellPopulationBoundaryCondition(p_condition);
+        // }
+
+
 
        
         for (int j =1; j<=40; j++)

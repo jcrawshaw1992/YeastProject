@@ -47,7 +47,7 @@ public:
         double RemeshingTime = 600;
         double EdgeLength =0.0003;
 
-        std::string output_dir = "DeformingPlexus/FlatForceFINAL/";
+        std::string output_dir = "DeformingPlexus/FlatForceFINAL2/";
         std::string mesh_file = "/data/vascrem/MeshCollection/Plexus_LongerInlets.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;

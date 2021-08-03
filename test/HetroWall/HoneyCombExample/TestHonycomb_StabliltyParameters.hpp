@@ -53,13 +53,13 @@ public:
                     std::stringstream out;
                     out << "DilationParameter_" << DilationParameter << "AreaParameter" << AreaParameter << "DeformationParamter" << DeformationParamter;
                     std::string ParameterSet = out.str();
-                    std::string output_dir = "DeformingHoneyComb/ParameterSweep/" + ParameterSet;
+                    std::string output_dir = "DeformingHoneyComb/ParameterSweep2/" + ParameterSet;
 
                     TRACE("Jess is good")
-                    double EndTime = 14;
-                    double SamplingStep = 1900;
+                    double EndTime = 13;
+                    double SamplingStep = 500;
                     double dt = 0.00001;
-                    double NewEndTime = EndTime+0.1;
+                    double NewEndTime = EndTime+0.05;
 
                     std::string Archieved = "DeformingHoneyComb/FlatForce3";
 
@@ -102,8 +102,9 @@ public:
                     */
                     std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
                     boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);
-                    // p_Mesh_modifier->TurnOffRemeshing();
-                    p_Mesh_modifier->SetRemeshingInterval(10);
+                    p_Mesh_modifier->TurnOffRemeshing();
+                    // p_Mesh_modifier->SetRemeshingInterval(10);
+               
 
                     //AreaConstant           AreaDilationModulus        ShearModulus
                     std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), 1e-10) } };
