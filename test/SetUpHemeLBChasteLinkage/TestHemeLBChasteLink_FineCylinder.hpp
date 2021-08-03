@@ -148,7 +148,7 @@ public:
         */
 
         c_vector<double, 3> BPlaneNormal1 = Create_c_vector(0, 0, 1);
-        c_vector<double, 3> BPoint1 = Create_c_vector(0, 0, 0);
+        c_vector<double, 3> BPoint1 = Create_c_vector(0, 0, 0.42);
 
         c_vector<double, 3> BPlaneNormal2 = Create_c_vector(0, 0, -1);
         c_vector<double, 3> BPoint2 = Create_c_vector(0, 0, Length - 0.0002e-6 * scale);
