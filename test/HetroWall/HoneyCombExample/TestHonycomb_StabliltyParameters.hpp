@@ -53,7 +53,7 @@ public:
                     std::stringstream out;
                     out << "DilationParameter_" << DilationParameter << "AreaParameter" << AreaParameter << "DeformationParamter" << DeformationParamter;
                     std::string ParameterSet = out.str();
-                    std::string output_dir = "DeformingHoneyComb/" + ParameterSet;
+                    std::string output_dir = "DeformingHoneyComb/ParameterSweep/" + ParameterSet;
 
                     TRACE("Jess is good")
                     double EndTime = 14;
