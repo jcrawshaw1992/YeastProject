@@ -41,7 +41,7 @@ public:
     
     void TestFSICylinder_HeteroContinued() throw(Exception)
     {
-        std::string output_dir = "FSICylinder/Medium/Hetro6";
+        std::string output_dir = "FSICylinder/Medium/Hetro7";
         std::string Archieve = "FSICylinder/Medium";
     
         double SamplingTimestepMultiple = 500;
@@ -74,17 +74,17 @@ public:
         */
 
 
-        c_vector<double, 3> PlaneNormal1 = Create_c_vector(0, 0, 1);
-        c_vector<double, 3> Point1 = Create_c_vector(0, 0, 0.0002e-6 * scale);
+        // c_vector<double, 3> PlaneNormal1 = Create_c_vector(0, 0, 1);
+        // c_vector<double, 3> Point1 = Create_c_vector(0, 0, 0.0002e-6 * scale);
 
-        c_vector<double, 3> PlaneNormal2 = Create_c_vector(0, 0, -1);
-        c_vector<double, 3> Point2 = Create_c_vector(0, 0, Length - 0.0002e-6 * scale);
+        // c_vector<double, 3> PlaneNormal2 = Create_c_vector(0, 0, -1);
+        // c_vector<double, 3> Point2 = Create_c_vector(0, 0, Length - 0.0002e-6 * scale);
 
-        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
-        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
+        // double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        // double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg
 
-        double InletPressure = (0.002133152 - 0.001466542) * 1.001; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
-        double OutletPressure = (0.002133152 - 0.001466542) * (0.999);
+        // double InletPressure = (0.002133152 - 0.001466542) * 1.001; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
+        // double OutletPressure = (0.002133152 - 0.001466542) * (0.999);
 
         // boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
         // p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
