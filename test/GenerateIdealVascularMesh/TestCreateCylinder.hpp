@@ -32,6 +32,14 @@
 #include "StepHeteroModifier.hpp"
 
 class TestRemeshing : public AbstractCellBasedTestSuite
+//
+//
+// boost::shared_ptr<AbstractNumericalMethod<3,3> > p_method(new ForwardEulerNumericalMethod<3,3>());
+//         p_method->SetUseAdaptiveTimestep(false);
+//         simulator.SetNumericalMethod(p_method);
+//
+//
+//
 {
 public:
     void TestSetUpCylinderArchive() throw(Exception)

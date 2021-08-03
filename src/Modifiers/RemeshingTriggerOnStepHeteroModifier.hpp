@@ -175,6 +175,8 @@ public:
      *  
      */
     void SetRemeshingInterval(int RemeshingInterval);
+    void TurnOffRemeshing();
+
 
     /**
      * Set interval for updating mesh properties 
