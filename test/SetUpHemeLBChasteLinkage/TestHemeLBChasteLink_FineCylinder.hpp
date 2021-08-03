@@ -161,14 +161,14 @@ public:
         // boundary_plane_points.push_back(BPoint2);
         // boundary_plane_normals.push_back(BPlaneNormal2);
 
-        // for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
-        // {
-        //     // boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.5));
-        //     // simulator.AddCellPopulationBoundaryCondition(p_condition);
+        for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
+        {
+            // boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.5));
+            // simulator.AddCellPopulationBoundaryCondition(p_condition);
 
-        //      boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.5));
-        //      p_simulator->AddCellPopulationBoundaryCondition(p_condition);
-        // }
+             boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.5));
+             p_simulator->AddCellPopulationBoundaryCondition(p_condition);
+        }
 
 
 
