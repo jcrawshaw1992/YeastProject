@@ -246,7 +246,7 @@ public:
         // cell_population.EdgeLengthVariable(1.2);
         cell_population.SetPrintRemeshedIC(1);
         cell_population.SetTargetRemeshingIterations(5);
-        cell_population.SetWriteVtkAsPoints(true);
+        cell_population.SetWriteVtkAsPoints(false);
         cell_population.SetOutputMeshInVtk(true);
         cell_population.SetRemeshingSoftwear("CGAL");
         cell_population.SetOperatingSystem("server");

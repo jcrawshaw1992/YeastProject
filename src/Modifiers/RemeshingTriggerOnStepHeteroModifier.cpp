@@ -71,6 +71,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(Ab
             ++cell_iter)
         {
                 cell_iter->GetCellData()->SetItem("CollpasingRegion", 0);
+                cell_iter->GetCellData()->SetItem("Counter", 0);
         }
         mSetUpSolve = 0;
 
@@ -371,7 +372,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::Boundaries(c_
     mBoundaries.push_back(CurrentBoundary);
 
     mHetro = 1;
-    mSetUpSolve =0;
+    mSetUpSolve =1;
     TRACE("GOt here")
     
 }

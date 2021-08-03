@@ -49,8 +49,8 @@ public:
         double scale = 1e3;
         double Length = 50e-6 * scale;
         double Radius = 0.5e-6 * scale;
-        double dt = 0.0005;
-        double FSIIterations = 10000;
+        double dt = 0.001;
+        double FSIIterations = 2000;
 
 
         // Load and fix any settings in the simulator
@@ -129,8 +129,13 @@ public:
 
         p_Mesh_modifier->SetStepSize(pow(10, -8));
 
-        // Upstream
-        // p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
+        // Upstream 
+        c_vector<double, 3> UpperPlanePoint = Create_c_vector(0,0,20e-6* scale);
+        c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0,0,1);
+        // Down stream
+        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0,0,30e-6 * scale);
+        c_vector<double, 3> LowerPlaneNormal = Create_c_vector(0,0,-1);
+        p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
         p_Mesh_modifier->SetUpdateFrequency(1/dt);
         p_Mesh_modifier->SetmSetUpSolve(0);
 

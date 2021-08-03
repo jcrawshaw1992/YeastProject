@@ -42,9 +42,9 @@ public:
         double EndTime = 0;
         double scale = 0.00006684491 / 1.29;
 
-        double SamplingStep = 100;
+        double SamplingStep = 150;
         double dt = 0.001;
-        double RemeshingTime = 800;
+        double RemeshingTime = 600;
         double EdgeLength =0.0003;
 
         std::string output_dir = "DeformingPlexus/FlatForceFINAL/";
@@ -72,7 +72,7 @@ public:
         // cell_population.EdgeLengthVariable(1.2);
         cell_population.SetPrintRemeshedIC(1);
         cell_population.SetTargetRemeshingIterations(5);
-        cell_population.SetWriteVtkAsPoints(true);
+        cell_population.SetWriteVtkAsPoints(false);
         cell_population.SetOutputMeshInVtk(true);
         cell_population.SetRemeshingSoftwear("CGAL");
         cell_population.SetOperatingSystem("server");
@@ -109,7 +109,7 @@ public:
         simulator.AddForce(p_ForceOut);
 
         boost::shared_ptr<MembraneBendingForce0TargetAngle> p_membrane_force(new MembraneBendingForce0TargetAngle());
-        p_membrane_force->SetMembraneStiffness(pow(10, -8));
+        p_membrane_force->SetMembraneStiffness(pow(10, -10));
         simulator.AddForce(p_membrane_force);
       
         /*

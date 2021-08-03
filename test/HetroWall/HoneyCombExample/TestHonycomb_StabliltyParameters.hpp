@@ -37,13 +37,13 @@ public:
     void TestMembraneParameters() throw(Exception)
     {
 
-        double N_D[5] = { -8, -8.5, -9, -9.5, -10 };
+        double N_D[2] = { -8,-7};
 
-        for (unsigned i = 0; i < 5; i++)
+        for (unsigned i = 0; i < 2; i++)
         {
-            for (unsigned j = 0; j < 5; j++)
+            for (unsigned j = 0; j < 2; j++)
             {
-                for (unsigned k = 0; k < 5; k++)
+                for (unsigned k = 0; k < 2; k++)
                 {
 
                     double DilationParameter = N_D[i];
@@ -58,8 +58,8 @@ public:
                     TRACE("Jess is good")
                     double EndTime = 14;
                     double SamplingStep = 1900;
-                    double dt = 0.0001;
-                    double NewEndTime = EndTime+0.2;
+                    double dt = 0.00001;
+                    double NewEndTime = EndTime+0.1;
 
                     std::string Archieved = "DeformingHoneyComb/FlatForce3";
 

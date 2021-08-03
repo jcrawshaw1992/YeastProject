@@ -38,13 +38,13 @@ public:
   void TestMembraneParameters() throw(Exception)
     {
 
-        double N_D[3] = { -8, -6, -7 };
+        double N_D[2] = { -8, -7 };
 
-        for (unsigned i = 0; i < 3; i++)
+        for (unsigned i = 1; i < 2; i++)
         {
-            for (unsigned j = 0; j < 3; j++)
+            for (unsigned j = 0; j < 2; j++)
             {
-                for (unsigned k = 0; k < 3; k++)
+                for (unsigned k = 0; k < 2; k++)
                 {
 
                     double DilationParameter = N_D[i];
@@ -58,9 +58,9 @@ public:
 
                     TRACE("Jess is good")
                     double EndTime = 8;
-                    double SamplingStep = 100;
-                    double dt = 0.001;
-                    double NewEndTime = EndTime+0.1;
+                    double SamplingStep = 500;
+                    double dt = 0.0001;
+                    double NewEndTime = EndTime+0.05;
                     std::string Archieved = "DeformingPlexus/FlatForce4";
 
                     OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
