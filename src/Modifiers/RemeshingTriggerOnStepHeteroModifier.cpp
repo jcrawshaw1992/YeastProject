@@ -379,8 +379,8 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::Boundaries(c_
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetRemeshingInterval(int RemeshingInterval)
 {
-    // mRemeshing = 1;
-    mRemeshing = 0;
+    mRemeshing = 1;
+    // mRemeshing = 0;
     mRemeshingInterval = RemeshingInterval;
 }
 

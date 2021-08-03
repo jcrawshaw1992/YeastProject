@@ -41,16 +41,16 @@ public:
     
     void TestFSICylinder_HeteroContinued() throw(Exception)
     {
-        std::string output_dir = "FSICylinder/Medium/Hetro5";
-        std::string Archieve = "FSICylinder/Medium/Hetro4";
+        std::string output_dir = "FSICylinder/Medium/Hetro6";
+        std::string Archieve = "FSICylinder/Medium";
     
-        double SamplingTimestepMultiple = 100;
-        double EndTime = 30;
+        double SamplingTimestepMultiple = 500;
+        double EndTime = 20;
         double scale = 1e3;
         double Length = 50e-6 * scale;
         double Radius = 0.5e-6 * scale;
         double dt = 0.0005;
-        double FSIIterations = 2000;
+        double FSIIterations = 10000;
 
 
         // Load and fix any settings in the simulator
@@ -131,14 +131,13 @@ public:
 
         // Upstream
         // p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-        p_Mesh_modifier->SetUpdateFrequency(2/dt);
+        p_Mesh_modifier->SetUpdateFrequency(1/dt);
         p_Mesh_modifier->SetmSetUpSolve(0);
 
        
         for (int j =1; j<=40; j++)
         {
 
-            
             for (int i =1; i<=10; i++)
             { 
                 // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetStartTime(NewEndTime);
@@ -149,15 +148,13 @@ public:
                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
             }
 
-            dt/=2 ;  SamplingTimestepMultiple*= 2; 
-            FSIIterations*=2;
+            // dt/=2 ;  SamplingTimestepMultiple*= 2; 
+            // FSIIterations*=2;
  
-            p_ForceOut->SetFluidSolidIterations(FSIIterations);
-            p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
-            p_simulator->SetDt(dt);
-            p_Mesh_modifier->SetUpdateFrequency(2/dt);
-
-
+            // p_ForceOut->SetFluidSolidIterations(FSIIterations);
+            // p_simulator->SetSamplingTimestepMultiple(SamplingTimestepMultiple);
+            // p_simulator->SetDt(dt);
+            // p_Mesh_modifier->SetUpdateFrequency(2/dt);
         }
 
 

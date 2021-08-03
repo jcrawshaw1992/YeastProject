@@ -950,7 +950,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		
        
 
-		// c_vector<double,3> shear_stress = mAppliedTangentTractions[nearest_fluid_site];
+		c_vector<double,3> shear_stress = mAppliedTangentTractions[nearest_fluid_site];
 
 		// assert(fabs(Force[0])<1e10);
 		// assert(fabs(Force[1])<1e10);
@@ -969,7 +969,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		// cell_iter->GetCellData()->SetItem("applied_shear_stress_x", shear_stress[0]);
 		// cell_iter->GetCellData()->SetItem("applied_shear_stress_y", shear_stress[1]);
 		// cell_iter->GetCellData()->SetItem("applied_shear_stress_z", shear_stress[2]);
-		// cell_iter->GetCellData()->SetItem("applied_shear_stress_mag", norm_2(shear_stress));
+		cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 	}
 }
 

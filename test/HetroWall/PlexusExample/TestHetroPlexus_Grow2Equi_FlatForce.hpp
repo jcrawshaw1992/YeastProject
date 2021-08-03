@@ -44,7 +44,7 @@ public:
 
         double SamplingStep = 100;
         double dt = 0.001;
-        double RemeshingTime = 1000;
+        double RemeshingTime = 800;
         double EdgeLength =0.0003;
 
         std::string output_dir = "DeformingPlexus/FlatForceFINAL/";
@@ -109,7 +109,7 @@ public:
         simulator.AddForce(p_ForceOut);
 
         boost::shared_ptr<MembraneBendingForce0TargetAngle> p_membrane_force(new MembraneBendingForce0TargetAngle());
-        p_membrane_force->SetMembraneStiffness(pow(10, -9));
+        p_membrane_force->SetMembraneStiffness(pow(10, -8));
         simulator.AddForce(p_membrane_force);
       
         /*
