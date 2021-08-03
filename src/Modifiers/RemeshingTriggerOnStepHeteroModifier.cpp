@@ -385,11 +385,11 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetRemeshingI
 }
 
 
-// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-// void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::TurnOffRemeshing()
-// {
-//     mRemeshing = 0;
-// }
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::TurnOffRemeshing()
+{
+    mRemeshing = 0;
+}
 
 
 

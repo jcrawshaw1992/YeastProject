@@ -59,7 +59,7 @@ public:
                     double EndTime = 14;
                     double SamplingStep = 1900;
                     double dt = 0.0001;
-                    double NewEndTime = 0.2;
+                    double NewEndTime = EndTime+0.2;
 
                     std::string Archieved = "DeformingHoneyComb/FlatForce3";
 
