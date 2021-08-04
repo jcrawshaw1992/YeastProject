@@ -118,11 +118,11 @@ public:
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2,3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);
 
         
-        // std::map<double, c_vector<long double, 4> >  GrowthMaps =  { {1, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -8.05), 1e-9 ) },
-        //                                                              {0,  Create_c_vector(pow(10, -5), pow(10, -4), pow(10, -5), 1e-9 )}    };
+        std::map<double, c_vector<long double, 4> >  GrowthMaps =  { {1, Create_c_vector(pow(10, -8), pow(10, -9), pow(10, -8.05), 1e-9 ) },
+                                                                     {0,  Create_c_vector(pow(10, -5), pow(10, -4), pow(10, -5), 1e-9 )}    };
  
 
-        // p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
 
         // p_Mesh_modifier->SetStepSize(pow(10, -8));
 
