@@ -61,7 +61,7 @@ public:
                     OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
                     /* Update the ouput directory for the population  */
                     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
-                    double EdgeLength = 0.0004;//(2e-6 * scale); 0.00045/2;//(2e-6 * scale);
+                    double EdgeLength = 0.0002;//(2e-6 * scale); 0.00045/2;//(2e-6 * scale);
                     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
                     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
 
