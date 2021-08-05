@@ -85,7 +85,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
 
 
         double Pressure;
-        Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);  
         if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
         {
            c_vector<double, 3> AverageForce = Create_c_vector(0,0,0);
