@@ -86,7 +86,8 @@ public:
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        p_ForceOut->SetPressure((P_blood - P_tissue));
+        p_ForceOut->SetPressure(P_blood - P_tissue);
+         
         p_simulator->AddForce(p_ForceOut);
 
 
@@ -363,7 +364,7 @@ public:
         double scale = 0.05;
         double SamplingStep = 50;
         double dt = 0.005;
-        double RemeshingTime = 50000;
+        double RemeshingTime = 5000;
         double EdgeLength = 0.0004/2;//(2e-6 * scale);
 
         
@@ -431,6 +432,7 @@ public:
 
         boost::shared_ptr<StaticOutwardsPressure> p_ForceOut(new StaticOutwardsPressure());
         p_ForceOut->SetPressure(2 * (P_blood - P_tissue) / 10);
+        p_ForceOut->SetUpNormals(cell_population);
         simulator.AddForce(p_ForceOut);
 
 
