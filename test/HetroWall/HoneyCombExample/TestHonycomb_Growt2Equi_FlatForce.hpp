@@ -27,6 +27,7 @@
 #include "MembraneDeformationForce.hpp"
 #include "StaticOutwardsPressure.hpp"
 #include "OutwardsPressureWithBreaks.hpp"
+#include "OutwardsPressure.hpp"
 #include "MembraneBendingForce0TargetAngle.hpp"
 
 
