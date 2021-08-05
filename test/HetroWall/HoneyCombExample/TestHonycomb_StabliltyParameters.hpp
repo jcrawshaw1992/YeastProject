@@ -48,10 +48,10 @@ public:
                     std::stringstream out;
                     out << "DilationParameter_" << DilationParameter << "AreaParameter" << AreaParameter << "DeformationParamter" << DeformationParamter;
                     std::string ParameterSet = out.str();
-                    std::string output_dir = "DeformingHoneyComb/TestSetParameter2/" ;//+ ParameterSet;
+                    std::string output_dir = "DeformingHoneyComb/TestSetParameter3/" ;//+ ParameterSet;
 
                     TRACE("Jess is good")
-                    double EndTime = 12;
+                    double EndTime = 11;
                     double SamplingStep = 100;
                     double dt = 0.0001;
                     double NewEndTime = EndTime+10;
@@ -63,7 +63,7 @@ public:
                     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
                     double EdgeLength = 0.0002;//(2e-6 * scale); 0.00045/2;//(2e-6 * scale);
                     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
-                    static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+                    // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
 
                     p_simulator->RemoveAllForces();
                     p_simulator->SetSamplingTimestepMultiple(SamplingStep);
@@ -118,7 +118,6 @@ public:
                         p_simulator->SetEndTime(EndTime);
                         p_simulator->Solve();
                         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-
                     }
             
     }

@@ -29,6 +29,7 @@ HemeLBForce<ELEMENT_DIM, SPACE_DIM>::~HemeLBForce()
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
+    double P_tissue = 0.001466542;
     MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
     if (mExecuteHemeLBCounter == mTriggerHemeLB)
     {
@@ -56,49 +57,94 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
 
     // TRACE("Adding HemeLB Force to the nodes :) ")
 	// MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-    double Nc =45;
+
 	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
 		 cell_iter != rCellPopulation.End();
 		 ++cell_iter)
 	{
-        unsigned ReferenceNode = 0;
-        unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-        Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
+		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
 
-        if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
-        {     
-            if (node_index < Nc + 1) // if on lower edge
-            {
-                ReferenceNode = node_index + (2 * Nc); // select node from two rows up
-            }
-            else if (node_index > Nc) // if on upper edge
-            {
-                ReferenceNode = node_index - (2 * Nc); // select node from two rows down
-            }
-            pNode->AddAppliedForceContribution(mForceMap[ReferenceNode]); // Add the new force
-            cell_iter->GetCellData()->SetItem("HemeLBForce", norm_2(mForceMap[ReferenceNode]));
-        }
-        else
+		c_vector<double, 3> NormalVector = Create_c_vector(0,0,0);
+		std::set<unsigned>& containing_elements = pNode->rGetContainingElementIndices();
+        assert(containing_elements.size() > 0);
+		// Finding the normal to the node -- need to check this 
+        for (std::set<unsigned>::iterator iter = containing_elements.begin();
+            iter != containing_elements.end();
+            ++iter)
         {
-            pNode->AddAppliedForceContribution(mForceMap[node_index]); 
+            Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
+            Node<SPACE_DIM>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
+            Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
+
+            c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
+            c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
+
+            NormalVector  += VectorProduct(vector_12, vector_13);
+        }
+		NormalVector /=norm_2(NormalVector); // I think the normal is inwards facing 
+
+
+        double Pressure;
+        Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);  
+        if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
+        {
+           c_vector<double, 3> AverageForce = Create_c_vector(0,0,0);
+           c_vector<unsigned, 2> NearestNodes =  p_cell_population->GetNearestInternalNodes(node_index);
+
+            for ( int i = 0; i <2; i++)
+            {  
+                AverageForce += mForceMap[NearestNodes[i]];
+            }
+            Pressure = norm_2(AverageForce)/2;
+
+        }else
+        {
+            c_vector<long double,3> force = mForceMap[node_index];
+            Pressure = norm_2(force);
+
         }
 
+        c_vector<long double,3> HemeLBForce = Pressure * NormalVector; 
+        c_vector<long double,3> TissueForce = P_tissue * NormalVector; 
+        c_vector<long double,3> Force =  (Pressure - P_tissue)* NormalVector; //                 HemeLBForce -TissueForce;
+        pNode->AddAppliedForceContribution(Force); 
 
     }
 
-    
-    // Need to figure this out later
-    // for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
-    //     cell_iter != rCellPopulation.End();
-    //     ++cell_iter)
-    // {
+
+    // double Nc =45;
+	// for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+	// 	 cell_iter != rCellPopulation.End();
+	// 	 ++cell_iter)
+	// {
+    //     unsigned ReferenceNode = 0;
     //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
     //     Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
-    //     c_vector<double, 3> ForceOnNode = mForceMap[node_index]/1;
-    //     rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(ForceOnNode); 
+
+    //     if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
+    //     {     
+    //         if (node_index < Nc + 1) // if on lower edge
+    //         {
+    //             ReferenceNode = node_index + (2 * Nc); // select node from two rows up
+    //         }
+    //         else if (node_index > Nc) // if on upper edge
+    //         {
+    //             ReferenceNode = node_index - (2 * Nc); // select node from two rows down
+    //         }
+    //         pNode->AddAppliedForceContribution(mForceMap[ReferenceNode]); // Add the new force
+    //         cell_iter->GetCellData()->SetItem("HemeLBForce", norm_2(mForceMap[ReferenceNode]));
+    //     }
+    //     else
+    //     {
+    //         pNode->AddAppliedForceContribution(mForceMap[node_index]); 
+    //     }
+
+
     // }
 
 
+    // double P_tissue = 0.001466542;
 
 }
 
@@ -915,8 +961,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		// DO this by checking the angle betweem these two vectors is below a certain value -- basic dot proudct thing
 
 		// c_vector<long double,3> forceDirection = force / Pressure;
-        c_vector<long double,3> Force = Pressure * NormalVector; 
-         mForceMap[node_index] = Force;
+        // c_vector<long double,3> Force = Pressure * NormalVector; 
+        mForceMap[node_index] = force;
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         // pNode->AddAppliedForceContribution(Force); 

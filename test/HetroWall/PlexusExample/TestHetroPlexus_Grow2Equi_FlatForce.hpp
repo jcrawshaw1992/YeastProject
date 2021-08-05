@@ -34,9 +34,71 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
 
- 
 
-    void TestSetUpCylinderArchive() throw(Exception)
+   void TestContinuingHomoArchieve() throw(Exception)
+   {
+
+        TRACE("Jess is good")
+        double EndTime = 3;
+        double scale = 0.00006684491 / 1.29;
+
+        double SamplingStep = 50;
+        double dt = 0.001;
+        double RemeshingTime = 500;
+        double EdgeLength =0.0004;
+        
+
+        std::string Archieved = "DeformingPlexus/FlatForceFINAL5/";
+        std::string output_dir = "DeformingPlexus/FlatForceFINAL5/";
+     
+    
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
+        /* Update the ouput directory for the population  */
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
+
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+
+        p_simulator->SetSamplingTimestepMultiple(SamplingStep);
+        p_simulator->SetDt(dt);
+        p_simulator->SetOutputDirectory(output_dir);
+    
+ 
+        /* 
+        -----------------------------
+        Edit  RemeshingTriggerOnStepHeteroModifier
+        ----------------------------
+        */
+        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
+        p_Mesh_modifier->SetRemeshingInterval(RemeshingTime);                                                              
+ 
+            
+        for (int i =1; i<=10; i++)
+        { 
+            EndTime +=1;
+            p_simulator->SetEndTime(EndTime);
+
+            p_simulator->Solve();
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+        }
+
+            // dt/=2 ;  SamplingStep*= 2; 
+            // // FSIIterations*=2;
+            // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
+ 
+            // // p_ForceOut->SetFluidSolidIterations(FSIIterations);
+            // p_simulator->SetSamplingTimestepMultiple(SamplingStep);
+            // p_simulator->SetDt(dt);
+            // p_Mesh_modifier->SetUpdateFrequency(2/dt);
+    }
+
+
+
+
+
+
+    void offTestSetUpCylinderArchive1() throw(Exception)
     {
         TRACE("Jess is good")
         double EndTime = 0;
