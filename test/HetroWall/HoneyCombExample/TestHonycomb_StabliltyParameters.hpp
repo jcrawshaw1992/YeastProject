@@ -42,7 +42,7 @@ public:
 
 
                     double DilationParameter = -8;
-                    double AreaParameter = -8;
+                    double AreaParameter = -7;
                     double DeformationParamter = -7.5;
 
                     std::stringstream out;
