@@ -46,7 +46,7 @@ void StaticOutwardsPressure::SetUpNormals(AbstractCellPopulation<2, 3>& rCellPop
             unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
             Node<3>* p_node = rCellPopulation.GetNode(node_index);
 
-            c_vector<double, 3> Normal = Create_vector(0,0,0);
+            c_vector<double, 3> Normal = Create_c_vector(0,0,0);
 
             std::set<unsigned>& containing_elements = p_node->rGetContainingElementIndices();
 
