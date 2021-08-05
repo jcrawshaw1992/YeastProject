@@ -35,7 +35,163 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
- void TestMembraneParameters2() throw(Exception)
+
+   void offTestContinuingHomoArchieve() throw(Exception)
+   {
+
+        TRACE("Jess is good")
+        double EndTime = 3;
+        double scale = 0.00006684491 / 1.29;
+
+        double SamplingStep = 50;
+        double dt = 0.001;
+        double RemeshingTime = 500;
+        double EdgeLength =0.0004;
+        
+
+        std::string Archieved = "DeformingPlexus/FlatForceFINAL5/";
+        std::string output_dir = "DeformingPlexus/Grow2Equi/";
+     
+    
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
+        /* Update the ouput directory for the population  */
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
+
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+
+        p_simulator->SetSamplingTimestepMultiple(SamplingStep);
+        p_simulator->SetDt(dt);
+        p_simulator->SetOutputDirectory(output_dir);
+    
+ 
+        /* 
+        -----------------------------
+        Edit  RemeshingTriggerOnStepHeteroModifier
+        ----------------------------
+        */
+        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
+        p_Mesh_modifier->SetRemeshingInterval(RemeshingTime);                                                              
+ 
+            
+        for (int i =1; i<=1; i++)
+        { 
+            EndTime +=1;
+            p_simulator->SetEndTime(EndTime);
+
+            p_simulator->Solve();
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+        }
+
+            // dt/=2 ;  SamplingStep*= 2; 
+            // // FSIIterations*=2;
+            // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
+ 
+            // // p_ForceOut->SetFluidSolidIterations(FSIIterations);
+            // p_simulator->SetSamplingTimestepMultiple(SamplingStep);
+            // p_simulator->SetDt(dt);
+            // p_Mesh_modifier->SetUpdateFrequency(2/dt);
+    }
+
+
+
+
+  void TestContinuingHomoArchieve() throw(Exception)
+   {
+
+        TRACE("Jess is good")
+        double EndTime = 3;
+        double scale = 0.00006684491 / 1.29;
+
+        double SamplingStep = 5;
+        double dt = 0.001;
+        double RemeshingTime = 500;
+        double EdgeLength =0.0004;
+        
+
+        std::string Archieved = "DeformingPlexus/FlatForceFINAL5/";
+        // std::string output_dir = "DeformingPlexus/Grow2Equi/";
+        std::string output_dir = "DeformingPlexus/TestParameters/";
+     
+    
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
+        /* Update the ouput directory for the population  */
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
+
+        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+
+        p_simulator->SetSamplingTimestepMultiple(SamplingStep);
+        p_simulator->SetDt(dt);
+        p_simulator->SetOutputDirectory(output_dir);
+        p_simulator->RemoveAllForces();
+        p_simulator->RemoveAllCellPopulationBoundaryConditions();
+
+
+                boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
+        p_membrane_force->SetMembraneStiffness(pow(10, -9));
+        p_simulator->AddForce(p_membrane_force);
+        /*
+        -----------------------------
+        Membrane forces
+        ----------------------------
+        */
+        boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
+        p_simulator->AddForce(p_shear_force);
+
+        /*
+        -----------------------------
+        Constant Compressive tissue pressure
+        ----------------------------
+        */
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+        double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
+
+        boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
+        p_ForceOut->SetPressure((P_blood - P_tissue));
+        p_simulator->AddForce(p_ForceOut);
+
+        
+    
+ 
+        /* 
+        -----------------------------
+        Edit  RemeshingTriggerOnStepHeteroModifier
+        ----------------------------
+        */
+        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
+        // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
+        p_Mesh_modifier->TurnOffRemeshing();                                                             
+ 
+            
+        for (int i =1; i<=1; i++)
+        { 
+            EndTime +=1;
+            p_simulator->SetEndTime(EndTime);
+
+            p_simulator->Solve();
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+        }
+
+            // dt/=2 ;  SamplingStep*= 2; 
+            // // FSIIterations*=2;
+            // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
+ 
+            // // p_ForceOut->SetFluidSolidIterations(FSIIterations);
+            // p_simulator->SetSamplingTimestepMultiple(SamplingStep);
+            // p_simulator->SetDt(dt);
+            // p_Mesh_modifier->SetUpdateFrequency(2/dt);
+    }
+
+
+
+        
+
+
+
+ void offTestMembraneParameters2() throw(Exception)
     {
 
         double DilationParameter = -7;
@@ -48,11 +204,11 @@ public:
         std::string output_dir = "DeformingPlexus/TestingParameter/";
 
         TRACE("Jess is good")
-        double EndTime = 8;
+        double EndTime = 5;
         double SamplingStep = 1;
         double dt = 0.001;
         double NewEndTime = EndTime+1;
-        std::string Archieved = "DeformingPlexus/FlatForce4";
+        std::string Archieved = "DeformingPlexus/FlatForceFINAL5/";
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
         /* Update the ouput directory for the population  */
