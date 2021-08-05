@@ -45,7 +45,7 @@ public:
 
         double SamplingStep = 50;
         double dt = 0.005;
-        double RemeshingTime = 300;
+        double RemeshingTime = 100;
         double EdgeLength =0.00045;
         
 
@@ -72,7 +72,7 @@ public:
         cell_population.SetTargetRemeshingEdgeLength(EdgeLength);
         cell_population.SetBinningIntervals(10, 10, 1);
         // cell_population.EdgeLengthVariable(1.2);
-        cell_population.SetPrintRemeshedIC(0);
+        cell_population.SetPrintRemeshedIC(1);
         cell_population.SetTargetRemeshingIterations(5);
         cell_population.SetWriteVtkAsPoints(false);
         cell_population.SetOutputMeshInVtk(true);

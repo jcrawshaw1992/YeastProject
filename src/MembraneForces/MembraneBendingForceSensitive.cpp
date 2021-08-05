@@ -210,6 +210,7 @@ void MembraneBendingForceSensitive::AddForceContribution(AbstractCellPopulation<
         if (p_cell1->GetCellData()->GetItem("Curvature") ==2 || p_cell2->GetCellData()->GetItem("Curvature")==2 || p_cell3->GetCellData()->GetItem("Curvature") ==2 || p_cell4->GetCellData()->GetItem("Curvature") ==2)
          {
              OriginalAngle = 0;
+             MembraneStiffness/=10;
          }
 
 
