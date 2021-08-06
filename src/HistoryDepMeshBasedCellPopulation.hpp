@@ -490,8 +490,8 @@ public:
     void OutputCellPopulationParameters(out_stream& rParamsFile);
 };
 
-// #include "SerializationExportWrapper.hpp"
-// EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMeshBasedCellPopulation)
+#include "SerializationExportWrapper.hpp"
+EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMeshBasedCellPopulation)
 
 namespace boost
 {
