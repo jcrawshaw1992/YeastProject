@@ -1945,10 +1945,10 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetPrintRemeshed
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetRemeshingSoftwear(std::string RemeshingSoftwear)
 {
-    if (RemeshingSoftwear != "CGAL" && RemeshingSoftwear != "VMTK" && RemeshingSoftwear != "PreAllocatedMatlabMesh")
-    {
-        EXCEPTION("RemeshingSoftwear must be CGAL or VMTK or PreAllocatedMatlabMesh");
-    }
+    // if (RemeshingSoftwear != "CGAL" && RemeshingSoftwear != "VMTK" && RemeshingSoftwear != "PreAllocatedMatlabMesh")
+    // {
+    //     EXCEPTION("RemeshingSoftwear must be CGAL or VMTK or PreAllocatedMatlabMesh");
+    // }
     mRemeshingSoftwear = RemeshingSoftwear;
 }
 
@@ -1973,8 +1973,8 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetOperatingSyst
 }
 
 
-    void SetOperatingSystem( std::string OperatingSystem);
-    bool mServer =1;
+    // void SetOperatingSystem( std::string OperatingSystem);
+    // bool mServer =1;
 
 
 
@@ -2632,32 +2632,30 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM,SPACE_DIM>::WriteVtkResultsTo
 
 #ifdef CHASTE_VTK
 
-    // Store the present time as a string
-    unsigned num_timesteps = SimulationTime::Instance()->GetTimeStepsElapsed();
-    std::stringstream time;
-    time << num_timesteps;
+    if (mOutputVTU)
+      {
+        // Store the present time as a string
+        unsigned num_timesteps = SimulationTime::Instance()->GetTimeStepsElapsed();
+        std::stringstream time;
+        time << num_timesteps;
 
-    // Store the number of cells for which to output data to VTK
-    unsigned num_cells_from_mesh = this->GetNumNodes();
-    // VertexMesh<ELEMENT_DIM,SPACE_DIM>* mpVoronoiTessellation = this->GetVoronoiTessellation();
-    bool mWriteVtkAsPoints = this->GetWriteVtkAsPoints();
+        // Store the number of cells for which to output data to VTK
+        unsigned num_cells_from_mesh = this->GetNumNodes();
+        // VertexMesh<ELEMENT_DIM,SPACE_DIM>* mpVoronoiTessellation = this->GetVoronoiTessellation();
+    
+    
+        // When outputting any CellData, we assume that the first cell is representative of all cells
+        unsigned num_cell_data_items = this->Begin()->GetCellData()->GetNumItems();
+        std::vector<std::string> cell_data_names = this->Begin()->GetCellData()->GetKeys();
 
+        std::vector<std::vector<double> > cell_data;
+        for (unsigned var=0; var<num_cell_data_items; var++)
+        {
+            std::vector<double> cell_data_var(num_cells_from_mesh);
+            cell_data.push_back(cell_data_var);
+        }
 
-    // When outputting any CellData, we assume that the first cell is representative of all cells
-    unsigned num_cell_data_items = this->Begin()->GetCellData()->GetNumItems();
-    std::vector<std::string> cell_data_names = this->Begin()->GetCellData()->GetKeys();
-
-    std::vector<std::vector<double> > cell_data;
-    for (unsigned var=0; var<num_cell_data_items; var++)
-    {
-        std::vector<double> cell_data_var(num_cells_from_mesh);
-        cell_data.push_back(cell_data_var);
-    }
-
-
-    bool mOutputMeshInVtk = this->GetOutputMeshInVtk();
-    if (mOutputMeshInVtk)
-    {
+    
         // Create mesh writer for VTK output
         VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(rDirectory, "mesh_"+time.str(), false);
 
@@ -2703,80 +2701,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM,SPACE_DIM>::WriteVtkResultsTo
             mesh_writer.AddPointData(cell_data_names[var], cell_data[var]);
         }
 
-
-
-
-
-
         mesh_writer.WriteFilesUsingMesh(this->rGetMesh());
-    }
-
-    if (mWriteVtkAsPoints)
-    {
-        // Create mesh writer for VTK output
-        VtkMeshWriter<SPACE_DIM, SPACE_DIM> cells_writer(rDirectory, "results_"+time.str(), false);
-
-        // Iterate over any cell writers that are present
-        unsigned num_cells = this->GetNumAllCells();
-        for (typename std::vector<boost::shared_ptr<AbstractCellWriter<ELEMENT_DIM, SPACE_DIM> > >::iterator cell_writer_iter = this->mCellWriters.begin();
-             cell_writer_iter != this->mCellWriters.end();
-             ++cell_writer_iter)
-        {
-            // Create vector to store VTK cell data
-            std::vector<double> vtk_cell_data(num_cells);
-
-            // Loop over cells
-            for (typename AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>::Iterator cell_iter = this->Begin();
-                 cell_iter != this->End();
-                 ++cell_iter)
-            {
-                // Get the node index corresponding to this cell
-                unsigned node_index = this->GetLocationIndexUsingCell(*cell_iter);
-
-                // Populate the vector of VTK cell data
-                vtk_cell_data[node_index] = (*cell_writer_iter)->GetCellDataForVtkOutput(*cell_iter, this);
-            }
-
-            cells_writer.AddPointData((*cell_writer_iter)->GetVtkCellDataName(), vtk_cell_data);
-        }
-
-        // Loop over cells
-        for (typename AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>::Iterator cell_iter = this->Begin();
-             cell_iter != this->End();
-             ++cell_iter)
-        {
-            // Get the node index corresponding to this cell
-            unsigned node_index = this->GetLocationIndexUsingCell(*cell_iter);
-
-            for (unsigned var=0; var<num_cell_data_items; var++)
-            {
-                cell_data[var][node_index] = cell_iter->GetCellData()->GetItem(cell_data_names[var]);
-            }
-        }
-        for (unsigned var=0; var<num_cell_data_items; var++)
-        {
-            cells_writer.AddPointData(cell_data_names[var], cell_data[var]);
-        }
-
-        // Make a copy of the nodes in a disposable mesh for writing
-        {
-            std::vector<Node<SPACE_DIM>* > nodes;
-            for (unsigned index=0; index<this->mrMesh.GetNumNodes(); index++)
-            {
-                Node<SPACE_DIM>* p_node = this->mrMesh.GetNode(index);
-                nodes.push_back(p_node);
-            }
-
-            NodesOnlyMesh<SPACE_DIM> mesh;
-            mesh.ConstructNodesWithoutMesh(nodes, 1.5); // Arbitrary cut off as connectivity not used.
-            cells_writer.WriteFilesUsingMesh(mesh);
-        }
-
-        *(this->mpVtkMetaFile) << "        <DataSet timestep=\"";
-        *(this->mpVtkMetaFile) << num_timesteps;
-        *(this->mpVtkMetaFile) << "\" group=\"\" part=\"0\" file=\"results_";
-        *(this->mpVtkMetaFile) << num_timesteps;
-        *(this->mpVtkMetaFile) << ".vtu\"/>\n";
     }
    
 #endif //CHASTE_VTK

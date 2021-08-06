@@ -41,7 +41,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
 
-    void offTestSetUpCylinderArchive2() throw(Exception)
+    void TestSetUpCylinderArchive2() throw(Exception)
     {
         // TRACE("Jess is good")
         // double EndTime = 0;
@@ -82,33 +82,20 @@ public:
         CellsGenerator<FixedG1GenerationalCellCycleModel, 2> cells_generator;
         cells_generator.GenerateBasicRandom(cells, mesh->GetNumNodes(), p_differentiated_type);
 
-        // Create a cell population
-        // MeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
      HistoryDepMeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
 
 
-
-        // // Create the cells
-        // MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
-        // std::vector<CellPtr> cells;
-        // CellsGenerator<FixedG1GenerationalCellCycleModel, 2> cells_generator;
-        // cells_generator.GenerateBasicRandom(cells, mesh.GetNumNodes(), p_differentiated_type);
-
-        // // Create a cell population
-        // // MeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
-        // HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
-
-        // cell_population.SetChasteOutputDirectory(output_dir, 0);
-        // // cell_population.SetInitialAnlgesAcrossMembrane(); // Dont worry about this for now, I think there is something moff
-        // cell_population.SetRelativePath(output_dir, 0);
-        // cell_population.SetTargetRemeshingEdgeLength(EdgeLength);
-        // cell_population.SetBinningIntervals(10, 10, 1);
-        // // cell_population.EdgeLengthVariable(1.2);
-        // cell_population.SetPrintRemeshedIC(1);
-        // cell_population.SetTargetRemeshingIterations(5);
+        cell_population.SetChasteOutputDirectory(output_dir, 0);
+        // cell_population.SetInitialAnlgesAcrossMembrane(); // Dont worry about this for now, I think there is something moff
+        cell_population.SetRelativePath(output_dir, 0);
+        cell_population.SetTargetRemeshingEdgeLength(0.1);
+        cell_population.SetBinningIntervals(10, 10, 1);
+        // cell_population.EdgeLengthVariable(1.2);
+        cell_population.SetPrintRemeshedIC(1);
+        cell_population.SetTargetRemeshingIterations(5);
         cell_population.SetOutputMeshInVtk(true);
         // cell_population.SetRemeshingSoftwear("CGAL");
-        // cell_population.SetOperatingSystem("server");
+        cell_population.SetOperatingSystem("server");
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
 
@@ -124,10 +111,10 @@ public:
         StepHeteroModifier
         ----------------------------
         */
-        // boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
-        // p_Mesh_modifier->SetMembraneStrength(0.5);
-        // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); // I have turned this off because I need to know what will happen without remeshing, and then with remeshing
-        // simulator.AddSimulationModifier(p_Mesh_modifier);
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
+        p_Mesh_modifier->SetMembraneStrength(0.5);
+        p_Mesh_modifier->SetRemeshingInterval(100000); // I have turned this off because I need to know what will happen without remeshing, and then with remeshing
+        simulator.AddSimulationModifier(p_Mesh_modifier);
 
         // /*
         // -----------------------------

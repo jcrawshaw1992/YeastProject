@@ -92,7 +92,6 @@ private:
         archive & mRemeshingSoftwear;
         archive & mMapOfProbNodes;
         archive & mNumberOfChanges;
-        archive & mRemeshingSoftwear;
         archive & mNearestNodesMap;
         archive & mNx;
         archive & mNy;
@@ -100,6 +99,12 @@ private:
         archive & mCentroidMap;
         archive & mStartTime;
         archive & mServer;
+
+
+        archive& mOutputVTU;
+        // archive& mWriteVtkAsPoints;
+        this->Validate();
+
 
     }
 
@@ -109,6 +114,7 @@ private:
 protected:
     /** Static cast of the mesh from AbstractCellPopulation */
     HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM> mNew_mesh;
+    bool mOutputVTU =1;
 
 public:
     /**
