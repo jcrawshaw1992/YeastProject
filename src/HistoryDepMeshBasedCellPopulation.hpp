@@ -128,7 +128,11 @@ private:
         archive & mVariableEdgeLength;
         archive & mEdgeLengthMultiple;
         archive &  mUpdateComplete;
+
+        archive & mOutputMeshInVtk;
+        // this->Validate();
     }
+
 
 
 
@@ -138,6 +142,8 @@ protected:
     HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM> mNew_mesh;
 
 public:
+        bool mOutputMeshInVtk =1;
+
     /**
      * Create a new cell population facade from a mesh and collection of cells.
      *
@@ -223,7 +229,7 @@ public:
      */
 
     
-    c_vector<double, 3> NewNodeInInitalConfigurationFromClosestEdge(unsigned EdgeNode1, unsigned EdgeNode2, c_vector<double, SPACE_DIM> NewNode,unsigned NodeIndex);
+    // c_vector<double, 3> NewNodeInInitalConfigurationFromClosestEdge(unsigned EdgeNode1, unsigned EdgeNode2, c_vector<double, SPACE_DIM> NewNode,unsigned NodeIndex);
     c_vector<double, 3> NewNodeInInitalConfigurationFromChangeOfBasis(unsigned ClosestElement_OldMeshIndex, c_vector<double, SPACE_DIM> NewNode, unsigned NodeIndex);
     std::map<unsigned, c_vector<double, SPACE_DIM> > mInitalPositionOfRemeshedNodes;
     int mNumberOfChanges = 1;
@@ -454,7 +460,7 @@ public:
     bool mUpdateComplete =1;
     double GetAspectRatioFromMesh();
 
-    double GetDistanceToLine( c_vector<double, SPACE_DIM> NewNode, c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM>  P2);
+    // double GetDistanceToLine( c_vector<double, SPACE_DIM> NewNode, c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM>  P2);
 
     double DistanceBetweenPointAndElement( c_vector<double, SPACE_DIM>  NewPoint, unsigned Element, double DistanceToNearestLine);
     double DistanceBetweenPointAndElement( c_vector<double, SPACE_DIM>  NewPoint, unsigned OldElement);

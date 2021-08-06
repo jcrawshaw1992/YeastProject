@@ -82,19 +82,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
         WriteOutMappedInitalConfig();
     }
 
-
-
-
-    // std::stringstream outN;
-    // outN << mCounter;
-    // std::string Counter = outN.str();
-
-    // VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(mRelativePath, "RemeshedGeometry"+Counter, false);
-    // mesh_writer.WriteFilesUsingMesh(mNew_mesh);//mNew_mesh
-
-    // mCounter +=1;
-
-
     /*
         --------------------------------
               The Old switcharoo 
@@ -210,7 +197,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::WriteOutMappedIn
     mesh_writer.WriteFilesUsingMesh(MappedICmesh);
     // TRACE("Written")
     mNumberOfChanges += 1;
-    // MappedICmesh.~MutableMesh();
+    MappedICmesh.~MutableMesh();
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -1033,79 +1020,79 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ProjectPointTo
 }
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::NewNodeInInitalConfigurationFromClosestEdge(unsigned EdgeNode1, unsigned EdgeNode2, c_vector<double, SPACE_DIM> NewNode, unsigned NodeIndex)
-{
-        assert(SPACE_DIM == 3);
-        // /*  Get the nodes from the edge */
+// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+// c_vector<double, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::NewNodeInInitalConfigurationFromClosestEdge(unsigned EdgeNode1, unsigned EdgeNode2, c_vector<double, SPACE_DIM> NewNode, unsigned NodeIndex)
+// {
+//         assert(SPACE_DIM == 3);
+//         // /*  Get the nodes from the edge */
    
    
-        c_vector<double, SPACE_DIM> P1 = this->GetNode(EdgeNode1)->rGetLocation(); c_vector<double, SPACE_DIM> P2 = this->GetNode(EdgeNode2)->rGetLocation();
-            // // I want the distance from the edge
+//         c_vector<double, SPACE_DIM> P1 = this->GetNode(EdgeNode1)->rGetLocation(); c_vector<double, SPACE_DIM> P2 = this->GetNode(EdgeNode2)->rGetLocation();
+//             // // I want the distance from the edge
 
-        c_vector<double, SPACE_DIM> EdgeVector = (P2 - P1);
+//         c_vector<double, SPACE_DIM> EdgeVector = (P2 - P1);
 
-            /* Distance between New node and point 1 on the line */
-            c_vector<double, SPACE_DIM> V = NewNode - P1;
+//             /* Distance between New node and point 1 on the line */
+//             c_vector<double, SPACE_DIM> V = NewNode - P1;
 
-            /*  Normal to the plane containing the edge and the new node */
-            c_vector<double, SPACE_DIM> PlaneNormal = VectorProduct(EdgeVector, V)/norm_2(V); // Not sure why need /norm_2(V)
-            PlaneNormal /= norm_2(PlaneNormal);
+//             /*  Normal to the plane containing the edge and the new node */
+//             c_vector<double, SPACE_DIM> PlaneNormal = VectorProduct(EdgeVector, V)/norm_2(V); // Not sure why need /norm_2(V)
+//             PlaneNormal /= norm_2(PlaneNormal);
 
-            /*  Now can find the normal to the edge contaned in the plane defined by the three points */
-            c_vector<double, SPACE_DIM> EdgeNormal = VectorProduct(EdgeVector, PlaneNormal);
-            EdgeNormal/=norm_2(EdgeNormal);
+//             /*  Now can find the normal to the edge contaned in the plane defined by the three points */
+//             c_vector<double, SPACE_DIM> EdgeNormal = VectorProduct(EdgeVector, PlaneNormal);
+//             EdgeNormal/=norm_2(EdgeNormal);
     
-            double DistanceToEdge = std::abs(inner_prod(EdgeNormal, V));   
-            c_vector<double, SPACE_DIM> ProjectToEdge= DistanceToEdge * EdgeNormal; // DOnt know if this will be pushing in the right direction 
+//             double DistanceToEdge = std::abs(inner_prod(EdgeNormal, V));   
+//             c_vector<double, SPACE_DIM> ProjectToEdge= DistanceToEdge * EdgeNormal; // DOnt know if this will be pushing in the right direction 
 
 
-            // PRINT_VECTOR(ProjectToEdge)
-            c_vector<double, 3> ProjectedPosition = NewNode + ProjectToEdge; 
+//             // PRINT_VECTOR(ProjectToEdge)
+//             c_vector<double, 3> ProjectedPosition = NewNode + ProjectToEdge; 
 
-            // Chekc this new point is closer to line
-            double NewDistance = GetDistanceToLine(ProjectedPosition, P1, P2);
+//             // Chekc this new point is closer to line
+//             double NewDistance = GetDistanceToLine(ProjectedPosition, P1, P2);
 
 
-            if (NewDistance > DistanceToEdge)
-            {
-                TRACE("Projected wrong way")
-                ProjectedPosition = NewNode - ProjectToEdge; 
-                NewDistance = GetDistanceToLine(ProjectedPosition, P1, P2);
-                if (NewDistance > DistanceToEdge)
-                {
-                    TRACE("Not going to work")
-                }
-            }
+//             if (NewDistance > DistanceToEdge)
+//             {
+//                 TRACE("Projected wrong way")
+//                 ProjectedPosition = NewNode - ProjectToEdge; 
+//                 NewDistance = GetDistanceToLine(ProjectedPosition, P1, P2);
+//                 if (NewDistance > DistanceToEdge)
+//                 {
+//                     TRACE("Not going to work")
+//                 }
+//             }
 
-            // DIstance from node 1 and node 2
-            double DistanceFromNode1 = norm_2(P1 - ProjectedPosition);
-            // TRACE("D")
-            double DistanceFromNode2 = norm_2(P2 - ProjectedPosition);
-            double EdgeLength = norm_2(P2 - P1);
+//             // DIstance from node 1 and node 2
+//             double DistanceFromNode1 = norm_2(P1 - ProjectedPosition);
+//             // TRACE("D")
+//             double DistanceFromNode2 = norm_2(P2 - ProjectedPosition);
+//             double EdgeLength = norm_2(P2 - P1);
 
-            double ProportionalDistanceFromNode1 = DistanceFromNode1/EdgeLength;
-            // PRINT_4_VARIABLES(DistanceFromNode1,DistanceFromNode2, EdgeLength, ProportionalDistanceFromNode1)
+//             double ProportionalDistanceFromNode1 = DistanceFromNode1/EdgeLength;
+//             // PRINT_4_VARIABLES(DistanceFromNode1,DistanceFromNode2, EdgeLength, ProportionalDistanceFromNode1)
 
-            // // Get orginalNode Positions
-            // PRINT_2_VARIABLES(EdgeNode1,EdgeNode2)
-            c_vector<double, 3> OrginialPositonOfNode1 = mOriginalNodePositions[EdgeNode1];
-            c_vector<double, 3> OrginialPositonOfNode2 = mOriginalNodePositions[EdgeNode2];
+//             // // Get orginalNode Positions
+//             // PRINT_2_VARIABLES(EdgeNode1,EdgeNode2)
+//             c_vector<double, 3> OrginialPositonOfNode1 = mOriginalNodePositions[EdgeNode1];
+//             c_vector<double, 3> OrginialPositonOfNode2 = mOriginalNodePositions[EdgeNode2];
      
      
-            c_vector<double, 3> OriginalEdgeVector = OrginialPositonOfNode2- OrginialPositonOfNode1;
-            double originalLength = norm_2(OriginalEdgeVector);
+//             c_vector<double, 3> OriginalEdgeVector = OrginialPositonOfNode2- OrginialPositonOfNode1;
+//             double originalLength = norm_2(OriginalEdgeVector);
 
-            c_vector<double, 3> OriginalPosition = OrginialPositonOfNode1 + ProportionalDistanceFromNode1*OriginalEdgeVector;///originalLength;
+//             c_vector<double, 3> OriginalPosition = OrginialPositonOfNode1 + ProportionalDistanceFromNode1*OriginalEdgeVector;///originalLength;
 
 
 
-            // Now need point 
-            // PRINT_VECTOR(OriginalPosition)
-            assert(norm_2(OriginalPosition) <10);
-            return OriginalPosition;
+//             // Now need point 
+//             // PRINT_VECTOR(OriginalPosition)
+//             assert(norm_2(OriginalPosition) <10);
+//             return OriginalPosition;
 
-}
+// }
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -1251,30 +1238,30 @@ std::map<unsigned,c_vector<double,3> > HistoryDepMeshBasedCellPopulation<ELEMENT
 
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetDistanceToLine( c_vector<double, SPACE_DIM> NewNode, c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM>  P2)
-{
+// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+// double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetDistanceToLine( c_vector<double, SPACE_DIM> NewNode, c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM>  P2)
+// {
 
-        c_vector<double, SPACE_DIM> EdgeVector = (P2 - P1);
+//         c_vector<double, SPACE_DIM> EdgeVector = (P2 - P1);
 
-        /* Distance between New node and point 1 on the line */
-        c_vector<double, SPACE_DIM> V = NewNode - P1;
+//         /* Distance between New node and point 1 on the line */
+//         c_vector<double, SPACE_DIM> V = NewNode - P1;
 
-        /*  Normal to the plane containing the edge and the new node */
-        c_vector<double, SPACE_DIM> PlaneNormal = VectorProduct(EdgeVector, V)/norm_2(V); // Not sure why need /norm_2(V)
-        PlaneNormal /= norm_2(PlaneNormal);
+//         /*  Normal to the plane containing the edge and the new node */
+//         c_vector<double, SPACE_DIM> PlaneNormal = VectorProduct(EdgeVector, V)/norm_2(V); // Not sure why need /norm_2(V)
+//         PlaneNormal /= norm_2(PlaneNormal);
 
-        /*  Now can find the normal to the edge contaned in the plane defined by the three points */
-        c_vector<double, SPACE_DIM> EdgeNormal = VectorProduct(EdgeVector, PlaneNormal);
-        EdgeNormal/=norm_2(EdgeNormal);
+//         /*  Now can find the normal to the edge contaned in the plane defined by the three points */
+//         c_vector<double, SPACE_DIM> EdgeNormal = VectorProduct(EdgeVector, PlaneNormal);
+//         EdgeNormal/=norm_2(EdgeNormal);
 
-        double DistanceToEdge = std::abs(inner_prod(EdgeNormal, V));
+//         double DistanceToEdge = std::abs(inner_prod(EdgeNormal, V));
      
   
-        return DistanceToEdge;
+//         return DistanceToEdge;
 
 
-}
+// }
 
 // For the shear and area forces
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -1353,114 +1340,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetupMembraneCon
 
         mACoefficients[elem_index] = aVector;
         mBCoefficients[elem_index] = bVector;
-
-        // // Now go through and set the inital strain over the mesh
-        // vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
-        // vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 33);
-
-        // unsigned node_index;
-        // CellPtr p_cell;
-        // 
-
-        // // Get side lengths and angle to create an equal triangle at the origin
-        // a = norm_2(vector_12); // Lenght a -> edge connecting P0 and P1
-        // b = norm_2(vector_13); // Lenght b -> edge connecting P0 and P2
-        // alpha = acos(inner_prod(vector_12, vector_13) / (a * b));
-
-        // // This will create an equal triangle at the origin
-        // x1 = Create_c_vector(0, 0);
-        // x2 = Create_c_vector(a, 0);
-        // x3 = Create_c_vector(b * cos(alpha), b * sin(alpha));
-
-        // // Get the original triangle
-        // //Displacement vectors.
-        // c_vector<double, 2> V1 = x1 - mInitalVectors[elem_index][0];
-        // c_vector<double, 2> V2 = x2 - mInitalVectors[elem_index][1];
-        // c_vector<double, 2> V3 = x3 - mInitalVectors[elem_index][2];
-
-        // // Get the shape function coefficents for this element
-        // double Area0 = mArea0[elem_index];
-
-        // // Deformation tensor
-        // double Dxx = 1 + aVector[0] * V1[0] + aVector[1] * V2[0] + aVector[2] * V3[0];
-        // double Dxy = bVector[0] * V1[0] + bVector[1] * V2[0] + bVector[2] * V3[0];
-        // double Dyx = aVector[0] * V1[1] + aVector[1] * V2[1] + aVector[2] * V3[1];
-        // double Dyy = 1 + bVector[0] * V1[1] + bVector[1] * V2[1] + bVector[2] * V3[1];
-
-        // c_vector<c_vector<double, 2>, 2> G;
-
-        // // G =DTD  -- Caughy green
-        // G[0][0] = Dxx * Dxx + Dyx * Dyx;
-        // G[0][1] = Dxx * Dxy + Dyx * Dyy;
-        // G[1][0] = Dxx * Dxy + Dyy * Dyx;
-        // G[1][1] = Dxy * Dxy + Dyy * Dyy;
-
-        // // Strain invarients
-        // double I1 = M.tr(G) - 2;
-        // double I2 = M.det(G) - 1;
-
-        // c_vector<c_vector<double, 3>, 3> RotatedForceOnNode;
-        // c_vector<double, 3> RotatedMag;
-
-        // double dedvX;
-        // double dedvY;
-
-        // c_vector<c_vector<double, 3>, 3> X;
-
-        // X[0] = Create_c_vector(a, 0, 0);
-        // X[1] = Create_c_vector(b * cos(alpha), b * sin(alpha), 0);
-        // X[2] = Create_c_vector(0, 0, 1);
-        // X = M.MatrixTranspose(X);
-
-        // c_vector<c_vector<double, 3>, 3> F_rp;
-        // c_vector<c_vector<double, 3>, 3> ForceOnNode;
-
-        // for (int i = 0; i < 3; i++)
-        // {
-        //     dedvX = KS * (I1 + 1) * (Dxx * aVector[i] + Dxy * bVector[i]) + (-KS + Kalpha * I2) * ((Dxx * Dyy * Dyy - Dxy * Dyx * Dyy) * aVector[i] + (Dxy * Dyx * Dyx - Dxx * Dyx * Dyy) * bVector[i]);
-        //     dedvY = KS * (I1 + 1) * (Dyx * aVector[i] + Dyy * bVector[i]) + (-KS + Kalpha * I2) * ((Dxx * Dxx * Dyy - Dxx * Dxy * Dyx) * bVector[i] + (Dyx * Dxy * Dxy - Dxx * Dxy * Dyy) * aVector[i]);
-        //     RotatedForceOnNode[i] = -Area0 / 3 * Create_c_vector(dedvX, dedvY, 0);
-        //     F_rp[i] = M.MatrixMultiplication(M.Inverse(X), RotatedForceOnNode[i]);
-
-        //     // Rotate the force to the original configuretion
-        //     ForceOnNode[i] = F_rp[i][0] * vector_12 + F_rp[i][1] * vector_13 + F_rp[i][2] * X[2];
-        //     // This is the force for each node  for the triangle situated at the origin
-        //     // Matrix with each row containing the force on the corresponding element
-
-        //     node_index = elem_iter->GetNodeGlobalIndex(i);
-        //     double CellArea = this->GetVolumeOfCell(this->GetCellUsingLocationIndex(node_index));
-        //     // ForceOnNode[i] /= CellArea;
-        //     MembraneForceMap[node_index] += ForceOnNode[i] / CellArea;
-        // }
-
-        // // // Rotate the force to the original configuretion
-        // ForceOnNode[0] = F_rp[0][0] * vector_12 + F_rp[0][1] * vector_13 + F_rp[0][2] * X[2];
-        // ForceOnNode[1] = F_rp[1][0] * vector_12 + F_rp[1][1] * vector_13 + F_rp[1][2] * X[2];
-        // ForceOnNode[2] = F_rp[2][0] * vector_12 + F_rp[2][1] * vector_13 + F_rp[2][2] * X[2];
     }
-
-    // for (std::list<CellPtr>::iterator cell_iter = this->mCells.begin(); cell_iter != this->mCells.end(); ++cell_iter)
-    // {
-    //     unsigned node_index = this->GetLocationIndexUsingCell(*cell_iter);
-    //     Node<SPACE_DIM>* pNode = this->rGetMesh().GetNode(node_index);
-    //     // (*cell_iter)->GetCellData()->SetItem("AreaDilationModulus" , 1);
-
-    //     // if ((*cell_iter)->GetCellData()->GetItem("Boundary") == 1)
-    //     // {
-    //     //     c_vector<double, 3> AverageForce = Create_c_vector(0, 0, 0);
-    //     //     c_vector<unsigned, 3> NearestNodes = this->GetNearestInternalNodes(node_index);
-    //     //     for (int i = 0; i < 3; i++)
-    //     //     {
-    //     //         AverageForce += MembraneForceMap[NearestNodes[i]];
-    //     //     }
-
-    //     //     (*cell_iter)->GetCellData()->SetItem("MembraneForce", norm_2(AverageForce / 3));
-    //     // }
-    //     // else
-    //     // {
-    //         (*cell_iter)->GetCellData()->SetItem("MembraneForce", norm_2(MembraneForceMap[node_index]));
-    //     // }
-    // }
 }
 
 // For the bending force
@@ -2655,7 +2535,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM,SPACE_DIM>::WriteVtkResultsTo
     }
 
 
-    bool mOutputMeshInVtk = this->GetOutputMeshInVtk();
+    mOutputMeshInVtk = this->GetOutputMeshInVtk();
     if (mOutputMeshInVtk)
     {
         // Create mesh writer for VTK output
