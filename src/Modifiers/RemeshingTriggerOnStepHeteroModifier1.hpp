@@ -49,10 +49,11 @@ private:
     // "ShearModulus" = mGrowthMaps[X](2));
     // "BendingConstant" = mGrowthMaps[X](3));
 
-    std::map<double, c_vector<long double, 4> > mGrowthMaps;
-    // Need my own version of "UblasCustomFunctions.hpp", which has c_vector<double, 4>, get James to push this one day 
-
-    // c_vector<double, 4> Create_c_vector(double x, double y, double z, double t);
+    std::map<double, c_vector<long double, 4> > mGrowthMaps =   { {1, Create_c_vector(pow(10, -7), pow(10, -8.4), pow(10, -8), 1e-9) },
+                    {0.5, Create_c_vector(pow(10, -7), pow(10, -8), pow(10, -8),  1e-7) },
+                      {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-8)}
+                     };  
+                    
     bool mOn = 0;
 
     unsigned mSamplebasementNode;
@@ -66,6 +67,8 @@ private:
     int mExecute = 0;
     bool mRemeshing = 0;
     int mStepsSinceLastRemesh = 1;
+
+    bool mSetUpSolve =1;
     
 
     // std::vector<unsigned> mNodesNextToBasement;
@@ -93,8 +96,11 @@ private:
         
         archive& mBasementNodes;
         archive& mStepSize;
+        archive& mSteps;
         archive& mCounter;
         archive& mBoundaries;
+       
+        archive& mStepsSinceLastRemesh;
     
         archive& mStrength;
         archive& mHetro;
@@ -105,10 +111,11 @@ private:
 
         archive& mMaxCounter;
         archive& mStartingParameterForSlowIncrease;
-        // archive& mBasementMembraneStrength;
+        archive& mBasementMembraneStrength;
 //
         archive& mSlowIncreaseInMembraneStrength;
         archive& mTimeStepSize;
+        archive& mSetUpSolve;
     }
 
 public:
@@ -152,7 +159,7 @@ public:
 
     void SetUpdateFrequency(double MaxCounter);
     double mMaxCounter = 100;
-    bool mSetUpSolve =1;
+    
 
 
 

@@ -1945,10 +1945,10 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetPrintRemeshed
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetRemeshingSoftwear(std::string RemeshingSoftwear)
 {
-    if (RemeshingSoftwear != "CGAL" && RemeshingSoftwear != "VMTK" && RemeshingSoftwear != "PreAllocatedMatlabMesh")
-    {
-        EXCEPTION("RemeshingSoftwear must be CGAL or VMTK or PreAllocatedMatlabMesh");
-    }
+    // if (RemeshingSoftwear != "CGAL" && RemeshingSoftwear != "VMTK" && RemeshingSoftwear != "PreAllocatedMatlabMesh")
+    // {
+    //     EXCEPTION("RemeshingSoftwear must be CGAL or VMTK or PreAllocatedMatlabMesh");
+    // }
     mRemeshingSoftwear = RemeshingSoftwear;
 }
 
@@ -1973,38 +1973,8 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetOperatingSyst
 }
 
 
-// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-// void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetOperatingSystem(std::string OperatingSystem)
-// {
-//     if (OperatingSystem == "server" || OperatingSystem == "Server" )
-//     {
-//         mServer = 1;
-//     }
-//     else 
-//     {
-//         mServer = 0;
-//     }
-    
-// }
-
-
-
-// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-// void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetOperatingSystem(bool OperatingSystem)
-// {
-//     // if (OperatingSystem == "server" || OperatingSystem == "Server" )
-//     // {
-//     //     mServer = 1;
-//     // }
-//     // else 
-//     // {
-//     //     mServer = 0;
-//     // }
-
-//     mServer = OperatingSystem;
-    
-// }
-
+    // void SetOperatingSystem( std::string OperatingSystem);
+    // bool mServer =1;
 
 
 
@@ -2661,30 +2631,29 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM,SPACE_DIM>::WriteVtkResultsTo
 
 
 #ifdef CHASTE_VTK
-if (mOutputMeshInVtk)
-    {
 
-    // Store the present time as a string
-    unsigned num_timesteps = SimulationTime::Instance()->GetTimeStepsElapsed();
-    std::stringstream time;
-    time << num_timesteps;
+    if (mOutputVTU)
+      {
+        // Store the present time as a string
+        unsigned num_timesteps = SimulationTime::Instance()->GetTimeStepsElapsed();
+        std::stringstream time;
+        time << num_timesteps;
 
-    // Store the number of cells for which to output data to VTK
-    unsigned num_cells_from_mesh = this->GetNumNodes();
-    // VertexMesh<ELEMENT_DIM,SPACE_DIM>* mpVoronoiTessellation = this->GetVoronoiTessellation();
-    bool mWriteVtkAsPoints = this->GetWriteVtkAsPoints();
+        // Store the number of cells for which to output data to VTK
+        unsigned num_cells_from_mesh = this->GetNumNodes();
+        // VertexMesh<ELEMENT_DIM,SPACE_DIM>* mpVoronoiTessellation = this->GetVoronoiTessellation();
+    
+    
+        // When outputting any CellData, we assume that the first cell is representative of all cells
+        unsigned num_cell_data_items = this->Begin()->GetCellData()->GetNumItems();
+        std::vector<std::string> cell_data_names = this->Begin()->GetCellData()->GetKeys();
 
-
-    // When outputting any CellData, we assume that the first cell is representative of all cells
-    unsigned num_cell_data_items = this->Begin()->GetCellData()->GetNumItems();
-    std::vector<std::string> cell_data_names = this->Begin()->GetCellData()->GetKeys();
-
-    std::vector<std::vector<double> > cell_data;
-    for (unsigned var=0; var<num_cell_data_items; var++)
-    {
-        std::vector<double> cell_data_var(num_cells_from_mesh);
-        cell_data.push_back(cell_data_var);
-    }
+        std::vector<std::vector<double> > cell_data;
+        for (unsigned var=0; var<num_cell_data_items; var++)
+        {
+            std::vector<double> cell_data_var(num_cells_from_mesh);
+            cell_data.push_back(cell_data_var);
+        }
 
     
         // Create mesh writer for VTK output
@@ -2732,15 +2701,9 @@ if (mOutputMeshInVtk)
             mesh_writer.AddPointData(cell_data_names[var], cell_data[var]);
         }
 
-
-
-
-
-
         mesh_writer.WriteFilesUsingMesh(this->rGetMesh());
     }
-
-
+   
 #endif //CHASTE_VTK
 }
 

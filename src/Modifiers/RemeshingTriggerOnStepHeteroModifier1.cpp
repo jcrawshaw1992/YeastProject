@@ -29,6 +29,7 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::RemeshingTriggerOnStepHeteroModifier()
         : AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM>()
 {
+    TRACE("Constructer")
                    //AreaConstant           AreaDilationModulus        ShearModulus    
     mGrowthMaps =  { {1, Create_c_vector(pow(10, -7), pow(10, -8.4), pow(10, -8), 1e-9) },
                     {0.5, Create_c_vector(pow(10, -7), pow(10, -8), pow(10, -8),  1e-7) },
@@ -46,7 +47,7 @@ RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::RemeshingTriggerOn
     //     {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -15), 1e-11)}// {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-10)}
     //      };
 
-    PRINT_VECTOR(mGrowthMaps[0])
+    // PRINT_VECTOR(mGrowthMaps[0])
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -57,7 +58,8 @@ RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::~RemeshingTriggerO
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, std::string outputDirectory)
 {
-    
+    mSetUpSolve = 1;
+    TRACE("SetupSolve")
     if (mSetUpSolve ==1)
     {
         HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
@@ -75,22 +77,15 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(Ab
                 cell_iter->GetCellData()->SetItem("FixedBoundary", 0);
         }
         mSetUpSolve = 0;
-
-
-    }
-        
-
-      
-
-    
-      
+    } 
 }
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetmSetUpSolve(double SetUpSolve)
 {
-mSetUpSolve = SetUpSolve;
+    TRACE("SetmSetUpSolve")
+    mSetUpSolve = SetUpSolve;
 }
 
 
@@ -100,6 +95,7 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOfTimeStep(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
   
+  TRACE("UpdateAtEndOfTimeStep")
     assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
     // PRINT_3_VARIABLES(mHetro, mMaxCounter,mCounter );
@@ -227,6 +223,8 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
+
+    TRACE("UpdateCellData")
         assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
         mBasementNodes.clear();
         // mDistanceToEndothelialRegion.clear();
@@ -306,6 +304,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetUpdateFrequency(double MaxCounter)
 {
+     TRACE("SetUpdateFrequency")
     mMaxCounter = MaxCounter ;
     mCounter = MaxCounter-1;
 
@@ -360,7 +359,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetThreshold(
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::Boundaries(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPlanePoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> LowerPlanePoint)
 {
-
+TRACE("Boundaries")
     // Upper plane is defined as the one upstream and the lower is downstream
     // Set the boundary planes for this hetro region, set an upper and a lower bound.
     std::vector<  c_vector<double, 3> > CurrentBoundary;
@@ -423,6 +422,8 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetStepSize(d
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
+
+    TRACE("StepChange")
     assert(ELEMENT_DIM ==2 &&  SPACE_DIM == 3);
     /*
         Step Change -- linear change temporally 
@@ -622,6 +623,9 @@ template class RemeshingTriggerOnStepHeteroModifier<3, 3>;
 
 #include "SerializationExportWrapperForCpp.hpp"
 EXPORT_TEMPLATE_CLASS_ALL_DIMS(RemeshingTriggerOnStepHeteroModifier)
+
+
+
 
 
 

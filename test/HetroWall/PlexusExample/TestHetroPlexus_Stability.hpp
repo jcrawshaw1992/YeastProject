@@ -32,9 +32,13 @@
 #include "OutwardsPressure.hpp"
 
 #include "RemeshingTriggerOnStepHeteroModifier.hpp"
+#include "StepHeteroModifier.hpp"
 
 #include "MembraneBendingForce0TargetAngle.hpp"
 #include "MembraneBendingForceSensitive.hpp"
+#include "NewModifier2.hpp"
+
+// #include "BoundariesModifier.hpp"
 
 
 class TestRemeshing : public AbstractCellBasedTestSuite
@@ -82,7 +86,7 @@ public:
         CellsGenerator<FixedG1GenerationalCellCycleModel, 2> cells_generator;
         cells_generator.GenerateBasicRandom(cells, mesh->GetNumNodes(), p_differentiated_type);
 
-     HistoryDepMeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
+        HistoryDepMeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
 
 
         cell_population.SetChasteOutputDirectory(output_dir, 0);
@@ -111,9 +115,11 @@ public:
         StepHeteroModifier
         ----------------------------
         */
-        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
-        p_Mesh_modifier->SetMembraneStrength(0.5);
-        p_Mesh_modifier->SetRemeshingInterval(100000); // I have turned this off because I need to know what will happen without remeshing, and then with remeshing
+        boost::shared_ptr<NewModifier2<2,3> > p_Mesh_modifier(new NewModifier2<2,3>());
+        
+        // boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
+        // p_Mesh_modifier->SetMembraneStrength(0.5);
+        // p_Mesh_modifier->SetRemeshingInterval(100000); // I have turned this off because I need to know what will happen without remeshing, and then with remeshing
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
         // /*
