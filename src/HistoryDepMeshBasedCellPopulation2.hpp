@@ -1,5 +1,4 @@
 /*
-
 */
 
 #ifndef HISTORYDEPMESHBASEDCELLPOPULATION_HPP_
@@ -60,6 +59,11 @@ private:
     /** Needed for serialization. */
     friend class boost::serialization::access;
 
+    std::string mRemeshingSoftwear = "CGAL";
+    bool mServer =1;
+
+
+
     /**
      * Serialize the object and its member variables.
      *
@@ -78,7 +82,7 @@ private:
 
         archive & mOriginalNodePositions;
         archive & mInitalPositionOfRemeshedNodes;
-        //archive & mNew_mesh;
+        archive & mNew_mesh;
         archive & mInitalVectors;
         archive & mACoefficients;
         archive & mBCoefficients;
@@ -92,18 +96,46 @@ private:
         archive & mRemeshingSoftwear;
         archive & mMapOfProbNodes;
         archive & mNumberOfChanges;
-        archive & mRemeshingSoftwear;
         archive & mNearestNodesMap;
         archive & mNx;
         archive & mNy;
         archive & mNz;
         archive & mCentroidMap;
         archive & mStartTime;
-        archive & mServer;
+        archive& mServer;
+        archive& mOutputMeshInVtk;
+
+        archive& mSetUpInitialConfigurations;
+        //
+        archive& mChasteOutputDirectory;
+        archive& mSetBoundaries;
+        archive& mPreAllocatedRemeshedMesh;
+        archive& mCounter;
+        archive& mNewNodeToOldElementMap;
+        archive& mNewNodeToOldElementDistanceMap;
+        archive& mMappingVariables_a_b;
+        archive& mMappingVariables_alpha;
+        archive& mMappingVariables_z_basis;
+        archive& mMappingVariables_PointInNewRef;
+        archive& mMappingVariables_Difference;
+        archive& mMappingVariables_P_Translated;
+        archive& mMappingVariables_Cs;
+        archive& mBinMap;
+        archive& mBin;
+        archive& mEdgeBin;
+        archive& mBinCoords;
+        archive& mDIM;
+        archive& mMaxX;
+        archive& mMinX;
+        archive& mMaxY;
+        archive& mMinY;
+        archive& mMaxZ;
+        archive& mMinZ;
+        archive& mVariableEdgeLength;
+        archive& mEdgeLengthMultiple;
+        archive& mUpdateComplete;
 
     }
-
-
 
 
 protected:
@@ -111,6 +143,7 @@ protected:
     HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM> mNew_mesh;
 
 public:
+    bool mOutputMeshInVtk;
     /**
      * Create a new cell population facade from a mesh and collection of cells.
      *
@@ -221,9 +254,9 @@ public:
 
     void CheckCurvature();
     void SetRemeshingSoftwear(std::string RemeshingSoftwear);
-    std::string mRemeshingSoftwear = "CGAL";
+    
     void SetOperatingSystem( std::string OperatingSystem);
-    bool mServer =1;
+    
 
     void SaveInitalConditions();
     std::map<unsigned, c_vector<double, SPACE_DIM> > mOriginalNodePositions;
@@ -439,7 +472,7 @@ public:
 
 
     // Added to solve my mesh problem  .....mChasteOutputDirectory
-    void WriteVtkResultsToFile(const std::string& rDirectory);
+    // void WriteVtkResultsToFile(const std::string& rDirectory);
 
 
     /**
