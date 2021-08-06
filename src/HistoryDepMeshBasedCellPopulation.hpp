@@ -105,35 +105,35 @@ private:
         archive& mServer;
         archive& mOutputMeshInVtk;
 
-        // archive& mSetUpInitialConfigurations;
-        // //
-        // archive& mChasteOutputDirectory;
-        // archive& mSetBoundaries;
-        // archive& mPreAllocatedRemeshedMesh;
-        // archive& mCounter;
-        // archive& mNewNodeToOldElementMap;
-        // archive& mNewNodeToOldElementDistanceMap;
-        // archive& mMappingVariables_a_b;
-        // archive& mMappingVariables_alpha;
-        // archive& mMappingVariables_z_basis;
-        // archive& mMappingVariables_PointInNewRef;
-        // archive& mMappingVariables_Difference;
-        // archive& mMappingVariables_P_Translated;
-        // archive& mMappingVariables_Cs;
-        // archive& mBinMap;
-        // archive& mBin;
-        // archive& mEdgeBin;
-        // archive& mBinCoords;
-        // archive& mDIM;
-        // archive& mMaxX;
-        // archive& mMinX;
-        // archive& mMaxY;
-        // archive& mMinY;
-        // archive& mMaxZ;
-        // archive& mMinZ;
-        // archive& mVariableEdgeLength;
-        // archive& mEdgeLengthMultiple;
-        // archive& mUpdateComplete;
+        archive& mSetUpInitialConfigurations;
+        //
+        archive& mChasteOutputDirectory;
+        archive& mSetBoundaries;
+        archive& mPreAllocatedRemeshedMesh;
+        archive& mCounter;
+        archive& mNewNodeToOldElementMap;
+        archive& mNewNodeToOldElementDistanceMap;
+        archive& mMappingVariables_a_b;
+        archive& mMappingVariables_alpha;
+        archive& mMappingVariables_z_basis;
+        archive& mMappingVariables_PointInNewRef;
+        archive& mMappingVariables_Difference;
+        archive& mMappingVariables_P_Translated;
+        archive& mMappingVariables_Cs;
+        archive& mBinMap;
+        archive& mBin;
+        archive& mEdgeBin;
+        archive& mBinCoords;
+        archive& mDIM;
+        archive& mMaxX;
+        archive& mMinX;
+        archive& mMaxY;
+        archive& mMinY;
+        archive& mMaxZ;
+        archive& mMinZ;
+        archive& mVariableEdgeLength;
+        archive& mEdgeLengthMultiple;
+        archive& mUpdateComplete;
 
     }
 
@@ -472,7 +472,7 @@ public:
 
 
     // Added to solve my mesh problem  .....mChasteOutputDirectory
-    void WriteVtkResultsToFile(const std::string& rDirectory);
+    // void WriteVtkResultsToFile(const std::string& rDirectory);
 
 
     /**
