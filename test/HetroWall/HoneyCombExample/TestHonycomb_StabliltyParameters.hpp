@@ -43,17 +43,17 @@ public:
 
                     double DilationParameter = -8;
                     double AreaParameter = -7;
-                    double DeformationParamter = -7.5;
+                    double DeformationParamter = -7.4;
 
                     std::stringstream out;
                     out << "DilationParameter_" << DilationParameter << "AreaParameter" << AreaParameter << "DeformationParamter" << DeformationParamter;
                     std::string ParameterSet = out.str();
-                    std::string output_dir = "DeformingHoneyComb/TestSetParameter3/" ;//+ ParameterSet;
+                    std::string output_dir = "DeformingHoneyComb/TestSetParameter4/" ;//+ ParameterSet;
 
                     TRACE("Jess is good")
                     double EndTime = 11;
                     double SamplingStep = 100;
-                    double dt = 0.0001;
+                    double dt = 0.001;
                     double NewEndTime = EndTime+10;
 
                     std::string Archieved = "DeformingHoneyComb/FlatForce3";
@@ -61,9 +61,10 @@ public:
                     OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
                     /* Update the ouput directory for the population  */
                     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+                    static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()). SetWriteVtkAsPoints(false);
                     double EdgeLength = 0.0002;//(2e-6 * scale); 0.00045/2;//(2e-6 * scale);
                     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
-                    // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+                    static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
 
                     p_simulator->RemoveAllForces();
                     p_simulator->SetSamplingTimestepMultiple(SamplingStep);

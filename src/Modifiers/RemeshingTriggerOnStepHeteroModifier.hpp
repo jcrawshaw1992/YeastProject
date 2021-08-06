@@ -49,7 +49,10 @@ private:
     // "ShearModulus" = mGrowthMaps[X](2));
     // "BendingConstant" = mGrowthMaps[X](3));
 
-    std::map<double, c_vector<long double, 4> > mGrowthMaps;
+    std::map<double, c_vector<long double, 4> > mGrowthMaps =   { {1, Create_c_vector(pow(10, -7), pow(10, -8.4), pow(10, -8), 1e-9) },
+                    {0.5, Create_c_vector(pow(10, -7), pow(10, -8), pow(10, -8),  1e-7) },
+                      {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-8)}
+                     };  
     // Need my own version of "UblasCustomFunctions.hpp", which has c_vector<double, 4>, get James to push this one day 
 
     // c_vector<double, 4> Create_c_vector(double x, double y, double z, double t);
@@ -86,15 +89,18 @@ private:
     void serialize(Archive& archive, const unsigned int version)
     {
         archive& boost::serialization::base_object<AbstractCellBasedSimulationModifier<ELEMENT_DIM, SPACE_DIM> >(*this);
-        // archive& mGrowthMaps; 
+        archive& mGrowthMaps; 
         archive& mOn;
         archive& mSamplebasementNode;
         archive& mThreshold;
         
         archive& mBasementNodes;
         archive& mStepSize;
+        archive& mSteps;
         archive& mCounter;
         archive& mBoundaries;
+        archive& mSetupSolve;
+        archive& mStepsSinceLastRemesh;
     
         archive& mStrength;
         archive& mHetro;
@@ -105,7 +111,7 @@ private:
 
         archive& mMaxCounter;
         archive& mStartingParameterForSlowIncrease;
-        // archive& mBasementMembraneStrength;
+        archive& mBasementMembraneStrength;
 //
         archive& mSlowIncreaseInMembraneStrength;
         archive& mTimeStepSize;

@@ -49,7 +49,7 @@ public:
         double EdgeLength =0.00045;
         
 
-        std::string output_dir = "DeformingPlexus/FlatForceFINAL7/";
+        std::string output_dir = "DeformingPlexus/FlatForceFINAL8/";
         std::string mesh_file = "/data/vascrem/MeshCollection/Plexus_LongerInlets.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
@@ -171,10 +171,10 @@ public:
 
         // for (int j = 0; j < 10; j++)
         // {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 3; i++)
             {
                 PRINT_VARIABLE(EndTime)
-                cell_population.SetStartTime(EndTime);
+                // cell_population.SetStartTime(EndTime);
                 EndTime += 1;
                 simulator.SetEndTime(EndTime);
 
@@ -182,6 +182,16 @@ public:
                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
             }
             
+
+             PRINT_VARIABLE(EndTime)
+            // cell_population.SetStartTime(EndTime);
+            EndTime += 1;
+            simulator.SetEndTime(EndTime);
+
+            simulator.Solve();
+            p_Mesh_modifier->TurnOffRemeshing(); 
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+
             // // dt /= 2;  SamplingStep *= 5; RemeshingTime /= 5; 
             // EdgeLength*=1.1; RemeshingTime*=2;
             // // simulator.SetSamplingTimestepMultiple(SamplingStep);

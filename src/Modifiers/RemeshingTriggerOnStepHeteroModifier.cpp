@@ -46,7 +46,7 @@ RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::RemeshingTriggerOn
     //     {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -15), 1e-11)}// {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-10)}
     //      };
 
-    PRINT_VECTOR(mGrowthMaps[0])
+    // PRINT_VECTOR(mGrowthMaps[0])
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -75,22 +75,14 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(Ab
                 cell_iter->GetCellData()->SetItem("FixedBoundary", 0);
         }
         mSetUpSolve = 0;
-
-
-    }
-        
-
-      
-
-    
-      
+    } 
 }
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetmSetUpSolve(double SetUpSolve)
 {
-mSetUpSolve = SetUpSolve;
+    mSetUpSolve = SetUpSolve;
 }
 
 
