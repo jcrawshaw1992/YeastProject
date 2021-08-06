@@ -75,33 +75,68 @@ private:
     void serialize(Archive& archive, const unsigned int version)
     {
         archive & boost::serialization::base_object<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM> >(*this);
+        // archive & boost::serialization::base_object<AbstractCentreBasedCellPopulation<ELEMENT_DIM, SPACE_DIM> >(*this);
 
-        archive & mOriginalNodePositions;
-        archive & mInitalPositionOfRemeshedNodes;
-        //archive & mNew_mesh;
-        archive & mInitalVectors;
-        archive & mACoefficients;
-        archive & mBCoefficients;
-        archive & mArea0;
-        archive & mOriginalAngles;
-        archive & mTargetRemeshingEdgeLength;
-        archive & mIterations;
-        archive & mRelativePath;
-        archive & mPrintRemeshedIC;
-        archive & mMaxEdgelength;
-        archive & mRemeshingSoftwear;
-        archive & mMapOfProbNodes;
-        archive & mNumberOfChanges;
-        archive & mRemeshingSoftwear;
-        archive & mNearestNodesMap;
-        archive & mNx;
-        archive & mNy;
-        archive & mNz;
-        archive & mCentroidMap;
-        archive & mStartTime;
-        archive & mServer;
 
+
+        archive& mOriginalNodePositions;
+        archive& mInitalPositionOfRemeshedNodes;
+        archive& mNew_mesh;
+        archive& mInitalVectors;
+        archive& mACoefficients;
+        archive& mBCoefficients;
+        archive& mArea0;
+        archive& mOriginalAngles;
+        archive& mTargetRemeshingEdgeLength;
+        archive& mIterations;
+        archive& mRelativePath;
+        archive& mPrintRemeshedIC;
+        // archive& mMaxEdgelength;
+        // archive& mMapOfProbNodes;
+        archive& mNumberOfChanges;//////
+        archive& mRemeshingSoftwear;
+        archive& mNearestNodesMap;
+        archive& mNx;
+        archive& mNy;
+        archive& mNz;
+        archive& mCentroidMap;
+        archive& mStartTime;
+        archive& mServer;
+        archive& mSetUpInitialConfigurations;
+        //
+        archive& mChasteOutputDirectory;
+        archive& mSetBoundaries;
+        archive& mPreAllocatedRemeshedMesh;
+        archive& mCounter;
+        archive& mNewNodeToOldElementMap;
+        archive& mNewNodeToOldElementDistanceMap;
+        archive& mMappingVariables_a_b;
+        archive& mMappingVariables_alpha;
+        archive& mMappingVariables_z_basis;
+        archive& mMappingVariables_PointInNewRef;
+        archive& mMappingVariables_Difference;
+        archive& mMappingVariables_P_Translated;
+        archive& mMappingVariables_Cs;
+        archive& mBinMap;
+        archive& mBin;
+        archive& mEdgeBin;
+        archive& mBinCoords;
+        archive& mDIM;
+        archive& mMaxX;
+        archive& mMinX;
+        archive& mMaxY;
+        archive& mMinY;
+        archive& mMaxZ;
+        archive& mMinZ;
+        archive& mVariableEdgeLength;
+        archive& mEdgeLengthMultiple;
+        archive& mUpdateComplete;
+
+        // archive& mOutputMeshInVtk;
+        // archive& mWriteVtkAsPoints;
+        // this->Validate();
     }
+
 
 
 
@@ -111,6 +146,9 @@ protected:
     HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM> mNew_mesh;
 
 public:
+        // bool mOutputMeshInVtk =1;
+        // bool mWriteVtkAsPoints = 0;
+
     /**
      * Create a new cell population facade from a mesh and collection of cells.
      *
@@ -181,7 +219,7 @@ public:
 
 
 
-    std::map<unsigned, unsigned> mMapOfProbNodes;
+    // std::map<unsigned, unsigned> mMapOfProbNodes;
 
     // When I get a population of new cells, I need to be able to give these new cells the same CellData as the Precious cells, this is particullary important for the
     // void UpdateCellData();
@@ -196,7 +234,7 @@ public:
      */
 
     
-    c_vector<double, 3> NewNodeInInitalConfigurationFromClosestEdge(unsigned EdgeNode1, unsigned EdgeNode2, c_vector<double, SPACE_DIM> NewNode,unsigned NodeIndex);
+    // c_vector<double, 3> NewNodeInInitalConfigurationFromClosestEdge(unsigned EdgeNode1, unsigned EdgeNode2, c_vector<double, SPACE_DIM> NewNode,unsigned NodeIndex);
     c_vector<double, 3> NewNodeInInitalConfigurationFromChangeOfBasis(unsigned ClosestElement_OldMeshIndex, c_vector<double, SPACE_DIM> NewNode, unsigned NodeIndex);
     std::map<unsigned, c_vector<double, SPACE_DIM> > mInitalPositionOfRemeshedNodes;
     int mNumberOfChanges = 1;
@@ -228,7 +266,7 @@ public:
     void SaveInitalConditions();
     std::map<unsigned, c_vector<double, SPACE_DIM> > mOriginalNodePositions;
     std::map<unsigned, c_vector<double, SPACE_DIM> > GetInitalNodePositions();
-    void SetMaxEdgelength();
+    // void SetMaxEdgelength();
     bool PointInTriangle3D(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement);
     bool PointInTriangle3D(c_vector<double, SPACE_DIM> Point, c_vector<c_vector<double, SPACE_DIM>, SPACE_DIM> Triangle);
     bool PointInTriangle2D(c_vector<double, SPACE_DIM> Point, unsigned ClosestElement);
@@ -238,7 +276,7 @@ public:
     bool SameSideOfPlane(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> a, c_vector<double, SPACE_DIM> b);
     bool SameSide(c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM> P2, c_vector<double, SPACE_DIM> a, c_vector<double, SPACE_DIM> b);
 
-    double mMaxEdgelength;
+    // double mMaxEdgelength;
 
     void SetMinArea();
 
@@ -427,7 +465,7 @@ public:
     bool mUpdateComplete =1;
     double GetAspectRatioFromMesh();
 
-    double GetDistanceToLine( c_vector<double, SPACE_DIM> NewNode, c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM>  P2);
+    // double GetDistanceToLine( c_vector<double, SPACE_DIM> NewNode, c_vector<double, SPACE_DIM> P1, c_vector<double, SPACE_DIM>  P2);
 
     double DistanceBetweenPointAndElement( c_vector<double, SPACE_DIM>  NewPoint, unsigned Element, double DistanceToNearestLine);
     double DistanceBetweenPointAndElement( c_vector<double, SPACE_DIM>  NewPoint, unsigned OldElement);
@@ -439,7 +477,7 @@ public:
 
 
     // Added to solve my mesh problem  .....mChasteOutputDirectory
-    void WriteVtkResultsToFile(const std::string& rDirectory);
+    // void WriteVtkResultsToFile(const std::string& rDirectory);
 
 
     /**
@@ -449,11 +487,11 @@ public:
      */
     // virtual void WriteResultsToFiles(const std::string& rDirectory);
 
-    void OutputCellPopulationParameters(out_stream& rParamsFile);
+    // void OutputCellPopulationParameters(out_stream& rParamsFile);
 };
 
-// #include "SerializationExportWrapper.hpp"
-// EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMeshBasedCellPopulation)
+#include "SerializationExportWrapper.hpp"
+EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMeshBasedCellPopulation)
 
 namespace boost
 {
@@ -489,6 +527,6 @@ namespace boost
     } // namespace serialization
 } // namespace boost
 
-#include "SerializationExportWrapper.hpp"
-EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMeshBasedCellPopulation)
+// #include "SerializationExportWrapper.hpp"
+// EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMeshBasedCellPopulation)
 #endif /*HistoryDepMeshBasedCellPopulation_HPP_*/

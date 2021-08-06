@@ -23,6 +23,8 @@
 #include "HistoryDepMeshBasedCellPopulation.hpp"
 #include "MeshBasedCellPopulation.hpp"
 #include "HistoryDepMutableMesh.hpp"
+#include "MutableMesh.hpp"
+
 
 #include "FixedRegionBoundaryCondition.hpp"
 #include "MembraneBendingForce.hpp"
@@ -39,7 +41,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
 
-    void TestSetUpCylinderArchive2() throw(Exception)
+    void offTestSetUpCylinderArchive2() throw(Exception)
     {
         // TRACE("Jess is good")
         // double EndTime = 0;
@@ -72,6 +74,8 @@ public:
         MutableMesh<2, 3>* p_mesh = generator.GetMesh();
         HistoryDepMutableMesh<2, 3>* mesh = static_cast<HistoryDepMutableMesh<2, 3>*>(p_mesh);
 
+        // MutableMesh<2, 3>* mesh = static_cast<MutableMesh<2, 3>*>(p_mesh);
+
         // Create the cells
         MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
         std::vector<CellPtr> cells;
@@ -79,7 +83,8 @@ public:
         cells_generator.GenerateBasicRandom(cells, mesh->GetNumNodes(), p_differentiated_type);
 
         // Create a cell population
-        HistoryDepMeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
+        // MeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
+     HistoryDepMeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
 
 
 
@@ -200,12 +205,15 @@ public:
             // for (int i = 0; i < 3; i++)
             // {
                 PRINT_VARIABLE(EndTime)
-                // cell_population.SetStartTime(EndTime);
-                EndTime += 0.1;
+                // cell_population.SetStartTime(0);
+                // EndTime += 0.1;
                 simulator.SetEndTime(EndTime);
 
                 simulator.Solve();
+                TRACE("A")
                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+// 
+                TRACE("B")
             // }
 
     }
@@ -223,7 +231,7 @@ public:
 
 
         TRACE("Jess is good")
-        double EndTime = 1.1;
+        double EndTime = 1;
         double scale = 0.00006684491 / 1.29;
 
         double SamplingStep = 10;
