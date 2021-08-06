@@ -132,9 +132,9 @@ private:
         archive& mEdgeLengthMultiple;
         archive& mUpdateComplete;
 
-        archive& mOutputMeshInVtk;
-        archive& mWriteVtkAsPoints;
-        this->Validate();
+        // archive& mOutputMeshInVtk;
+        // archive& mWriteVtkAsPoints;
+        // this->Validate();
     }
 
 
@@ -146,8 +146,8 @@ protected:
     HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM> mNew_mesh;
 
 public:
-        bool mOutputMeshInVtk =1;
-        bool mWriteVtkAsPoints = 0;
+        // bool mOutputMeshInVtk =1;
+        // bool mWriteVtkAsPoints = 0;
 
     /**
      * Create a new cell population facade from a mesh and collection of cells.
@@ -477,7 +477,7 @@ public:
 
 
     // Added to solve my mesh problem  .....mChasteOutputDirectory
-    void WriteVtkResultsToFile(const std::string& rDirectory);
+    // void WriteVtkResultsToFile(const std::string& rDirectory);
 
 
     /**
