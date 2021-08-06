@@ -30,6 +30,9 @@
 #include "RemeshingTriggerOnStepHeteroModifier.hpp"
 
 #include "MembraneBendingForce0TargetAngle.hpp"
+#include "MembraneBendingForceSensitive.hpp"
+
+
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:

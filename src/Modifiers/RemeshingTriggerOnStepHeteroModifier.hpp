@@ -115,7 +115,7 @@ private:
 //
         archive& mSlowIncreaseInMembraneStrength;
         archive& mTimeStepSize;
-        archive & mSetupSolve;
+        // archive & mSetupSolve;
     }
 
 public:
