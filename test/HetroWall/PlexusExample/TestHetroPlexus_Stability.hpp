@@ -223,7 +223,7 @@ public:
 
 
         TRACE("Jess is good")
-        double EndTime = 0.1;
+        double EndTime = 1.1;
         double scale = 0.00006684491 / 1.29;
 
         double SamplingStep = 10;
