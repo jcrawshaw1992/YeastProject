@@ -53,9 +53,7 @@ private:
                     {0.5, Create_c_vector(pow(10, -7), pow(10, -8), pow(10, -8),  1e-7) },
                       {0, Create_c_vector(pow(10, -7), pow(10, -6), pow(10, -5), 1e-8)}
                      };  
-    // Need my own version of "UblasCustomFunctions.hpp", which has c_vector<double, 4>, get James to push this one day 
-
-    // c_vector<double, 4> Create_c_vector(double x, double y, double z, double t);
+                    
     bool mOn = 0;
 
     unsigned mSamplebasementNode;
@@ -69,6 +67,8 @@ private:
     int mExecute = 0;
     bool mRemeshing = 0;
     int mStepsSinceLastRemesh = 1;
+
+    bool mSetUpSolve =1;
     
 
     // std::vector<unsigned> mNodesNextToBasement;
@@ -99,7 +99,7 @@ private:
         archive& mSteps;
         archive& mCounter;
         archive& mBoundaries;
-        archive& mSetupSolve;
+       
         archive& mStepsSinceLastRemesh;
     
         archive& mStrength;
@@ -115,6 +115,7 @@ private:
 //
         archive& mSlowIncreaseInMembraneStrength;
         archive& mTimeStepSize;
+        archive & mSetupSolve;
     }
 
 public:
@@ -158,7 +159,7 @@ public:
 
     void SetUpdateFrequency(double MaxCounter);
     double mMaxCounter = 100;
-    bool mSetUpSolve =1;
+    
 
 
 
