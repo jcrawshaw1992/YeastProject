@@ -101,7 +101,7 @@ private:
         archive & mServer;
         archive & mSetUpInitialConfigurations;
         //
-        archive & mChasteOutputDirectory
+        archive & mChasteOutputDirectory;
         archive & mSetBoundaries;
         archive & mPreAllocatedRemeshedMesh;
         archive & mCounter;
@@ -114,11 +114,11 @@ private:
         archive & mMappingVariables_Difference;
         archive & mMappingVariables_P_Translated;
         archive & mMappingVariables_Cs;
-        archive & mBinMap
-        archive & mBin
-        archive & mEdgeBin
-        archive & mBinCoords
-        archive & mDIM
+        archive & mBinMap;
+        archive & mBin;
+        archive & mEdgeBin;
+        archive & mBinCoords;
+        archive & mDIM;
         archive & mMaxX;
         archive & mMinX;
         archive & mMaxY;
@@ -127,10 +127,7 @@ private:
         archive & mMinZ;
         archive & mVariableEdgeLength;
         archive & mEdgeLengthMultiple;
-        archive &  mUpdateComplete
-
-
-
+        archive &  mUpdateComplete;
     }
 
 
