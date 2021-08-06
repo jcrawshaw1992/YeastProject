@@ -159,8 +159,8 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
          ++node_iter)
     {
         node_iter->ClearAppliedForce();
-        CellPtr p_cell = this->GetCellUsingLocationIndex(node_iter->GetIndex());
-        p_cell->GetCellData()->SetItem("MappingMethod", mMapOfProbNodes[node_iter->GetIndex()]);
+        // CellPtr p_cell = this->GetCellUsingLocationIndex(node_iter->GetIndex());
+        // p_cell->GetCellData()->SetItem("MappingMethod", mMapOfProbNodes[node_iter->GetIndex()]);
     }
     
     this->SetBinningRegions();
@@ -1774,27 +1774,27 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SaveInitalCondit
 }
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetMaxEdgelength()
-{
-    mMaxEdgelength = 0;
-    for (typename MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SpringIterator spring_iterator = this->SpringsBegin();
-         spring_iterator != this->SpringsEnd();
-         ++spring_iterator)
-    {
-        // mInitalPositionOfRemeshedNodes
-        unsigned nodeA_global_index = spring_iterator.GetNodeA()->GetIndex();
-        unsigned nodeB_global_index = spring_iterator.GetNodeB()->GetIndex();
+// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+// void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetMaxEdgelength()
+// {
+//     mMaxEdgelength = 0;
+//     for (typename MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SpringIterator spring_iterator = this->SpringsBegin();
+//          spring_iterator != this->SpringsEnd();
+//          ++spring_iterator)
+//     {
+//         // mInitalPositionOfRemeshedNodes
+//         unsigned nodeA_global_index = spring_iterator.GetNodeA()->GetIndex();
+//         unsigned nodeB_global_index = spring_iterator.GetNodeB()->GetIndex();
 
-        c_vector<double, SPACE_DIM> A_location = this->GetNode(nodeA_global_index)->rGetLocation();
-        c_vector<double, SPACE_DIM> B_location = this->GetNode(nodeB_global_index)->rGetLocation();
+//         c_vector<double, SPACE_DIM> A_location = this->GetNode(nodeA_global_index)->rGetLocation();
+//         c_vector<double, SPACE_DIM> B_location = this->GetNode(nodeB_global_index)->rGetLocation();
 
-        if (std::abs(norm_2(A_location - B_location)) > mMaxEdgelength)
-        {
-            mMaxEdgelength = std::abs(norm_2(A_location - B_location));
-        }
-    }
-}
+//         if (std::abs(norm_2(A_location - B_location)) > mMaxEdgelength)
+//         {
+//             mMaxEdgelength = std::abs(norm_2(A_location - B_location));
+//         }
+//     }
+// }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetTargetRemeshingEdgeLength(double TargetRemeshingEdgeLength)

@@ -9,6 +9,7 @@
 #include "UblasCustomFunctions.hpp"
 
 #include "Debug.hpp"
+#include "Honeycomb3DCylinderMeshGenerator.hpp"
 #include "SmartPointers.hpp"
 // #include "VtkMeshReader.hpp"
 
@@ -40,33 +41,57 @@ public:
 
     void TestSetUpCylinderArchive2() throw(Exception)
     {
-        TRACE("Jess is good")
-        double EndTime = 0;
-        double scale = 0.00006684491/1.29;
+        // TRACE("Jess is good")
+        // double EndTime = 0;
+        // double scale = 0.00006684491/1.29;
 
-        double SamplingStep = 50;
-        double dt = 0.05;
-        double RemeshingTime = 250;
-        double EdgeLength =0.00045;
+        // double SamplingStep = 50;
+        // double dt = 0.05;
+        // double RemeshingTime = 250;
+        // double EdgeLength =0.00045;
         
 
         std::string output_dir = "DeformingPlexus/FixingArchieve/";
         std::string mesh_file = "/data/vascrem/MeshCollection/Plexus_LongerInlets.vtu";
-        VtkMeshReader<2, 3> mesh_reader(mesh_file);
-        MutableMesh<2, 3> mesh;
-        mesh.ConstructFromMeshReader(mesh_reader);
+        // VtkMeshReader<2, 3> mesh_reader(mesh_file);
+        // MutableMesh<2, 3> mesh;
+        // mesh.ConstructFromMeshReader(mesh_reader);
 
-        mesh.Scale(scale, scale, scale);
+        // mesh.Scale(scale, scale, scale);
+
+
+        double EndTime = 1;
+        double scale = 1e3;
+        double Length = 40e-6 * scale;
+        double Radius = 0.5e-6 * scale; // I want this to grow to 10
+
+        unsigned N_D = 50;
+        unsigned N_Z = 150;
+
+        Honeycomb3DCylinderMeshGenerator generator(N_D, N_Z, Radius, Length);
+        MutableMesh<2, 3>* p_mesh = generator.GetMesh();
+        HistoryDepMutableMesh<2, 3>* mesh = static_cast<HistoryDepMutableMesh<2, 3>*>(p_mesh);
 
         // Create the cells
         MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
         std::vector<CellPtr> cells;
         CellsGenerator<FixedG1GenerationalCellCycleModel, 2> cells_generator;
-        cells_generator.GenerateBasicRandom(cells, mesh.GetNumNodes(), p_differentiated_type);
+        cells_generator.GenerateBasicRandom(cells, mesh->GetNumNodes(), p_differentiated_type);
 
         // Create a cell population
-        // MeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
-        HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
+        HistoryDepMeshBasedCellPopulation<2, 3> cell_population(*mesh, cells);
+
+
+
+        // // Create the cells
+        // MAKE_PTR(DifferentiatedCellProliferativeType, p_differentiated_type);
+        // std::vector<CellPtr> cells;
+        // CellsGenerator<FixedG1GenerationalCellCycleModel, 2> cells_generator;
+        // cells_generator.GenerateBasicRandom(cells, mesh.GetNumNodes(), p_differentiated_type);
+
+        // // Create a cell population
+        // // MeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
+        // HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
 
         // cell_population.SetChasteOutputDirectory(output_dir, 0);
         // // cell_population.SetInitialAnlgesAcrossMembrane(); // Dont worry about this for now, I think there is something moff
@@ -76,7 +101,6 @@ public:
         // // cell_population.EdgeLengthVariable(1.2);
         // cell_population.SetPrintRemeshedIC(1);
         // cell_population.SetTargetRemeshingIterations(5);
-        cell_population.SetWriteVtkAsPoints(false);
         cell_population.SetOutputMeshInVtk(true);
         // cell_population.SetRemeshingSoftwear("CGAL");
         // cell_population.SetOperatingSystem("server");
@@ -86,8 +110,8 @@ public:
         // Set up cell-based simulation
         OffLatticeSimulation<2, 3> simulator(cell_population);
         simulator.SetOutputDirectory(output_dir);
-        simulator.SetSamplingTimestepMultiple(SamplingStep);
-        simulator.SetDt(dt);
+        simulator.SetSamplingTimestepMultiple(10);
+        simulator.SetDt(0.05);
 
         simulator.SetUpdateCellPopulationRule(false);
         /*
