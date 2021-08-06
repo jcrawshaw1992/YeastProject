@@ -130,7 +130,7 @@ private:
         archive &  mUpdateComplete;
 
         archive & mOutputMeshInVtk;
-        // this->Validate();
+        this->Validate();
     }
 
 
