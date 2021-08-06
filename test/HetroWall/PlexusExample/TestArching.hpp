@@ -200,7 +200,7 @@ public:
             // for (int i = 0; i < 3; i++)
             // {
                 PRINT_VARIABLE(EndTime)
-                cell_population.SetStartTime(0);
+                // cell_population.SetStartTime(0);
                 // EndTime += 0.1;
                 simulator.SetEndTime(EndTime);
 
