@@ -37,7 +37,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
 
-    void TestSetUpCylinderArchive2() throw(Exception)
+    void offTestSetUpCylinderArchive2() throw(Exception)
     {
         TRACE("Jess is good")
         double EndTime = 0;
@@ -187,7 +187,7 @@ public:
 
 
 
-  void offTestContinuingHomoArchieve2() throw(Exception)
+  void TestContinuingHomoArchieve2() throw(Exception)
    {
 
        TRACE("Jess")
