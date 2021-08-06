@@ -2520,7 +2520,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM,SPACE_DIM>::WriteVtkResultsTo
     // Store the number of cells for which to output data to VTK
     unsigned num_cells_from_mesh = this->GetNumNodes();
     // VertexMesh<ELEMENT_DIM,SPACE_DIM>* mpVoronoiTessellation = this->GetVoronoiTessellation();
-    bool mWriteVtkAsPoints = this->GetWriteVtkAsPoints();
+
 
 
     // When outputting any CellData, we assume that the first cell is representative of all cells
@@ -2535,7 +2535,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM,SPACE_DIM>::WriteVtkResultsTo
     }
 
 
-    mOutputMeshInVtk = this->GetOutputMeshInVtk();
     if (mOutputMeshInVtk)
     {
         // Create mesh writer for VTK output

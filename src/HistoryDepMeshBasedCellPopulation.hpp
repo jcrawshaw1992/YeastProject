@@ -75,6 +75,9 @@ private:
     void serialize(Archive& archive, const unsigned int version)
     {
         archive & boost::serialization::base_object<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM> >(*this);
+        // archive & boost::serialization::base_object<AbstractCentreBasedCellPopulation<ELEMENT_DIM, SPACE_DIM> >(*this);
+
+
 
         archive & mOriginalNodePositions;
         archive & mInitalPositionOfRemeshedNodes;
@@ -130,6 +133,7 @@ private:
         archive &  mUpdateComplete;
 
         archive & mOutputMeshInVtk;
+        archive & mWriteVtkAsPoints;
         this->Validate();
     }
 
@@ -143,6 +147,7 @@ protected:
 
 public:
         bool mOutputMeshInVtk =1;
+        bool mWriteVtkAsPoints = 0;
 
     /**
      * Create a new cell population facade from a mesh and collection of cells.
