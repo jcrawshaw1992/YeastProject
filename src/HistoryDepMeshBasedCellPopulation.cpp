@@ -2663,24 +2663,37 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM,SPACE_DIM>::WriteVtkResultsTo
 
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::OutputCellPopulationParameters(out_stream& rParamsFile)
-{
-    // Call method on direct parent class
-    MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::OutputCellPopulationParameters(rParamsFile);
-}
+// template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+// void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::OutputCellPopulationParameters(out_stream& rParamsFile)
+// {
+//     // Call method on direct parent class
+//     MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::OutputCellPopulationParameters(rParamsFile);
+// }
+
+
+// // Explicit instantiation
+// template class HistoryDepMeshBasedCellPopulation<1, 2>;
+// template class HistoryDepMeshBasedCellPopulation<1, 3>;
+// template class HistoryDepMeshBasedCellPopulation<2, 2>;
+// template class HistoryDepMeshBasedCellPopulation<2, 3>;
+// template class HistoryDepMeshBasedCellPopulation<3, 3>;
+
+// // Serialization for Boost >= 1.36
+// #include "SerializationExportWrapperForCpp.hpp"
+// EXPORT_TEMPLATE_CLASS2(HistoryDepMeshBasedCellPopulation, 1, 3)
+// EXPORT_TEMPLATE_CLASS2(HistoryDepMeshBasedCellPopulation, 2, 3)
+// EXPORT_TEMPLATE_CLASS2(HistoryDepMeshBasedCellPopulation, 2, 2)
+// EXPORT_TEMPLATE_CLASS2(HistoryDepMeshBasedCellPopulation, 3, 3)
 
 
 // Explicit instantiation
-template class HistoryDepMeshBasedCellPopulation<1, 2>;
-template class HistoryDepMeshBasedCellPopulation<1, 3>;
-template class HistoryDepMeshBasedCellPopulation<2, 2>;
-template class HistoryDepMeshBasedCellPopulation<2, 3>;
-template class HistoryDepMeshBasedCellPopulation<3, 3>;
+template class HistoryDepMeshBasedCellPopulation<1,1>;
+template class HistoryDepMeshBasedCellPopulation<1,2>;
+template class HistoryDepMeshBasedCellPopulation<2,2>;
+template class HistoryDepMeshBasedCellPopulation<1,3>;
+template class HistoryDepMeshBasedCellPopulation<2,3>;
+template class HistoryDepMeshBasedCellPopulation<3,3>;
 
 // Serialization for Boost >= 1.36
 #include "SerializationExportWrapperForCpp.hpp"
-EXPORT_TEMPLATE_CLASS2(HistoryDepMeshBasedCellPopulation, 1, 3)
-EXPORT_TEMPLATE_CLASS2(HistoryDepMeshBasedCellPopulation, 2, 3)
-EXPORT_TEMPLATE_CLASS2(HistoryDepMeshBasedCellPopulation, 2, 2)
-EXPORT_TEMPLATE_CLASS2(HistoryDepMeshBasedCellPopulation, 3, 3)
+EXPORT_TEMPLATE_CLASS_ALL_DIMS(HistoryDepMeshBasedCellPopulation)

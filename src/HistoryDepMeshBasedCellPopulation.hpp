@@ -487,7 +487,7 @@ public:
      */
     // virtual void WriteResultsToFiles(const std::string& rDirectory);
 
-    void OutputCellPopulationParameters(out_stream& rParamsFile);
+    // void OutputCellPopulationParameters(out_stream& rParamsFile);
 };
 
 #include "SerializationExportWrapper.hpp"
