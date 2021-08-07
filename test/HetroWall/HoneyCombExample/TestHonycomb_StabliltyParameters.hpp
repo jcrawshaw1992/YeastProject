@@ -41,7 +41,7 @@ public:
         double N_D[2] = { -8,-7};
 
 
-                    double DilationParameter = -8;
+                    double DilationParameter = -7.5;
                     double AreaParameter = -7;
                     double DeformationParamter = -7.4;
 
