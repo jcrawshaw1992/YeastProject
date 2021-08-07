@@ -95,7 +95,7 @@ void EnclosedRegionBoundaryCondition<ELEMENT_DIM,SPACE_DIM>::ImposeBoundaryCondi
             {    
                 double signed_distance = inner_prod(node_location - mPointOnPlane, mNormalToPlane);
                 double signed_distance2 = inner_prod(node_location - mPointOnPlane2, mNormalToPlane2);
-                if (signed_distance >= 0.0 && signed_distance<=0.0)
+                if (signed_distance >= 0.0 && signed_distance2<=0.0)
                 {
 
                     //  // For the closest point on the plane we travel from node_location the signed_distance in the direction of -mNormalToPlane
