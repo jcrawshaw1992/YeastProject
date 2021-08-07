@@ -2703,81 +2703,76 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM,SPACE_DIM>::WriteVtkResultsTo
             mesh_writer.AddPointData(cell_data_names[var], cell_data[var]);
         }
 
-
-
-
-
-
         mesh_writer.WriteFilesUsingMesh(this->rGetMesh());
     }
 
-    if (mWriteVtkAsPoints)
-    {
-        // Create mesh writer for VTK output
-        VtkMeshWriter<SPACE_DIM, SPACE_DIM> cells_writer(rDirectory, "results_"+time.str(), false);
+    // if (mWriteVtkAsPoints)
+    // {
+    //     // Create mesh writer for VTK output
+    //     VtkMeshWriter<SPACE_DIM, SPACE_DIM> cells_writer(rDirectory, "results_"+time.str(), false);
 
-        // Iterate over any cell writers that are present
-        unsigned num_cells = this->GetNumAllCells();
-        for (typename std::vector<boost::shared_ptr<AbstractCellWriter<ELEMENT_DIM, SPACE_DIM> > >::iterator cell_writer_iter = this->mCellWriters.begin();
-             cell_writer_iter != this->mCellWriters.end();
-             ++cell_writer_iter)
-        {
-            // Create vector to store VTK cell data
-            std::vector<double> vtk_cell_data(num_cells);
+    //     // Iterate over any cell writers that are present
+    //     unsigned num_cells = this->GetNumAllCells();
+    //     for (typename std::vector<boost::shared_ptr<AbstractCellWriter<ELEMENT_DIM, SPACE_DIM> > >::iterator cell_writer_iter = this->mCellWriters.begin();
+    //          cell_writer_iter != this->mCellWriters.end();
+    //          ++cell_writer_iter)
+    //     {
+    //         // Create vector to store VTK cell data
+    //         std::vector<double> vtk_cell_data(num_cells);
 
-            // Loop over cells
-            for (typename AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>::Iterator cell_iter = this->Begin();
-                 cell_iter != this->End();
-                 ++cell_iter)
-            {
-                // Get the node index corresponding to this cell
-                unsigned node_index = this->GetLocationIndexUsingCell(*cell_iter);
+    //         // Loop over cells
+    //         for (typename AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>::Iterator cell_iter = this->Begin();
+    //              cell_iter != this->End();
+    //              ++cell_iter)
+    //         {
+    //             // Get the node index corresponding to this cell
+    //             unsigned node_index = this->GetLocationIndexUsingCell(*cell_iter);
 
-                // Populate the vector of VTK cell data
-                vtk_cell_data[node_index] = (*cell_writer_iter)->GetCellDataForVtkOutput(*cell_iter, this);
-            }
+    //             // Populate the vector of VTK cell data
+    //             vtk_cell_data[node_index] = (*cell_writer_iter)->GetCellDataForVtkOutput(*cell_iter, this);
+    //         }
 
-            cells_writer.AddPointData((*cell_writer_iter)->GetVtkCellDataName(), vtk_cell_data);
-        }
+    //         cells_writer.AddPointData((*cell_writer_iter)->GetVtkCellDataName(), vtk_cell_data);
+    //     }
 
-        // Loop over cells
-        for (typename AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>::Iterator cell_iter = this->Begin();
-             cell_iter != this->End();
-             ++cell_iter)
-        {
-            // Get the node index corresponding to this cell
-            unsigned node_index = this->GetLocationIndexUsingCell(*cell_iter);
+    //     // Loop over cells
+    //     for (typename AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>::Iterator cell_iter = this->Begin();
+    //          cell_iter != this->End();
+    //          ++cell_iter)
+    //     {
+    //         // Get the node index corresponding to this cell
+    //         unsigned node_index = this->GetLocationIndexUsingCell(*cell_iter);
 
-            for (unsigned var=0; var<num_cell_data_items; var++)
-            {
-                cell_data[var][node_index] = cell_iter->GetCellData()->GetItem(cell_data_names[var]);
-            }
-        }
-        for (unsigned var=0; var<num_cell_data_items; var++)
-        {
-            cells_writer.AddPointData(cell_data_names[var], cell_data[var]);
-        }
+    //         for (unsigned var=0; var<num_cell_data_items; var++)
+    //         {
+    //             cell_data[var][node_index] = cell_iter->GetCellData()->GetItem(cell_data_names[var]);
+    //         }
+    //     }
+    //     for (unsigned var=0; var<num_cell_data_items; var++)
+    //     {
+    //         cells_writer.AddPointData(cell_data_names[var], cell_data[var]);
+    //     }
 
-        // Make a copy of the nodes in a disposable mesh for writing
-        {
-            std::vector<Node<SPACE_DIM>* > nodes;
-            for (unsigned index=0; index<this->mrMesh.GetNumNodes(); index++)
-            {
-                Node<SPACE_DIM>* p_node = this->mrMesh.GetNode(index);
-                nodes.push_back(p_node);
-            }
+    //     // Make a copy of the nodes in a disposable mesh for writing
+    //     {
+    //         std::vector<Node<SPACE_DIM>* > nodes;
+    //         for (unsigned index=0; index<this->mrMesh.GetNumNodes(); index++)
+    //         {
+    //             Node<SPACE_DIM>* p_node = this->mrMesh.GetNode(index);
+    //             nodes.push_back(p_node);
+    //         }
 
-            NodesOnlyMesh<SPACE_DIM> mesh;
-            mesh.ConstructNodesWithoutMesh(nodes, 1.5); // Arbitrary cut off as connectivity not used.
-            cells_writer.WriteFilesUsingMesh(mesh);
-        }
+    //         NodesOnlyMesh<SPACE_DIM> mesh;
+    //         mesh.ConstructNodesWithoutMesh(nodes, 1.5); // Arbitrary cut off as connectivity not used.
+    //         cells_writer.WriteFilesUsingMesh(mesh);
+    //     }
 
-        *(this->mpVtkMetaFile) << "        <DataSet timestep=\"";
-        *(this->mpVtkMetaFile) << num_timesteps;
-        *(this->mpVtkMetaFile) << "\" group=\"\" part=\"0\" file=\"results_";
-        *(this->mpVtkMetaFile) << num_timesteps;
-        *(this->mpVtkMetaFile) << ".vtu\"/>\n";
-    }
+    //     *(this->mpVtkMetaFile) << "        <DataSet timestep=\"";
+    //     *(this->mpVtkMetaFile) << num_timesteps;
+    //     *(this->mpVtkMetaFile) << "\" group=\"\" part=\"0\" file=\"results_";
+    //     *(this->mpVtkMetaFile) << num_timesteps;
+    //     *(this->mpVtkMetaFile) << ".vtu\"/>\n";
+    // }
    
 #endif //CHASTE_VTK
 }
