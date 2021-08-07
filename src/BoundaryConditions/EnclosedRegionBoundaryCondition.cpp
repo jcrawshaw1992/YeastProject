@@ -104,7 +104,7 @@ void EnclosedRegionBoundaryCondition<ELEMENT_DIM,SPACE_DIM>::ImposeBoundaryCondi
                     // p_node->rGetModifiableLocation() = nearest_point;
                     // // Only allow movement perpendicular to the normal -- for some reason this is not working 
                     c_vector<double,SPACE_DIM> displacement = node_location - node_old_location;
-                    p_node->rGetModifiableLocation() = node_old_location + displacement - inner_prod(displacement,mNormalToPlane)*mNormalToPlane;
+                    p_node->rGetModifiableLocation() = node_old_location + displacement - inner_prod(displacement,(mNormalToPlane+mNormalToPlane2)/2)*(mNormalToPlane+mNormalToPlane2)/2;
                     // p_node->rGetModifiableLocation() = node_location - inner_prod(displacement,mNormalToPlane)*mNormalToPlane
                     CellPtr p_cell = this->mpCellPopulation->GetCellUsingLocationIndex(node_index);
                     p_cell->GetCellData()->SetItem("FixedBoundary", 1);
