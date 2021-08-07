@@ -82,8 +82,6 @@ public:
     EnclosedRegionBoundaryCondition(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>* pCellPopulation,
                            c_vector<double, SPACE_DIM> point,
                            c_vector<double, SPACE_DIM> normal,
-                           c_vector<double, SPACE_DIM> point2,
-                           c_vector<double, SPACE_DIM> normal2,
                            double radius);
 
     /**
@@ -107,6 +105,13 @@ public:
      * @return mRadius.
      */
     const double& rGetRadius() const;
+
+
+    void SetPointOnPlane2( c_vector<double, SPACE_DIM> PointOnPlane);
+    void SetNormalToPlane2(c_vector<double, SPACE_DIM> NormalToPlane);
+
+
+
 
     
     

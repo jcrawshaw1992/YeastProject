@@ -10,8 +10,6 @@ template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 EnclosedRegionBoundaryCondition<ELEMENT_DIM,SPACE_DIM>::EnclosedRegionBoundaryCondition(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>* pCellPopulation,
                                                     c_vector<double, SPACE_DIM> point,
                                                     c_vector<double, SPACE_DIM> normal,
-                                                    c_vector<double, SPACE_DIM> point2,
-                                                    c_vector<double, SPACE_DIM> normal2,
                                                     double radius)
         : AbstractCellPopulationBoundaryCondition<ELEMENT_DIM,SPACE_DIM>(pCellPopulation),
           mPointOnPlane(point),
@@ -45,6 +43,20 @@ template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 const c_vector<double, SPACE_DIM>& EnclosedRegionBoundaryCondition<ELEMENT_DIM,SPACE_DIM>::rGetNormalToPlane2() const
 {
     return mNormalToPlane2;
+}
+
+////////////////////////////////////
+
+template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void EnclosedRegionBoundaryCondition<ELEMENT_DIM,SPACE_DIM>::SetPointOnPlane2( c_vector<double, SPACE_DIM> PointOnPlane)
+{
+    mPointOnPlane2  =PointOnPlane;
+}
+
+template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void EnclosedRegionBoundaryCondition<ELEMENT_DIM,SPACE_DIM>::SetNormalToPlane2(c_vector<double, SPACE_DIM> NormalToPlane)
+{
+    mNormalToPlane2 = NormalToPlane;
 }
 
 

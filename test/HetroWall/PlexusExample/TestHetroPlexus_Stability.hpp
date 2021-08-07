@@ -70,7 +70,7 @@ public:
         std::string Archieved = "DeformingPlexus/FlatForceFINAL8/";
      
         // std::string output_dir = "DeformingPlexus/Grow2Equi/";
-        std::string output_dir = "DeformingPlexus/TestParameters5/";
+        std::string output_dir = "DeformingPlexus/BoundariesFixed/";
         PRINT_VARIABLE(Archieved);
      
     
@@ -206,10 +206,15 @@ public:
         boundary_plane_points2.push_back(Create_c_vector(0.038633725599634766 , 0.042834650295782095, 0.00014677123886970464 ));
         boundary_plane_normals2.push_back(-Create_c_vector( 0.7713091680800281,0.6338501379897751,  -0.057586194578546857  ));
 
-        for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
+        for (unsigned boundary_id = 0; boundary_id < boundary_plane_points1.size(); boundary_id++)
         {
       
-             boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.01));
+            boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1[boundary_id], boundary_plane_normals1[boundary_id], 0.01));
+
+            p_condition->SetPointOnPlane2( boundary_plane_points2[boundary_id]);
+            p_condition->SetNormalToPlane2(boundary_plane_normals2[boundary_id]);
+
+
              p_simulator->AddCellPopulationBoundaryCondition(p_condition);
         }
 
