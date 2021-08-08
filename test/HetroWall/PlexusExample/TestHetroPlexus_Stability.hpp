@@ -113,7 +113,7 @@ public:
         double scale = 0.00006684491/1.29;
 
         double SamplingStep = 50;
-        double dt = 0.001;
+        double dt = 0.005;
         double RemeshingTime = 1000;
         double EdgeLength =0.00045;
         
@@ -309,66 +309,7 @@ public:
         boundary_plane_points2.push_back(Create_c_vector(0.034300824847584066,0.021164260640778476, -0.0002909367534368054 ));
         boundary_plane_normals2.push_back(Create_c_vector(0.9691730622969827, -0.2311539334429166, -0.08527270590145869 ));
 
-        /* */
-        // boundary_plane_points1.push_back(Create_c_vector(0.03729057877956028,0.019079787793094608, 0.0012196101973845233 ));
-        // boundary_plane_normals1.push_back(Create_c_vector(-0.36330675943686663,0.9287897628645878,-0.0731968233287873 ));
-        // /// ----------------------------------------
-        // boundary_plane_points2.push_back(Create_c_vector(0.03688699685077551, 0.020111386703858678, 0.0011496564597132386 ));
-        // boundary_plane_normals2.push_back(Create_c_vector(-0.36330675943686663, 0.9287897628645878, -0.0731968233287873 ));
-
-        // /* */
-        // boundary_plane_points1.push_back(Create_c_vector(0.02947004866919807, 0.026795019544573438,0.000431915606725585 ));
-        // boundary_plane_normals1.push_back(Create_c_vector(-0.2542504365365927, -0.965983541645184, 0.04724947398203888));
-        // /// ----------------------------------------
-        // boundary_plane_points2.push_back(Create_c_vector(0.02914727003046496, 0.025568674147262917, 0.0004919002466755893 ));
-        // boundary_plane_normals2.push_back(Create_c_vector(-0.2542504365365927, -0.965983541645184,0.04724947398203888  ));
-
-        // /* */
-        // boundary_plane_points2.push_back(Create_c_vector(0.0276684081294808,0.034700738170042815, -0.00047664196100326127  ));
-        // boundary_plane_normals2.push_back(Create_c_vector(-0.29721279023036085,0.9498138193189324,  -0.09756160081848875));
-        // /// ----------------------------------------
-        // boundary_plane_points1.push_back(Create_c_vector(0.02787399382826861, 0.034043740408904594,-0.00040915741613027596  ));
-        // boundary_plane_normals1.push_back(Create_c_vector(-0.29721279023036085, 0.9498138193189324, -0.09756160081848875 ));
-
-
-        // /* */
-        // boundary_plane_points1.push_back(Create_c_vector(0.04843182355511857,0.035329491385142305, 2.2838125619513774e-6));
-        // boundary_plane_normals1.push_back(Create_c_vector(1,0,0));
-        // /// ----------------------------------------
-        // boundary_plane_points2.push_back(Create_c_vector(0.04945250248142585, 0.035329491385142305, 2.2838125619513774e-6  ));
-        // boundary_plane_normals2.push_back(Create_c_vector(1,0,0 ));
-
-
-        // /* */
-        // boundary_plane_points1.push_back(Create_c_vector( 0.04365275479929086, 0.020584217732156868, -0.0005757836758329877));
-        // boundary_plane_normals1.push_back(Create_c_vector(0.7964392181876072,0.6024505685106095, 0.05232479559402492 ));
-        // /// ----------------------------------------
-        // boundary_plane_points2.push_back(Create_c_vector(0.043961738632859605, 0.02081794239305147 , -0.0005533354532005116  ));
-        // boundary_plane_normals2.push_back(Create_c_vector(0.7964392181876072,0.6024505685106095, 0.05232479559402492 ));
-
-        // /* */
-        // boundary_plane_points1.push_back(Create_c_vector( 0.0450799646812091, 0.04830275902523663, -0.0025754240629051717 ));
-        // boundary_plane_normals1.push_back(Create_c_vector( 0.30972107192126425,-0.9369712347144036,  -0.16173361717870888   ));
-        // /// ----------------------------------------
-        // boundary_plane_points2.push_back(Create_c_vector(0.04541060838929348, 0.04730249242570385, -0.002748083296499249 ));
-        // boundary_plane_normals2.push_back(Create_c_vector(0.30972107192126425,-0.9369712347144036,  -0.16173361717870888  ));
-
-        // /* */
-        // boundary_plane_points1.push_back(Create_c_vector( 0.0450799646812091, 0.04830275902523663, -0.0025754240629051717 ));
-        // boundary_plane_normals1.push_back(Create_c_vector( 0.30972107192126425,-0.9369712347144036,  -0.16173361717870888   ));
-        // /// ----------------------------------------
-        // boundary_plane_points2.push_back(Create_c_vector(0.04541060838929348, 0.04730249242570385, -0.002748083296499249 ));
-        // boundary_plane_normals2.push_back(Create_c_vector(0.30972107192126425,-0.9369712347144036,  -0.16173361717870888  ));
-
-
-        // /* */
-        // boundary_plane_points1.push_back(Create_c_vector( 0.051873062180618754,0.04009620555350786,  -0.0025100696562570094 ));
-        // boundary_plane_normals1.push_back(Create_c_vector( 0.8313839545964979, -0.5466958757345862, -0.09962097918752971 ));
-        // /// ----------------------------------------
-        // boundary_plane_points2.push_back(Create_c_vector(0.05270448431348426, 0.039549484572763596,-0.0026096952101738453 ));
-        // boundary_plane_normals2.push_back(Create_c_vector(0.8313839545964979,-0.5466958757345862,-0.09962097918752971 ));
-
-
+       
 
 
         unsigned counter =0;
@@ -710,3 +651,65 @@ public:
 };
 
 #endif /*TESTRELAXATION_HPP_*/
+
+
+
+ /* */
+        // boundary_plane_points1.push_back(Create_c_vector(0.03729057877956028,0.019079787793094608, 0.0012196101973845233 ));
+        // boundary_plane_normals1.push_back(Create_c_vector(-0.36330675943686663,0.9287897628645878,-0.0731968233287873 ));
+        // /// ----------------------------------------
+        // boundary_plane_points2.push_back(Create_c_vector(0.03688699685077551, 0.020111386703858678, 0.0011496564597132386 ));
+        // boundary_plane_normals2.push_back(Create_c_vector(-0.36330675943686663, 0.9287897628645878, -0.0731968233287873 ));
+
+        // /* */
+        // boundary_plane_points1.push_back(Create_c_vector(0.02947004866919807, 0.026795019544573438,0.000431915606725585 ));
+        // boundary_plane_normals1.push_back(Create_c_vector(-0.2542504365365927, -0.965983541645184, 0.04724947398203888));
+        // /// ----------------------------------------
+        // boundary_plane_points2.push_back(Create_c_vector(0.02914727003046496, 0.025568674147262917, 0.0004919002466755893 ));
+        // boundary_plane_normals2.push_back(Create_c_vector(-0.2542504365365927, -0.965983541645184,0.04724947398203888  ));
+
+        // /* */
+        // boundary_plane_points2.push_back(Create_c_vector(0.0276684081294808,0.034700738170042815, -0.00047664196100326127  ));
+        // boundary_plane_normals2.push_back(Create_c_vector(-0.29721279023036085,0.9498138193189324,  -0.09756160081848875));
+        // /// ----------------------------------------
+        // boundary_plane_points1.push_back(Create_c_vector(0.02787399382826861, 0.034043740408904594,-0.00040915741613027596  ));
+        // boundary_plane_normals1.push_back(Create_c_vector(-0.29721279023036085, 0.9498138193189324, -0.09756160081848875 ));
+
+
+        // /* */
+        // boundary_plane_points1.push_back(Create_c_vector(0.04843182355511857,0.035329491385142305, 2.2838125619513774e-6));
+        // boundary_plane_normals1.push_back(Create_c_vector(1,0,0));
+        // /// ----------------------------------------
+        // boundary_plane_points2.push_back(Create_c_vector(0.04945250248142585, 0.035329491385142305, 2.2838125619513774e-6  ));
+        // boundary_plane_normals2.push_back(Create_c_vector(1,0,0 ));
+
+
+        // /* */
+        // boundary_plane_points1.push_back(Create_c_vector( 0.04365275479929086, 0.020584217732156868, -0.0005757836758329877));
+        // boundary_plane_normals1.push_back(Create_c_vector(0.7964392181876072,0.6024505685106095, 0.05232479559402492 ));
+        // /// ----------------------------------------
+        // boundary_plane_points2.push_back(Create_c_vector(0.043961738632859605, 0.02081794239305147 , -0.0005533354532005116  ));
+        // boundary_plane_normals2.push_back(Create_c_vector(0.7964392181876072,0.6024505685106095, 0.05232479559402492 ));
+
+        // /* */
+        // boundary_plane_points1.push_back(Create_c_vector( 0.0450799646812091, 0.04830275902523663, -0.0025754240629051717 ));
+        // boundary_plane_normals1.push_back(Create_c_vector( 0.30972107192126425,-0.9369712347144036,  -0.16173361717870888   ));
+        // /// ----------------------------------------
+        // boundary_plane_points2.push_back(Create_c_vector(0.04541060838929348, 0.04730249242570385, -0.002748083296499249 ));
+        // boundary_plane_normals2.push_back(Create_c_vector(0.30972107192126425,-0.9369712347144036,  -0.16173361717870888  ));
+
+        // /* */
+        // boundary_plane_points1.push_back(Create_c_vector( 0.0450799646812091, 0.04830275902523663, -0.0025754240629051717 ));
+        // boundary_plane_normals1.push_back(Create_c_vector( 0.30972107192126425,-0.9369712347144036,  -0.16173361717870888   ));
+        // /// ----------------------------------------
+        // boundary_plane_points2.push_back(Create_c_vector(0.04541060838929348, 0.04730249242570385, -0.002748083296499249 ));
+        // boundary_plane_normals2.push_back(Create_c_vector(0.30972107192126425,-0.9369712347144036,  -0.16173361717870888  ));
+
+
+        // /* */
+        // boundary_plane_points1.push_back(Create_c_vector( 0.051873062180618754,0.04009620555350786,  -0.0025100696562570094 ));
+        // boundary_plane_normals1.push_back(Create_c_vector( 0.8313839545964979, -0.5466958757345862, -0.09962097918752971 ));
+        // /// ----------------------------------------
+        // boundary_plane_points2.push_back(Create_c_vector(0.05270448431348426, 0.039549484572763596,-0.0026096952101738453 ));
+        // boundary_plane_normals2.push_back(Create_c_vector(0.8313839545964979,-0.5466958757345862,-0.09962097918752971 ));
+

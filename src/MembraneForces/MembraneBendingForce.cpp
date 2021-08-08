@@ -223,8 +223,10 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         node4_contribution *= force_coefficient;////rCellPopulation.GetVolumeOfCell(p_cell4);
 
 
-
-        PRINT_4_VARIABLES(norm_2(node1_contribution), norm_2(node2_contribution), norm_2(node3_contribution) , norm_2(node4_contribution))
+        if (norm_2(node1_contribution)>1 || norm_2(node2_contribution)>1 ||norm_2(node3_contribution)>1 || norm_2(node4_contribution)>1  )
+        {
+             PRINT_4_VARIABLES(norm_2(node1_contribution), norm_2(node2_contribution), norm_2(node3_contribution) , norm_2(node4_contribution))
+        }
 
         double Boundary1 = p_cell1->GetCellData()->GetItem("Boundary"); double Boundary2 = p_cell2->GetCellData()->GetItem("Boundary");
         double Boundary3 = p_cell3->GetCellData()->GetItem("Boundary"); double Boundary4 = p_cell4->GetCellData()->GetItem("Boundary");
