@@ -189,12 +189,17 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
 
         }
 
-        if (norm_2(ForceOnNode[0])>1e2 || norm_2(ForceOnNode[1])>1e2 || norm_2(ForceOnNode[2])>1e2)
+        if (norm_2(ForceOnNode[0])>20 || norm_2(ForceOnNode[1])>20|| norm_2(ForceOnNode[2])>20)
         {
+            PRINT_VARIABLE(elem_index);
             PRINT_VECTOR(ForceOnNode[0])
             PRINT_VECTOR(ForceOnNode[1])
             PRINT_VECTOR(ForceOnNode[2])
-            PRINT_VARIABLE(elem_index);
+            PRINT_3_VARIABLES(norm_2(ForceOnNode[0]), norm_2(ForceOnNode[1]), norm_2(ForceOnNode[2]) )
+            ForceOnNode[0] = Create_c_vector(0,0,0);
+            ForceOnNode[1] = Create_c_vector(0,0,0);
+            ForceOnNode[2] = Create_c_vector(0,0,0);
+            
 
         }
         pNode0->AddAppliedForceContribution(ForceOnNode[0]);
