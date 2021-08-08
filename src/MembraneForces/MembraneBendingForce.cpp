@@ -213,8 +213,7 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         double force_coefficient = MembraneStiffness * (acos(inner_prod(normal_1, normal_2)) - OriginalAngle);
         double AngleDiff = (acos(inner_prod(normal_1, normal_2)) - OriginalAngle);
     
-        PRINT_3_VARIABLES(AngleDiff, force_coefficient,MembraneStiffness );
-        PRINT_4_VARIABLES(norm_2(node1_contribution), norm_2(node2_contribution), norm_2(node3_contribution) , norm_2(node4_contribution))
+        // PRINT_3_VARIABLES(AngleDiff, force_coefficient,MembraneStiffness );
         // force_coefficient  /=sqrt(1-inner_prod(normal_1, normal_2)*inner_prod(normal_1, normal_2));
 
 
@@ -223,6 +222,9 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         node3_contribution *= force_coefficient;////rCellPopulation.GetVolumeOfCell(p_cell3);
         node4_contribution *= force_coefficient;////rCellPopulation.GetVolumeOfCell(p_cell4);
 
+
+
+        // PRINT_4_VARIABLES(norm_2(node1_contribution), norm_2(node2_contribution), norm_2(node3_contribution) , norm_2(node4_contribution))
 
         double Boundary1 = p_cell1->GetCellData()->GetItem("Boundary"); double Boundary2 = p_cell2->GetCellData()->GetItem("Boundary");
         double Boundary3 = p_cell3->GetCellData()->GetItem("Boundary"); double Boundary4 = p_cell4->GetCellData()->GetItem("Boundary");
@@ -238,7 +240,7 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         p_cell4->GetCellData()->SetItem("BendingForce", LastNodeContribution + norm_2(node4_contribution));
 
 
-        if (norm_2(node1_contribution)>1000 || norm_2(node2_contribution)>1000 ||norm_2(node3_contribution)>1000 || norm_2(node4_contribution)>1000  )
+        if (norm_2(node1_contribution)>100 || norm_2(node2_contribution)>100 ||norm_2(node3_contribution)>100 || norm_2(node4_contribution)>100  )
         {
             PRINT_VECTOR(node1_contribution);
             PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
