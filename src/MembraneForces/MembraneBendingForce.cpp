@@ -211,6 +211,8 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         
         
         double force_coefficient = MembraneStiffness * (acos(inner_prod(normal_1, normal_2)) - OriginalAngle);
+        double AngleDiff = (acos(inner_prod(normal_1, normal_2)) - OriginalAngle);
+        PRINT_VARIABLE(AngleDiff);
         // force_coefficient  /=sqrt(1-inner_prod(normal_1, normal_2)*inner_prod(normal_1, normal_2));
 
 

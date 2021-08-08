@@ -1,6 +1,6 @@
 
-#ifndef MembraneBendingForce_HPP_
-#define MembraneBendingForce_HPP_
+#ifndef MembraneBendingForceOld_HPP_
+#define MembraneBendingForceOld_HPP_
 
 #include "AbstractForce.hpp"
 #include "HistoryDepMeshBasedCellPopulation.hpp"
@@ -12,7 +12,7 @@
 /**
  * Membrane Stiffness Force!
  */
-class MembraneBendingForce : public AbstractForce<2, 3>
+class MembraneBendingForceOld : public AbstractForce<2, 3>
 {
 private:
 
@@ -37,7 +37,7 @@ public:
     /**
      * Constructor.
      */
-    MembraneBendingForce();
+    MembraneBendingForceOld();
 
     void SetMembraneStiffness(double membraneStiffness, double Nc, double Nz);
 
@@ -68,6 +68,6 @@ public:
 
 // Declare identifier for the serializer
 #include "SerializationExportWrapper.hpp"
-CHASTE_CLASS_EXPORT(MembraneBendingForce)
+CHASTE_CLASS_EXPORT(MembraneBendingForceOld)
 
-#endif /*MembraneBendingForce_HPP_*/
+#endif /*MembraneBendingForceOld_HPP_*/
