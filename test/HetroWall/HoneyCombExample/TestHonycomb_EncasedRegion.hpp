@@ -110,12 +110,7 @@ public:
             p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
             p_Mesh_modifier->SetmSetUpSolve(1);
 
-
-
-
-
-
-                    ///////////////////////////////////////////////////////////////////////////////////////
+             ///////////////////////////////////////////////////////////////////////////////////////
 
             std::vector<c_vector<double, 3> > boundary_plane_points1;
             std::vector<c_vector<double, 3> > boundary_plane_normals1;
@@ -154,7 +149,7 @@ public:
                 boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1[boundary_id], boundary_plane_normals1[boundary_id], 1)); //0.01));
 
                 p_condition->SetPointOnPlane2( boundary_plane_points2[boundary_id]);
-                p_condition->SetNormalToPlane2(boundary_plane_normals2[boundary_id]);
+                p_condition->SetNormalToPlane(-boundary_plane_normals2[boundary_id]);
 
 
                 p_simulator->AddCellPopulationBoundaryCondition(p_condition);
@@ -249,17 +244,17 @@ public:
 
     
             // unsigned counter =0;
-            for (unsigned boundary_id = 0; boundary_id < boundary_plane_points1D1.size()-1; boundary_id++)
-            {
-                // counter +=1;
-                boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1D1[boundary_id], boundary_plane_normals1D1[boundary_id], 0.05)); //0.01));
+            // for (unsigned boundary_id = 0; boundary_id < boundary_plane_points1D1.size()-1; boundary_id++)
+            // {
+            //     // counter +=1;
+            //     boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1D1[boundary_id], boundary_plane_normals1D1[boundary_id], 0.05)); //0.01));
 
-                p_condition->SetPointOnPlane2( boundary_plane_points2D1[boundary_id]);
-                p_condition->SetNormalToPlane2(boundary_plane_normals2D1[boundary_id]);
+            //     p_condition->SetPointOnPlane2( boundary_plane_points2D1[boundary_id]);
+            //     p_condition->SetNormalToPlane2(boundary_plane_normals2D1[boundary_id]);
 
 
-                p_simulator->AddCellPopulationBoundaryCondition(p_condition);
-            }
+            //     p_simulator->AddCellPopulationBoundaryCondition(p_condition);
+            // }
 
 
            ///////////////////////////////////////////////////////////////////////////////////////
