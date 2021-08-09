@@ -143,7 +143,7 @@ public:
 
     
             unsigned counter =0;
-            for (unsigned boundary_id = 0; boundary_id < boundary_plane_points1.size()-1; boundary_id++)
+            for (unsigned boundary_id = 0; boundary_id < boundary_plane_points1.size(); boundary_id++)
             {
                 counter +=1;
                 boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1[boundary_id], boundary_plane_normals1[boundary_id], 1)); //0.01));
@@ -242,19 +242,18 @@ public:
             boundary_plane_normals2D1.push_back(Create_c_vector( 0.7071067811865476,  -0.7071067811865476, 0   ));
 
 
-    
-            // unsigned counter =0;
-            // for (unsigned boundary_id = 0; boundary_id < boundary_plane_points1D1.size()-1; boundary_id++)
-            // {
-            //     // counter +=1;
-            //     boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1D1[boundary_id], boundary_plane_normals1D1[boundary_id], 0.05)); //0.01));
+            for (unsigned boundary_id = 0; boundary_id < 1; boundary_id++)
+            {
+     
+     
+                boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1D1[boundary_id], boundary_plane_normals1D1[boundary_id], 0.05)); //0.01));
 
-            //     p_condition->SetPointOnPlane2( boundary_plane_points2D1[boundary_id]);
-            //     p_condition->SetNormalToPlane2(boundary_plane_normals2D1[boundary_id]);
+                p_condition->SetPointOnPlane2( boundary_plane_points2D1[boundary_id]);
+                p_condition->SetNormalToPlane2(boundary_plane_normals2D1[boundary_id]);
 
 
-            //     p_simulator->AddCellPopulationBoundaryCondition(p_condition);
-            // }
+                p_simulator->AddCellPopulationBoundaryCondition(p_condition);
+            }
 
 
            ///////////////////////////////////////////////////////////////////////////////////////
