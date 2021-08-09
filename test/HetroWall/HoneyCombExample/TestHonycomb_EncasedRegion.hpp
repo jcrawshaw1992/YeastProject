@@ -246,7 +246,7 @@ public:
             {
      
      
-                boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1D1[boundary_id], boundary_plane_normals1D1[boundary_id], 0.005)); //0.01));
+                boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1D1[boundary_id], boundary_plane_normals1D1[boundary_id], 0.009)); //0.01));
 
                 p_condition->SetPointOnPlane2( boundary_plane_points2D1[boundary_id]);
                 p_condition->SetNormalToPlane2(boundary_plane_normals2D1[boundary_id]);
