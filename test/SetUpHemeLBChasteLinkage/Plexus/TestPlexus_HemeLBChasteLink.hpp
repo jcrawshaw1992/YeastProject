@@ -51,6 +51,7 @@ public:
         TRACE("Jess is good")
         double EndTime = 4;
         double scale = 0.00006684491/1.29;
+        double FSI_Iterations = 2000;
 
         double SamplingStep = 100;
         double dt = 0.0001;
@@ -91,15 +92,15 @@ public:
         ----------------------------
         */
        // Inlet1
-       c_vector<double, 3> Point1 = Create_c_vector(0.023124572912321343,0.03546848940248621,1.4461560493769787e-6  );
-        c_vector<double, 3> PlaneNormal1 = Create_c_vector(0.9996546159455442,-0.01600206954067448, -0.02084664455450882 );
+       c_vector<double, 3> Point1 = Create_c_vector(02297977879048401, 0.037075481876763385,  0.0004635334404919405);
+        c_vector<double, 3> PlaneNormal1 = Create_c_vector(0.999910929986149, 0.0020912833516396026,-0.013181753607835568  );
         // Inlet2
         c_vector<double, 3> Point2 = Create_c_vector(0.036837793060229,0.055384952301980456,-0.0007597519518940717)  ;
         c_vector<double, 3> PlaneNormal2 = Create_c_vector(0.6732805342808156,-0.7380737547778258,  -0.04405059212657047);
 
         // Outlet1
-        c_vector<double, 3> Point3 = Create_c_vector(0.051873993282555146, 0.05407794840477816, 5.274703965037024e-5) ;
-        c_vector<double, 3> PlaneNormal3 = Create_c_vector( -0.8734008505817445, -0.4862907639633924, 0.026310588875685135);
+        c_vector<double, 3> Point3 = Create_c_vector(0.051243051697026636,0.05386889597979771, 0.00016345376729906492 ) ;
+        c_vector<double, 3> PlaneNormal3 = Create_c_vector( -0.8734008505817445, -0.4862907639633924, 0.026310588875685135  );
 
         // Outlet2
         c_vector<double, 3> Point4 = Create_c_vector(0.05879896633276119, 0.03973781304610769, -0.0009631168307583331) ;
@@ -126,15 +127,15 @@ public:
 
         boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
         p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure*1.01, "Inlet");
+        p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure*1.1, "Inlet");
         p_ForceOut->Inlets(PlaneNormal3, Point3, OutletPressure, "Outlet");
-        p_ForceOut->Inlets(PlaneNormal4, Point4, InletPressure*1.005, "Inlet");
+        p_ForceOut->Inlets(PlaneNormal4, Point4, InletPressure*1.05, "Inlet");
         p_ForceOut->Inlets(PlaneNormal5, Point5, InletPressure, "Inlet");
         p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure*1.01, "Outlet");
         p_ForceOut->Inlets(PlaneNormal7, Point7, OutletPressure*0.95, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
-        p_ForceOut->SetFluidSolidIterations(1000);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"Hetero/HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
 
        

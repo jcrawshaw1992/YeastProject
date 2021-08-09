@@ -590,7 +590,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
         config_pr2 << "  Normal: {x: " + std::to_string(Normal[0]) + ", y: " + std::to_string(Normal[1]) + ", z: " + std::to_string(Normal[2]) + "}\n";
         config_pr2 << "  Pressure: {x: " + std::to_string(mPressure[i]) + ", y: 0.0, z: 0.0}\n";
         mEstimatedIC+=mPressure[i];
-        config_pr2 << "  Radius: " + std::to_string(mRadius * 10) + "\n";
+        config_pr2 << "  Radius: " + std::to_string(mRadius * 2) + "\n";
         config_pr2 << "  Type: " + mType[i] + "\n";
     }
 
