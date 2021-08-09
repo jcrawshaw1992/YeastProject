@@ -1587,7 +1587,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
         {
             double Angle = mOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())];
 
-            if (Angle > Threshold3b && Angle < Threshold4b )
+            if (Angle > Threshold4b)// && Angle < Threshold4b )
             // if (Angle < Threshold1b)// || Angle > Threshold2b)
             {
                 // TRACE("High curveature")
