@@ -104,7 +104,7 @@ public:
 
 
         double DilationParameter = -7;
-        double AreaParameter = -7.5;
+        double AreaParameter = -8;
         double DeformationParamter = -6.1;
 
 
