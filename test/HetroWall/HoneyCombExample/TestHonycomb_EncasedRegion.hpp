@@ -234,12 +234,12 @@ public:
             boundary_plane_points2D1.push_back(Create_c_vector(0.06665564222165832, -0.011980123990200122, 0.005023984536790793  ));
             boundary_plane_normals2D1.push_back(Create_c_vector( 0.7071067811865476,  -0.7071067811865476, 0   ));
 
-            /* Diagonal 8 */
-            boundary_plane_points1D1.push_back(Create_c_vector(0.06291175102417185, -0.008252548152637524, -0.0003746202233619752 ));
-            boundary_plane_normals1D1.push_back(Create_c_vector(0.7071067811865476,  -0.7071067811865476, 0  ));
-            /// ----------------------------------------
-            boundary_plane_points2D1.push_back(Create_c_vector(0.06672547926686083, 0.0013997292448692069, 0  ));
-            boundary_plane_normals2D1.push_back(Create_c_vector( 0.7071067811865476,  -0.7071067811865476, 0   ));
+            // /* Diagonal 8 */
+            // boundary_plane_points1D1.push_back(Create_c_vector(0.06291175102417185, -0.008252548152637524, -0.0003746202233619752 ));
+            // boundary_plane_normals1D1.push_back(Create_c_vector(0.7071067811865476,  -0.7071067811865476, 0  ));
+            // /// ----------------------------------------
+            // boundary_plane_points2D1.push_back(Create_c_vector(0.06672547926686083, 0.0013997292448692069, 0  ));
+            // boundary_plane_normals2D1.push_back(Create_c_vector( 0.7071067811865476,  -0.7071067811865476, 0   ));
 
 
             for (unsigned boundary_id = 0; boundary_id < boundary_plane_points2D1.size(); boundary_id++)
