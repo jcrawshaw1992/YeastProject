@@ -228,11 +228,11 @@ public:
 
 
             /* Diagonal 7 */
-            // boundary_plane_points1D1.push_back(Create_c_vector(0.06173093960628514, 0.005548447313304878, 0.0016269652296710439     ));
-            // boundary_plane_normals1D1.push_back(Create_c_vector(0.7071067811865476,  -0.7071067811865476, 0  ));
-            // /// ----------------------------------------
-            // boundary_plane_points2D1.push_back(Create_c_vector(0.06665564222165832, -0.011980123990200122, 0.005023984536790793  ));
-            // boundary_plane_normals2D1.push_back(Create_c_vector( 0.7071067811865476,  -0.7071067811865476, 0   ));
+            boundary_plane_points1D1.push_back(Create_c_vector(0.06282271772073537,0.006561715785187714,0  ));
+            boundary_plane_normals1D1.push_back(Create_c_vector(0.7071067811865476,  -0.7071067811865476, 0  ));
+            /// ----------------------------------------
+            boundary_plane_points2D1.push_back(Create_c_vector(0.066891117006989,  0.0024945562814045054,0 ));
+            boundary_plane_normals2D1.push_back(Create_c_vector( 0.7071067811865476,  -0.7071067811865476, 0   ));
 
        
 
@@ -307,12 +307,13 @@ public:
             boundary_plane_points2D2.push_back(Create_c_vector(0.06686927268562991,-0.015975721795379316,   0));
             boundary_plane_normals2D2.push_back(Create_c_vector(0.7062437429245811,   0.7062437429245811,0 ));
 
-             /* Diagonal 1 */
-            // boundary_plane_points1D2.push_back(Create_c_vector(0.06333874252181512,  -0.006200565650439984  ,  0 ));
-            // boundary_plane_normals1D2.push_back(Create_c_vector( 0.7062437429245811,   0.7062437429245811,0     ));
-            // /// ----------------------------------------
-            // boundary_plane_points2D2.push_back(Create_c_vector( 0.06722223551696654,-0.0023170726552885494,   0));
-            // boundary_plane_normals2D2.push_back(Create_c_vector(0.7062437429245811,   0.7062437429245811,0 ));
+            /* Diagonal 1 */
+            boundary_plane_points2D2.push_back(Create_c_vector(0.061500680003425276, -0.004213131041115538, 0 ));
+            boundary_plane_normals2D2.push_back(-Create_c_vector( 0.7062437429245811,   0.7062437429245811,0     ));
+            /// ----------------------------------------
+            boundary_plane_points1D2.push_back(Create_c_vector( 0.06519758411107461, -0.0005173535084617061 ,   0));
+            boundary_plane_normals1D2.push_back(-Create_c_vector(0.7062437429245811,   0.7062437429245811,0 ));
+
 
 
 
