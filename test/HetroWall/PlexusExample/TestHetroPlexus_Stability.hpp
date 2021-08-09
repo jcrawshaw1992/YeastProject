@@ -112,7 +112,7 @@ public:
         double EndTime = 4;
         double scale = 0.00006684491/1.29;
 
-        double SamplingStep = 50;
+        double SamplingStep = 25;
         double dt = 0.002;
         double RemeshingTime = 1000;
         double EdgeLength =0.00045;
