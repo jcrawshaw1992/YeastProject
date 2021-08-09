@@ -51,7 +51,7 @@ public:
         TRACE("Jess is good")
         double EndTime = 4;
         double scale = 0.00006684491/1.29;
-        double FSI_Iterations = 2000;
+        double FSI_Iterations = 3000;
 
         double SamplingStep = 100;
         double dt = 0.0001;
