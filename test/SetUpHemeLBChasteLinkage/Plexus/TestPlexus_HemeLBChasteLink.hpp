@@ -60,7 +60,7 @@ public:
         
         std::string Archieved = "DeformingPlexus/FlatForceFINAL9/";
         // std::string output_dir = "DeformingPlexus/Grow2Equi/";
-        std::string output_dir = "DeformingPlexus_HemeLB/FirstCollapse/";
+        std::string output_dir = "DeformingPlexus_HemeLB/FirstCollapseLonger/";
      
     
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
@@ -324,7 +324,7 @@ public:
 
 
 
-     for (int i =1; i<=10; i++)
+     for (int i =1; i<=50; i++)
         { 
             
             EndTime +=1;

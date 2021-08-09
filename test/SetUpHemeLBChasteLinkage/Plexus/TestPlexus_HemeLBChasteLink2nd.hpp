@@ -51,7 +51,7 @@ public:
         TRACE("Jess is good")
         double EndTime = 4;
         double scale = 0.00006684491/1.29;
-        double FSI_Iterations = 3000;
+        double FSI_Iterations = 5000;
 
         double SamplingStep = 100;
         double dt = 0.0001;
@@ -60,7 +60,7 @@ public:
         
         std::string Archieved = "DeformingPlexus/FlatForceFINAL9/";
         // std::string output_dir = "DeformingPlexus/Grow2Equi/";
-        std::string output_dir = "DeformingPlexus_HemeLB/SecondCollapse/";
+        std::string output_dir = "DeformingPlexus_HemeLB/SecondCollapseForLonger/";
      
     
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
@@ -323,11 +323,9 @@ public:
 
 
 
-     for (int i =1; i<=10; i++)
+     for (int i =1; i<=50; i++)
         { 
-            
-
-
+        
             EndTime +=1;
             p_simulator->SetEndTime(EndTime);
 
@@ -335,14 +333,6 @@ public:
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
 
         }
-
-        
-            // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
- 
-            // p_ForceOut->SetFluidSolidIterations(FSIIterations);
-            p_simulator->SetSamplingTimestepMultiple(SamplingStep);
-            p_simulator->SetDt(dt);
-            p_Mesh_modifier->SetUpdateFrequency(2/dt);
     }
 
 

@@ -31,6 +31,8 @@
 #include "OutwardsPressure.hpp"
 #include "OutwardsPressureWithBreaks.hpp"
 
+#include "HemeLBForce.hpp"
+
 #include "RemeshingTriggerOnStepHeteroModifier.hpp"
 
 class TestRemeshing : public AbstractCellBasedTestSuite
@@ -43,6 +45,7 @@ public:
             double DilationParameter = -7.3;
             double AreaParameter = -7;
             double DeformationParamter = -8;
+            double FSI_Iterations = 3000;
 
             std::stringstream out;
             out << "DilationParameter_" << DilationParameter << "AreaParameter" << AreaParameter << "DeformationParamter" << DeformationParamter;
