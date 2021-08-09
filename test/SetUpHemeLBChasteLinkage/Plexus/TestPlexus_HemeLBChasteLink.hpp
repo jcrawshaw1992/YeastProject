@@ -155,7 +155,6 @@ public:
  
 
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
-        p_Mesh_modifier->SetmSetUpSolve(1);
         p_Mesh_modifier->SetStepSize(pow(10, -8));
 
         // First collapse option 
@@ -168,7 +167,7 @@ public:
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
         p_Mesh_modifier->SetRadius(0.005);
         p_Mesh_modifier->SetUpdateFrequency(10/dt);
-        p_Mesh_modifier->SetmSetUpSolve(0);
+        p_Mesh_modifier->SetmSetUpSolve(1);
 
 
         /*

@@ -168,7 +168,6 @@ public:
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
         p_Mesh_modifier->SetRadius(0.005);
         p_Mesh_modifier->SetUpdateFrequency(10/dt);
-        p_Mesh_modifier->SetmSetUpSolve(0);
 
           /*
         -----------------------------
