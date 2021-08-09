@@ -113,7 +113,7 @@ public:
         double scale = 0.00006684491/1.29;
 
         double SamplingStep = 50;
-        double dt = 0.001;
+        double dt = 0.002;
         double RemeshingTime = 1000;
         double EdgeLength =0.00045;
         
@@ -132,6 +132,8 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetPrintRemeshedIC(1);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetUpInitialConfig(0);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetInitialAnlgesAcrossMembrane(0);
+
 
         // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetInitialAnlgesAcrossMembrane();
         // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
