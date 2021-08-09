@@ -188,6 +188,10 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
 
         double CellArea;
         double currentForce;
+
+         
+
+
         for (int i = 0; i < 3; i++)
         {
             node_index = elem_iter->GetNodeGlobalIndex(i);
@@ -197,10 +201,10 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
             
             CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
 
-            //  if (p_cell->GetCellData()->GetItem("Curvature") ==2)
-            // {
-            //     ForceOnNode[i]/=2;
-            // }
+            if (Curvature)
+            {
+                ForceOnNode[i]/=10;
+            }
 
 
             currentForce = p_cell->GetCellData()->GetItem("MembraneForce");
