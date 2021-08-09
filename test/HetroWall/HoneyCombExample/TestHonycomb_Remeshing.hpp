@@ -48,7 +48,7 @@ public:
         double SamplingStep = 25;
         double dt = 0.0001;
         double RemeshingTime = 50000;
-        double EdgeLength = 0.0005/2;//(2e-6 * scale);
+        double EdgeLength = 0.00045;//(2e-6 * scale);
 
         
         std::string output_dir = "DeformingHoneyComb/RemeshingStep/";
