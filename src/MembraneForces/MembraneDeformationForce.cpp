@@ -35,6 +35,7 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
         double Kalpha = 0;
         double KA = 0;
         double KS = 0;
+        bool Curvature = 0;
         for (int i = 0; i < 3; i++)
         {
             unsigned node_index = elem_iter->GetNodeGlobalIndex(i);
@@ -43,6 +44,11 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
             Kalpha +=p_cell->GetCellData()->GetItem("AreaDilationModulus");
             KS +=p_cell->GetCellData()->GetItem("ShearModulus");
             KA += p_cell->GetCellData()->GetItem("AreaConstant"); 
+
+            if (p_cell->GetCellData()->GetItem("Curvature") ==2)
+            {
+                Curvature =1;
+            }
         }
         Kalpha/=3;
         KA/=3;
@@ -92,6 +98,13 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
         c_vector<double, 3> b_i = ShapeFunction[1];
 
         double Area0 = p_cell_population->GetOriginalArea(elem_index);
+
+        // if (Curvature)
+        // {
+        //     Area0/=10;
+        //     a_i/=10;
+        //     b_i/=10;
+        // }
 
         // Deformation tensor
         double Dxx = 1 + a_i[0] * V1[0] + a_i[1] * V2[0] + a_i[2] * V3[0];
@@ -189,7 +202,7 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
                 ForceOnNode[i]/=2;
             }
 
-            
+
             currentForce = p_cell->GetCellData()->GetItem("MembraneForce");
             p_cell->GetCellData()->SetItem("MembraneForce",currentForce + norm_2(ForceOnNode[i]));
 
@@ -210,13 +223,6 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
             
 
         }
-
-         if (p_cell1->GetCellData()->GetItem("Curvature") ==2 || p_cell2->GetCellData()->GetItem("Curvature")==2 || p_cell3->GetCellData()->GetItem("Curvature") ==2 || p_cell4->GetCellData()->GetItem("Curvature") ==2)
-         {
-             OriginalAngle = 0;
-             MembraneStiffness/=10;
-         }
-
 
 
         pNode0->AddAppliedForceContribution(ForceOnNode[0]);
