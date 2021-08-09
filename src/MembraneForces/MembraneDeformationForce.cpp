@@ -35,7 +35,7 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
         double Kalpha = 0;
         double KA = 0;
         double KS = 0;
-        bool Curvature = 0;
+        // bool Curvature = 0;
         for (int i = 0; i < 3; i++)
         {
             unsigned node_index = elem_iter->GetNodeGlobalIndex(i);
@@ -45,10 +45,10 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
             KS +=p_cell->GetCellData()->GetItem("ShearModulus");
             KA += p_cell->GetCellData()->GetItem("AreaConstant"); 
 
-            if (p_cell->GetCellData()->GetItem("Curvature") ==2)
-            {
-                Curvature =1;
-            }
+            // if (p_cell->GetCellData()->GetItem("Curvature") ==2)
+            // {
+            //     Curvature =1;
+            // }
         }
         Kalpha/=3;
         KA/=3;
@@ -99,12 +99,12 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
 
         double Area0 = p_cell_population->GetOriginalArea(elem_index);
 
-        if (Curvature)
-        {
-            Area0/=10;
-            a_i/=10;
-            b_i/=10;
-        }
+        // if (Curvature)
+        // {
+        //     Area0/=10;
+        //     a_i/=10;
+        //     b_i/=10;
+        // }
 
         // Deformation tensor
         double Dxx = 1 + a_i[0] * V1[0] + a_i[1] * V2[0] + a_i[2] * V3[0];
@@ -201,10 +201,10 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
             
             CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
 
-            if (Curvature)
-            {
-                ForceOnNode[i]/=10;
-            }
+            // if (Curvature)
+            // {
+            //     ForceOnNode[i]/=10;
+            // }
 
 
             currentForce = p_cell->GetCellData()->GetItem("MembraneForce");
