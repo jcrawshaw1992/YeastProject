@@ -55,7 +55,9 @@ public:
             double dt = 0.0005;
             double NewEndTime = EndTime+10;
 
-            std::string Archieved = "DeformingHoneyComb/FlatForce3";
+            std::string Archieved = "DeformingHoneyComb/RemeshingStep/";
+
+            // std::string Archieved = "DeformingHoneyComb/FlatForce3";
 
             OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
             /* Update the ouput directory for the population  */
@@ -328,6 +330,31 @@ public:
                 p_simulator->AddCellPopulationBoundaryCondition(p_condition);
             }
 
+
+
+            /*
+            -----------------------------
+            Boundary conditions
+            ----------------------------
+            */
+
+            std::vector<c_vector<double, 3> > boundary_plane_points;
+            std::vector<c_vector<double, 3> > boundary_plane_normals;
+
+            boundary_plane_points.push_back(Create_c_vector(0.008952984699510745,0,0 ));
+            boundary_plane_normals.push_back(Create_c_vector(-1, 0, 0));
+
+            boundary_plane_points.push_back(Create_c_vector(0.06911882536638361,0,0));
+            boundary_plane_normals.push_back(Create_c_vector(1,0,0));
+
+        
+            for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
+            {
+    
+                    boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id],2));
+                    simulator.AddCellPopulationBoundaryCondition(p_condition);
+
+            }
 
 
 
