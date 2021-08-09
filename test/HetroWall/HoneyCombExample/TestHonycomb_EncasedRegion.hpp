@@ -16,6 +16,8 @@
 #include "CellProliferativeTypesWriter.hpp"
 #include "CellsGenerator.hpp"
 #include "DifferentiatedCellProliferativeType.hpp"
+
+#include "EnclosedRegionBoundaryCondition.hpp"
 #include "FixedG1GenerationalCellCycleModel.hpp"
 #include "OffLatticeSimulation.hpp"
 
