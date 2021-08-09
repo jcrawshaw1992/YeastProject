@@ -63,7 +63,7 @@ public:
             static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()). SetWriteVtkAsPoints(false);
             double EdgeLength = 0.0003;//(2e-6 * scale); 0.00045/2;//(2e-6 * scale);
             static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
-            static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+            // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
 
             p_simulator->RemoveAllForces();
             p_simulator->SetSamplingTimestepMultiple(SamplingStep);
