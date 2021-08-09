@@ -104,8 +104,8 @@ public:
 
 
         double DilationParameter = -7;
-        double AreaParameter = -7.5;
-        double DeformationParamter = -6;
+        double AreaParameter = -7.6;
+        double DeformationParamter = -6.1;
 
 
         TRACE("Jess is good")
@@ -145,7 +145,7 @@ public:
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
         p_membrane_force->SetMembraneStiffness(pow(10, -20));
-        p_simulator->AddForce(p_membrane_force);
+        // p_simulator->AddForce(p_membrane_force);
         /*
         -----------------------------
         Membrane forces
@@ -176,7 +176,7 @@ public:
         // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
         p_Mesh_modifier->TurnOffRemeshing();   
         //AreaConstant           AreaDilationModulus        ShearModulus
-        std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), 1e-17) } };
+        std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), 1e-27) } };
 
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
         p_Mesh_modifier->SetmSetUpSolve(1);
@@ -298,8 +298,8 @@ public:
         boundary_plane_points1.push_back(Create_c_vector(0.04535333451092035,  0.01827253994971488, -0.000826775696576238   ));
         boundary_plane_normals1.push_back(Create_c_vector( 0.8800927838947658,  0.47304154554359323,  0.040845904642813985   ));
         /// ----------------------------------------
-        boundary_plane_points2.push_back(Create_c_vector(0.04810061574400891, 0.019749177622838333,  -0.000699271881833968    ));
-        boundary_plane_normals2.push_back(Create_c_vector(  0.8800927838947658,  0.47304154554359323,  0.040845904642813985   ));
+        boundary_plane_points2.push_back(Create_c_vector(0.04777378462420049,  0.02435646728406592, -0.0015296906390526728  ));
+        boundary_plane_normals2.push_back(Create_c_vector(0.8999000530240061,0.43609399958642875, -0.001384952021894634    ));
 
 
         /* */
