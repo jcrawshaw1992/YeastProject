@@ -25,6 +25,7 @@
 
 // #include "AppliedForceModifier.hpp"
 #include "FixedRegionBoundaryCondition.hpp"
+#include "EnclosedRegionBoundaryCondition.hpp"
 #include "HemeLBForce.hpp"
 #include "MembraneDeformationForce.hpp"
 #include "MembraneDeformationForceOnCylinder.hpp"
