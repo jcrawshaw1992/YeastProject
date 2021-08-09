@@ -69,7 +69,7 @@ private:
     double mRadius =10;
     
 
-    void SetRadius(double Radius);
+    
 
 
     // std::vector<unsigned> mNodesNextToBasement;
@@ -169,6 +169,8 @@ public:
     void SetBasementMembraneStrength(double Strength);
 
     void SetStepSize(double StepSize);
+
+    void SetRadius(double Radius);
 
 
     // void SetMembraneParameters(double AreaParameter, double DilationParameter, double DeformationParamter, double BendingParameter);
