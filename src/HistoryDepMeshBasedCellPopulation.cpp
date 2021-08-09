@@ -1566,8 +1566,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
 
     double Threshold1b = MeanAngle - 2.5 * stdev;
     double Threshold2b = MeanAngle + 2.5 * stdev;
-    double Threshold3b = MeanAngle + 3* stdev;
-    double Threshold4b = MeanAngle + 4* stdev;
     // Now go through and see what is greater than the threshold
 
     std::vector<Element<ELEMENT_DIM, SPACE_DIM>*> ElementsToRefine;
@@ -1587,8 +1585,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
         {
             double Angle = mOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())];
 
-            if (Angle > Threshold4b)// && Angle < Threshold4b )
-            // if (Angle < Threshold1b)// || Angle > Threshold2b)
+            if (Angle < Threshold1b || Angle > Threshold2b)
             {
                 // TRACE("High curveature")
                 // I need this edge to be the inital edge

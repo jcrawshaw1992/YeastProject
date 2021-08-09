@@ -107,7 +107,7 @@ void EnclosedRegionBoundaryCondition<ELEMENT_DIM,SPACE_DIM>::ImposeBoundaryCondi
                     p_node->rGetModifiableLocation() = node_old_location + displacement - inner_prod(displacement,(mNormalToPlane+mNormalToPlane2)/2)*(mNormalToPlane+mNormalToPlane2)/2;
                     // p_node->rGetModifiableLocation() = node_location - inner_prod(displacement,mNormalToPlane)*mNormalToPlane
                     CellPtr p_cell = this->mpCellPopulation->GetCellUsingLocationIndex(node_index);
-                    p_cell->GetCellData()->SetItem("FixedBoundary", 1);
+                    p_cell->GetCellData()->SetItem("FixedBoundary", 2);
                     //  TRACE("A")
                  }
               

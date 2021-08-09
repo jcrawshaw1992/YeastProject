@@ -104,7 +104,7 @@ public:
 
 
         double DilationParameter = -7;
-        double AreaParameter = -8;
+        double AreaParameter = -7.9;
         double DeformationParamter = -6.1;
 
 
@@ -112,7 +112,7 @@ public:
         double EndTime = 4;
         double scale = 0.00006684491/1.29;
 
-        double SamplingStep = 25;
+        double SamplingStep = 50;
         double dt = 0.001;
         double RemeshingTime = 1000;
         double EdgeLength =0.00045;
@@ -131,8 +131,6 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetPrintRemeshedIC(1);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetUpInitialConfig(0);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetInitialAnlgesAcrossMembrane();
 
 
         // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetInitialAnlgesAcrossMembrane();

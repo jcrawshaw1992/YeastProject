@@ -265,11 +265,12 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
                     double DotToUpperPlane = inner_prod(NodeToUpperPlane,UpperPlane );
                     double DotToLowerPlane = inner_prod(NodeToLowerPlane,LowerPlane );
     
-                    double radius = 1;//0.005; // XXX TODO Radius threshold needs fixing
+                    // double radius = 1;//0.005; // XXX TODO Radius threshold needs fixing
 
-                    if (DotToLowerPlane >= 0 && DotToUpperPlane >= 0)
+
+                    if (DotToLowerPlane >= 0 && DotToUpperPlane >= 0 )
                     {
-                        if (norm_2(NodeToUpperPlane) <radius ||  norm_2(NodeToLowerPlane)<radius  )
+                        if (norm_2(NodeToUpperPlane) <mRadius ||  norm_2(NodeToLowerPlane)<mRadius  )
                         {
                             cell_iter->GetCellData()->SetItem("MembraneState", 10);
                             cell_iter->SetMutationState(p_Basement);
@@ -375,6 +376,15 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::Boundaries(c_
     mHetro = 1;
     mSetUpSolve =1;
     TRACE("GOt here")
+    
+}
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetRadius(double Radius)
+{
+
+    mRadius = Radius;
     
 }
 

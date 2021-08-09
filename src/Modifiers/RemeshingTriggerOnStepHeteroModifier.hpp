@@ -66,7 +66,11 @@ private:
     int mExecute = 0;
     bool mRemeshing = 0;
     int mStepsSinceLastRemesh = 1;
+    double mRadius =10;
     
+
+    void SetRadius(double Radius);
+
 
     // std::vector<unsigned> mNodesNextToBasement;
     std::vector<unsigned> mBasementNodes;
