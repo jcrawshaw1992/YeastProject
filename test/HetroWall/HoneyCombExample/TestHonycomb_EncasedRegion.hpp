@@ -51,7 +51,7 @@ public:
 
             TRACE("Jess is good")
             double EndTime = 11;
-            double SamplingStep = 10;
+            double SamplingStep = 1;
             double dt = 0.0005;
             double NewEndTime = EndTime+10;
 
