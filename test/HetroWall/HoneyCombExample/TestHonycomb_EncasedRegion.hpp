@@ -181,7 +181,7 @@ public:
             boundary_plane_points1D1.push_back(Create_c_vector(0.011316836157625475, -0.0018692261147451787, 0.001297028002651899 ));
             boundary_plane_normals1D1.push_back(Create_c_vector(0.7071067811865476,  -0.7071067811865476, 0  ));
             /// ----------------------------------------
-            boundary_plane_points2D1.push_back(Create_c_vector(01511884615100136, -0.005671236108121062,0.001297028002651899   ));
+            boundary_plane_points2D1.push_back(Create_c_vector(0.01511884615100136, -0.005671236108121062,0.001297028002651899   ));
             boundary_plane_normals2D1.push_back(Create_c_vector( 0.7071067811865476,  -0.7071067811865476, 0   ));
 
             /* Diagonal 3 */
@@ -252,7 +252,7 @@ public:
             for (unsigned boundary_id = 0; boundary_id < boundary_plane_points1D1.size()-1; boundary_id++)
             {
                 // counter +=1;
-                boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1D1[boundary_id], boundary_plane_normals1D1[boundary_id], 1)); //0.01));
+                boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1D1[boundary_id], boundary_plane_normals1D1[boundary_id], 0.05)); //0.01));
 
                 p_condition->SetPointOnPlane2( boundary_plane_points2D1[boundary_id]);
                 p_condition->SetNormalToPlane2(boundary_plane_normals2D1[boundary_id]);
