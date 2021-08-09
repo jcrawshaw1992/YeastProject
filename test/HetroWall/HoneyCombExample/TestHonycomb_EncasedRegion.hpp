@@ -223,22 +223,22 @@ public:
             boundary_plane_points1D1.push_back(Create_c_vector(0.06296600825580362, -0.00829049002434537, 0.005023984536790793    ));
             boundary_plane_normals1D1.push_back(Create_c_vector(0.7071067811865476,  -0.7071067811865476, 0  ));
             /// ----------------------------------------
-            boundary_plane_points2D1.push_back(Create_c_vector(0.06665564222165832, -0.011980123990200122, 0.005023984536790793  ));
+            boundary_plane_points2D1.push_back(Create_c_vector(0.06665564222165832, -0.011980123990200122, -0.011980123990200122 ));
             boundary_plane_normals2D1.push_back(Create_c_vector( 0.7071067811865476,  -0.7071067811865476, 0   ));
 
 
             /* Diagonal 7 */
-            boundary_plane_points1D1.push_back(Create_c_vector(0.06173093960628514, 0.005548447313304878, 0.0016269652296710439     ));
-            boundary_plane_normals1D1.push_back(Create_c_vector(0.7071067811865476,  -0.7071067811865476, 0  ));
-            /// ----------------------------------------
-            boundary_plane_points2D1.push_back(Create_c_vector(0.06665564222165832, -0.011980123990200122, 0.005023984536790793  ));
-            boundary_plane_normals2D1.push_back(Create_c_vector( 0.7071067811865476,  -0.7071067811865476, 0   ));
+            // boundary_plane_points1D1.push_back(Create_c_vector(0.06173093960628514, 0.005548447313304878, 0.0016269652296710439     ));
+            // boundary_plane_normals1D1.push_back(Create_c_vector(0.7071067811865476,  -0.7071067811865476, 0  ));
+            // /// ----------------------------------------
+            // boundary_plane_points2D1.push_back(Create_c_vector(0.06665564222165832, -0.011980123990200122, 0.005023984536790793  ));
+            // boundary_plane_normals2D1.push_back(Create_c_vector( 0.7071067811865476,  -0.7071067811865476, 0   ));
 
             /* Diagonal 8 */
             boundary_plane_points1D1.push_back(Create_c_vector(0.06291175102417185, -0.008252548152637524, -0.0003746202233619752 ));
             boundary_plane_normals1D1.push_back(Create_c_vector(0.7071067811865476,  -0.7071067811865476, 0  ));
             /// ----------------------------------------
-            boundary_plane_points2D1.push_back(Create_c_vector(0.06669267744109122, -0.012397007197412713,-0.00033079634065997506  ));
+            boundary_plane_points2D1.push_back(Create_c_vector(0.06669267744109122, -0.012397007197412713, -0.00033079634065997506  ));
             boundary_plane_normals2D1.push_back(Create_c_vector( 0.7071067811865476,  -0.7071067811865476, 0   ));
 
 
@@ -252,6 +252,39 @@ public:
 
                 p_simulator->AddCellPopulationBoundaryCondition(p_condition);
             }
+
+
+
+
+
+            // std::vector<c_vector<double, 3> > boundary_plane_points1D2;
+            // std::vector<c_vector<double, 3> > boundary_plane_normals1D2;
+
+            // std::vector<c_vector<double, 3> > boundary_plane_points2D2;
+            // std::vector<c_vector<double, 3> > boundary_plane_normals2D2;
+
+
+            
+            // /* Diagonal 1 */
+            // boundary_plane_points1D2.push_back(Create_c_vector(      ));
+            // boundary_plane_normals1D2.push_back(Create_c_vector(        ));
+            // /// ----------------------------------------
+            // boundary_plane_points2D2.push_back(Create_c_vector(         ));
+            // boundary_plane_normals2D2.push_back(Create_c_vector(      ));
+
+
+            // for (unsigned boundary_id = 0; boundary_id < boundary_plane_points2D2.size(); boundary_id++)
+            // {
+            //     boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1D2[boundary_id], boundary_plane_normals1D2[boundary_id], 0.009)); //0.01));
+
+            //     p_condition->SetPointOnPlane2( boundary_plane_points2D2[boundary_id]);
+            //     p_condition->SetNormalToPlane2(boundary_plane_normals2D2[boundary_id]);
+
+
+            //     p_simulator->AddCellPopulationBoundaryCondition(p_condition);
+            // }
+
+
 
 
            ///////////////////////////////////////////////////////////////////////////////////////
