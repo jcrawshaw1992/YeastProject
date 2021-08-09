@@ -242,10 +242,8 @@ public:
             boundary_plane_normals2D1.push_back(Create_c_vector( 0.7071067811865476,  -0.7071067811865476, 0   ));
 
 
-            for (unsigned boundary_id = 0; boundary_id < 4; boundary_id++)
+            for (unsigned boundary_id = 0; boundary_id < boundary_plane_points2D1.size(); boundary_id++)
             {
-     
-     
                 boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1D1[boundary_id], boundary_plane_normals1D1[boundary_id], 0.009)); //0.01));
 
                 p_condition->SetPointOnPlane2( boundary_plane_points2D1[boundary_id]);
