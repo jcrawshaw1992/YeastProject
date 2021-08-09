@@ -9,7 +9,9 @@ HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::HistoryDepMeshBasedCe
         : MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>(rMesh, rCells, locationIndices, deleteMesh, validate)
 {
     SaveInitalConditions();
+    TRACE("SaveInitalConditions")
     // this->SetBinningRegions();
+    SetInitialAnlgesAcrossMembrane();
     
     bool InitialRemesh =0;
     if (InitialRemesh)
@@ -1583,7 +1585,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
         {
             double Angle = mOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())];
 
-            if (Angle < Threshold1b || Angle > Threshold2b)
+            if (Angle < Threshold1b)// || Angle > Threshold2b)
             {
                 // TRACE("High curveature")
                 // I need this edge to be the inital edge
