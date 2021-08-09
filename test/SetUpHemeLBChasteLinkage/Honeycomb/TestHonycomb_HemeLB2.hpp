@@ -50,7 +50,7 @@ public:
             std::stringstream out;
             out << "DilationParameter_" << DilationParameter << "AreaParameter" << AreaParameter << "DeformationParamter" << DeformationParamter;
             std::string ParameterSet = out.str();
-            std::string output_dir = "HoneyComb_HemeLB/Collapse" ;//+ ParameterSet;
+            std::string output_dir = "HoneyComb_HemeLB/Collapse2/";
 
             TRACE("Jess is good")
             double EndTime = 11;
@@ -355,7 +355,7 @@ public:
 
 
             boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
-            p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
+            p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure*1.1, "Inlet");
             p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure,  "Inlet");
             p_ForceOut->Inlets(PlaneNormal3, Point3, OutletPressure, "Outlet");
             p_ForceOut->Inlets(PlaneNormal4, Point4, OutletPressure, "Outlet");
