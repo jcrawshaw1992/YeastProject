@@ -92,7 +92,7 @@ public:
         ----------------------------
         */
        // Inlet1
-       c_vector<double, 3> Point1 = Create_c_vector(0.02297977879048401, 0.037075481876763385,  0.0004635334404919405);
+        c_vector<double, 3> Point1 = Create_c_vector(0.02297977879048401, 0.037075481876763385,  0.0004635334404919405);
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(0.999910929986149, 0.0020912833516396026,-0.013181753607835568  );
         // Inlet2
         c_vector<double, 3> Point2 = Create_c_vector(0.036837793060229,0.055384952301980456,-0.0007597519518940717)  ;
@@ -103,8 +103,8 @@ public:
         c_vector<double, 3> PlaneNormal3 = Create_c_vector( -0.8734008505817445, -0.4862907639633924, 0.026310588875685135  );
 
         // Outlet2
-        c_vector<double, 3> Point4 = Create_c_vector(0.05879896633276119, 0.03973781304610769, -0.0009631168307583331) ;
-        c_vector<double, 3> PlaneNormal4 = Create_c_vector(-0.7771752850914773, -0.7771752850914773, 0.028841746519592842);
+        c_vector<double, 3> Point4 = Create_c_vector( 0.05849786867183286,0.04003892834739773, -8.346812953121241e-5) ;
+        c_vector<double, 3> PlaneNormal4 = Create_c_vector( -0.7771752850914773, -0.6286228836915505, 0.028841746519592842);
 
         // Inlet3
         c_vector<double, 3> Point5 = Create_c_vector(0.056296622912376706, 0.020105116941221777, 0.0002243854912119816) ;

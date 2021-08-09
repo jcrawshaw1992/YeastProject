@@ -103,8 +103,8 @@ public:
         c_vector<double, 3> PlaneNormal3 = Create_c_vector( -0.8734008505817445, -0.4862907639633924, 0.026310588875685135  );
 
         // Outlet2
-        c_vector<double, 3> Point4 = Create_c_vector(0.05879896633276119, 0.03973781304610769, -0.0009631168307583331) ;
-        c_vector<double, 3> PlaneNormal4 = Create_c_vector(-0.7771752850914773, -0.7771752850914773, 0.028841746519592842);
+        c_vector<double, 3> Point4 = Create_c_vector( 0.05849786867183286,0.04003892834739773, -8.346812953121241e-5) ;
+        c_vector<double, 3> PlaneNormal4 = Create_c_vector( -0.7771752850914773, -0.6286228836915505, 0.028841746519592842);
 
         // Inlet3
         c_vector<double, 3> Point5 = Create_c_vector(0.056296622912376706, 0.020105116941221777, 0.0002243854912119816) ;
@@ -131,7 +131,7 @@ public:
         p_ForceOut->Inlets(PlaneNormal3, Point3, OutletPressure, "Outlet");
         p_ForceOut->Inlets(PlaneNormal4, Point4, InletPressure*1.05, "Inlet");
         p_ForceOut->Inlets(PlaneNormal5, Point5, InletPressure, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure*1.01, "Outlet");
+        p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure*0.98, "Outlet");
         p_ForceOut->Inlets(PlaneNormal7, Point7, OutletPressure*0.95, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
