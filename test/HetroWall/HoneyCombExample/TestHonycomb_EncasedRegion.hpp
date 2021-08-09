@@ -149,7 +149,7 @@ public:
                 boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1[boundary_id], boundary_plane_normals1[boundary_id], 1)); //0.01));
 
                 p_condition->SetPointOnPlane2( boundary_plane_points2[boundary_id]);
-                p_condition->SetNormalToPlane(boundary_plane_normals2[boundary_id]);
+                p_condition->SetNormalToPlane2(boundary_plane_normals2[boundary_id]);
 
 
                 p_simulator->AddCellPopulationBoundaryCondition(p_condition);
