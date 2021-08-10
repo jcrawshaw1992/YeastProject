@@ -44,13 +44,13 @@ public:
 
             double DilationParameter = -7.3;
             double AreaParameter = -7;
-            double DeformationParamter = -8;
+            double DeformationParamter = -8;//7.8
             double FSI_Iterations = 3000;
 
             std::stringstream out;
             out << "DilationParameter_" << DilationParameter << "AreaParameter" << AreaParameter << "DeformationParamter" << DeformationParamter;
             std::string ParameterSet = out.str();
-            std::string output_dir = "HoneyComb_HemeLB/Collapse3/";
+            std::string output_dir = "HoneyComb_HemeLB/testingstep/";
 
             TRACE("Jess is good")
             double EndTime = 11;
@@ -385,11 +385,11 @@ public:
 
             // First collapse option 
             // Upstream 
-            c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.034963365591332625, 0.013085128759930594,0);
+            c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.034963365591332625, -5e-5,0);
             c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
-            // Down stream
-            c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.04307533991933138, 0.013085128759930594,0 );
-            c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(1,0,0);
+            // Down stream                                                             
+            c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.04307533991933138, -5e-5,0 );
+            c_vector<double, 3> LowerPlaneNormal = Create_c_vector(1,0,0);
             p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
             p_Mesh_modifier->SetRadius(0.007);
             p_Mesh_modifier->SetUpdateFrequency(10/dt);

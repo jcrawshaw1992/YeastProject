@@ -39,19 +39,17 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
 
-
-
   void TestContinuingHomoArchieve2collapse() throw(Exception)
    {
         double DilationParameter = -7;
-        double AreaParameter = -7.9;
-        double DeformationParamter = -6.1;
+        double AreaParameter = -7.4;
+        double DeformationParamter = -6;
 
 
         TRACE("Jess is good")
         double EndTime = 4;
         double scale = 0.00006684491/1.29;
-        double FSI_Iterations = 3000;
+        double FSI_Iterations = 5000;
 
         double SamplingStep = 100;
         double dt = 0.0001;
@@ -60,7 +58,7 @@ public:
         
         std::string Archieved = "DeformingPlexus/FlatForceFINAL9/";
         // std::string output_dir = "DeformingPlexus/Grow2Equi/";
-        std::string output_dir = "DeformingPlexus_HemeLB/FirstCollapseLonger/";
+        std::string output_dir = "DeformingPlexus_HemeLBSec/FirstCollapse/";
      
     
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
@@ -128,9 +126,9 @@ public:
         boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
         p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
         p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure*1.1, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal3, Point3, OutletPressure, "Outlet");
+        p_ForceOut->Inlets(PlaneNormal3, Point3, InletPressure, "Inlet");
         p_ForceOut->Inlets(PlaneNormal4, Point4, InletPressure*1.05, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal5, Point5, InletPressure, "Inlet");
+        p_ForceOut->Inlets(PlaneNormal5, Point5, OutletPressure, "Outlet");
         p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure*0.98, "Outlet");
         p_ForceOut->Inlets(PlaneNormal7, Point7, OutletPressure*0.95, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
@@ -151,7 +149,7 @@ public:
         p_Mesh_modifier->TurnOffRemeshing();   
         //AreaConstant           AreaDilationModulus        ShearModulus
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), 0) },
-                                                                    {0,  Create_c_vector(pow(10, -5), pow(10, -4), pow(10, -4), 0)}    };
+                                                                    {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4), 0)}    };
  
 
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
@@ -166,7 +164,7 @@ public:
         c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(-0.850657197084237, 0.5256842037978231, 0.006200881085641978);
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
         p_Mesh_modifier->SetRadius(0.005);
-        p_Mesh_modifier->SetUpdateFrequency(10/dt);
+        p_Mesh_modifier->SetUpdateFrequency(0.1/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
 
 
@@ -301,24 +299,24 @@ public:
 
 
         unsigned counter =0;
-        for (unsigned boundary_id = 0; boundary_id < boundary_plane_points1.size()-1; boundary_id++)
-        {
-            counter +=1;
-            boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1[boundary_id], boundary_plane_normals1[boundary_id], 0.01)); //0.01));
+        // for (unsigned boundary_id = 0; boundary_id < boundary_plane_points1.size()-1; boundary_id++)
+        // {
+        //     counter +=1;
+        //     boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1[boundary_id], boundary_plane_normals1[boundary_id], 0.01)); //0.01));
 
-            p_condition->SetPointOnPlane2( boundary_plane_points2[boundary_id]);
-            p_condition->SetNormalToPlane2(boundary_plane_normals2[boundary_id]);
+        //     p_condition->SetPointOnPlane2( boundary_plane_points2[boundary_id]);
+        //     p_condition->SetNormalToPlane2(boundary_plane_normals2[boundary_id]);
 
 
-             p_simulator->AddCellPopulationBoundaryCondition(p_condition);
-        }
+        //      p_simulator->AddCellPopulationBoundaryCondition(p_condition);
+        // }
 
-        boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition1(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1[counter], boundary_plane_normals1[counter], 0.004));
+        // boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition1(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1[counter], boundary_plane_normals1[counter], 0.004));
 
-        p_condition1->SetPointOnPlane2( boundary_plane_points2[counter]);
-        p_condition1->SetNormalToPlane2(boundary_plane_normals2[counter]);
+        // p_condition1->SetPointOnPlane2( boundary_plane_points2[counter]);
+        // p_condition1->SetNormalToPlane2(boundary_plane_normals2[counter]);
 
-        p_simulator->AddCellPopulationBoundaryCondition(p_condition1);
+        // p_simulator->AddCellPopulationBoundaryCondition(p_condition1);
 
         ///////////////////////////////////////////////////////////////////////////////////////
 
