@@ -45,10 +45,16 @@ public:
 
   void TestWithConstantForce() throw(Exception)
    {
-        double DilationParameter = -6;
-        double AreaParameter = -5.5;
-        double DeformationParamter = -6;
-        double BendingParameter = -12;
+        // double DilationParameter = -6;
+        // double AreaParameter = -5.5;
+        // double DeformationParamter = -6;
+        // double BendingParameter = -12;
+
+
+         double DilationParameter = -6;
+        double AreaParameter = -7;
+        double DeformationParamter = -6.6;
+        double BendingParameter = -10;
 
 
         TRACE("Jess is good")
@@ -60,7 +66,7 @@ public:
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
         
-        std::string output_dir = "SimpleHemeLBPlexus/ConstantTestTighter4/";
+        std::string output_dir = "SimpleHemeLBPlexus/DifferentParameter/";
      
         std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);

@@ -159,7 +159,7 @@ public:
     bool mSetUpSolve =1;
 
    
-    void AdaptHeteroRegion(HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation, unsigned elem_index);
+    void AdaptHeteroRegion(HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation, unsigned elem_index, double Collapse);
 
 
 

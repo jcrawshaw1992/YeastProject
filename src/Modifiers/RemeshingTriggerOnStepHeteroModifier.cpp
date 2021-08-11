@@ -327,8 +327,12 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
                 
                 if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()   || p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
                 {   
-                    AdaptHeteroRegion(p_cell_population, elem_index);
-                }     
+                    AdaptHeteroRegion(p_cell_population, elem_index, 10);
+                } 
+                else
+                {
+                    AdaptHeteroRegion(p_cell_population, elem_index, 1.5);
+                }
         }
 
 
@@ -620,15 +624,15 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetBendingFor
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::AdaptHeteroRegion(HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation, unsigned elem_index)
+void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::AdaptHeteroRegion(HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation, unsigned elem_index, double Collapse)
 {
         // HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
    
         c_vector<c_vector<double, 2>, 3> InitalVectors =  pCellPopulation->GetInitalVectors(elem_index);
         double OriginalArea = pCellPopulation->GetOriginalArea(elem_index);
 
-        pCellPopulation->AdaptmmInitalVectors(InitalVectors[0]/10, InitalVectors[1]/10,InitalVectors[2]/10,elem_index);
-        pCellPopulation->AdaptmArea0(OriginalArea/10, elem_index);
+        pCellPopulation->AdaptmmInitalVectors(InitalVectors[0]/Collapse, InitalVectors[1]/Collapse,InitalVectors[2]/Collapse,elem_index);
+        pCellPopulation->AdaptmArea0(OriginalArea/Collapse, elem_index);
 
 }
 
