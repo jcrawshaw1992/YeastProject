@@ -48,7 +48,7 @@ public:
         double DilationParameter = -6;
         double AreaParameter = -5.5;
         double DeformationParamter = -6;
-        double BendingParameter = -8;
+        double BendingParameter = -7;
 
 
         TRACE("Jess is good")
@@ -56,7 +56,7 @@ public:
         double FSI_Iterations = 5000;
 
         double SamplingStep = 10;
-        double dt = 0.001;
+        double dt = 0.005;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
         
