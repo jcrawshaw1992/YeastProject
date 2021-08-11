@@ -45,10 +45,10 @@ public:
 
   void TestWithConstantForce() throw(Exception)
    {
-        double DilationParameter = -6;
+        double DilationParameter = -5.5;
         double AreaParameter = -5;
-        double DeformationParamter = -5.5;
-        double BendingParameter = -8;
+        double DeformationParamter = -5;
+        double BendingParameter = -7;
 
         // This was the first Idea 
         // double DilationParameter = -6;   
@@ -71,7 +71,7 @@ public:
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
         
-        std::string output_dir = "SimpleHemeLBPlexus2/GrowingToEqui/";
+        std::string output_dir = "SimpleHemeLBPlexus2/GrowingToEqui2/";
      
         std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
