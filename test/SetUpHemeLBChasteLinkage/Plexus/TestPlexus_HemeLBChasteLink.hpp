@@ -58,7 +58,7 @@ public:
         
         std::string Archieved = "DeformingPlexus/FlatForceFINAL9/";
         // std::string output_dir = "DeformingPlexus/Grow2Equi/";
-        std::string output_dir = "DeformingPlexus_HemeLBSec/FirstCollapse/";
+        std::string output_dir = "DeformingPlexus_HemeLBThird/FirstCollapse/";
      
     
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
@@ -96,7 +96,7 @@ public:
         c_vector<double, 3> Point2 = Create_c_vector(0.036837793060229,0.055384952301980456,-0.0007597519518940717)  ;
         c_vector<double, 3> PlaneNormal2 = Create_c_vector(0.6732805342808156,-0.7380737547778258,  -0.04405059212657047);
 
-        // Outlet1
+        // Outlet1 This is the bug bar
         c_vector<double, 3> Point3 = Create_c_vector(0.051243051697026636,0.05386889597979771, 0.00016345376729906492 ) ;
         c_vector<double, 3> PlaneNormal3 = Create_c_vector( -0.8734008505817445, -0.4862907639633924, 0.026310588875685135  );
 
@@ -117,7 +117,6 @@ public:
         c_vector<double, 3> PlaneNormal7 = Create_c_vector(0.6878807670924608, 0.7247343474980099, -0.03975142539484216);
 
 
-
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
 
         double InletPressure = P_blood * 1.001; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
@@ -126,8 +125,8 @@ public:
         boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
         p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
         p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure*1.1, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal3, Point3, InletPressure, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal4, Point4, InletPressure*1.05, "Inlet");
+        p_ForceOut->Inlets(PlaneNormal3, Point3, InletPressure*1.2, "Inlet");
+        p_ForceOut->Inlets(PlaneNormal4, Point4, InletPressure*1, "Inlet");
         p_ForceOut->Inlets(PlaneNormal5, Point5, OutletPressure, "Outlet");
         p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure*0.98, "Outlet");
         p_ForceOut->Inlets(PlaneNormal7, Point7, OutletPressure*0.95, "Outlet");
@@ -200,10 +199,8 @@ public:
         boundary_plane_points.push_back(Create_c_vector( 0.03952667347394293,0.01380981593118016, 0.00035914153313716104  ));
         boundary_plane_normals.push_back(Create_c_vector( -0.14188750875173126, -0.9842863935116474,0.10511056278063648));
 
-
-        boundary_plane_points.push_back(Create_c_vector( 0.051916367697719554, 0.05396743908086633, 0.0004919967151319857 ));
-        boundary_plane_normals.push_back(Create_c_vector(0.8831316656538849, 0.4690231691065414, 0.009784066672481936 ));
-
+        boundary_plane_points.push_back(Create_c_vector( 0.050685301163470184, 0.05368317770751255, -0.000394611429412961 ));
+        boundary_plane_normals.push_back(Create_c_vector(0.8831071868527388, 0.4691180632417636, 0.007066772200845511 ));
 
         boundary_plane_points.push_back(Create_c_vector(0.036804371668431334, 0.053919748549890005, -0.0007634162035095087 ));
         boundary_plane_normals.push_back(Create_c_vector(-0.6416261436122902, 0.7612012690416773,  0.09427894697418274   ));
@@ -216,10 +213,6 @@ public:
 
         boundary_plane_points.push_back(Create_c_vector(0.040547082072423954,0.018275901698485374, 0.00039994117540888903 ));
         boundary_plane_normals.push_back(Create_c_vector(-0.13760377878446087, -0.9886290666284141, 0.060644609667043325));
-  
-        boundary_plane_points.push_back(Create_c_vector(0.04660359474772499, 0.05104084087227261,0.0007679575729855695  ));
-        boundary_plane_normals.push_back(Create_c_vector(0.8871018711566134,0.4562209461172769, -0.07009078765638171));
-
 
         boundary_plane_points.push_back(Create_c_vector( 0.029862726176558368, 0.022150802525023005,  0.0007074621356822784   ));
         boundary_plane_normals.push_back(Create_c_vector(-0.6983037235236903,  -0.7144025416789002 ,0.044731623664661664  ));
@@ -239,86 +232,6 @@ public:
              boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.008));
              p_simulator->AddCellPopulationBoundaryCondition(p_condition);
         }
-
-
-        ///////////////////////////////////////////////////////////////////////////////////////
-
-        std::vector<c_vector<double, 3> > boundary_plane_points1;
-        std::vector<c_vector<double, 3> > boundary_plane_normals1;
-
-        std::vector<c_vector<double, 3> > boundary_plane_points2;
-        std::vector<c_vector<double, 3> > boundary_plane_normals2;
-
-
-
-        boundary_plane_points1.push_back(Create_c_vector(0.0344839553141627, 0.039166859323769385,  -7.321768764989628e-5   ));
-        boundary_plane_normals1.push_back(Create_c_vector( 0.7474390621015472,  0.662857583536715,  0.04421167710714476  ));
-        /// ----------------------------------------
-        boundary_plane_points2.push_back(Create_c_vector(0.038633725599634766 , 0.042834650295782095, 0.00014677123886970464 ));
-        boundary_plane_normals2.push_back(Create_c_vector( 0.7713091680800281,0.6338501379897751,  -0.057586194578546857  ));
-        /* */
-        boundary_plane_points1.push_back(Create_c_vector(0.03408644744248119, 0.02948610276941591,1.1431840682180057e-5   ));
-        boundary_plane_normals1.push_back(Create_c_vector( -0.13710180943275943, 0.9904392690600551,0 ));
-        /// ----------------------------------------
-        boundary_plane_points2.push_back(Create_c_vector(0.031214753375716997,0.03384381942477147, -0.00020100804806112238  ));
-        boundary_plane_normals2.push_back(Create_c_vector( -0.1365186273602051,  0.9906313098812551, 0.00350317950355177 ));
-        /* */
-        boundary_plane_points1.push_back(Create_c_vector(0.05115507250002135,0.029210202823000585, 0.0013139290500819793  ));
-        boundary_plane_normals1.push_back(Create_c_vector( 0.25675931195415885, 0.9657125663824311, 0.03839133829245353 ));
-        /// ----------------------------------------
-        boundary_plane_points2.push_back(Create_c_vector(0.052237407320433346, 0.033906865036683775, 0.0012929371808254831 ));
-        boundary_plane_normals2.push_back(Create_c_vector( 0.23648919545312502, 0.9712857281725686, 0.026017199738188904 ));
-        /* */
-        boundary_plane_points1.push_back(Create_c_vector(0.04877608409834386,0.03986943093515008, 0.00376937928511186   ));
-        boundary_plane_normals1.push_back(Create_c_vector(-0.7187448933270177, 0.6950578067249691 ,   0.017332732820003426));
-        /// ----------------------------------------
-        boundary_plane_points2.push_back(Create_c_vector(0.04524453117254053, 0.043228289032675365,0.003720997732043512  ));
-        boundary_plane_normals2.push_back(Create_c_vector( -0.6624867475157061, 0.7438111690784874, 0.08863551274830604 ));
-        /* */
-        boundary_plane_points1.push_back(Create_c_vector(0.03663965409412324, 0.020155302012919925, -0.0009673119597267015     ));
-        boundary_plane_normals1.push_back(Create_c_vector( 0.894371990942059,  -0.44368042276915565,  0.05697740139494638 ));
-        /// ----------------------------------------
-        boundary_plane_points2.push_back(Create_c_vector(0.037791247760704444, 0.01958401895618103, -0.0008939478391491307));
-        boundary_plane_normals2.push_back(Create_c_vector( 0.894371990942059,  -0.44368042276915565,  0.05697740139494638 ));
-        /* */
-        boundary_plane_points1.push_back(Create_c_vector(0.04535333451092035,  0.01827253994971488, -0.000826775696576238   ));
-        boundary_plane_normals1.push_back(Create_c_vector( 0.8800927838947658,  0.47304154554359323,  0.040845904642813985   ));
-        /// ----------------------------------------
-        boundary_plane_points2.push_back(Create_c_vector(0.04777378462420049,  0.02435646728406592, -0.0015296906390526728  ));
-        boundary_plane_normals2.push_back(Create_c_vector(0.8999000530240061,0.43609399958642875, -0.001384952021894634    ));
-
-
-        /* */
-        boundary_plane_points1.push_back(Create_c_vector(0.03308530881950349, 0.02149761438499426, -0.00018009428504821387));
-        boundary_plane_normals1.push_back(Create_c_vector(0.9261098741471802 ,  -0.376954441509806, -0.015028307726570638 ));
-        /// ----------------------------------------
-        boundary_plane_points2.push_back(Create_c_vector(0.034300824847584066,0.021164260640778476, -0.0002909367534368054 ));
-        boundary_plane_normals2.push_back(Create_c_vector(0.9691730622969827, -0.2311539334429166, -0.08527270590145869 ));
-
-       
-
-
-        unsigned counter =0;
-        // for (unsigned boundary_id = 0; boundary_id < boundary_plane_points1.size()-1; boundary_id++)
-        // {
-        //     counter +=1;
-        //     boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1[boundary_id], boundary_plane_normals1[boundary_id], 0.01)); //0.01));
-
-        //     p_condition->SetPointOnPlane2( boundary_plane_points2[boundary_id]);
-        //     p_condition->SetNormalToPlane2(boundary_plane_normals2[boundary_id]);
-
-
-        //      p_simulator->AddCellPopulationBoundaryCondition(p_condition);
-        // }
-
-        // boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition1(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1[counter], boundary_plane_normals1[counter], 0.004));
-
-        // p_condition1->SetPointOnPlane2( boundary_plane_points2[counter]);
-        // p_condition1->SetNormalToPlane2(boundary_plane_normals2[counter]);
-
-        // p_simulator->AddCellPopulationBoundaryCondition(p_condition1);
-
-        ///////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -342,3 +255,88 @@ public:
 };
 
 #endif /*TESTRELAXATION_HPP_*/
+
+
+
+
+        // ///////////////////////////////////////////////////////////////////////////////////////
+
+        // std::vector<c_vector<double, 3> > boundary_plane_points1;
+        // std::vector<c_vector<double, 3> > boundary_plane_normals1;
+
+        // std::vector<c_vector<double, 3> > boundary_plane_points2;
+        // std::vector<c_vector<double, 3> > boundary_plane_normals2;
+
+
+
+        // boundary_plane_points1.push_back(Create_c_vector(0.0344839553141627, 0.039166859323769385,  -7.321768764989628e-5   ));
+        // boundary_plane_normals1.push_back(Create_c_vector( 0.7474390621015472,  0.662857583536715,  0.04421167710714476  ));
+        // /// ----------------------------------------
+        // boundary_plane_points2.push_back(Create_c_vector(0.038633725599634766 , 0.042834650295782095, 0.00014677123886970464 ));
+        // boundary_plane_normals2.push_back(Create_c_vector( 0.7713091680800281,0.6338501379897751,  -0.057586194578546857  ));
+        // /* */
+        // boundary_plane_points1.push_back(Create_c_vector(0.03408644744248119, 0.02948610276941591,1.1431840682180057e-5   ));
+        // boundary_plane_normals1.push_back(Create_c_vector( -0.13710180943275943, 0.9904392690600551,0 ));
+        // /// ----------------------------------------
+        // boundary_plane_points2.push_back(Create_c_vector(0.031214753375716997,0.03384381942477147, -0.00020100804806112238  ));
+        // boundary_plane_normals2.push_back(Create_c_vector( -0.1365186273602051,  0.9906313098812551, 0.00350317950355177 ));
+        // /* */
+        // boundary_plane_points1.push_back(Create_c_vector(0.05115507250002135,0.029210202823000585, 0.0013139290500819793  ));
+        // boundary_plane_normals1.push_back(Create_c_vector( 0.25675931195415885, 0.9657125663824311, 0.03839133829245353 ));
+        // /// ----------------------------------------
+        // boundary_plane_points2.push_back(Create_c_vector(0.052237407320433346, 0.033906865036683775, 0.0012929371808254831 ));
+        // boundary_plane_normals2.push_back(Create_c_vector( 0.23648919545312502, 0.9712857281725686, 0.026017199738188904 ));
+        // /* */
+        // boundary_plane_points1.push_back(Create_c_vector(0.04877608409834386,0.03986943093515008, 0.00376937928511186   ));
+        // boundary_plane_normals1.push_back(Create_c_vector(-0.7187448933270177, 0.6950578067249691 ,   0.017332732820003426));
+        // /// ----------------------------------------
+        // boundary_plane_points2.push_back(Create_c_vector(0.04524453117254053, 0.043228289032675365,0.003720997732043512  ));
+        // boundary_plane_normals2.push_back(Create_c_vector( -0.6624867475157061, 0.7438111690784874, 0.08863551274830604 ));
+        // /* */
+        // boundary_plane_points1.push_back(Create_c_vector(0.03663965409412324, 0.020155302012919925, -0.0009673119597267015     ));
+        // boundary_plane_normals1.push_back(Create_c_vector( 0.894371990942059,  -0.44368042276915565,  0.05697740139494638 ));
+        // /// ----------------------------------------
+        // boundary_plane_points2.push_back(Create_c_vector(0.037791247760704444, 0.01958401895618103, -0.0008939478391491307));
+        // boundary_plane_normals2.push_back(Create_c_vector( 0.894371990942059,  -0.44368042276915565,  0.05697740139494638 ));
+        // /* */
+        // boundary_plane_points1.push_back(Create_c_vector(0.04535333451092035,  0.01827253994971488, -0.000826775696576238   ));
+        // boundary_plane_normals1.push_back(Create_c_vector( 0.8800927838947658,  0.47304154554359323,  0.040845904642813985   ));
+        // /// ----------------------------------------
+        // boundary_plane_points2.push_back(Create_c_vector(0.04777378462420049,  0.02435646728406592, -0.0015296906390526728  ));
+        // boundary_plane_normals2.push_back(Create_c_vector(0.8999000530240061,0.43609399958642875, -0.001384952021894634    ));
+
+
+        // /* */
+        // boundary_plane_points1.push_back(Create_c_vector(0.03308530881950349, 0.02149761438499426, -0.00018009428504821387));
+        // boundary_plane_normals1.push_back(Create_c_vector(0.9261098741471802 ,  -0.376954441509806, -0.015028307726570638 ));
+        // /// ----------------------------------------
+        // boundary_plane_points2.push_back(Create_c_vector(0.034300824847584066,0.021164260640778476, -0.0002909367534368054 ));
+        // boundary_plane_normals2.push_back(Create_c_vector(0.9691730622969827, -0.2311539334429166, -0.08527270590145869 ));
+
+       
+
+
+        // unsigned counter =0;
+        // for (unsigned boundary_id = 0; boundary_id < boundary_plane_points1.size()-1; boundary_id++)
+        // {
+        //     counter +=1;
+        //     boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1[boundary_id], boundary_plane_normals1[boundary_id], 0.01)); //0.01));
+
+        //     p_condition->SetPointOnPlane2( boundary_plane_points2[boundary_id]);
+        //     p_condition->SetNormalToPlane2(boundary_plane_normals2[boundary_id]);
+
+
+        //      p_simulator->AddCellPopulationBoundaryCondition(p_condition);
+        // }
+
+        // boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition1(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1[counter], boundary_plane_normals1[counter], 0.004));
+
+        // p_condition1->SetPointOnPlane2( boundary_plane_points2[counter]);
+        // p_condition1->SetNormalToPlane2(boundary_plane_normals2[counter]);
+
+        // p_simulator->AddCellPopulationBoundaryCondition(p_condition1);
+
+        ///////////////////////////////////////////////////////////////////////////////////////
+
+
+

@@ -216,7 +216,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     WriteOutVtuFile(mOutputDirectory);
 
     /*  Step 0: Create the HemeLB config.pr2 file */
-    double HemeLBSimulationTime = 3000; //
+    double HemeLBSimulationTime = 30000; //
     int Period = HemeLBSimulationTime*0.95;
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
       
@@ -627,7 +627,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
     if(mMachine =="server")
     {
             // Need to write bash scrip .... issue here 
-            int Cores = 15;
+            int Cores = 18;
             ofstream bash_script;
 
             std::string BashFile =  mChasteOutputDirectory + mOutputDirectory + "RunHemeLB";

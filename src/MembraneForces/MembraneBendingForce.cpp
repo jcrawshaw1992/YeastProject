@@ -242,7 +242,7 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         p_cell4->GetCellData()->SetItem("BendingForce", LastNodeContribution + norm_2(node4_contribution));
 
 
-        if (norm_2(node1_contribution)>100 || norm_2(node2_contribution)>100 ||norm_2(node3_contribution)>100 || norm_2(node4_contribution)>100  )
+        if (norm_2(node1_contribution)>0.1|| norm_2(node2_contribution)>0.1||norm_2(node3_contribution)>0.1|| norm_2(node4_contribution)>0.1 )
         {
             PRINT_VECTOR(node1_contribution);
             PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));

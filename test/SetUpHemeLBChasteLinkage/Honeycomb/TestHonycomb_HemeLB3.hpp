@@ -44,13 +44,18 @@ public:
 
             double DilationParameter = -7.3;
             double AreaParameter = -7;
-            double DeformationParamter = -8;//7.8
+            double DeformationParamter = -8;
+            double BendingParameter = -11;
             double FSI_Iterations = 3000;
 
+                   //AreaConstant           AreaDilationModulus        ShearModulus
+            std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) },
+                                                                        {0,  Create_c_vector(pow(10, -5), pow(10, -4), pow(10, -4), pow(10, BendingParameter))}    };
+ 
             std::stringstream out;
             out << "DilationParameter_" << DilationParameter << "AreaParameter" << AreaParameter << "DeformationParamter" << DeformationParamter;
             std::string ParameterSet = out.str();
-            std::string output_dir = "HoneyComb_HemeLB/testingstep/";
+            std::string output_dir = "DeformingPlexus_HemeLBSec/Collape3_WithHemeLB/";
 
             TRACE("Jess is good")
             double EndTime = 11;
@@ -375,10 +380,6 @@ public:
             boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
             // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
             p_Mesh_modifier->TurnOffRemeshing();   
-            //AreaConstant           AreaDilationModulus        ShearModulus
-            std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), 0) },
-                                                                        {0,  Create_c_vector(pow(10, -5), pow(10, -4), pow(10, -4), 0)}    };
-    
 
             p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
             p_Mesh_modifier->SetStepSize(pow(10, -8));
@@ -389,10 +390,10 @@ public:
             c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
             // Down stream                                                             
             c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.04307533991933138, -5e-5,0 );
-            c_vector<double, 3> LowerPlaneNormal = Create_c_vector(1,0,0);
+            c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(1,0,0);
             p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-            p_Mesh_modifier->SetRadius(0.007);
-            p_Mesh_modifier->SetUpdateFrequency(10/dt);
+            p_Mesh_modifier->SetRadius(0.008);
+            p_Mesh_modifier->SetUpdateFrequency(1/dt);
             p_Mesh_modifier->SetmSetUpSolve(1);
 
 
