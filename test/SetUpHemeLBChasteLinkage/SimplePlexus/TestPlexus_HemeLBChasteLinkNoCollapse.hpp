@@ -86,29 +86,9 @@ public:
         // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
         p_Mesh_modifier->TurnOffRemeshing();   
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
-        p_Mesh_modifier->SetStepSize(pow(10, -8));
 
-        // First 
-        // Upstream 
-        c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.03889835415936754,0.023284157207353464, 0.002357881097576096 );
-        c_vector<double, 3> UpperPlaneNormal = Create_c_vector(-0.9111321813105736, 0.41098845246144305, -0.030440764175433815);
-        // Down stream
-        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.03473129104301778, 0.023894561960013404,0.0007601136405928878 );
-        c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(-0.850657197084237, 0.5256842037978231, 0.006200881085641978);
- 
 
-        p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-        p_Mesh_modifier->SetRadius(0.005);
-        p_Mesh_modifier->SetUpdateFrequency(0.1/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
-
-
-        boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
-
-        p_condition->SetPointOnPlane2( LowerPlanePoint);
-        p_condition->SetNormalToPlane2(-LowerPlaneNormal);
-        p_simulator->AddCellPopulationBoundaryCondition(p_condition);
-       
 
 
         /*
