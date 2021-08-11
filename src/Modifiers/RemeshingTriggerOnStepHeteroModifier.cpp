@@ -327,11 +327,12 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
                 
                 if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()   || p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
                 {   
-                    AdaptHeteroRegion(p_cell_population, elem_index, 5);//AdaptHeteroRegion(p_cell_population, elem_index, 4);
+                    AdaptHeteroRegion(p_cell_population, elem_index, 5);//
+                    // AdaptHeteroRegion(p_cell_population, elem_index, 4);
                 } 
                 // else
                 // {
-                    // AdaptHeteroRegion(p_cell_population, elem_index,2 );
+                //     AdaptHeteroRegion(p_cell_population, elem_index,2 );
                 // }
         }
 
