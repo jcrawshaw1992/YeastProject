@@ -55,6 +55,7 @@ public:
         double dt = 0.001;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
+        double FSI_Iterations = 500;
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
  
@@ -103,7 +104,7 @@ public:
         p_simulator->AddSimulationModifier(p_Mesh_modifier);
 
 
-        boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(simulator.rGetCellPopulation()) , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
+        boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
 
         p_condition->SetPointOnPlane2( LowerPlanePoint);
         p_condition->SetNormalToPlane2(-LowerPlaneNormal);
