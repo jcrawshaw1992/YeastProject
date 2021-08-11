@@ -48,7 +48,7 @@ public:
         double DilationParameter = -6;
         double AreaParameter = -5.5;
         double DeformationParamter = -6;
-        double BendingParameter = -8;
+        double BendingParameter = -10;
 
 
         TRACE("Jess is good")
