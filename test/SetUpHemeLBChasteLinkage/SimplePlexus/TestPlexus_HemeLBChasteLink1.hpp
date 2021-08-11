@@ -130,7 +130,7 @@ public:
         boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(simulator.rGetCellPopulation()) , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
 
         p_condition->SetPointOnPlane2( LowerPlanePoint);
-        p_condition->SetNormalToPlane2(LowerPlaneNormal);
+        p_condition->SetNormalToPlane2(-LowerPlaneNormal);
         simulator.AddCellPopulationBoundaryCondition(p_condition);
        
 
