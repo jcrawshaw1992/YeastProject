@@ -60,7 +60,7 @@ public:
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
         
-        std::string output_dir = "SimpleHemeLBPlexus/ConstantTestTighter3/";
+        std::string output_dir = "SimpleHemeLBPlexus/ConstantTestTighter4/";
      
         std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
