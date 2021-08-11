@@ -59,7 +59,7 @@ public:
         
         std::string output_dir = "SimpleHemeLBPlexus/ConstantTest/";
      
-        std::string mesh_file = "DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
+        std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
@@ -250,7 +250,7 @@ public:
         
         std::string output_dir = "SimpleHemeLBPlexus/ConstantTest2/";
      
-        std::string mesh_file = "DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
+        std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
