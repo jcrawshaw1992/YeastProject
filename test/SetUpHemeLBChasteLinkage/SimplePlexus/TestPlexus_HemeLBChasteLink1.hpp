@@ -35,6 +35,9 @@
 #include "StepHeteroModifier.hpp"
 #include "MembraneBendingForce.hpp"
 
+#include "MembraneBendingForceSensitive.hpp"
+
+
 class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
