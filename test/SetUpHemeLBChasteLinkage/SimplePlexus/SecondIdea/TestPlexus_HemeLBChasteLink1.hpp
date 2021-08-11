@@ -55,7 +55,7 @@ public:
         double dt = 0.001;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
-        double FSI_Iterations = 500;
+        double FSI_Iterations = 1000;
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
  
@@ -101,14 +101,13 @@ public:
         p_Mesh_modifier->SetRadius(0.005);
         p_Mesh_modifier->SetUpdateFrequency(0.1/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
-        p_simulator->AddSimulationModifier(p_Mesh_modifier);
 
 
         boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
 
         p_condition->SetPointOnPlane2( LowerPlanePoint);
         p_condition->SetNormalToPlane2(-LowerPlaneNormal);
-        simulator.AddCellPopulationBoundaryCondition(p_condition);
+        p_simulator->AddCellPopulationBoundaryCondition(p_condition);
        
 
 
@@ -118,11 +117,11 @@ public:
         ----------------------------
         */
         boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        simulator.AddForce(p_shear_force);
+        p_simulator->AddForce(p_shear_force);
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
         p_membrane_force->SetMembraneStiffness(pow(10, -7));
-        simulator.AddForce(p_membrane_force);
+        p_simulator->AddForce(p_membrane_force);
 
 
         /*
@@ -173,21 +172,18 @@ public:
         p_ForceOut->Inlets(PlaneNormal7, Point7, OutletPressure*0.95, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", simulator.rGetCellPopulation());
-        simulator.AddForce(p_ForceOut);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_simulator->AddForce(p_ForceOut);
 
 
-
-     for (int i =1; i<=50; i++)
+      for (int i =1; i<=50; i++)
         { 
-            
+    
             EndTime +=1;
-            simulator.SetEndTime(EndTime);
+            p_simulator->SetEndTime(EndTime);
 
-            simulator.Solve();
-            
-            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
-
+            p_simulator->Solve();
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
         }
 
     }
