@@ -53,7 +53,7 @@ public:
         double FSI_Iterations = 5000;
 
         double SamplingStep = 100;
-        double dt = 0.001;
+        double dt = 0.01;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
         
@@ -220,7 +220,7 @@ public:
     //  for (int i =1; i<=50; i++)
     //     { 
             
-            EndTime =0.1;
+            EndTime =10;
             simulator.SetEndTime(EndTime);
 
             simulator.Solve();
