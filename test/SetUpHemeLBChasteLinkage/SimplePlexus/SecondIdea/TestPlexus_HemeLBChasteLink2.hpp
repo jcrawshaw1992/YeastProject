@@ -117,7 +117,7 @@ public:
         ----------------------------
         */
         boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        simulator.AddForce(p_shear_force);
+        p_simulator->AddForce(p_shear_force);
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
         p_membrane_force->SetMembraneStiffness(pow(10, -7));
@@ -179,14 +179,12 @@ public:
 
      for (int i =1; i<=50; i++)
         { 
-            
+    
             EndTime +=1;
-            simulator.SetEndTime(EndTime);
+            p_simulator->SetEndTime(EndTime);
 
-            simulator.Solve();
-            
-            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
-
+            p_simulator->Solve();
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
         }
 
     }
