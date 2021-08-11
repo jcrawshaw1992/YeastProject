@@ -216,7 +216,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     WriteOutVtuFile(mOutputDirectory);
 
     /*  Step 0: Create the HemeLB config.pr2 file */
-    double HemeLBSimulationTime = 30000; //
+    double HemeLBSimulationTime = 10000; //
     int Period = HemeLBSimulationTime*0.95;
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
       
