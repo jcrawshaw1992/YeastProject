@@ -42,18 +42,18 @@ public:
 
   void TestWithConstantForce() throw(Exception)
    {
-        double DilationParameter = -6.5;
-        double AreaParameter = -6;
+        double DilationParameter = -6;
+        double AreaParameter = -5.5;
         double DeformationParamter = -6;
-        double BendingParameter = -10;
+        double BendingParameter = -8;
 
 
         TRACE("Jess is good")
         double EndTime = 4;
         double FSI_Iterations = 5000;
 
-        double SamplingStep = 100;
-        double dt = 0.01;
+        double SamplingStep = 10;
+        double dt = 0.001;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
         
@@ -127,6 +127,14 @@ public:
         simulator.AddSimulationModifier(p_Mesh_modifier);
 
 
+        boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(simulator.rGetCellPopulation()) , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
+
+        p_condition->SetPointOnPlane2( LowerPlanePoint);
+        p_condition->SetNormalToPlane2(LowerPlaneNormal);
+        simulator.AddCellPopulationBoundaryCondition(p_condition);
+       
+
+
         /*
         -----------------------------
         Membrane forces
@@ -134,6 +142,12 @@ public:
         */
         boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
         simulator.AddForce(p_shear_force);
+
+
+
+        // boost::shared_ptr<MembraneBendingForceSensitive> p_membrane_force(new MembraneBendingForceSensitive());
+        // p_membrane_force->SetMembraneStiffness(pow(10, -8));
+        // simulator.AddForce(p_membrane_force);
 
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
@@ -336,10 +350,16 @@ public:
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        p_ForceOut->SetPressure(2 * (P_blood - P_tissue) / 3);
+        p_ForceOut->SetPressure(P_blood - P_tissue);
         simulator.AddForce(p_ForceOut);
 
-      
+        boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(simulator.rGetCellPopulation()) , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
+
+        p_condition->SetPointOnPlane2( LowerPlanePoint);
+        p_condition->SetNormalToPlane2(LowerPlaneNormal);
+        simulator.AddCellPopulationBoundaryCondition(p_condition);
+       
+
 
         /*
         -----------------------------
