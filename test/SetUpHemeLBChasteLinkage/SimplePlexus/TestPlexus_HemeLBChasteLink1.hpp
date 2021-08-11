@@ -224,7 +224,8 @@ public:
             simulator.SetEndTime(EndTime);
 
             simulator.Solve();
-            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+            
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
 
         // }
 
@@ -414,7 +415,8 @@ public:
             simulator.SetEndTime(EndTime);
 
             simulator.Solve();
-            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+            
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
 
         // }
 
