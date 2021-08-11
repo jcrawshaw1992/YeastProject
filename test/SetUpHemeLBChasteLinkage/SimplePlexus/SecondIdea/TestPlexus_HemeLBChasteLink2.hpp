@@ -72,9 +72,6 @@ public:
         p_simulator->RemoveAllForces();
         p_simulator->RemoveAllCellPopulationBoundaryConditions();
   
-  
-      
-      
 
         /* 
         -----------------------------

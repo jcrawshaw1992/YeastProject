@@ -45,12 +45,16 @@ public:
 
   void TestWithConstantForce() throw(Exception)
    {
-        double AreaParameter = -5.5;  double DilationParameter = -6; double DeformationParamter = -6; double BendingParameter = -12;
+
+      
+        std::string output_dir = "FSISimulations/Honey/Collapse1/";
+
+        double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -7;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
 
-        std::string Archieved = "SimpleHemeLBPlexus2/GrowingToEqui3/";//std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
-        std::string output_dir = "FSISimulations/Plexus/Collapse3/";
-        double EndTime = 10;
+        std::string Archieved = "SimpleHemeLBHoneycomb/GrowingToEqui/";
+        
+        double EndTime = 7;
         double SamplingStep = 50;
         double dt = 0.001;
         double RemeshingTime = 10000;
@@ -72,9 +76,6 @@ public:
         p_simulator->RemoveAllForces();
         p_simulator->RemoveAllCellPopulationBoundaryConditions();
   
-  
-      
-      
 
         /* 
         -----------------------------
@@ -88,26 +89,28 @@ public:
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
         p_Mesh_modifier->SetStepSize(pow(10, -8));
 
-        // Thirdcollapse option 
+        // First collapse option 
         // Upstream 
-        c_vector<double, 3> UpperPlanePoint =  Create_c_vector( 0.03781214445868903, 0.045517448299395774, 0.001783153950736552); 
-        c_vector<double, 3> UpperPlaneNormal = Create_c_vector(-0.6662574368002674, -0.7402156422682368,  -0.09045347339798342);  
-        // Down stream
-        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.032836386061882,0.0399893536110235, 0.0011076273375675023); 
-        c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(-0.6662574368002674,-0.7402156422682368,-0.09045347339798342); 
-  
+        c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.034963365591332625, -5e-5,0);
+        c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
+        // Down stream                                                             
+        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.04307533991933138, -5e-5,0 );
+        c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(1,0,0);
+
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
         p_Mesh_modifier->SetRadius(0.005);
         p_Mesh_modifier->SetUpdateFrequency(0.1/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
 
 
-        boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
+        boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
 
         p_condition->SetPointOnPlane2( LowerPlanePoint);
         p_condition->SetNormalToPlane2(-LowerPlaneNormal);
         p_simulator->AddCellPopulationBoundaryCondition(p_condition);
        
+
+
         /*
         -----------------------------
         Membrane forces
