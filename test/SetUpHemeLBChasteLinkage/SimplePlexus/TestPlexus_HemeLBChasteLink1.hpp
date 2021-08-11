@@ -248,7 +248,7 @@ public:
 
     }
 
-  void TestWithConstantForce2() throw(Exception)
+  void offTestWithConstantForce2() throw(Exception)
    {
         double DilationParameter = -7;
         double AreaParameter = -6.4;
