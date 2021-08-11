@@ -43,7 +43,7 @@ public:
   void TestWithConstantForce() throw(Exception)
    {
         double DilationParameter = -7;
-        double AreaParameter = -7.4;
+        double AreaParameter = -7;
         double DeformationParamter = -6;
         double BendingParameter = -10;
 
@@ -53,7 +53,7 @@ public:
         double FSI_Iterations = 5000;
 
         double SamplingStep = 100;
-        double dt = 0.0001;
+        double dt = 0.001;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
         

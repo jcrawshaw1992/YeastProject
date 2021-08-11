@@ -272,7 +272,6 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
                     {
                         if (norm_2(NodeToUpperPlane) <mRadius ||  norm_2(NodeToLowerPlane)<mRadius  )
                         {
-                            cell_iter->GetCellData()->SetItem("MembraneState", 10);
                             cell_iter->SetMutationState(p_Basement);
                             mBasementNodes.push_back(node_index);
                             mSamplebasementNode = node_index;
@@ -301,6 +300,35 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
             }
              
         }
+
+
+
+        //loop over elements and record if in hetero region and then adapt them, shink ic ten fold 
+        // AdaptHeteroRegion( rCellPopulation, elem_index);
+
+            for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = rCellPopulation.rGetMesh().GetElementIteratorBegin();
+            elem_iter != rCellPopulation.rGetMesh().GetElementIteratorEnd();
+            ++elem_iter)
+          {
+                // I want to exclude the edge region 
+                unsigned elem_index = elem_iter->GetIndex();
+                // Node<3>* pNode0 = rCellPopulation.rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(0));
+                // Node<3>* pNode1 = rCellPopulation.rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(1));
+                // Node<3>* pNode2 = rCellPopulation.rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(2));
+
+                unsigned node_index1 = elem_iter->GetNodeGlobalIndex(0); unsigned node_index2 = elem_iter->GetNodeGlobalIndex(1); unsigned node_index3 = elem_iter->GetNodeGlobalIndex(2);
+                CellPtr p_cell1 = rCellPopulation.GetCellUsingLocationIndex(node_index1);
+                CellPtr p_cell2 = rCellPopulation.GetCellUsingLocationIndex(node_index2);
+                CellPtr p_cell3 = rCellPopulation.GetCellUsingLocationIndex(node_index3);
+                
+                if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()   || p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
+                {   
+                    AdaptHeteroRegion( rCellPopulation, elem_index);
+                }     
+        }
+
+
+
 }
 
 
@@ -583,6 +611,19 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetBendingFor
     {
         cell_iter->GetCellData()->SetItem("BendingConstant", BendingConstant);
     }
+}
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::AdaptHeteroRegion(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, unsigned elem_index)
+{
+        HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+   
+        c_vector<c_vector<double, 2>, 3> InitalVectors =  pCellPopulation->GetInitalVectors(elem_index);
+        double OriginalArea = pCellPopulation->GetOriginalArea(elem_index);
+
+        pCellPopulation->AdaptmmInitalVectors(InitalVectors[0]/10, InitalVectors[1]/10,InitalVectors[2]/10,elem_index);
+        pCellPopulation->AdaptmArea0(OriginalArea/10, elem_index);
+
 }
 
 

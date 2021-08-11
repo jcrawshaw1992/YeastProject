@@ -158,6 +158,8 @@ public:
     double mMaxCounter = 100;
     bool mSetUpSolve =1;
 
+   
+    void AdaptHeteroRegion(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, unsigned elem_index);
 
 
 
