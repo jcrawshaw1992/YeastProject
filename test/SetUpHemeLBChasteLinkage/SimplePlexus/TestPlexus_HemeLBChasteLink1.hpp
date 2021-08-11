@@ -133,7 +133,7 @@ public:
         ----------------------------
         */
         boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        p_simulator->AddForce(p_shear_force);
+        simulator.AddForce(p_shear_force);
 
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
@@ -211,8 +211,8 @@ public:
         for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
         {
       
-             boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.008));
-             p_simulator->AddCellPopulationBoundaryCondition(p_condition);
+             boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&(simulator.rGetCellPopulation()) , boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.008));
+             simulator.AddCellPopulationBoundaryCondition(p_condition);
         }
 
 
@@ -221,9 +221,9 @@ public:
     //     { 
             
             EndTime =0.1;
-            p_simulator->SetEndTime(EndTime);
+            simulator.SetEndTime(EndTime);
 
-            p_simulator->Solve();
+            simulator.Solve();
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
 
         // }
@@ -323,7 +323,7 @@ public:
         ----------------------------
         */
         boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        p_simulator->AddForce(p_shear_force);
+        simulator.AddForce(p_shear_force);
 
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
@@ -401,8 +401,8 @@ public:
         for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
         {
       
-             boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.008));
-             p_simulator->AddCellPopulationBoundaryCondition(p_condition);
+             boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&(simulator.rGetCellPopulation()) , boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.008));
+             simulator.AddCellPopulationBoundaryCondition(p_condition);
         }
 
 
@@ -411,9 +411,9 @@ public:
     //     { 
             
             EndTime =0.1;
-            p_simulator->SetEndTime(EndTime);
+            simulator.SetEndTime(EndTime);
 
-            p_simulator->Solve();
+            simulator.Solve();
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
 
         // }
@@ -480,8 +480,8 @@ public:
     //     p_ForceOut->Inlets(PlaneNormal7, Point7, OutletPressure*0.95, "Outlet");
     //     p_ForceOut->SetStartTime(EndTime);
     //     p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
-    //     p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
-    //     p_simulator->AddForce(p_ForceOut);
+    //     p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", simulator.rGetCellPopulation());
+    //     simulator.AddForce(p_ForceOut);
 
        
 
@@ -551,21 +551,21 @@ public:
         // for (unsigned boundary_id = 0; boundary_id < boundary_plane_points1.size()-1; boundary_id++)
         // {
         //     counter +=1;
-        //     boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1[boundary_id], boundary_plane_normals1[boundary_id], 0.01)); //0.01));
+        //     boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(simulator.rGetCellPopulation()) , boundary_plane_points1[boundary_id], boundary_plane_normals1[boundary_id], 0.01)); //0.01));
 
         //     p_condition->SetPointOnPlane2( boundary_plane_points2[boundary_id]);
         //     p_condition->SetNormalToPlane2(boundary_plane_normals2[boundary_id]);
 
 
-        //      p_simulator->AddCellPopulationBoundaryCondition(p_condition);
+        //      simulator.AddCellPopulationBoundaryCondition(p_condition);
         // }
 
-        // boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition1(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points1[counter], boundary_plane_normals1[counter], 0.004));
+        // boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition1(new EnclosedRegionBoundaryCondition<2, 3>(&(simulator.rGetCellPopulation()) , boundary_plane_points1[counter], boundary_plane_normals1[counter], 0.004));
 
         // p_condition1->SetPointOnPlane2( boundary_plane_points2[counter]);
         // p_condition1->SetNormalToPlane2(boundary_plane_normals2[counter]);
 
-        // p_simulator->AddCellPopulationBoundaryCondition(p_condition1);
+        // simulator.AddCellPopulationBoundaryCondition(p_condition1);
 
         ///////////////////////////////////////////////////////////////////////////////////////
 
