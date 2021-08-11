@@ -57,7 +57,7 @@ public:
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
         
-        std::string output_dir = "SimpleHemeLBPlexus/ConstantTestTighter2/";
+        std::string output_dir = "SimpleHemeLBPlexus/ConstantTestTighter3/";
      
         std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
@@ -145,14 +145,14 @@ public:
 
 
 
-        // boost::shared_ptr<MembraneBendingForceSensitive> p_membrane_force(new MembraneBendingForceSensitive());
-        // p_membrane_force->SetMembraneStiffness(pow(10, -8));
-        // simulator.AddForce(p_membrane_force);
-
-
-        boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        p_membrane_force->SetMembraneStiffness(pow(10, -7));
+        boost::shared_ptr<MembraneBendingForceSensitive> p_membrane_force(new MembraneBendingForceSensitive());
+        p_membrane_force->SetMembraneStiffness(pow(10, -8));
         simulator.AddForce(p_membrane_force);
+
+
+        // boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
+        // p_membrane_force->SetMembraneStiffness(pow(10, -7));
+        // simulator.AddForce(p_membrane_force);
 
 
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
