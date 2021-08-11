@@ -48,7 +48,7 @@ public:
         double DilationParameter = -5.5;/////
         double AreaParameter = -5;///
         double DeformationParamter = -5;//////
-        double BendingParameter = -7;
+        double BendingParameter = -8;
 
         // This was the first Idea 
         // double DilationParameter = -6;   
