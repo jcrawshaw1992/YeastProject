@@ -62,7 +62,7 @@ public:
         double FSI_Iterations = 5000;
 
         double SamplingStep = 50;
-        double dt = 0.005;
+        double dt = 0.001;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
         
