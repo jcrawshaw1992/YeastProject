@@ -66,7 +66,7 @@ public:
 
 
         TRACE("Jess is good")
-        double EndTime = 4;
+        double EndTime = 1;
         double FSI_Iterations = 1000;
 
         double SamplingStep = 50;
@@ -299,17 +299,17 @@ public:
 
 
 
-    //  for (int i =1; i<=50; i++)
-    //     { 
+     for (int i =1; i<=50; i++)
+        { 
             
-            EndTime =10;
+            EndTime +=1;
             simulator.SetEndTime(EndTime);
 
             simulator.Solve();
             
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
 
-        // }
+        }
 
     }
 
