@@ -48,7 +48,7 @@ public:
         double DilationParameter = -6;
         double AreaParameter = -5;
         double DeformationParamter = -6;
-        double BendingParameter = -9;
+        double BendingParameter = -8;
 
         // This was the first Idea 
         // double DilationParameter = -6;   
@@ -66,7 +66,7 @@ public:
         double EndTime = 1;
         double FSI_Iterations = 1000;
 
-        double SamplingStep = 50;
+        double SamplingStep = 20;
         double dt = 0.001;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
