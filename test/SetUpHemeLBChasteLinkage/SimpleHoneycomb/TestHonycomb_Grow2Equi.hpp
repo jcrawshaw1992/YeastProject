@@ -75,7 +75,7 @@ public:
         cell_population.SetChasteOutputDirectory(output_dir, 0);
         // cell_population.SetInitialAnlgesAcrossMembrane(); // Dont worry about this for now, I think there is something moff
         cell_population.SetRelativePath(output_dir, 0);
-        cell_population.SetTargetRemeshingEdgeLength(EdgeLength);
+        // cell_population.SetTargetRemeshingEdgeLength(EdgeLength);
         cell_population.SetBinningIntervals(10, 10, 1);
         // cell_population.EdgeLengthVariable(1.2);
         cell_population.SetPrintRemeshedIC(1);
