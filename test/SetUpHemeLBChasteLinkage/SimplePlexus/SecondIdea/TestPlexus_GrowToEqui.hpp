@@ -160,8 +160,8 @@ public:
         boundary_plane_points.push_back(Create_c_vector( 0.023667025594574218, 0.03580448541106122, 1.0883377925970793e-6));
         boundary_plane_normals.push_back(-Create_c_vector( 0.9992096159136262, -0.037477299160519,-0.01325124572923273 ));
 
-        // boundary_plane_points.push_back(Create_c_vector( 0.02842355040448236, 0.04796528990124343, -0.0012984792809731791 ));
-        // boundary_plane_normals.push_back(Create_c_vector( -0.6540763785122455,  0.7518206257291297, 0.08336568718943009 ));/////////
+        boundary_plane_points.push_back(Create_c_vector( 0.036159340056213136,0.0532778119509024,  -0.0011348361020223623 ));
+        boundary_plane_normals.push_back(Create_c_vector( -0.6367706683117718, 0.7670909181305777,   0.07806817084681165  ));/////////
 
         boundary_plane_points.push_back(Create_c_vector(0.06117298902054698,0.03654224598923696,0.0009160147066410285 ));
         boundary_plane_normals.push_back(Create_c_vector(0.7792901394890018, 0.6252088966438896,  -0.04266982601959587  ));
@@ -195,10 +195,9 @@ public:
 
         boundary_plane_points.push_back(Create_c_vector( 0.029862726176558368, 0.022150802525023005,  0.0007074621356822784   ));
         boundary_plane_normals.push_back(Create_c_vector(-0.6983037235236903,  -0.7144025416789002 ,0.044731623664661664  ));///////
-
-
-        boundary_plane_points.push_back(Create_c_vector(  0.053216101460717424,0.022875560649274096,  0.00035741534715402995   ));
-        boundary_plane_normals.push_back(Create_c_vector(0.7104538656628817, -0.703732491551614,  0.003985611524662334   ));
+        
+        boundary_plane_points.push_back(Create_c_vector(  0.05518984915249851, 0.02090387761251939, 0.0007698080819251387  ));
+        boundary_plane_normals.push_back(Create_c_vector(0.7069806813154489,  -0.7062411383519247, 0.0374402289806223));
 
         boundary_plane_points.push_back(Create_c_vector(0.05715768054001756,  0.03813699788011809,  0.0006839495043087638));
         boundary_plane_normals.push_back(Create_c_vector(0.7640527331012904, 0.6448510930472797, -0.01976079037329169 ));
