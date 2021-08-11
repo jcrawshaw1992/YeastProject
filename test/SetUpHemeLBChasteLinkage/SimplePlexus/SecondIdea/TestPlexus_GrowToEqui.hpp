@@ -45,9 +45,9 @@ public:
 
   void TestWithConstantForce() throw(Exception)
    {
-        double DilationParameter = -5.5;
-        double AreaParameter = -5;
-        double DeformationParamter = -5;
+        double DilationParameter = -5.5;/////
+        double AreaParameter = -5;///
+        double DeformationParamter = -5;//////
         double BendingParameter = -7;
 
         // This was the first Idea 
@@ -63,11 +63,11 @@ public:
  
  
         TRACE("Jess is good")
-        double EndTime = 1;
+        double EndTime = 0;
         double FSI_Iterations = 1000;
 
         double SamplingStep = 20;
-        double dt = 0.001;
+        double dt = 0.002;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
         
@@ -190,12 +190,12 @@ public:
         boundary_plane_points.push_back(Create_c_vector(0.026864281281697915, 0.037668141898196575, 0.00018974398398148207 ));
         boundary_plane_normals.push_back(Create_c_vector(-0.9998551753153383, -0.015809159893423953, -0.006300703024145976 ));
 
-        boundary_plane_points.push_back(Create_c_vector(0.040547082072423954,0.018275901698485374, 0.00039994117540888903 ));
-        boundary_plane_normals.push_back(Create_c_vector(-0.13760377878446087, -0.9886290666284141, 0.060644609667043325));
+        boundary_plane_points.push_back(Create_c_vector(0.04013693457760815, 0.015329153153048572, 0.0005807009986400527 )); ///Create_c_vector(0.040547082072423954, 0.018275901698485374, 0.00039994117540888903 ));
+        boundary_plane_normals.push_back(Create_c_vector(-0.13760377878446087, -0.9886290666284141, 0.060644609667043325));////
 
-        boundary_plane_points.push_back(Create_c_vector( 0.029862726176558368, 0.022150802525023005,  0.0007074621356822784   ));
-        boundary_plane_normals.push_back(Create_c_vector(-0.6983037235236903,  -0.7144025416789002 ,0.044731623664661664  ));///////
-        
+        boundary_plane_points.push_back(Create_c_vector( 0.029862726176558368, 0.022150802525023005,  0.0007074621356822784));
+        boundary_plane_normals.push_back(Create_c_vector(-0.6983037235236903,  -0.7144025416789002 ,0.044731623664661664  ));
+
         boundary_plane_points.push_back(Create_c_vector(  0.05518984915249851, 0.02090387761251939, 0.0007698080819251387  ));
         boundary_plane_normals.push_back(Create_c_vector(0.7069806813154489,  -0.7062411383519247, 0.0374402289806223));
 
@@ -215,7 +215,7 @@ public:
          for (int i =1; i<=20; i++)
         { 
             
-            EndTime +=2;
+            EndTime +=0.5;
             simulator.SetEndTime(EndTime);
 
             simulator.Solve();
