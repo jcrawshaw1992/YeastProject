@@ -49,7 +49,7 @@ public:
         //AreaConstant           AreaDilationModulus        ShearModulus
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) },
                                                         {0,  Create_c_vector(pow(10, -5), pow(10, -4), pow(10, -4), pow(10, BendingParameter))}    };
-        std::string output_dir = "SimpleHemeLBHoneycomb/GrowingToEqui/";
+        std::string output_dir = "FSISimulations/Honeycomb/GrowingToEqui/";
 
         double SamplingStep = 50;
         double EndTime = 0;
