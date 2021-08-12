@@ -32,25 +32,25 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
     double P_tissue = 0.001466542;
     assert(ELEMENT_DIM ==2); assert(SPACE_DIM ==3);
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-    // if (mExecuteHemeLBCounter == mTriggerHemeLB)
-    // {
-    //     // /* Update mesh */
-    //     MutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh = p_cell_population->rGetMesh();
-    //     mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
+    if (mExecuteHemeLBCounter == mTriggerHemeLB)
+    {
+        // /* Update mesh */
+        MutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh = p_cell_population->rGetMesh();
+        mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
 
-    //     // WriteOutVtuFile(mOutputDirectory);
+        // WriteOutVtuFile(mOutputDirectory);
 
-    //     // /* Run HemeLB */
-    //     ExecuteHemeLB();
-    //     // /* Get the traction  */
-    //     LoadTractionFromFile();
-    //     UpdateCellData(rCellPopulation);
-    //     mExecuteHemeLBCounter = 0;
-    // }
-    // else
-    // {
-    //     mExecuteHemeLBCounter += 1;
-    // }
+        // /* Run HemeLB */
+        ExecuteHemeLB();
+        // /* Get the traction  */
+        LoadTractionFromFile();
+        UpdateCellData(rCellPopulation);
+        mExecuteHemeLBCounter = 0;
+    }
+    else
+    {
+        mExecuteHemeLBCounter += 1;
+    }
 
     // I have an edges issues in the hemelB force. I think it is hemelb, but not sure, so here is what I am doing. 
     // I also dont know if the cylinder should be going in or out, but we will find out soo 
@@ -178,7 +178,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
     {
         ExecuteHemeLB();
     }
-    TRACE("Need to turn Load and Update on later!")
     // LoadTractionFromFile();
     // UpdateCellData(rCellPopulation);
 }

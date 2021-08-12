@@ -51,11 +51,11 @@ public:
         std::string Archieved = "SimpleHemeLBPlexus2/GrowingToEqui3/";//std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
         std::string output_dir = "FSISimulations/Plexus/NoCollapse/";
         double EndTime = 10;
-        double SamplingStep = 50;
+        double SamplingStep = 25;
         double dt = 0.001;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
-        double FSI_Iterations = 1000;
+        double FSI_Iterations = 50;
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
  

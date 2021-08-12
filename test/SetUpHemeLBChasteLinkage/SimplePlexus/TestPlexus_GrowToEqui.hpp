@@ -235,7 +235,7 @@ public:
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
 
         std::string Archieved = "SimpleHemeLBPlexus2/GrowingToEqui3/";//std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
-        std::string output_dir = "FSISimulations/Plexus/EquiWithHemeLB/";
+        std::string output_dir = "FSISimulations/Plexus/EquiWithHemeLB2/";
         double EndTime = 10;
         double SamplingStep = 50;
         double dt = 0.001;
@@ -289,8 +289,9 @@ public:
         ----------------------------
         */
         // Inlet1
-       c_vector<double, 3> Point1 = Create_c_vector(0.02297977879048401, 0.037075481876763385,  0.0004635334404919405);
-        c_vector<double, 3> PlaneNormal1 = Create_c_vector(0.999910929986149, 0.0020912833516396026,-0.013181753607835568  );
+
+       c_vector<double, 3> Point1 = Create_c_vector(0.023244704133811703, 0.037075481876763385, 0);
+        c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0 );
         // Inlet2
         c_vector<double, 3> Point2 = Create_c_vector(0.036837793060229,0.055384952301980456,-0.0007597519518940717)  ;
         c_vector<double, 3> PlaneNormal2 = Create_c_vector(0.6732805342808156,-0.7380737547778258,  -0.04405059212657047);
@@ -322,10 +323,10 @@ public:
         double OutletPressure = P_blood * (0.98);
 
         boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
-        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure*1.1, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal3, Point3, InletPressure*1.05, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal4, Point4, InletPressure, "Inlet");
+        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet"); // Issues here 
+        p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure, "Inlet"); //FIne
+        p_ForceOut->Inlets(PlaneNormal3, Point3, InletPressure, "Inlet");// Issues here 
+        p_ForceOut->Inlets(PlaneNormal4, Point4, InletPressure, "Inlet");// Issues here 
         p_ForceOut->Inlets(PlaneNormal5, Point5, OutletPressure, "Outlet");
         p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure*0.98, "Outlet");
         p_ForceOut->Inlets(PlaneNormal7, Point7, OutletPressure*0.95, "Outlet");
