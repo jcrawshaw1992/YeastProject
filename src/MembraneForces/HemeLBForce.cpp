@@ -178,8 +178,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
     {
         ExecuteHemeLB();
     }
-    // LoadTractionFromFile();
-    // UpdateCellData(rCellPopulation);
+    LoadTractionFromFile();
+    UpdateCellData(rCellPopulation);
 }
 
 

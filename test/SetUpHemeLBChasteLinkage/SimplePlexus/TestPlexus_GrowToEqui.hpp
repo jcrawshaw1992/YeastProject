@@ -231,7 +231,7 @@ public:
 
   void TestWithHemeLBForce() throw(Exception)
    {
-        double AreaParameter = -5.5;  double DilationParameter = -6; double DeformationParamter = -6; double BendingParameter = -12;
+        double AreaParameter = -5.5;  double DilationParameter = -6; double DeformationParamter = -5.5; double BendingParameter = -11;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
 
         std::string Archieved = "SimpleHemeLBPlexus2/GrowingToEqui3/";//std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
@@ -269,6 +269,7 @@ public:
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
         p_Mesh_modifier->SetStepSize(pow(10, -8));
 
+        p_Mesh_modifier->SetmSetUpSolve(1);
     
         /*
         -----------------------------
@@ -332,7 +333,7 @@ public:
         p_ForceOut->Inlets(PlaneNormal7, Point7, OutletPressure*0.95, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
         p_simulator->AddForce(p_ForceOut);
 
 
