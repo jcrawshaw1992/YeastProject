@@ -54,12 +54,13 @@ public:
 
         std::string Archieved = "SimpleHemeLBHoneycomb/GrowingToEqui/";
         
+              
         double EndTime = 7;
-        double SamplingStep = 50;
+        double SamplingStep = 25;
         double dt = 0.0001;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
-        double FSI_Iterations = 1000;
+        double FSI_Iterations = 50;
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
  
@@ -74,7 +75,6 @@ public:
         p_simulator->SetDt(dt);
         p_simulator->SetOutputDirectory(output_dir);
         p_simulator->RemoveAllForces();
-        p_simulator->RemoveAllCellPopulationBoundaryConditions();
   
 
         /* 
