@@ -45,17 +45,17 @@ public:
 
   void TestWithConstantForce() throw(Exception)
    {
-        double AreaParameter = -5.5;  double DilationParameter = -6; double DeformationParamter = -6; double BendingParameter = -12;
-        std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
+          double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -7;
+          std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
 
         std::string Archieved = "SimpleHemeLBPlexus2/GrowingToEqui3/";//std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
-        std::string output_dir = "FSISimulations/Plexus/NoCollapse/";
+        std::string output_dir = "FSISimulations/Plexus/Collapse1/";
         double EndTime = 10;
-        double SamplingStep = 50;
+        double SamplingStep = 25;
         double dt = 0.001;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
-        double FSI_Iterations = 1000;
+        double FSI_Iterations = 50;
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
  
@@ -70,11 +70,7 @@ public:
         p_simulator->SetDt(dt);
         p_simulator->SetOutputDirectory(output_dir);
         p_simulator->RemoveAllForces();
-        p_simulator->RemoveAllCellPopulationBoundaryConditions();
   
-  
-      
-      
 
         /* 
         -----------------------------
@@ -98,7 +94,7 @@ public:
  
 
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-        p_Mesh_modifier->SetRadius(0.005);
+        p_Mesh_modifier->SetRadius(0.006);
         p_Mesh_modifier->SetUpdateFrequency(0.1/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
 
@@ -157,16 +153,17 @@ public:
         c_vector<double, 3> PlaneNormal7 = Create_c_vector(0.6878807670924608, 0.7247343474980099, -0.03975142539484216);
 
 
+    
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
 
         double InletPressure = P_blood; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
         double OutletPressure = P_blood * (0.98);
 
         boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
-        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure*1.1, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal3, Point3, InletPressure*1.2, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal4, Point4, InletPressure*1, "Inlet");
+        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet"); // Issues here 
+        p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure, "Inlet"); //FIne
+        p_ForceOut->Inlets(PlaneNormal3, Point3, InletPressure, "Inlet");// Issues here 
+        p_ForceOut->Inlets(PlaneNormal4, Point4, InletPressure, "Inlet");// Issues here 
         p_ForceOut->Inlets(PlaneNormal5, Point5, OutletPressure, "Outlet");
         p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure*0.98, "Outlet");
         p_ForceOut->Inlets(PlaneNormal7, Point7, OutletPressure*0.95, "Outlet");
