@@ -992,7 +992,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
-        PRINT_3_VARIABLES(mMinSS,  0.3*(mMaxSS- mMinSS) ,mMaxSS )
+        // PRINT_3_VARIABLES(mMinSS,  0.3*(mMaxSS- mMinSS) ,mMaxSS )
         if ( norm_2(shear_stress)> (mMaxSS + 1*(mMaxSS- mMinSS)    )  )
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 1);
