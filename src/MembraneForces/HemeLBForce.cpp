@@ -917,8 +917,11 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
                 }
              }
     	}
-        mMaxSS = MaximumShearStress;
-        mMinSS = MinimumShearStress;
+        if (mCenterlinesNumber <3)
+            {
+            mMaxSS = MaximumShearStress;
+            mMinSS = MinimumShearStress;
+            }
     }
 
     assert(mAppliedPosition.size() == number_fluid_sites);
@@ -1036,8 +1039,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 
         if (mCenterlinesNumber <3)
              {
-                mMaxSS = MaximumShearStress;
-                mMinSS = MinimumShearStress;
+                // mMaxSS = MaximumShearStress;
+                // mMinSS = MinimumShearStress;
+                PRINT_2_VARIABLES(mMaxSS, MaximumShearStress);
+                PRINT_2_VARIABLES(mMinSS, MinimumShearStress);
               } 
 
 
