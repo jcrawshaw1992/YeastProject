@@ -1014,6 +1014,9 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 
+        PRINT_2_VARIABLES(mMinSS , mMaxSS )
+        PRINT_2_VARIABLES(0.9*mMinSS ,1.1*mMaxSS )
+
         if (mCenterlinesNumber >=3)
              {
                 // PRINT_3_VARIABLES(mMinSS,  0.3*(mMaxSS- mMinSS) ,mMaxSS )
