@@ -562,7 +562,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     // double deltaX = 2*mRadius/41;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
  
  
-    double deltaX = 2*mRadius/20;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
+    double deltaX = 2*mRadius/41;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
     double deltaT = 0.1 * deltaX * deltaX / V;
    
     double MaxPressure = *std::min_element(mPressure.begin(), mPressure.end());
@@ -1014,8 +1014,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 
-        PRINT_2_VARIABLES(mMinSS , mMaxSS )
-        PRINT_2_VARIABLES(0.9*mMinSS ,1.1*mMaxSS )
+        // PRINT_2_VARIABLES(mMinSS , mMaxSS )
+        // PRINT_2_VARIABLES(0.9*mMinSS ,1.1*mMaxSS )
 
         if (mCenterlinesNumber >=2)
              {

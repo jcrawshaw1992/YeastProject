@@ -55,8 +55,8 @@ public:
         std::string Archieved = "SimpleHemeLBHoneycomb/GrowingToEqui/";
         
         double EndTime = 10;
-        double SamplingStep = 25;
-        double dt = 0.0002;
+        double SamplingStep = 50;
+        double dt = 0.0001;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
         double FSI_Iterations = 100;//50;
