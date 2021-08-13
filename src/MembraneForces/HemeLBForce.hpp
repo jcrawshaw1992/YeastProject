@@ -184,7 +184,7 @@ public:
 
 
    void  Netowork(std::string Network);
-   std::string  mNetwork = 'Honeycomb';
+   std::string  mNetwork = "Honeycomb";
    double mMinSS; 
    double mMaxSS; 
    mRegionOfForceCollection = 0.001;
