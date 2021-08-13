@@ -950,7 +950,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
     TRACE("UpdateCellData")
 	assert(SPACE_DIM==3); 
 	MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-
+    PRINT_VARIABLE(mAppliedPosition.size());
 	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
 		 cell_iter != rCellPopulation.End();
 		 ++cell_iter)
@@ -963,7 +963,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		double distance_to_fluid_site = DBL_MAX;
 
         double counter =0;
-        PRINT_VARIABLE(mAppliedPosition.size());
+       
         c_vector<double,3> shear_stress = Create_c_vector(0,0,0);
 		for (unsigned fluid_site_index = 0; fluid_site_index <  mAppliedPosition.size(); fluid_site_index++)
 		{
@@ -994,10 +994,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 
-        if ( norm_2(shear_stress)> (mMaxSS + 0.05*(mMaxSS- mMinSS)    )  )
+        if ( norm_2(shear_stress)> (mMaxSS + 0.3*(mMaxSS- mMinSS)    )  )
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 1);
-        }else if ( norm_2(shear_stress)<mMinSS -  0.05*(mMaxSS- mMinSS) )
+        }else if ( norm_2(shear_stress)<mMinSS -  0.3*(mMaxSS- mMinSS) )
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -1);
         }
