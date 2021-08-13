@@ -552,7 +552,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     double V = 4; // Kinematic viscosity -- 4 mm^2/s  V = eta/rho
     // double deltaX = 2*mRadius/41;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
     TRACE("Have changed temp, fix this later Jess")
-    double deltaX = 2*mRadius/10;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
+    double deltaX = 2*mRadius/41;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
     double deltaT = 0.1 * deltaX * deltaX / V;
    
     double MaxPressure = *std::min_element(mPressure.begin(), mPressure.end());
@@ -978,10 +978,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 
-        if ( norm_2(shear_stress)> mMaxSS  )
+        if ( norm_2(shear_stress)> (mMaxSS + 0.1*(mMaxSS- mMinSS)    )  )
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 1);
-        }else if ( norm_2(shear_stress)<mMinSS)
+        }else if ( norm_2(shear_stress)<mMinSS-  0.1*(mMaxSS- mMinSS) )
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -1);
         }
