@@ -228,7 +228,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     WriteOutVtuFile(mOutputDirectory);
 
     /*  Step 0: Create the HemeLB config.pr2 file */
-    double HemeLBSimulationTime = 100; //
+    double HemeLBSimulationTime = 10000; //
     int Period = HemeLBSimulationTime*0.95;
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
       
@@ -557,7 +557,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
 
     double V = 4; // Kinematic viscosity -- 4 mm^2/s  V = eta/rho
     // double deltaX = 2*mRadius/41;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
-    TRACE("Have changed temp, fix this later Jess")
+ 
+ 
     double deltaX = 2*mRadius/41;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
     double deltaT = 0.1 * deltaX * deltaX / V;
    
@@ -643,7 +644,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
     {
             // Need to write bash scrip .... issue here 
             TRACE("Have set to 20 cores, will decrease later")
-            int Cores = 20;
+            int Cores =12;
             ofstream bash_script;
 
             std::string BashFile =  mChasteOutputDirectory + mOutputDirectory + "RunHemeLB";
@@ -949,41 +950,34 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		 cell_iter != rCellPopulation.End();
 		 ++cell_iter)
 	{
-        TRACE("Do i get to here ")
+
 		c_vector<double, SPACE_DIM> location = rCellPopulation.GetLocationOfCellCentre(*cell_iter);
-         TRACE("A ")
 		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-               TRACE("B ")
 		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
-               TRACE("C ")
 		unsigned nearest_fluid_site = UNSIGNED_UNSET;
-               TRACE("D")
 		double distance_to_fluid_site = DBL_MAX;
-               TRACE("E")
 
         double counter =0;
         PRINT_VARIABLE(mAppliedPosition.size());
         c_vector<double,3> shear_stress = Create_c_vector(0,0,0);
-		// for (unsigned fluid_site_index = 0; fluid_site_index <  mAppliedPosition.size(); fluid_site_index++)
-		// {
-		// 	// Find the closest fluid site 
-        //     //  TRACE("F")
-		// 	double distance = norm_2(location - mAppliedPosition[fluid_site_index]*1e3);
-		// 	if (distance < distance_to_fluid_site)
-		// 	{
-        //          TRACE("G")
-		// 		distance_to_fluid_site = distance;	
-		// 		nearest_fluid_site = fluid_site_index;
-		// 	}
-        //     if (distance <  mRegionOfForceCollection)
-        //     {
-        //         shear_stress +=mAppliedTangentTractions[fluid_site_index];
-        //         counter+=1;
-        //         PRINT_VARIABLE(counter)
-		// 	}
-		// }
-        // shear_stress/=counter;
-        TRACE("collected")
+		for (unsigned fluid_site_index = 0; fluid_site_index <  mAppliedPosition.size(); fluid_site_index++)
+		{
+			// Find the closest fluid site 
+            //  TRACE("F")
+			double distance = norm_2(location - mAppliedPosition[fluid_site_index]*1e3);
+			if (distance < distance_to_fluid_site)
+			{
+				distance_to_fluid_site = distance;	
+				nearest_fluid_site = fluid_site_index;
+			}
+            if (distance <  mRegionOfForceCollection)
+            {
+                shear_stress +=mAppliedTangentTractions[fluid_site_index];
+                counter+=1;
+			}
+		}
+        shear_stress/=counter;
+        
 		// assert(nearest_fluid_site != UNSIGNED_UNSET);
 	
 		// Get the HemeLB force at the closest lattice site 
@@ -995,10 +989,10 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 
-        if ( norm_2(shear_stress)> (mMaxSS + 0.1*(mMaxSS- mMinSS)    )  )
+        if ( norm_2(shear_stress)> (mMaxSS + 0.05*(mMaxSS- mMinSS)    )  )
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 1);
-        }else if ( norm_2(shear_stress)<mMinSS-  0.1*(mMaxSS- mMinSS) )
+        }else if ( norm_2(shear_stress)<mMinSS -  0.05*(mMaxSS- mMinSS) )
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -1);
         }
