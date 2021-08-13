@@ -30,11 +30,13 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
     double P_tissue = 0.001466542;
+    TRACE("ADD force contribution")
     assert(ELEMENT_DIM ==2); assert(SPACE_DIM ==3);
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
     PRINT_2_VARIABLES(mExecuteHemeLBCounter, mTriggerHemeLB)
     if (mExecuteHemeLBCounter == mTriggerHemeLB)
     {
+        TARCE("mExecuteHemeLBCounter == mTriggerHemeLB")
         // /* Update mesh */
         MutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh = p_cell_population->rGetMesh();
         mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
@@ -184,9 +186,12 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
     // WriteHemeLBBashScript();   
     if (RunInitalHemeLB ==1)
     {
+        TRACE("RunInitalHemeLB")
         ExecuteHemeLB();
     }
+    TRACE("ExecuteHemeLB")
     LoadTractionFromFile();
+    TRACE("Done LoadTractionFromFile")
     UpdateCellData(rCellPopulation);
 }
 
@@ -958,31 +963,31 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 
         double counter =0;
         PRINT_VARIABLE(mAppliedPosition.size());
-        c_vector<double,3> shear_stress;
-		for (unsigned fluid_site_index = 0; fluid_site_index <  mAppliedPosition.size(); fluid_site_index++)
-		{
-			// Find the closest fluid site 
-            //  TRACE("F")
-			double distance = norm_2(location - mAppliedPosition[fluid_site_index]*1e3);
-			if (distance < distance_to_fluid_site)
-			{
-                 TRACE("G")
-				distance_to_fluid_site = distance;	
-				nearest_fluid_site = fluid_site_index;
-			}
-            if (distance <  mRegionOfForceCollection)
-            {
-                shear_stress +=mAppliedTangentTractions[fluid_site_index];
-                counter+=1;
-                PRINT_VARIABLE(counter)
-			}
-		}
-        shear_stress/=counter;
+        c_vector<double,3> shear_stress = Create_c_vector(0,0,0);
+		// for (unsigned fluid_site_index = 0; fluid_site_index <  mAppliedPosition.size(); fluid_site_index++)
+		// {
+		// 	// Find the closest fluid site 
+        //     //  TRACE("F")
+		// 	double distance = norm_2(location - mAppliedPosition[fluid_site_index]*1e3);
+		// 	if (distance < distance_to_fluid_site)
+		// 	{
+        //          TRACE("G")
+		// 		distance_to_fluid_site = distance;	
+		// 		nearest_fluid_site = fluid_site_index;
+		// 	}
+        //     if (distance <  mRegionOfForceCollection)
+        //     {
+        //         shear_stress +=mAppliedTangentTractions[fluid_site_index];
+        //         counter+=1;
+        //         PRINT_VARIABLE(counter)
+		// 	}
+		// }
+        // shear_stress/=counter;
         TRACE("collected")
 		assert(nearest_fluid_site != UNSIGNED_UNSET);
 	
 		// Get the HemeLB force at the closest lattice site 
-		c_vector<double,3> force = mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
+		c_vector<double,3> force = Create_c_vector(0,0,0);// mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
 		double Pressure = norm_2(force); 
 
         mForceMap[node_index] = force;
