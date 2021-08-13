@@ -647,7 +647,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
     {
             // Need to write bash scrip .... issue here 
             TRACE("Have set to 20 cores, will decrease later")
-            int Cores =12;
+            int Cores =16;
             ofstream bash_script;
 
             std::string BashFile =  mChasteOutputDirectory + mOutputDirectory + "RunHemeLB";
@@ -1016,16 +1016,16 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 
         if (mCenterlinesNumber >=3)
              {
-                PRINT_3_VARIABLES(mMinSS,  0.3*(mMaxSS- mMinSS) ,mMaxSS )
-                if ( norm_2(shear_stress)> (mMaxSS + 1*(mMaxSS- mMinSS)    )  )
+                // PRINT_3_VARIABLES(mMinSS,  0.3*(mMaxSS- mMinSS) ,mMaxSS )
+                if ( norm_2(shear_stress)> 1.1*mMaxSS )
                 {
                     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 1);
                 }
-                if ( norm_2(shear_stress) < mMinSS -  0.1*(mMaxSS- mMinSS) )
+                if ( norm_2(shear_stress) < 0.9*mMinSS)
                 {
                     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -1);
                 }
-                if  ( norm_2(shear_stress)> mMinSS -  0.5*(mMaxSS- mMinSS) &&  norm_2(shear_stress) <  (mMaxSS + 1*(mMaxSS- mMinSS)))
+                if  ( norm_2(shear_stress)<1.1*mMaxSS  &&  norm_2(shear_stress) > 0.9*mMinSS  ) 
                 {
                          cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);  
                 }
@@ -1043,6 +1043,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
                 // mMinSS = MinimumShearStress;
                 PRINT_2_VARIABLES(mMaxSS, MaximumShearStress);
                 PRINT_2_VARIABLES(mMinSS, MinimumShearStress);
+                PRINT_2_VARIABLES(mMinSS , mMaxSS )
+                PRINT_2_VARIABLES(0.9*mMinSS ,1.1*mMaxSS )
               } 
 
 
