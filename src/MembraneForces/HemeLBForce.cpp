@@ -966,7 +966,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 
-        if mCenterlinesNumber <3
+        if (mCenterlinesNumber <3)
         {
             std::vector<c_vector<double,3>>::iterator MinShearStress = std::min_element(mAppliedTangentTractions.begin(), mAppliedTangentTractions.end());
             PRINT_VECTOR(*MinShearStress);
