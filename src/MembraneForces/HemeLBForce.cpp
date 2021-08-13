@@ -1027,7 +1027,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
                          cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);  
                 }
              }
-             else if
+             else
              {
                     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);    
              }   
