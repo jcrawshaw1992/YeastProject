@@ -180,6 +180,14 @@ public:
 	 * 	Store the loaded traction data; this is the location that the traction is defined at.
 	 */
 	std::vector <double > mAppliedPressure;
+  
+
+
+   void  Netowork(std::string Network);
+   std::string  mNetwork = 'Honeycomb';
+   double mMinSS; 
+   double mMaxSS; 
+   mRegionOfForceCollection = 0.001;
 
     
 

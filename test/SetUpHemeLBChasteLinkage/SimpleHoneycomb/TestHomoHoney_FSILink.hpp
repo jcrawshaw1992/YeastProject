@@ -47,20 +47,19 @@ public:
    {
 
       
-        std::string output_dir = "FSISimulations/Honey/Collapse2/";
+        std::string output_dir = "SimpleHemeLBHoneycomb/TestingHomoFSI2/";
 
         double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -7;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
 
-        std::string Archieved = "SimpleHemeLBHoneycomb/TestingHomoFSI/";
-        
+        std::string Archieved =  "SimpleHemeLBHoneycomb/GrowingToEqui/";
               
         double EndTime = 7;
         double SamplingStep = 25;
-        double dt = 0.0001;
+        double dt = 0.001;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
-        double FSI_Iterations = 500;
+        double FSI_Iterations = 50100;
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
  
@@ -130,8 +129,8 @@ public:
       
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
 
-        double InletPressure = P_blood* (1.1); // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
-        double OutletPressure = P_blood * (0.9);
+        double InletPressure = P_blood* (1.15); // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
+        double OutletPressure = P_blood * (0.85);
 
         // Inlet1
         c_vector<double, 3> Point1 = Create_c_vector(0.0022124205632440453, -0.01409714283809368,0);

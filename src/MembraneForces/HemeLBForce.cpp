@@ -112,6 +112,13 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
     }
 
 
+
+
+      
+            // mMinSS = norm_2(*MinShearStress);
+            // mMaxSS = norm_2(*MaxShearStress);
+     
+
     // double Nc =45;
 	// for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
 	// 	 cell_iter != rCellPopulation.End();
@@ -897,29 +904,40 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
 
 
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Network(std::string Network)
+{
+    mNetwork = Network;
+    if (Network == "Honeycomb" || Network == "Honycomb"||Network == "Honey" ||Network == "H" )
+    {
+        mRegionOfForceCollection = 0.001;
+    }   
+    else if(Network == "Plexus" || Network == "plexus"||Network == "P" ||Network == "p" )
+    {
+        mRegionOfForceCollection = 0.0007;
+    }
+    
+}
+
+template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation)
 {
 	
-	assert(SPACE_DIM==3); // Currently assumes that SPACE_DIM = 3
-	
-	std::map<unsigned, c_vector<unsigned, 2>  > LatticeToNodeMap;
-	
-
+	assert(SPACE_DIM==3); 
 	MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
 
 	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
 		 cell_iter != rCellPopulation.End();
 		 ++cell_iter)
 	{
-
 		c_vector<double, SPACE_DIM> location = rCellPopulation.GetLocationOfCellCentre(*cell_iter);
 
 		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
 		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
 		unsigned nearest_fluid_site = UNSIGNED_UNSET;
 		double distance_to_fluid_site = DBL_MAX;
-	
-	
+
+        double counter =0;
+        c_vector<double,3> shear_stress;
 		for (unsigned fluid_site_index = 0; fluid_site_index <  mAppliedPosition.size(); fluid_site_index++)
 		{
 			// Find the closest fluid site 
@@ -929,95 +947,58 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 				distance_to_fluid_site = distance;	
 				nearest_fluid_site = fluid_site_index;
 			}
+            if (distance <  mRegionOfForceCollection)
+            {
+                shear_stress +=mAppliedTangentTractions[fluid_site_index];
+                counter+=1;
+			}
 		}
-		// PRINT_VARIABLE(distance_to_fluid_site);
-		LatticeToNodeMap[node_index] = Create_c_vector(nearest_fluid_site, 0 );
+        shear_stress/=counter;
+
 		assert(nearest_fluid_site != UNSIGNED_UNSET);
 	
-		c_vector<double, 3> NormalVector = Create_c_vector(0,0,0);
-		std::set<unsigned>& containing_elements = pNode->rGetContainingElementIndices();
-        assert(containing_elements.size() > 0);
-		// Finding the normal to the node -- need to check this 
-        for (std::set<unsigned>::iterator iter = containing_elements.begin();
-            iter != containing_elements.end();
-            ++iter)
-        {
-            Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
-            Node<SPACE_DIM>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
-            Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
-
-            c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
-            c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
-
-            NormalVector  += VectorProduct(vector_12, vector_13);
-        }
-		NormalVector /=norm_2(NormalVector); // I think the normal is inwards facing 
-
 		// Get the HemeLB force at the closest lattice site 
-		c_vector<double,3> force = mAppliedTractions[nearest_fluid_site]/133.3223874;//*voronoi_cell_area;  Convert to Pas
+		c_vector<double,3> force = mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
 		double Pressure = norm_2(force); 
-        
 
-		// Check I have maintained outward pointing norm by getting the direction of the force 
-		// Vector and making sure the normal and the force vector are goin in the same direcvtion 
-		// DO this by checking the angle betweem these two vectors is below a certain value -- basic dot proudct thing
-
-		// c_vector<long double,3> forceDirection = force / Pressure;
-        // c_vector<long double,3> Force = Pressure * NormalVector; 
         mForceMap[node_index] = force;
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
-        // pNode->AddAppliedForceContribution(Force); 
+        cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
+
+        if mCenterlinesNumber <3
+        {
+            std::vector<c_vector<double,3>>::iterator MinShearStress = std::min_element(mAppliedTangentTractions.begin(), mAppliedTangentTractions.end());
+            PRINT_VECTOR(*MinShearStress);
+            mMinSS = norm_2(*MinShearStress);
+
+            std::vector<c_vector<double,3>>::iterator MaxShearStress = std::max_element(mAppliedTangentTractions.begin(), mAppliedTangentTractions.end());
+            PRINT_VECTOR(*MaxShearStress);
+            mMaxSS = norm_2(*MaxShearStress);
+
+            cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);
+
+        }
+          else if ( norm_2(shear_stress)> mMaxSS  )
+        {
+            cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 1);
+        }else if ( norm_2(shear_stress)<mMinSS)
+        {
+            cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -1);
+        }
+        // else if ( norm_2(shear_stress)> (mMaxSS -0.1*(mMaxSS - mMinSS)) )
+        // {
+        //     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 1);
+        // }else if ( norm_2(shear_stress)<(mMinSS +0.1*(mMaxSS - mMinSS)) )
+        // {
+        //     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -1);
+        // }
+
+     
 
 
-        // unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-        //     Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
-        //     c_vector<double, 3> ForceOnNode = mForceMap[node_index]/1;
-        //     rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(ForceOnNode); 
-
-
-		// double Angle = abs(acos(inner_prod(forceDirection, NormalVector) )) ;
-
-		// if (Angle > M_PI/2)
-		// {
-		// 	// TRACE(" Normal was the wrong way");
-		// 	NormalVector = -NormalVector;
-
-		// }
-
-		// Calculate the approximate area of the voronoi region around the cell by including a third of the area
-		// of all surrounding triangles. Useful for turning stresses into forces.
-		// double voronoi_cell_area = rCellPopulation.GetVolumeOfCell(*cell_iter);
-		
-
-		// PRINT_VARIABLE(Pressure);
-		// // XXXX  -Replaced the direction of the force with the normal -- did this because the force acts normal to the lattice site it was selected from, which is not the identical position to the node, but is slightly off
-		// location = location - centroid;
-		// location /= norm_2(location);
-		
-		
-       
-
-		c_vector<double,3> shear_stress = mAppliedTangentTractions[nearest_fluid_site];
-
-		// assert(fabs(Force[0])<1e10);
-		// assert(fabs(Force[1])<1e10);
-		// assert(fabs(Force[2])<1e10);
-		// assert(fabs(shear_stress[0])<1e10);
-		// assert(fabs(shear_stress[1])<1e10);
-		// assert(fabs(shear_stress[2])<1e10);
 
        
-		// cell_iter->GetCellData()->SetItem("applied_force_x", Force[0]);
-		// PRINT_VECTOR(Force);
-		// cell_iter->GetCellData()->SetItem("applied_force_y", Force[1]);
-		// cell_iter->GetCellData()->SetItem("applied_force_z", Force[2]);
-		// cell_iter->GetCellData()->SetItem("applied_force_mag", norm_2(Force));
-		// cell_iter->GetCellData()->SetItem("voronoi_cell_area", voronoi_cell_area);
-		// cell_iter->GetCellData()->SetItem("applied_shear_stress_x", shear_stress[0]);
-		// cell_iter->GetCellData()->SetItem("applied_shear_stress_y", shear_stress[1]);
-		// cell_iter->GetCellData()->SetItem("applied_shear_stress_z", shear_stress[2]);
-		cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 	}
 }
 
@@ -1230,3 +1211,146 @@ EXPORT_TEMPLATE_CLASS_ALL_DIMS(HemeLBForce)
 //            mNewInlets = 0; 
 //         }
 //     }
+
+
+
+// template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+// void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation)
+// {
+	
+// 	assert(SPACE_DIM==3); // Currently assumes that SPACE_DIM = 3
+	
+// 	// std::map<unsigned, c_vector<unsigned, 2>  > LatticeToNodeMap;
+	
+
+// 	MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+
+// 	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+// 		 cell_iter != rCellPopulation.End();
+// 		 ++cell_iter)
+// 	{
+
+// 		c_vector<double, SPACE_DIM> location = rCellPopulation.GetLocationOfCellCentre(*cell_iter);
+
+// 		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+// 		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
+// 		unsigned nearest_fluid_site = UNSIGNED_UNSET;
+// 		double distance_to_fluid_site = DBL_MAX;
+	
+	
+// 		for (unsigned fluid_site_index = 0; fluid_site_index <  mAppliedPosition.size(); fluid_site_index++)
+// 		{
+// 			// Find the closest fluid site 
+// 			double distance = norm_2(location - mAppliedPosition[fluid_site_index]*1e3);
+// 			if (distance < distance_to_fluid_site)
+// 			{
+// 				distance_to_fluid_site = distance;	
+// 				nearest_fluid_site = fluid_site_index;
+// 			}
+// 		}
+//         double counter =0;
+//         c_vector<double,3> shear_stress ;
+//         for (unsigned fluid_site_index = 0; fluid_site_index <  mAppliedPosition.size(); fluid_site_index++)
+// 		{
+// 			// Find the closest fluid site 
+// 			double distance = norm_2(location - mAppliedPosition[fluid_site_index]*1e3);
+// 			if (distance <  mRegionOfForceCollection)
+//             {
+//                 shear_stress +=mAppliedTangentTractions[fluid_site_index];
+//                 mAppliedTractions[nearest_fluid_site]/133.3223874;//*voronoi_cell_area;  Convert to Pas
+//                 counter+=1;
+// 			}
+// 		}
+//         shear_stress/=counter;
+
+// 		// PRINT_VARIABLE(distance_to_fluid_site);
+// 		// LatticeToNodeMap[node_index] = Create_c_vector(nearest_fluid_site, 0 );
+// 		assert(nearest_fluid_site != UNSIGNED_UNSET);
+	
+// 		// c_vector<double, 3> NormalVector = Create_c_vector(0,0,0);
+// 		// std::set<unsigned>& containing_elements = pNode->rGetContainingElementIndices();
+//         // assert(containing_elements.size() > 0);
+// 		// Finding the normal to the node -- need to check this 
+//         // for (std::set<unsigned>::iterator iter = containing_elements.begin();
+//         //     iter != containing_elements.end();
+//         //     ++iter)
+//         // {
+//         //     Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
+//         //     Node<SPACE_DIM>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
+//         //     Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
+
+//         //     c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
+//         //     c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
+
+//         //     NormalVector  += VectorProduct(vector_12, vector_13);
+//         // }
+// 		// NormalVector /=norm_2(NormalVector); // I think the normal is inwards facing 
+
+// 		// Get the HemeLB force at the closest lattice site 
+// 		c_vector<double,3> force = mAppliedTractions[nearest_fluid_site]/133.3223874;//*voronoi_cell_area;  Convert to Pas
+// 		double Pressure = norm_2(force); 
+        
+
+// 		// Check I have maintained outward pointing norm by getting the direction of the force 
+// 		// Vector and making sure the normal and the force vector are goin in the same direcvtion 
+// 		// DO this by checking the angle betweem these two vectors is below a certain value -- basic dot proudct thing
+
+// 		// c_vector<long double,3> forceDirection = force / Pressure;
+//         // c_vector<long double,3> Force = Pressure * NormalVector; 
+//         mForceMap[node_index] = force;
+// 		// Store the force in CellData
+// 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
+//         cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
+//         // pNode->AddAppliedForceContribution(Force); 
+
+
+//         // unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+//         //     Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
+//         //     c_vector<double, 3> ForceOnNode = mForceMap[node_index]/1;
+//         //     rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(ForceOnNode); 
+
+
+// 		// double Angle = abs(acos(inner_prod(forceDirection, NormalVector) )) ;
+
+// 		// if (Angle > M_PI/2)
+// 		// {
+// 		// 	// TRACE(" Normal was the wrong way");
+// 		// 	NormalVector = -NormalVector;
+
+// 		// }
+
+// 		// Calculate the approximate area of the voronoi region around the cell by including a third of the area
+// 		// of all surrounding triangles. Useful for turning stresses into forces.
+// 		// double voronoi_cell_area = rCellPopulation.GetVolumeOfCell(*cell_iter);
+		
+
+// 		// PRINT_VARIABLE(Pressure);
+// 		// // XXXX  -Replaced the direction of the force with the normal -- did this because the force acts normal to the lattice site it was selected from, which is not the identical position to the node, but is slightly off
+// 		// location = location - centroid;
+// 		// location /= norm_2(location);
+		
+		
+       
+
+// 		// c_vector<double,3> shear_stress = mAppliedTangentTractions[nearest_fluid_site];
+
+// 		// assert(fabs(Force[0])<1e10);
+// 		// assert(fabs(Force[1])<1e10);
+// 		// assert(fabs(Force[2])<1e10);
+// 		// assert(fabs(shear_stress[0])<1e10);
+// 		// assert(fabs(shear_stress[1])<1e10);
+// 		// assert(fabs(shear_stress[2])<1e10);
+
+       
+// 		// cell_iter->GetCellData()->SetItem("applied_force_x", Force[0]);
+// 		// PRINT_VECTOR(Force);
+// 		// cell_iter->GetCellData()->SetItem("applied_force_y", Force[1]);
+// 		// cell_iter->GetCellData()->SetItem("applied_force_z", Force[2]);
+// 		// cell_iter->GetCellData()->SetItem("applied_force_mag", norm_2(Force));
+// 		// cell_iter->GetCellData()->SetItem("voronoi_cell_area", voronoi_cell_area);
+// 		// cell_iter->GetCellData()->SetItem("applied_shear_stress_x", shear_stress[0]);
+// 		// cell_iter->GetCellData()->SetItem("applied_shear_stress_y", shear_stress[1]);
+// 		// cell_iter->GetCellData()->SetItem("applied_shear_stress_z", shear_stress[2]);
+		
+// 	}
+// }
