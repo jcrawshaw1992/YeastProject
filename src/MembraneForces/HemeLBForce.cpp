@@ -943,21 +943,28 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		 cell_iter != rCellPopulation.End();
 		 ++cell_iter)
 	{
+        TRACE("Do i get to here ")
 		c_vector<double, SPACE_DIM> location = rCellPopulation.GetLocationOfCellCentre(*cell_iter);
-
+         TRACE("A ")
 		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+               TRACE("B ")
 		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
+               TRACE("C ")
 		unsigned nearest_fluid_site = UNSIGNED_UNSET;
+               TRACE("D")
 		double distance_to_fluid_site = DBL_MAX;
+               TRACE("E")
 
         double counter =0;
         c_vector<double,3> shear_stress;
 		for (unsigned fluid_site_index = 0; fluid_site_index <  mAppliedPosition.size(); fluid_site_index++)
 		{
 			// Find the closest fluid site 
+             TRACE("F")
 			double distance = norm_2(location - mAppliedPosition[fluid_site_index]*1e3);
 			if (distance < distance_to_fluid_site)
 			{
+                 TRACE("G")
 				distance_to_fluid_site = distance;	
 				nearest_fluid_site = fluid_site_index;
 			}
@@ -969,7 +976,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 			}
 		}
         shear_stress/=counter;
-
+        TRACE("collected")
 		assert(nearest_fluid_site != UNSIGNED_UNSET);
 	
 		// Get the HemeLB force at the closest lattice site 
