@@ -385,7 +385,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOpenVtus(int Period, int mCenterl
         // bash_script << "echo 'HemeLB has finished' > " + mHemeLBDirectory + "WaitFile.txt \n";
         bash_script << "cp " + mHemeLBDirectory +"results/Extracted/wholegeometry-velocity_"+std::to_string(Period)+".vtu " +mHemeLB_output + "wholegeometry-velocity_"+std::to_string(mCenterlinesNumber)+".vtu \n";
         // bash_script << "cp " + mHemeLBDirectory +"results/Extracted/surface-pressure_"+std::to_string(Period)+".vtu " +mHemeLB_output + "surface-pressure_"+std::to_string(mCenterlinesNumber)+".vtu \n";
-        // bash_script << "cp " + mHemeLBDirectory +"results/Extracted/surface-traction_"+std::to_string(Period)+".vtu " +mHemeLB_output + "surface-traction_"+std::to_string(mCenterlinesNumber)+".vtu \n";
+        bash_script << "cp " + mHemeLBDirectory +"results/Extracted/surface-traction_"+std::to_string(Period)+".vtu " +mHemeLB_output + "surface-traction_"+std::to_string(mCenterlinesNumber)+".vtu \n";
         bash_script << "echo 'HemeLB simulation complete' \n";
         // bash_script << "osascript -e 'tell application \"Terminal\" to close first window' & exit";  Need to think about with with application to linux 
         bash_script.close();
