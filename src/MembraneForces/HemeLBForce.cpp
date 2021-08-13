@@ -36,7 +36,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
     PRINT_2_VARIABLES(mExecuteHemeLBCounter, mTriggerHemeLB)
     if (mExecuteHemeLBCounter == mTriggerHemeLB)
     {
-        TARCE("mExecuteHemeLBCounter == mTriggerHemeLB")
+        TRACE("mExecuteHemeLBCounter == mTriggerHemeLB");
         // /* Update mesh */
         MutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh = p_cell_population->rGetMesh();
         mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
