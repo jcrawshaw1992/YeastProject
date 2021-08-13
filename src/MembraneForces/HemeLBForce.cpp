@@ -771,6 +771,7 @@ template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
 {
 
+    TRACE("LoadTractionFromFile")
     std::string TractionFile = mHemeLBDirectory + "results/Extracted/surface-tractions.xtr";
  
  //    std::string TractionFile = "/data/vascrem/testoutput/TestxtrDirectory/surface-tractions.xtr";
@@ -934,6 +935,7 @@ template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation)
 {
 	
+    TRACE("UpdateCellData")
 	assert(SPACE_DIM==3); 
 	MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
 
