@@ -275,6 +275,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
                             cell_iter->SetMutationState(p_Basement);
                             mBasementNodes.push_back(node_index);
                             mSamplebasementNode = node_index;
+                            cell_iter->GetCellData()->SetItem("MembraneState",1);
                                                                                     // DistanceToUpperPlane,DistanceToLowerPlane
                             // mDistanceToEndothelialRegion[node_index] = Create_c_vector(norm_2(NodeToUpperPlane),norm_2(NodeToLowerPlane));
                             break;
@@ -541,14 +542,15 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
         ++cell_iter)
     {
 
-        // PRINT_VARIABLE(cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>())
-        if ( cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == -1  ) 
+        PRINT_VARIABLE(cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>())
+        
+        if ( cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == -1  && cell_iter->GetCellData()->GetItem("MembraneState") )
             {
                 cell_iter->GetCellData()->SetItem("ShearModulus", PosStep_Kbs);
                 cell_iter->GetCellData()->SetItem("AreaDilationModulus", PosStep_Kba);
                 cell_iter->GetCellData()->SetItem("AreaConstant", PosStep_KbA);
             }
-        else if (cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == 0)
+        else if (cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == 0  && cell_iter->GetCellData()->GetItem("MembraneState") )
            {
                 if (ShearModulus != mGrowthMaps[mStrength](2))
                 {
