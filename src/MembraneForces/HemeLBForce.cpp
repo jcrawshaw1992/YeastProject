@@ -956,11 +956,12 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
                TRACE("E")
 
         double counter =0;
+        PRINT_VARIABLE(mAppliedPosition.size());
         c_vector<double,3> shear_stress;
 		for (unsigned fluid_site_index = 0; fluid_site_index <  mAppliedPosition.size(); fluid_site_index++)
 		{
 			// Find the closest fluid site 
-             TRACE("F")
+            //  TRACE("F")
 			double distance = norm_2(location - mAppliedPosition[fluid_site_index]*1e3);
 			if (distance < distance_to_fluid_site)
 			{
