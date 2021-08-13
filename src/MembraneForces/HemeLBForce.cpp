@@ -846,6 +846,9 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
     mAppliedTractions.clear();
     mAppliedTangentTractions.clear();
 
+    double MinimumShearStress =0;
+    double MaximumShearStress = 0;
+
     for (unsigned fluid_site_index = 0; fluid_site_index <  number_fluid_sites; fluid_site_index++)
     {
         
@@ -857,12 +860,9 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
     		reader.readUnsignedInt(coords[2]);
 
     		mAppliedPosition.push_back(origin+voxel_size*coords);
-			// c_vector<long double,3> LatticeSite= origin+voxel_size*coords;
-		// PRINT_VECTOR(LatticeSite);
     	}
 
-    	{
-            
+    	{        
 			c_vector<float,3> traction;
 			reader.readFloat(traction[0]);
 			traction[0] += traction_offset;
@@ -880,8 +880,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
     	}
 
     	{
-            
-			c_vector<float,3> tangent_traction;
+        	c_vector<float,3> tangent_traction;
 			reader.readFloat(tangent_traction[0]);
 			tangent_traction[0] += tanget_traction_offset;
 			reader.readFloat(tangent_traction[1]);
@@ -894,7 +893,20 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
 			assert(fabs(tangent_traction[2])<1e10);
 
 			mAppliedTangentTractions.push_back(tangent_traction);
+
+             if (mCenterlinesNumber <3)
+             {
+                if (MinimumShearStress < norm_2(tangent_traction))
+                {
+                    MinimumShearStress = norm_2(tangent_traction);
+                }else if (MaximumShearStress > norm_2(tangent_traction))
+                {
+                    MaximumShearStress = norm_2(tangent_traction);
+                }
+             }
     	}
+        mMaxSS = MaximumShearStress;
+        mMinSS = MinimumShearStress;
     }
 
     assert(mAppliedPosition.size() == number_fluid_sites);
@@ -966,25 +978,16 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 
-        if (mCenterlinesNumber <3)
-        {
-            std::vector<c_vector<double,3>>::iterator MinShearStress = std::min_element(mAppliedTangentTractions.begin(), mAppliedTangentTractions.end());
-            PRINT_VECTOR(*MinShearStress);
-            mMinSS = norm_2(*MinShearStress);
-
-            std::vector<c_vector<double,3>>::iterator MaxShearStress = std::max_element(mAppliedTangentTractions.begin(), mAppliedTangentTractions.end());
-            PRINT_VECTOR(*MaxShearStress);
-            mMaxSS = norm_2(*MaxShearStress);
-
-            cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);
-
-        }
-          else if ( norm_2(shear_stress)> mMaxSS  )
+        if ( norm_2(shear_stress)> mMaxSS  )
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 1);
         }else if ( norm_2(shear_stress)<mMinSS)
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -1);
+        }
+        else 
+        {
+                cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);
         }
         // else if ( norm_2(shear_stress)> (mMaxSS -0.1*(mMaxSS - mMinSS)) )
         // {
