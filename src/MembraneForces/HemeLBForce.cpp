@@ -859,7 +859,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
     mAppliedTangentTractions.clear();
 
     double MinimumShearStress =10000;
-    double MaximumShearStress = 0;
+    double MaximumShearStress = -1000;
 
     for (unsigned fluid_site_index = 0; fluid_site_index <  number_fluid_sites; fluid_site_index++)
     {
@@ -993,7 +993,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
-
+        PRINT_3_VARIABLES(mMinSS,  0.3*(mMaxSS- mMinSS) ,mMaxSS )
         if ( norm_2(shear_stress)> (mMaxSS + 0.3*(mMaxSS- mMinSS)    )  )
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 1);
