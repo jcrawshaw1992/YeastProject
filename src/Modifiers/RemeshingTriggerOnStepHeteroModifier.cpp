@@ -526,9 +526,13 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
 
 
 
-    double PosStep_Kbs = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus") + mStepSize*1e-8;
-    double PosStep_Kba = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus") + mStepSize*1e-8;
-    double PosStep_KbA = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant") + mStepSize*1e-8;
+    double ShearModulus = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus");
+    double AreaDilationModulus = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus");
+    double AreaConstant = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant"); 
+
+    double PosStep_Kbs = ShearModulus + mStepSize*1e-8;
+    double PosStep_Kba = AreaDilationModulus + mStepSize*1e-8;
+    double PosStep_KbA = AreaConstant + mStepSize*1e-8;
 
 
     // This will make the vessel move. Artifical but whatever 
@@ -545,12 +549,9 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
             }
         else if (cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == 0 &&    !(cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>())  )
            {
-                double ShearModulus = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus");
-                double AreaDilationModulus = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus");
-                double AreaConstant = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant"); 
                 if (ShearModulus != mGrowthMaps[mStrength](2))
                 {
-                   ShearModulus += 0.01*(mGrowthMaps[mStrength](2) - shearModulus);
+                   ShearModulus += 0.01*(mGrowthMaps[mStrength](2) - ShearModulus);
                    p_Sample_Basement_cell->GetCellData()->SetItem("ShearModulus", ShearModulus);
                 }
                 if (AreaDilationModulus != mGrowthMaps[mStrength](1))
