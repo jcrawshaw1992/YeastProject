@@ -187,7 +187,7 @@ public:
    std::string  mNetwork = "Honeycomb";
    double mMinSS; 
    double mMaxSS; 
-   mRegionOfForceCollection = 0.001;
+   double mRegionOfForceCollection = 0.001;
 
     
 
