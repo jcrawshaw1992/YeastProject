@@ -984,7 +984,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		// }
         // shear_stress/=counter;
         TRACE("collected")
-		assert(nearest_fluid_site != UNSIGNED_UNSET);
+		// assert(nearest_fluid_site != UNSIGNED_UNSET);
 	
 		// Get the HemeLB force at the closest lattice site 
 		c_vector<double,3> force = Create_c_vector(0,0,0);// mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
