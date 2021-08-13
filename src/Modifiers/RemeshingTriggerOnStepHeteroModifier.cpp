@@ -480,22 +480,20 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
     double Step_Kba = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus") + mStepSize; // 1e-15;
     double Step_KbA = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant") + mStepSize; // 1e-12;
 
+    TRACE("Doing A step Change")
+    double K_ShearMod         =  mGrowthMaps[0](2);
+    double K_AreaDilationMod  =  mGrowthMaps[0](1);
+    double K_AreaMod          =  mGrowthMaps[0](0);
 
+
+    K_ShearMod = std::min((double)Step_Kbs, K_ShearMod);
+    K_AreaDilationMod = std::min((double)Step_Kba, K_AreaDilationMod);
+    K_AreaMod = std::min((double)Step_KbA, K_AreaMod);
  
     mStepSize *=1.05;
 
     for (unsigned i = 0; i<mBoundaries.size(); i++)
     {   
-        TRACE("Doing A step Change")
-        double K_ShearMod         =  mGrowthMaps[0](2);
-        double K_AreaDilationMod  =  mGrowthMaps[0](1);
-        double K_AreaMod          =  mGrowthMaps[0](0);
-              
-
-        K_ShearMod = std::min((double)Step_Kbs, K_ShearMod);
-        K_AreaDilationMod = std::min((double)Step_Kba, K_AreaDilationMod);
-        K_AreaMod = std::min((double)Step_KbA, K_AreaMod);
-
         for (std::vector<unsigned>::iterator it = mBasementNodes.begin(); it != mBasementNodes.end(); ++it)
         {
             CellPtr cell_iter = rCellPopulation.GetCellUsingLocationIndex(*it);
@@ -528,9 +526,9 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
 
 
 
-    double PosStep_Kbs = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus") - mStepSize*1e-8;
-    double PosStep_Kba = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus") - mStepSize*1e-8;
-    double PosStep_KbA = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant") - mStepSize*1e-8;
+    double PosStep_Kbs = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus") + mStepSize*1e-8;
+    double PosStep_Kba = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus") + mStepSize*1e-8;
+    double PosStep_KbA = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant") + mStepSize*1e-8;
 
 
     // This will make the vessel move. Artifical but whatever 
@@ -538,11 +536,34 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
         cell_iter != rCellPopulation.End();
         ++cell_iter)
     {
-        if ( cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == -1 ) // Minimum wall shear stress
+
+        if ( cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == -1  &&   !cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>()  ) 
             {
-                cell_iter->GetCellData()->SetItem("ShearModulus", K_ShearMod);
-                cell_iter->GetCellData()->SetItem("AreaDilationModulus", K_AreaDilationMod);
-                cell_iter->GetCellData()->SetItem("AreaConstant", K_AreaMod);
+                cell_iter->GetCellData()->SetItem("ShearModulus", PosStep_Kbs);
+                cell_iter->GetCellData()->SetItem("AreaDilationModulus", PosStep_Kba);
+                cell_iter->GetCellData()->SetItem("AreaConstant", PosStep_KbA);
+            }
+        else if (cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == 0 &&   !cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>() )
+           {
+                double ShearModulus = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus");
+                double AreaDilationModulus = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus");
+                double AreaConstant = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant"); 
+                if (ShearModulus != mGrowthMaps[mStrength](2))
+                {
+                   ShearModulus += 0.01*(mGrowthMaps[mStrength](2) - shearModulus);
+                   p_Sample_Basement_cell->GetCellData()->SetItem("ShearModulus", ShearModulus);
+                }
+                if (AreaDilationModulus != mGrowthMaps[mStrength](1))
+                {
+                   AreaDilationModulus += 0.01*(mGrowthMaps[mStrength](1) - AreaDilationModulus );
+                   p_Sample_Basement_cell->GetCellData()->SetItem("AreaDilationModulus", AreaDilationModulus);
+                }
+                if (AreaConstant != mGrowthMaps[mStrength](0))
+                {
+                   AreaConstant += 0.01*(mGrowthMaps[mStrength](0) - AreaConstant );
+                   p_Sample_Basement_cell->GetCellData()->SetItem("AreaConstant", AreaConstant); 
+                }
+            
             }
             //  else if ( cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == 1 ) // Minimum wall shear stress
             // {
