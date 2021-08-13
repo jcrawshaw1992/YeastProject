@@ -130,9 +130,8 @@ public:
       
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
 
-        double InletPressure = P_blood; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
-        double OutletPressure = P_blood * (0.98);
-
+        double InletPressure = P_blood* (1.2); // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
+        double OutletPressure = P_blood * (0.8);
         // Inlet1
         c_vector<double, 3> Point1 = Create_c_vector(0.0022124205632440453, -0.01409714283809368,0);
         c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0 );
