@@ -30,7 +30,6 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
     double P_tissue = 0.001466542;
-    TRACE("ADD force contribution")
     assert(ELEMENT_DIM ==2); assert(SPACE_DIM ==3);
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
     // PRINT_2_VARIABLES(mExecuteHemeLBCounter, mTriggerHemeLB)
