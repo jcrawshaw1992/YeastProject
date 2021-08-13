@@ -1017,7 +1017,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
         PRINT_2_VARIABLES(mMinSS , mMaxSS )
         PRINT_2_VARIABLES(0.9*mMinSS ,1.1*mMaxSS )
 
-        if (mCenterlinesNumber >=3)
+        if (mCenterlinesNumber >=2)
              {
                 // PRINT_3_VARIABLES(mMinSS,  0.3*(mMaxSS- mMinSS) ,mMaxSS )
                 if ( norm_2(shear_stress)> 1.1*mMaxSS )
@@ -1050,12 +1050,12 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 
         if (mCenterlinesNumber <3)
              {
-                // mMaxSS = MaximumShearStress;
-                // mMinSS = MinimumShearStress;
-                PRINT_2_VARIABLES(mMaxSS, MaximumShearStress);
-                PRINT_2_VARIABLES(mMinSS, MinimumShearStress);
-                PRINT_2_VARIABLES(mMinSS , mMaxSS )
-                PRINT_2_VARIABLES(0.9*mMinSS ,1.1*mMaxSS )
+                mMaxSS = MaximumShearStress;
+                mMinSS = MinimumShearStress;
+                // PRINT_2_VARIABLES(mMaxSS, MaximumShearStress);
+                // PRINT_2_VARIABLES(mMinSS, MinimumShearStress);
+                // PRINT_2_VARIABLES(mMinSS , mMaxSS )
+                // PRINT_2_VARIABLES(0.9*mMinSS ,1.1*mMaxSS )
               } 
 
 
