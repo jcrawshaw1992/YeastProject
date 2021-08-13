@@ -59,7 +59,7 @@ public:
         double dt = 0.0002;
         double RemeshingTime = 10000;
         double EdgeLength =0.00045;
-        double FSI_Iterations = 50;
+        double FSI_Iterations = 500;//50;
 
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
