@@ -965,6 +965,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
             {
                 shear_stress +=mAppliedTangentTractions[fluid_site_index];
                 counter+=1;
+                PRINT_VARIABLE(counter)
 			}
 		}
         shear_stress/=counter;
