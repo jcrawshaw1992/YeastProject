@@ -183,7 +183,7 @@ public:
   
 
 
-   void  Netowork(std::string Network);
+   void  Network(std::string Network);
    std::string  mNetwork = "Honeycomb";
    double mMinSS; 
    double mMaxSS; 
