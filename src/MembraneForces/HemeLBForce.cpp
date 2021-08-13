@@ -280,7 +280,11 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     WriteOpenVtus(Period, mCenterlinesNumber);
     std::string GetVUtus =   "cd "+mChasteOutputDirectory + mOutputDirectory + ";./OpenVtus";
     SystemOutput = std::system(GetVUtus.c_str() );
-    CopyFile(mHemeLBDirectory + "centerlines.vtp", mHemeLB_output + "Centerlines_"+std::to_string(mCenterlinesNumber)+".vtp");
+    if ( boost::filesystem::exists(mHemeLB_output + "Centerlines_"+std::to_string(mCenterlinesNumber)+".vtp") )
+    {
+        CopyFile(mHemeLBDirectory + "centerlines.vtp", mHemeLB_output + "Centerlines_"+std::to_string(mCenterlinesNumber)+".vtp");
+    }
+    
     mCenterlinesNumber +=1;
 
     /*  Step 3a: 
@@ -380,8 +384,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOpenVtus(int Period, int mCenterl
         
         // bash_script << "echo 'HemeLB has finished' > " + mHemeLBDirectory + "WaitFile.txt \n";
         bash_script << "cp " + mHemeLBDirectory +"results/Extracted/wholegeometry-velocity_"+std::to_string(Period)+".vtu " +mHemeLB_output + "wholegeometry-velocity_"+std::to_string(mCenterlinesNumber)+".vtu \n";
-        bash_script << "cp " + mHemeLBDirectory +"results/Extracted/surface-pressure_"+std::to_string(Period)+".vtu " +mHemeLB_output + "surface-pressure_"+std::to_string(mCenterlinesNumber)+".vtu \n";
-        bash_script << "cp " + mHemeLBDirectory +"results/Extracted/surface-traction_"+std::to_string(Period)+".vtu " +mHemeLB_output + "surface-traction_"+std::to_string(mCenterlinesNumber)+".vtu \n";
+        // bash_script << "cp " + mHemeLBDirectory +"results/Extracted/surface-pressure_"+std::to_string(Period)+".vtu " +mHemeLB_output + "surface-pressure_"+std::to_string(mCenterlinesNumber)+".vtu \n";
+        // bash_script << "cp " + mHemeLBDirectory +"results/Extracted/surface-traction_"+std::to_string(Period)+".vtu " +mHemeLB_output + "surface-traction_"+std::to_string(mCenterlinesNumber)+".vtu \n";
         bash_script << "echo 'HemeLB simulation complete' \n";
         // bash_script << "osascript -e 'tell application \"Terminal\" to close first window' & exit";  Need to think about with with application to linux 
         bash_script.close();
@@ -904,11 +908,11 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
 
              if (mCenterlinesNumber <3)
              {
-                if (MinimumShearStress < norm_2(tangent_traction))
+                if (MinimumShearStress > norm_2(tangent_traction))
                 {
                     MinimumShearStress = norm_2(tangent_traction);
                 }
-                else if (MaximumShearStress > norm_2(tangent_traction))
+                else if (MaximumShearStress < norm_2(tangent_traction))
                 {
                     MaximumShearStress = norm_2(tangent_traction);
                 }
