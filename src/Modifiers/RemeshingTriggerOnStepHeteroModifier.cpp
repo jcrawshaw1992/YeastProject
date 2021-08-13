@@ -543,13 +543,13 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
     {
 
         
-        if ( cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == -1  && cell_iter->GetCellData()->GetItem("MembraneState") )
+        if ( cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == -1  && cell_iter->GetCellData()->GetItem("MembraneState") ==0 )
             {
                 cell_iter->GetCellData()->SetItem("ShearModulus", PosStep_Kbs);
                 cell_iter->GetCellData()->SetItem("AreaDilationModulus", PosStep_Kba);
                 cell_iter->GetCellData()->SetItem("AreaConstant", PosStep_KbA);
             }
-        else if (cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == 0  && cell_iter->GetCellData()->GetItem("MembraneState") )
+        else if (cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == 0  && cell_iter->GetCellData()->GetItem("MembraneState")==0  )
            {
                 if (ShearModulus != mGrowthMaps[mStrength](2))
                 {

@@ -273,7 +273,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     while(! boost::filesystem::exists(mHemeLBDirectory + "WaitFile.txt"))
     {
         TRACE("waiting within C")
-        sleep(30); 
+        sleep(15); 
     }
 
 
@@ -854,7 +854,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
     mAppliedTractions.clear();
     mAppliedTangentTractions.clear();
 
-    double MinimumShearStress =0;
+    double MinimumShearStress =10000;
     double MaximumShearStress = 0;
 
     for (unsigned fluid_site_index = 0; fluid_site_index <  number_fluid_sites; fluid_site_index++)
@@ -907,7 +907,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
                 if (MinimumShearStress < norm_2(tangent_traction))
                 {
                     MinimumShearStress = norm_2(tangent_traction);
-                }else if (MaximumShearStress > norm_2(tangent_traction))
+                }
+                else if (MaximumShearStress > norm_2(tangent_traction))
                 {
                     MaximumShearStress = norm_2(tangent_traction);
                 }
