@@ -43,7 +43,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
-  void TestWithConstantForce() throw(Exception)
+  void offTestWithConstantForce() throw(Exception)
    {
 
       
@@ -174,7 +174,7 @@ public:
    {
 
       
-        std::string output_dir = "FSISimulations/Honey/Collapse2_WithMembraneParameterVariation/";
+        std::string output_dir = "FSISimulations/Honey/Collapse2_StongMembraneParameterVariation/";
 
         double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -7;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
@@ -184,7 +184,7 @@ public:
         double EndTime = 10;
         double SamplingStep = 50;
         double dt = 0.0001;
-        double RemeshingTime = 10000;
+        double RemeshingTime = 5000;
         double EdgeLength =0.00045;
         double FSI_Iterations = 100;//50;
 
@@ -199,7 +199,7 @@ public:
 
         ////////
 
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRelativePath(output_dir, 0);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRelativePath(output_dir, EndTime);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetBinningIntervals(15, 5, 1);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).EdgeLengthVariable(1.05);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingIterations(5);
@@ -235,7 +235,7 @@ public:
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
 
         p_Mesh_modifier->SetRadius(0.007);
-        p_Mesh_modifier->SetUpdateFrequency(0.1/dt);
+        p_Mesh_modifier->SetUpdateFrequency(0.01/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
 
 
