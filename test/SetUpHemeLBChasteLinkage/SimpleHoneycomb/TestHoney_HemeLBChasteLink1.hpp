@@ -47,7 +47,7 @@ public:
    {
 
       
-        std::string output_dir = "FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapse/";
+        std::string output_dir = "FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing/";
 
         double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -7;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
@@ -57,7 +57,7 @@ public:
         double EndTime = 10;
         double SamplingStep = 50;
         double dt = 0.0001;
-        double RemeshingTime = 5000;
+        double RemeshingTime = 400;//50;
         double EdgeLength =0.00045;
         double FSI_Iterations = 200;//50;
 
@@ -95,7 +95,7 @@ public:
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
         // p_Mesh_modifier->TurnOffRemeshing();   
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
-        p_Mesh_modifier->SetStepSize(pow(10, -8));
+        p_Mesh_modifier->SetStepSize(pow(10, -6));
 
         // First collapse option 
         // Upstream 
@@ -108,7 +108,7 @@ public:
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
 
         p_Mesh_modifier->SetRadius(0.007);
-        p_Mesh_modifier->SetUpdateFrequency(0.01/dt);
+        p_Mesh_modifier->SetUpdateFrequency(0.001/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
 
 
@@ -174,7 +174,7 @@ public:
       for (int i =1; i<=50; i++)
         { 
     
-            EndTime +=1;
+            EndTime +=0.5;
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();
