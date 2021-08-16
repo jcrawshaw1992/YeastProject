@@ -519,11 +519,20 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
                 CellPtr p_cell2 =  p_cell_population->GetCellUsingLocationIndex(node_index2);
                 CellPtr p_cell3 =  p_cell_population->GetCellUsingLocationIndex(node_index3);
                 
-                if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()   || p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
+                if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
                 {   
-                    AdaptHeteroRegion(p_cell_population, elem_index, 1.2);
+                    AdaptHeteroRegion(p_cell_population, elem_index, 1.5);
                 } 
-        }
+
+
+            if( ( p_cell1->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell1->GetCellData()->GetItem("MembraneState") ==0 ) &&   ( p_cell2->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell2->GetCellData()->GetItem("MembraneState") ==0 )  && ( p_cell3->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell3->GetCellData()->GetItem("MembraneState") ==0 )  )
+            {
+                AdaptHeteroRegion(p_cell_population, elem_index, 1.1);
+            }
+
+
+
+          }
 
 
 
