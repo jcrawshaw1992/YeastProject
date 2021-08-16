@@ -87,6 +87,8 @@ public:
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
         p_Mesh_modifier->SetStepSize(pow(10, -8));
 
+
+
         // First collapse option 
         // Upstream 
         // c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.034963365591332625, -5e-5,0);
@@ -222,7 +224,7 @@ public:
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
         // p_Mesh_modifier->TurnOffRemeshing();   
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
-        p_Mesh_modifier->SetStepSize(pow(10, -6));
+        p_Mesh_modifier->SetStepSize(pow(10, -8));
 
         // First collapse option 
         // Upstream 
