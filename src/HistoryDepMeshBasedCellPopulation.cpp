@@ -176,7 +176,8 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
     {
         node_iter->ClearAppliedForce();
         CellPtr p_cell = this->GetCellUsingLocationIndex(node_iter->GetIndex());
-        p_cell->GetCellData()->SetItem("MappingMethod", mMapOfProbNodes[node_iter->GetIndex()]);
+        // p_cell->GetCellData()->SetItem("MappingMethod", mMapOfProbNodes[node_iter->GetIndex()]);
+        p_cell->GetCellData()->SetItem("WallShearStressExtremes", 0);
     }
     
     this->SetBinningRegions();
