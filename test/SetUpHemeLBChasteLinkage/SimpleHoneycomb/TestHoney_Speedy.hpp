@@ -56,7 +56,7 @@ public:
         
         double EndTime = 10;
         double SamplingStep = 50;
-        double dt = 0.0002;
+        double dt = 0.0005;
         double RemeshingTime = 300;//50;
         double EdgeLength =0.0005;
         double FSI_Iterations = 150;//50;
@@ -108,7 +108,7 @@ public:
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
 
         p_Mesh_modifier->SetRadius(0.007);
-        p_Mesh_modifier->SetUpdateFrequency(0.001/dt);
+        p_Mesh_modifier->SetUpdateFrequency(0.005/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
 
 
