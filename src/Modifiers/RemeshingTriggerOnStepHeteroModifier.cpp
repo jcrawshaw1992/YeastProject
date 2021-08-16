@@ -20,6 +20,7 @@
 #include "RemeshingTriggerOnStepHeteroModifier.hpp"
 #include <algorithm>
 #include "MeshBasedCellPopulation.hpp"
+#include "EmptyBasementMatrix.hpp"
 #include "SmartPointers.hpp"
 #include <cxxtest/TestSuite.h>
 #include <math.h>
@@ -529,6 +530,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
             if( ( p_cell1->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell1->GetCellData()->GetItem("MembraneState") ==0 ) &&   ( p_cell2->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell2->GetCellData()->GetItem("MembraneState") ==0 )  && ( p_cell3->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell3->GetCellData()->GetItem("MembraneState") ==0 )  )
             {
                 AdaptHeteroRegion(p_cell_population, elem_index, 1.1);
+                
             }
 
 

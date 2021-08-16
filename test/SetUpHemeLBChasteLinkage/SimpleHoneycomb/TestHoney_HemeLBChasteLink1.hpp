@@ -55,10 +55,10 @@ public:
         
         double EndTime = 12;
         double SamplingStep = 50;
-        double dt = 0.0005;
+        double dt = 0.0001;
         double RemeshingTime = 500;//50;
         double EdgeLength =0.0005;
-        double FSI_Iterations = 400;//50;
+        double FSI_Iterations = 500;//50;
 
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
@@ -166,7 +166,7 @@ public:
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
 
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
         p_simulator->AddForce(p_ForceOut);
 
 
