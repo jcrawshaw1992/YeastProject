@@ -240,7 +240,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     WriteOutVtuFile(mOutputDirectory);
 
     /*  Step 0: Create the HemeLB config.pr2 file */
-    double HemeLBSimulationTime = 2000; //
+    double HemeLBSimulationTime = 800; //
     int Period = HemeLBSimulationTime*0.95;
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
       
@@ -575,7 +575,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     // double deltaX = 2*mRadius/41;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
  
  
-    double deltaX = 2*mRadius/21;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
+    double deltaX = 2*mRadius/15;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
     double deltaT = 0.1 * deltaX * deltaX / V;
    
     double MaxPressure = *std::min_element(mPressure.begin(), mPressure.end());

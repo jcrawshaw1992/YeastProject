@@ -56,10 +56,10 @@ public:
         
         double EndTime = 10;
         double SamplingStep = 50;
-        double dt = 0.0002;
-        double RemeshingTime = 800;//50;
-        double EdgeLength =0.00045;
-        double FSI_Iterations = 400;//50;
+        double dt = 0.0005;
+        double RemeshingTime = 300;//50;
+        double EdgeLength =0.0005;
+        double FSI_Iterations = 150;//50;
 
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
@@ -73,7 +73,7 @@ public:
         ////////
 
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRelativePath(output_dir, EndTime);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetBinningIntervals(15, 5, 1);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetBinningIntervals(15, 15, 1);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).EdgeLengthVariable(1.05);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingIterations(5);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRemeshingSoftwear("CGAL");
@@ -95,7 +95,7 @@ public:
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
         // p_Mesh_modifier->TurnOffRemeshing();   
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
-        p_Mesh_modifier->SetStepSize(pow(10, -8));
+        p_Mesh_modifier->SetStepSize(pow(10, -9));
 
         // First collapse option 
         // Upstream 
@@ -108,7 +108,7 @@ public:
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
 
         p_Mesh_modifier->SetRadius(0.007);
-        p_Mesh_modifier->SetUpdateFrequency(0.01/dt);
+        p_Mesh_modifier->SetUpdateFrequency(0.001/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
 
 
