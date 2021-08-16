@@ -56,7 +56,7 @@ public:
         
         double EndTime = 10;
         double SamplingStep = 50;
-        double dt = 0.0003;
+        double dt = 0.0002;
         double RemeshingTime = 300;//50;
         double EdgeLength =0.0005;
         double FSI_Iterations = 150;//50;
