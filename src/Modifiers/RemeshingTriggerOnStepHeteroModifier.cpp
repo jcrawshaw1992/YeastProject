@@ -179,6 +179,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                     SetMembraneStrenghtOnNewMesh(rCellPopulation);
                 }
                 mExecute = 0;
+                mRemeshingInterval*=1.2;
             } 
             mExecute +=1;
          }

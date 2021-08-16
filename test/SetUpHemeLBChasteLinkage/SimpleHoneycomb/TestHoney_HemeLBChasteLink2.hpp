@@ -186,8 +186,8 @@ public:
         double EndTime = 10;
         double SamplingStep = 50;
         double dt = 0.0001;
-        double RemeshingTime = 400;//50;
-        double EdgeLength =0.00045;
+        double RemeshingTime =  500;//50;
+        double EdgeLength =0.0005;
         double FSI_Iterations = 200;//50;
 
 
@@ -293,7 +293,7 @@ public:
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
 
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
 
 
