@@ -95,7 +95,7 @@ public:
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
         // p_Mesh_modifier->TurnOffRemeshing();   
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
-        p_Mesh_modifier->SetStepSize(pow(10, -6));
+        p_Mesh_modifier->SetStepSize(pow(10, -8));
 
         // First collapse option 
         // Upstream 
@@ -108,7 +108,7 @@ public:
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
 
         p_Mesh_modifier->SetRadius(0.007);
-        p_Mesh_modifier->SetUpdateFrequency(0.001/dt);
+        p_Mesh_modifier->SetUpdateFrequency(0.05/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
 
 
