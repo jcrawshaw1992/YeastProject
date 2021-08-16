@@ -531,9 +531,9 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
     double AreaDilationModulus = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus");
     double AreaConstant = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant"); 
 
-    double PosStep_Kbs = ShearModulus + mStepSize*1e-8;
-    double PosStep_Kba = AreaDilationModulus + mStepSize*1e-8;
-    double PosStep_KbA = AreaConstant + mStepSize*1e-8;
+    double PosStep_Kbs = ShearModulus + mStepSize*1;
+    double PosStep_Kba = AreaDilationModulus + mStepSize*1;
+    double PosStep_KbA = AreaConstant + mStepSize*1;
 
 
     // This will make the vessel move. Artifical but whatever 
