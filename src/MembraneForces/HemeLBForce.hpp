@@ -118,6 +118,7 @@ public:
     bool mSetupHemeLB = 1;
     double mConstantPressure =0;
     bool mNewInlets =1;
+    double mRemeshingCounter =0;
 
     c_vector<c_vector<double, 3> , 4> mCollapsedRegion;
     

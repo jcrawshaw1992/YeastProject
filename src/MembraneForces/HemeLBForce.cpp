@@ -198,6 +198,19 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
 {       
+
+
+    // if (mRemeshingCounter =2 )
+    // {
+    //      HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+    //     pCellPopulation->ExecuteHistoryDependentRemeshing();
+    // }
+    // else
+    // {
+    //     mRemeshingCounter+=1;
+    // }
+
+
     int SystemOutput; 
     /*  Rename prior results directory :)    */
     std::string OldResultsDirectory = mHemeLBDirectory + "results_PriorTimeStep/";
@@ -227,7 +240,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
     WriteOutVtuFile(mOutputDirectory);
 
     /*  Step 0: Create the HemeLB config.pr2 file */
-    double HemeLBSimulationTime = 5000; //
+    double HemeLBSimulationTime = 2000; //
     int Period = HemeLBSimulationTime*0.95;
     Writepr2File(mHemeLBDirectory,HemeLBSimulationTime);
       
@@ -562,7 +575,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     // double deltaX = 2*mRadius/41;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
  
  
-    double deltaX = 2*mRadius/41;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
+    double deltaX = 2*mRadius/21;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
     double deltaT = 0.1 * deltaX * deltaX / V;
    
     double MaxPressure = *std::min_element(mPressure.begin(), mPressure.end());
@@ -949,8 +962,8 @@ template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation)
 {
 	
-       double MaximumShearStress = 0;
-       double MinimumShearStress = 1000;
+    double MaximumShearStress = 0;
+    double MinimumShearStress = 1000;
 
     TRACE("UpdateCellData")
 	assert(SPACE_DIM==3); 
