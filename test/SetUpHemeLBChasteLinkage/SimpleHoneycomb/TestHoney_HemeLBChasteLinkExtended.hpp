@@ -43,7 +43,7 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 public:
 
 
-  void TestHemeLBCollapse() throw(Exception)
+  void offTestHemeLBCollapse() throw(Exception)
    {
 
       
