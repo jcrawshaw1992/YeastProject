@@ -110,12 +110,15 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
         c_vector<long double,3> HemeLBForce = Pressure * NormalVector; 
         c_vector<long double,3> TissueForce = P_tissue * NormalVector; 
         c_vector<long double,3> Force =  (Pressure - P_tissue)* NormalVector; //                 HemeLBForce -TissueForce;
-        pNode->AddAppliedForceContribution(Force); 
+        // pNode->AddAppliedForceContribution(Force); 
 
 
         // if(!(cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>()) )
         // if(cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>() ) 
-        if (!cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>())
+        if (cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>())
+        {
+            double A = 0;
+        }
         {
             pNode->AddAppliedForceContribution(Force);
         }
