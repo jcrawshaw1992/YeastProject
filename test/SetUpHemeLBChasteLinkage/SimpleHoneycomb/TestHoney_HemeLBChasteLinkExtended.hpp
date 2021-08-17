@@ -93,7 +93,7 @@ public:
         std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
-        // p_Mesh_modifier->TurnOffRemeshing();   
+        p_Mesh_modifier->TurnOffRemeshing();   
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
 
         // First collapse option 
@@ -167,7 +167,7 @@ public:
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
 
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
         p_simulator->AddForce(p_ForceOut);
 
 
