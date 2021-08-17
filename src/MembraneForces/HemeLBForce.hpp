@@ -228,11 +228,10 @@ public:
 
    void  Network(std::string Network);
    std::string  mNetwork = "Honeycomb";
-   double mMinSS = 0.0004; 
-   double mMaxSS = 2e-3; 
+   double mMinSS = 0.000187868; 
+   double mMaxSS = 0.00291605; 
    double mRegionOfForceCollection = 0.0015;
 
-    
 
 
     // Inlets and out lets -- this will let me write the pr2 file 

@@ -179,13 +179,13 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                     TRACE("Need to update the membrane strenght for the new mesh, this next method has not yet been written ")
                     SetMembraneStrenghtOnNewMesh(rCellPopulation);
                     NumberOfRemeshingIterations+=1;
-                    if (NumberOfRemeshingIterations >4)
+                    if (NumberOfRemeshingIterations >=2)
                     {
                             mRemeshing =0;
                     }
                 }
                 mExecute = 0;
-                mRemeshingInterval*=1.5;
+                // mRemeshingInterval*=1.5;
                 
             } 
             mExecute +=1;

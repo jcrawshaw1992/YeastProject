@@ -113,14 +113,14 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
         pNode->AddAppliedForceContribution(Force); 
 
 
-        CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
-        if (p_cell->GetMutationState()->IsType<EmptyBasementMatrix> ())
-        {
-            double A = 0;
-        }
-        {
-            pNode->AddAppliedForceContribution(Force);
-        }
+        // CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
+        // if (p_cell->GetMutationState()->IsType<EmptyBasementMatrix> ())
+        // {
+        //     double A = 0;
+        // }
+        // {
+        //     pNode->AddAppliedForceContribution(Force);
+        // }
    
 
 
@@ -674,7 +674,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
     {
             // Need to write bash scrip .... issue here 
             TRACE("Have set to 20 cores, will decrease later")
-            int Cores =15;
+            int Cores =25;
             ofstream bash_script;
 
             std::string BashFile =  mChasteOutputDirectory + mOutputDirectory + "RunHemeLB";

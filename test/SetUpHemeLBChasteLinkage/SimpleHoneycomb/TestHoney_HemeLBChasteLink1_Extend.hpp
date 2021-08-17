@@ -46,23 +46,140 @@ public:
 
 
 
+  void offTestHemeLBToEqui() throw(Exception)
+   {
+
+      
+        std::string output_dir = "SimpleHemeLBHoneycomb/TestingHomoFSI3/";
+
+        double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -7;
+        std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
+
+        std::string Archieved =  "SimpleHemeLBHoneycomb/GrowingToEqui/";
+              
+        double EndTime = 7;
+        double SamplingStep = 25;
+        double dt = 0.001;
+        double RemeshingTime = 10000;
+        double EdgeLength =0.00045;
+        double FSI_Iterations = 50100;
+
+        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
+ 
+
+        /* Update the ouput directory for the population  */
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetPrintRemeshedIC(1);
+        p_simulator->RemoveAllForces();
+
+        p_simulator->SetSamplingTimestepMultiple(SamplingStep);
+        p_simulator->SetDt(dt);
+        p_simulator->SetOutputDirectory(output_dir);
+        p_simulator->RemoveAllForces();
+  
+
+        /* 
+        -----------------------------
+        Edit  RemeshingTriggerOnStepHeteroModifier
+        ----------------------------
+        */
+        std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
+        // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
+        p_Mesh_modifier->TurnOffRemeshing();   
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
+        p_Mesh_modifier->SetStepSize(pow(10, -8));
+
+        p_Mesh_modifier->SetmSetUpSolve(1);
+
+
+        // boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
+
+        // p_condition->SetPointOnPlane2( LowerPlanePoint);
+        // p_condition->SetNormalToPlane2(-LowerPlaneNormal);
+        // p_simulator->AddCellPopulationBoundaryCondition(p_condition);
+       
+        /*
+        -----------------------------
+        Membrane forces
+        ----------------------------
+        */
+        boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
+        p_simulator->AddForce(p_shear_force);
+
+        boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
+        p_membrane_force->SetMembraneStiffness(pow(10, -7));
+        p_simulator->AddForce(p_membrane_force);
+
+
+        /*
+        -----------------------------
+        Add the HemeLB Force
+        ----------------------------
+        */
+      
+        double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
+
+        double InletPressure = P_blood* (1.15); // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
+        double OutletPressure = P_blood * (0.85);
+
+        // Inlet1
+        c_vector<double, 3> Point1 = Create_c_vector(0.0022124205632440453, -0.01409714283809368,0);
+        c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0 );
+        // Inlet2
+        c_vector<double, 3> Point2 = Create_c_vector(0.0022124205632440453, 0.0004613958360830862,0);
+        c_vector<double, 3> PlaneNormal2 = Create_c_vector(1,0,0 );
+        // Outlet1
+        c_vector<double, 3> Point3 = Create_c_vector(0.07584026562645844, -0.01409714283809368,0);
+        c_vector<double, 3> PlaneNormal3 = Create_c_vector(-1,0,0 );
+        // Outlet2
+        c_vector<double, 3> Point4 = Create_c_vector(0.07584026562645844, 0.0004613958360830862,0);
+        c_vector<double, 3> PlaneNormal4 = Create_c_vector(-1,0,0 );
+
+
+        boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
+        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
+        p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure,  "Inlet");
+        p_ForceOut->Inlets(PlaneNormal3, Point3, OutletPressure, "Outlet");
+        p_ForceOut->Inlets(PlaneNormal4, Point4, OutletPressure, "Outlet");
+        p_ForceOut->SetStartTime(EndTime);
+        p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
+
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
+        p_simulator->AddForce(p_ForceOut);
+
+
+   
+            EndTime =10;
+            p_simulator->SetEndTime(EndTime);
+
+            p_simulator->Solve();
+            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+       
+
+    }
+
+
+
 
   void TestHemeLBCollapse() throw(Exception)
    {
 
       
-        std::string output_dir = "FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing4/";
+        std::string output_dir = "FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing3/";
 
         double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -7;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
                                 
-        std::string Archieved = "SimpleHemeLBHoneycomb/TestingHomoFSI2/";
-        
-        double EndTime = 10;
+
+        std::string Archieved ="FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing3/";
+
+        double EndTime = 10.2;
         double SamplingStep = 50;
         double dt = 0.0002;
-        double RemeshingTime = 399;//50;
-        double EdgeLength =0.00045;
+        double RemeshingTime = 500;//50;
+        double EdgeLength =0.0005;
         double FSI_Iterations = 200;//50;
 
 
@@ -97,7 +214,7 @@ public:
         std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
-        // p_Mesh_modifier->TurnOffRemeshing();   
+        p_Mesh_modifier->TurnOffRemeshing();   
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
 
         // First collapse option 
