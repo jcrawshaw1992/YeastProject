@@ -1,4 +1,5 @@
 #include "HemeLBForce.hpp"
+#include "EmptyBasementMatrix.hpp"
 /*
     Chaste force that runs HemeLB and uses the forces from the HemeLB output.
     This is basically the linking script -- Go Jess
