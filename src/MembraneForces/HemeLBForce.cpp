@@ -978,6 +978,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 	
     double MaximumShearStress = 0;
     double MinimumShearStress = 1000;
+    
 
     TRACE("UpdateCellData")
 	assert(SPACE_DIM==3); 
@@ -1041,7 +1042,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 
-        // PRINT_2_VARIABLES(mMinSS , mMaxSS )
+        
         // PRINT_2_VARIABLES(0.9*mMinSS ,1.1*mMaxSS )
 
         if (mCenterlinesNumber >=2)
@@ -1084,6 +1085,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
                 // PRINT_2_VARIABLES(mMinSS , mMaxSS )
                 // PRINT_2_VARIABLES(0.9*mMinSS ,1.1*mMaxSS )
               } 
+              PRINT_2_VARIABLES(mMinSS , mMaxSS )
 
 
 }

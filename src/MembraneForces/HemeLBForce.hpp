@@ -93,8 +93,8 @@ private:
         // archive& mAppliedPressure;
 
         // archive& mNetwork;
-        archive& mMinSS; 
-        archive& mMaxSS; 
+        // archive& mMinSS; 
+        // archive& mMaxSS; 
         // archive& mRegionOfForceCollection;
 
         // archive& mIolets; 
