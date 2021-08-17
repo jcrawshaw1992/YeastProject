@@ -97,6 +97,8 @@ public:
         std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
+
+        p_Mesh_modifier->SetStepSize(pow(10, -8));
         // p_Mesh_modifier->TurnOffRemeshing();   
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
 
@@ -111,7 +113,6 @@ public:
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
 
         p_Mesh_modifier->SetRadius(0.007);
-        p_Mesh_modifier->SetStepSize(pow(10, -8));
         p_Mesh_modifier->SetUpdateFrequency(0.05/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
 
@@ -175,7 +176,7 @@ public:
         p_simulator->AddForce(p_ForceOut);
 
 
-      for (int i =1; i<=16; i++)
+      for (int i =1; i<=50; i++)
         { 
     
             EndTime +=0.1;
