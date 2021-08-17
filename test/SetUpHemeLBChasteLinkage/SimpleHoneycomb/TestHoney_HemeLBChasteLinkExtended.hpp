@@ -55,7 +55,7 @@ public:
         std::string Archieved =  "FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing2/";
 
         
-        double EndTime = 11.8;
+        double EndTime = 12;
         double SamplingStep = 50;
         double dt = 0.001;
         double RemeshingTime = 500;//50;
@@ -66,13 +66,13 @@ public:
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
 
 TRACE("0.1")
-        OffLatticeSimulation<2, 3>* p_simulator2 = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime+0.9);
+        OffLatticeSimulation<2, 3>* p_simulator2 = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime+0.1);
 TRACE("0.2")
-        OffLatticeSimulation<2, 3>* p_simulator3 = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime+0.8);
+        OffLatticeSimulation<2, 3>* p_simulator3 = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime+0.2);
 TRACE("0.3")
-        OffLatticeSimulation<2, 3>* p_simulator4 = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime+0.7);
+        OffLatticeSimulation<2, 3>* p_simulator4 = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime+0.3);
 TRACE("0.4")
-        OffLatticeSimulation<2, 3>* p_simulator5 = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime+0.6);
+        OffLatticeSimulation<2, 3>* p_simulator5 = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime+0.4);
 
 TRACE("0.5")
         OffLatticeSimulation<2, 3>* p_simulator6 = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime+0.5);
