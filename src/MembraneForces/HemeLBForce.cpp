@@ -61,12 +61,12 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
 
     // TRACE("Adding HemeLB Force to the nodes :) ")
 	
-	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = p_cell_population.Begin();
-		 cell_iter != p_cell_population.End();
+	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+		 cell_iter != rCellPopulation.End();
 		 ++cell_iter)
 	{
-		unsigned node_index = p_cell_population.GetLocationIndexUsingCell(*cell_iter);
-		Node<SPACE_DIM>* pNode = p_cell_population.rGetMesh().GetNode(node_index);
+		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
 
 		c_vector<double, 3> NormalVector = Create_c_vector(0,0,0);
 		std::set<unsigned>& containing_elements = pNode->rGetContainingElementIndices();
@@ -113,9 +113,11 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
         // pNode->AddAppliedForceContribution(Force); 
 
 
+        CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
+
         // if(!(cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>()) )
         // if(cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>() ) 
-        if (cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>())
+        if (p_cell->GetMutationState()->IsType<EmptyBasementMatrix> ())
         {
             double A = 0;
         }
