@@ -154,7 +154,7 @@ public:
     void WriteHemeLBBashScript();
     void CopyFile(std::string InputDirectory, std::string OutputDirectory);
     void UpdateCurrentyFlowVtuCount();
-    int mCenterlinesNumber =0;
+    int mCenterlinesNumber =163;
     bool mRunHemeLB = 1;
     bool mSetupHemeLB = 1;
     double mConstantPressure =0;
@@ -228,8 +228,8 @@ public:
 
    void  Network(std::string Network);
    std::string  mNetwork = "Honeycomb";
-   double mMinSS; 
-   double mMaxSS; 
+   double mMinSS = 0.0004; 
+   double mMaxSS = 2e-3; 
    double mRegionOfForceCollection = 0.0015;
 
     

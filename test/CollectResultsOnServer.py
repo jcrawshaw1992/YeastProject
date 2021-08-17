@@ -25,7 +25,7 @@ if __name__=="__main__":
     #     os.mkdir(NewMeshFolder)
   
 
-    Simulations = np.arange(10, 11.05, 0.1)
+    Simulations = np.arange(10, 12, 0.1)
     # results.viznodes
 
     # Results
@@ -37,7 +37,12 @@ if __name__=="__main__":
 
     for i in Simulations:
         MeshFiles = []
-        CurrentFolder = OldFolder+"results_from_time_"+str(int(i))+"/"
+        if i ==10 or i ==11 or i ==12 or i== 10.999999999999996:
+            CurrentFolder = OldFolder+"results_from_time_"+str(int(i))+"/"
+        else:
+            print round(i,2)
+            CurrentFolder = OldFolder+"results_from_time_"+str(round(i,2))+"/"
+
         for file in os.listdir(CurrentFolder):
             if file.startswith("mesh_") and file.endswith(".vtu"):
                 MeshFiles.append(int(file[5:-4]))
