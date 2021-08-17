@@ -932,7 +932,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
 
 			mAppliedTangentTractions.push_back(tangent_traction);
 
-             if (mCenterlinesNumber <3)
+             if (mCenterlinesNumber <2)
              {
                 if (MinimumShearStress > norm_2(tangent_traction))
                 {
@@ -944,7 +944,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
                 }
              }
     	}
-        if (mCenterlinesNumber <3)
+        if (mCenterlinesNumber <2)
             {
             mMaxSS = MaximumShearStress;
             mMinSS = MinimumShearStress;
@@ -1076,7 +1076,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 	}
 
 
-        if (mCenterlinesNumber <3)
+        if (mCenterlinesNumber <2)
              {
                 mMaxSS = MaximumShearStress;
                 mMinSS = MinimumShearStress;
