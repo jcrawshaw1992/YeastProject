@@ -70,7 +70,7 @@ TRACE("0.1")
 TRACE("0.2")
         // OffLatticeSimulation<2, 3>* p_simulator3 = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime+0.2);
 TRACE("0.3")
-        OffLatticeSimulation<2, 3>* p_simulator4 = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime+0.3);
+        // OffLatticeSimulation<2, 3>* p_simulator4 = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime+0.3);
 TRACE("0.4")
         OffLatticeSimulation<2, 3>* p_simulator5 = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime+0.4);
 
