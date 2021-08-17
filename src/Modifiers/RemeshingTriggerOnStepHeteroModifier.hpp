@@ -113,6 +113,7 @@ private:
 //
         archive& mSlowIncreaseInMembraneStrength;
         archive& mTimeStepSize;
+        archive& NumberOfRemeshingIterations;
     }
 
 public:
@@ -134,6 +135,8 @@ public:
      * @param rCellPopulation reference to the cell population
      */
     virtual void UpdateAtEndOfTimeStep(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
+
+    double NumberOfRemeshingIterations = 0;
 
     /**
      * Overridden SetupSolve() method.

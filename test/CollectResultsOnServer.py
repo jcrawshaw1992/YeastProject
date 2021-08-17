@@ -16,16 +16,16 @@ from os import path
 
 if __name__=="__main__":
  
-    OldFolder = "/data/vascrem/testoutput/FSICylinder/Medium/Hetro9/"
+    OldFolder = "/data/vascrem/testoutput/FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing2/"
     NewFolder = OldFolder+"CollectedResults/"
-    if path.exists(NewFolder) ==0:
-        os.mkdir(NewFolder)
-    NewMeshFolder = OldFolder+"CollectedMeshes/"
-    if path.exists(NewMeshFolder) ==0:
-        os.mkdir(NewMeshFolder)
+    # if path.exists(NewFolder) ==0:
+    #     os.mkdir(NewFolder)
+    NewMeshFolder = NewFolder+"CollectedMeshes/"
+    # if path.exists(NewMeshFolder) ==0:
+    #     os.mkdir(NewMeshFolder)
   
 
-    Simulations = np.arange(20, 181, 10)
+    Simulations = np.arange(10, 11.05, 0.1)
     # results.viznodes
 
     # Results
@@ -37,16 +37,31 @@ if __name__=="__main__":
 
     for i in Simulations:
         MeshFiles = []
-        CurrentFolder = OldFolder+"results_from_time_"+str(i)+"/"
+        CurrentFolder = OldFolder+"results_from_time_"+str(int(i))+"/"
         for file in os.listdir(CurrentFolder):
             if file.startswith("mesh_") and file.endswith(".vtu"):
                 MeshFiles.append(int(file[5:-4]))
         MeshFiles.sort()
-        for j in MeshFiles:
-            if j ==0:
-                continue
-            Oldfile = CurrentFolder+"mesh_"+str(j)+".vtu"
-            NewFile = NewMeshFolder + "mesh_" + str(counter) +".vtu" 
-            counter = counter+1
-            shutil.copy(Oldfile, NewFile)
+        if i > 11:
+            skip =0
+            for j in MeshFiles:
+                if j ==0:
+                    continue
+                if skip ==1:
+                    skip = 0
+                    continue
+                skip = skip+1
+                Oldfile = CurrentFolder+"mesh_"+str(j)+".vtu"
+                NewFile = NewMeshFolder + "mesh_" + str(counter) +".vtu" 
+                counter = counter+1
+                shutil.copy(Oldfile, NewFile)
+        else:
+            for j in MeshFiles:
+                if j ==0:
+                    continue
+                Oldfile = CurrentFolder+"mesh_"+str(j)+".vtu"
+                NewFile = NewMeshFolder + "mesh_" + str(counter) +".vtu" 
+                counter = counter+1
+                shutil.copy(Oldfile, NewFile)
+
 

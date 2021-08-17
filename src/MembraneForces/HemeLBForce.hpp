@@ -81,6 +81,47 @@ private:
     void serialize(Archive & archive, const unsigned int version)
     {
         archive & boost::serialization::base_object<AbstractForce<ELEMENT_DIM, SPACE_DIM> >(*this);
+
+
+    archive& mExecuteHemeLBCounter;
+    archive& mTriggerHemeLB;
+    archive& mResultsDirectory;
+    archive& mRemoveResultsDirectory;
+    archive& mForceMap;
+    archive& mAppliedTractions;
+    archive& mAppliedTangentTractions;
+    archive& mAppliedPosition;
+    archive& mAppliedPressure;
+
+    archive& mNetwork;
+    archive& mMinSS; 
+    archive& mMaxSS; 
+    archive& mRegionOfForceCollection;
+
+    archive& mIolets; 
+    archive& mPressure;
+    archive& mEstimatedIC;
+    archive& mExpectedVelocity;
+    archive& mType;
+    archive& mHemeLBScalling;
+    archive& mChasteOutputDirectory;
+    archive& mOutputDirectory;
+    archive& mHemeLBDirectory;
+    archive& mHemeLB_output;
+    archive& mhemelb_setup_exe;
+    archive& mHemeLBPath ;
+    archive& mFlowVtus;
+
+    archive& mMachine;
+    archive& mStartTime;
+    archive& mCenterlinesNumber;
+    archive& mRunHemeLB;
+    archive& mSetupHemeLB;
+    archive& mConstantPressure;
+    archive& mNewInlets;
+    archive& mRemeshingCounter;
+
+    archive& mCollapsedRegion;
     }
 
     
@@ -113,12 +154,13 @@ public:
     void WriteHemeLBBashScript();
     void CopyFile(std::string InputDirectory, std::string OutputDirectory);
     void UpdateCurrentyFlowVtuCount();
-    int mCenterlinesNumber = 164;
+    int mCenterlinesNumber =0;
     bool mRunHemeLB = 1;
     bool mSetupHemeLB = 1;
     double mConstantPressure =0;
     bool mNewInlets =1;
     double mRemeshingCounter =0;
+
 
     c_vector<c_vector<double, 3> , 4> mCollapsedRegion;
     
