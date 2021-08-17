@@ -113,7 +113,7 @@ private:
 //
         archive& mSlowIncreaseInMembraneStrength;
         archive& mTimeStepSize;
-        // archive& NumberOfRemeshingIterations;
+        archive& NumberOfRemeshingIterations;
     }
 
 public:
