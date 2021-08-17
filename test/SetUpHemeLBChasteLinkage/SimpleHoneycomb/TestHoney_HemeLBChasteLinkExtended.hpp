@@ -172,7 +172,7 @@ public:
         p_simulator->AddForce(p_ForceOut);
 
 
-      for (int i =1; i<=16; i++)
+      for (int i =1; i<=1600; i++)
         { 
     
             EndTime +=0.1;
