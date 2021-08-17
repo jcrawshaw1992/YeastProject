@@ -113,7 +113,7 @@ public:
     void WriteHemeLBBashScript();
     void CopyFile(std::string InputDirectory, std::string OutputDirectory);
     void UpdateCurrentyFlowVtuCount();
-    int mCenterlinesNumber = 1;
+    int mCenterlinesNumber = 164;
     bool mRunHemeLB = 1;
     bool mSetupHemeLB = 1;
     double mConstantPressure =0;
