@@ -3,6 +3,7 @@
 #include "UblasCustomFunctions.hpp"
 #include "Debug.hpp"
 #include "HistoryDepMeshBasedCellPopulation.hpp"
+#include "EmptyBasementMatrix.hpp"
 
 MembraneBendingForce::MembraneBendingForce()
    : AbstractForce<2,3>(),
