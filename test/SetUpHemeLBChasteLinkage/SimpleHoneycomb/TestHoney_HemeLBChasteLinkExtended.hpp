@@ -55,7 +55,7 @@ public:
         std::string Archieved =  "FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing2/";
 
         
-        double EndTime = 12.7;
+        double EndTime = 11;
         double SamplingStep = 50;
         double dt = 0.001;
         double RemeshingTime = 500;//50;
