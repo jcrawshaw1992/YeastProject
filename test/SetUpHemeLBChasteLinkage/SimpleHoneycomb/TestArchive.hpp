@@ -46,7 +46,7 @@ public:
    {
 
       
-        std::string output_dir = "FSISimulations/Honey/CollapseCentralVessel2/";
+        std::string output_dir = "FSISimulations/Honey/Test/";
 
         double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -6;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
@@ -54,10 +54,10 @@ public:
         std::string Archieved =  "FSISimulations/Honey/CollapseCentralVessel2/";// "SimpleHemeLBHoneycomb/GrowingToEqui/";//"FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing4/";
   
         double EndTime = 10.3;
-        double SamplingStep = 50;
-        double dt = 0.00001; // 0.0002;
-        double RemeshingTime = 700;//50;
-        double EdgeLength =0.0004;
+        double SamplingStep = 1;
+        double dt = 0.4; // 0.0002;
+        double RemeshingTime = 1;//50;
+        double EdgeLength =0.0002;
         double FSI_Iterations = 700;//50;
 
 
@@ -124,11 +124,11 @@ public:
         ----------------------------
         */
         boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        p_simulator->AddForce(p_shear_force);
+        // p_simulator->AddForce(p_shear_force);
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
         p_membrane_force->SetMembraneStiffness(pow(10, -7));
-        p_simulator->AddForce(p_membrane_force);
+        // p_simulator->AddForce(p_membrane_force);
 
 
         /*
@@ -157,22 +157,22 @@ public:
         c_vector<double, 3> PlaneNormal4 = Create_c_vector(-1,0,0 );
 
 
-        boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
-        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure,  "Inlet");
-        p_ForceOut->Inlets(PlaneNormal3, Point3, OutletPressure, "Outlet");
-        p_ForceOut->Inlets(PlaneNormal4, Point4, OutletPressure, "Outlet");
-        p_ForceOut->SetStartTime(EndTime);
-        p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
+        // boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
+        // p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
+        // p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure,  "Inlet");
+        // p_ForceOut->Inlets(PlaneNormal3, Point3, OutletPressure, "Outlet");
+        // p_ForceOut->Inlets(PlaneNormal4, Point4, OutletPressure, "Outlet");
+        // p_ForceOut->SetStartTime(EndTime);
+        // p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
 
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
-        p_simulator->AddForce(p_ForceOut);
+        // p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
+        // p_simulator->AddForce(p_ForceOut);
 
 
       for (int i =1; i<=50; i++)
         { 
     
-            EndTime +=0.005;
+            EndTime +=0.7;
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();

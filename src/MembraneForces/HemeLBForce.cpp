@@ -110,17 +110,17 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
         c_vector<long double,3> HemeLBForce = Pressure * NormalVector; 
         c_vector<long double,3> TissueForce = P_tissue * NormalVector; 
         c_vector<long double,3> Force =  (Pressure - P_tissue)* NormalVector; //                 HemeLBForce -TissueForce;
-        pNode->AddAppliedForceContribution(Force); 
+        // pNode->AddAppliedForceContribution(Force); 
 
 
-        // CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
-        // if (p_cell->GetMutationState()->IsType<EmptyBasementMatrix> ())
-        // {
-        //     double A = 0;
-        // }
-        // {
-        //     pNode->AddAppliedForceContribution(Force);
-        // }
+        CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
+        if (p_cell->GetMutationState()->IsType<EmptyBasementMatrix> ())
+        {
+            double A = 0;
+        }
+        {
+            pNode->AddAppliedForceContribution(Force);
+        }
    
 
 
@@ -1042,11 +1042,12 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 
-        
+        assert(mMinSS== 2.58288e-05);
+        assert(mMaxSS== 0.00258637);
         // PRINT_2_VARIABLES(mMinSS ,mMaxSS )
 
-        if (mCenterlinesNumber >=2)
-             {
+        // if (mCenterlinesNumber >=2)
+            //  {
                 // PRINT_3_VARIABLES(mMinSS,  0.3*(mMaxSS- mMinSS) ,mMaxSS )
                 if ( norm_2(shear_stress)> 1.1*mMaxSS )
                 {
@@ -1059,7 +1060,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
                 {
                     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -2);
                 }
-                
                 else if ( norm_2(shear_stress) < 0.98*mMinSS)
                 {
                     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -3);
@@ -1068,11 +1068,11 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
                 {
                          cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);  
                 }
-             }
-             else
-             {
-                    cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);    
-             }   
+            //  }
+            //  else
+            //  {
+            //         cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);    
+            //  }   
 	}
 
 

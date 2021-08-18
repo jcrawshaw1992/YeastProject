@@ -179,6 +179,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                     TRACE("Need to update the membrane strenght for the new mesh, this next method has not yet been written ")
                     SetMembraneStrenghtOnNewMesh(rCellPopulation);
                     NumberOfRemeshingIterations+=1;
+                    mRemeshing =0;
                     if (NumberOfRemeshingIterations >=2)
                     {
                             mRemeshing =0;
@@ -533,11 +534,11 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
                 } 
 
 
-            // if( ( p_cell1->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell1->GetCellData()->GetItem("MembraneState") ==0 ) &&   ( p_cell2->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell2->GetCellData()->GetItem("MembraneState") ==0 )  && ( p_cell3->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell3->GetCellData()->GetItem("MembraneState") ==0 )  )
-            // {
-            //     AdaptHeteroRegion(p_cell_population, elem_index, 1.2);
+            if( ( p_cell1->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell1->GetCellData()->GetItem("MembraneState") ==0 ) &&   ( p_cell2->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell2->GetCellData()->GetItem("MembraneState") ==0 )  && ( p_cell3->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell3->GetCellData()->GetItem("MembraneState") ==0 )  )
+            {
+                AdaptHeteroRegion(p_cell_population, elem_index, 1.2);
                 
-            // }
+            }
 
 
 
@@ -545,56 +546,56 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
 
 
 
-    // double ShearModulus = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus");
-    // double AreaDilationModulus = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus");
-    // double AreaConstant = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant"); 
+    double ShearModulus = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus");
+    double AreaDilationModulus = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus");
+    double AreaConstant = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant"); 
 
-    // double PosStep_Kbs = ShearModulus + mStepSize*1;
-    // double PosStep_Kba = AreaDilationModulus + mStepSize*1;
-    // double PosStep_KbA = AreaConstant + mStepSize*1;
+    double PosStep_Kbs = ShearModulus + mStepSize*1;
+    double PosStep_Kba = AreaDilationModulus + mStepSize*1;
+    double PosStep_KbA = AreaConstant + mStepSize*1;
 
 
-    // // This will make the vessel move. Artifical but whatever 
-    // for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
-    //     cell_iter != rCellPopulation.End();
-    //     ++cell_iter)
-    // {
+    // This will make the vessel move. Artifical but whatever 
+    for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+        cell_iter != rCellPopulation.End();
+        ++cell_iter)
+    {
 
         
-    //     if ( cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == -1  && cell_iter->GetCellData()->GetItem("MembraneState") ==0 )
-    //         {
-    //             cell_iter->GetCellData()->SetItem("ShearModulus", PosStep_Kbs);
-    //             cell_iter->GetCellData()->SetItem("AreaDilationModulus", PosStep_Kba);
-    //             cell_iter->GetCellData()->SetItem("AreaConstant", PosStep_KbA);
-    //         }
-    //     else if (cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == 0  && cell_iter->GetCellData()->GetItem("MembraneState")==0  )
-    //        {
-    //             if (ShearModulus != mGrowthMaps[mStrength](2))
-    //             {
-    //                ShearModulus += 0.01*(mGrowthMaps[mStrength](2) - ShearModulus);
-    //                p_Sample_Basement_cell->GetCellData()->SetItem("ShearModulus", ShearModulus);
-    //             }
-    //             if (AreaDilationModulus != mGrowthMaps[mStrength](1))
-    //             {
-    //                AreaDilationModulus += 0.01*(mGrowthMaps[mStrength](1) - AreaDilationModulus );
-    //                p_Sample_Basement_cell->GetCellData()->SetItem("AreaDilationModulus", AreaDilationModulus);
-    //             }
-    //             if (AreaConstant != mGrowthMaps[mStrength](0))
-    //             {
-    //                AreaConstant += 0.01*(mGrowthMaps[mStrength](0) - AreaConstant );
-    //                p_Sample_Basement_cell->GetCellData()->SetItem("AreaConstant", AreaConstant); 
-    //             }
+        if ( cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == -1  && cell_iter->GetCellData()->GetItem("MembraneState") ==0 )
+            {
+                cell_iter->GetCellData()->SetItem("ShearModulus", PosStep_Kbs);
+                cell_iter->GetCellData()->SetItem("AreaDilationModulus", PosStep_Kba);
+                cell_iter->GetCellData()->SetItem("AreaConstant", PosStep_KbA);
+            }
+        else if (cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == 0  && cell_iter->GetCellData()->GetItem("MembraneState")==0  )
+           {
+                if (ShearModulus != mGrowthMaps[mStrength](2))
+                {
+                   ShearModulus += 0.01*(mGrowthMaps[mStrength](2) - ShearModulus);
+                   p_Sample_Basement_cell->GetCellData()->SetItem("ShearModulus", ShearModulus);
+                }
+                if (AreaDilationModulus != mGrowthMaps[mStrength](1))
+                {
+                   AreaDilationModulus += 0.01*(mGrowthMaps[mStrength](1) - AreaDilationModulus );
+                   p_Sample_Basement_cell->GetCellData()->SetItem("AreaDilationModulus", AreaDilationModulus);
+                }
+                if (AreaConstant != mGrowthMaps[mStrength](0))
+                {
+                   AreaConstant += 0.01*(mGrowthMaps[mStrength](0) - AreaConstant );
+                   p_Sample_Basement_cell->GetCellData()->SetItem("AreaConstant", AreaConstant); 
+                }
             
-    //         }
-    //         //  else if ( cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == 1 ) // Minimum wall shear stress
-    //         // {
-    //         //     cell_iter->GetCellData()->SetItem("ShearModulus", PosStep_Kbs);
-    //         //     cell_iter->GetCellData()->SetItem("AreaDilationModulus", PosStep_Kba);
-    //         //     cell_iter->GetCellData()->SetItem("AreaConstant", PosStep_KbA);
-    //         // }
+            }
+            //  else if ( cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == 1 ) // Minimum wall shear stress
+            // {
+            //     cell_iter->GetCellData()->SetItem("ShearModulus", PosStep_Kbs);
+            //     cell_iter->GetCellData()->SetItem("AreaDilationModulus", PosStep_Kba);
+            //     cell_iter->GetCellData()->SetItem("AreaConstant", PosStep_KbA);
+            // }
 
 
-    // }
+    }
 
 
 
