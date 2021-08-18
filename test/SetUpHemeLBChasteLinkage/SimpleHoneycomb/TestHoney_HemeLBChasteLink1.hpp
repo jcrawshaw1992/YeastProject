@@ -51,19 +51,19 @@ public:
    {
 
       
-        std::string output_dir = "FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing4/";
+        std::string output_dir = "FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing4/SmallerTS";
 
-        double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -7;
+        double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -6;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
                                 
-        std::string Archieved = "SimpleHemeLBHoneycomb/TestingHomoFSI2/";
+        std::string Archieved = "FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing4/";
         
         double EndTime = 10;
         double SamplingStep = 50;
-        double dt = 0.0002;
-        double RemeshingTime = 399;//50;
+        double dt = 0.00005; // 0.0002;
+        double RemeshingTime = 199;//50;
         double EdgeLength =0.00045;
-        double FSI_Iterations = 100;//50;
+        double FSI_Iterations = 400;//50;
 
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
@@ -99,7 +99,7 @@ public:
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
 
         p_Mesh_modifier->SetStepSize(pow(10, -8));
-        // p_Mesh_modifier->TurnOffRemeshing();   
+        p_Mesh_modifier->TurnOffRemeshing();   
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
 
         // First collapse option 
