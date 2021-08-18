@@ -44,7 +44,7 @@ public:
 
   
 
-  void offTestHemeLBCollapse() throw(Exception)
+  void TestHemeLBCollapse() throw(Exception)
    {
 
       
@@ -189,7 +189,7 @@ public:
 
 
 
-  void TestHemeLBCollapse() throw(Exception)
+  void offTestHemeLBCollapse() throw(Exception)
    {
 
       
