@@ -932,8 +932,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
 
 			mAppliedTangentTractions.push_back(tangent_traction);
 
-             if (mCenterlinesNumber <2)
-             {
+            //  if (mCenterlinesNumber <2)
+            //  {
                 if (MinimumShearStress > norm_2(tangent_traction))
                 {
                     MinimumShearStress = norm_2(tangent_traction);
@@ -942,13 +942,13 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
                 {
                     MaximumShearStress = norm_2(tangent_traction);
                 }
-             }
+            //  }
     	}
-        if (mCenterlinesNumber <2)
-            {
-            mMaxSS = MaximumShearStress;
-            mMinSS = MinimumShearStress;
-            }
+        // if (mCenterlinesNumber <2)
+        //     {
+        //     mMaxSS = MaximumShearStress;
+        //     mMinSS = MinimumShearStress;
+        //     }
     }
 
     assert(mAppliedPosition.size() == number_fluid_sites);
@@ -1018,17 +1018,17 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 
 
 
-           if (mCenterlinesNumber <3)
-             {
-                if (MinimumShearStress > norm_2(shear_stress))
-                {
-                    MinimumShearStress = norm_2(shear_stress);
-                }
-                else if (MaximumShearStress < norm_2(shear_stress))
-                {
-                    MaximumShearStress = norm_2(shear_stress);
-                }
-             }
+        //    if (mCenterlinesNumber <3)
+        //      {
+        //         if (MinimumShearStress > norm_2(shear_stress))
+        //         {
+        //             MinimumShearStress = norm_2(shear_stress);
+        //         }
+        //         else if (MaximumShearStress < norm_2(shear_stress))
+        //         {
+        //             MaximumShearStress = norm_2(shear_stress);
+        //         }
+        //      }
     
         
 		// assert(nearest_fluid_site != UNSIGNED_UNSET);
@@ -1043,7 +1043,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
         cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 
         
-        PRINT_2_VARIABLES(mMinSS ,mMaxSS )
+        // PRINT_2_VARIABLES(mMinSS ,mMaxSS )
 
         if (mCenterlinesNumber >=2)
              {
@@ -1076,16 +1076,16 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 	}
 
 
-        if (mCenterlinesNumber <2)
-             {
-                mMaxSS = MaximumShearStress;
-                mMinSS = MinimumShearStress;
-                // PRINT_2_VARIABLES(mMaxSS, MaximumShearStress);
-                // PRINT_2_VARIABLES(mMinSS, MinimumShearStress);
-                // PRINT_2_VARIABLES(mMinSS , mMaxSS )
-                // PRINT_2_VARIABLES(0.9*mMinSS ,1.1*mMaxSS )
-              } 
-              PRINT_2_VARIABLES(mMinSS , mMaxSS )
+        // if (mCenterlinesNumber <2)
+        //      {
+        //         mMaxSS = MaximumShearStress;
+        //         mMinSS = MinimumShearStress;
+        //         // PRINT_2_VARIABLES(mMaxSS, MaximumShearStress);
+        //         // PRINT_2_VARIABLES(mMinSS, MinimumShearStress);
+        //         // PRINT_2_VARIABLES(mMinSS , mMaxSS )
+        //         // PRINT_2_VARIABLES(0.9*mMinSS ,1.1*mMaxSS )
+        //       } 
+        //       PRINT_2_VARIABLES(mMinSS , mMaxSS )
 
 
 }
