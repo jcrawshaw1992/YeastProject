@@ -502,17 +502,17 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
  
     mStepSize *=1.05;
 
-    for (unsigned i = 0; i<mBoundaries.size(); i++)
-    {   
-        for (std::vector<unsigned>::iterator it = mBasementNodes.begin(); it != mBasementNodes.end(); ++it)
-        {
-            CellPtr cell_iter = rCellPopulation.GetCellUsingLocationIndex(*it);
+    // for (unsigned i = 0; i<mBoundaries.size(); i++)
+    // {   
+    //     for (std::vector<unsigned>::iterator it = mBasementNodes.begin(); it != mBasementNodes.end(); ++it)
+    //     {
+    //         CellPtr cell_iter = rCellPopulation.GetCellUsingLocationIndex(*it);
            
-            cell_iter->GetCellData()->SetItem("ShearModulus", K_ShearMod);
-            cell_iter->GetCellData()->SetItem("AreaDilationModulus", K_AreaDilationMod);
-            cell_iter->GetCellData()->SetItem("AreaConstant", K_AreaMod);
-        }
-    }
+    //         cell_iter->GetCellData()->SetItem("ShearModulus", K_ShearMod);
+    //         cell_iter->GetCellData()->SetItem("AreaDilationModulus", K_AreaDilationMod);
+    //         cell_iter->GetCellData()->SetItem("AreaConstant", K_AreaMod);
+    //     }
+    // }
 
     //////////////
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
@@ -528,10 +528,10 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
                 CellPtr p_cell2 =  p_cell_population->GetCellUsingLocationIndex(node_index2);
                 CellPtr p_cell3 =  p_cell_population->GetCellUsingLocationIndex(node_index3);
                 
-                if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
-                {   
-                    AdaptHeteroRegion(p_cell_population, elem_index, 1.5);
-                } 
+                // if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
+                // {   
+                //     AdaptHeteroRegion(p_cell_population, elem_index, 1.5);
+                // } 
 
 
             if( ( p_cell1->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell1->GetCellData()->GetItem("MembraneState") ==0 ) &&   ( p_cell2->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell2->GetCellData()->GetItem("MembraneState") ==0 )  && ( p_cell3->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell3->GetCellData()->GetItem("MembraneState") ==0 )  )
