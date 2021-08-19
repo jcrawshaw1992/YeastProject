@@ -193,7 +193,7 @@ public:
    {
 
       
-        std::string output_dir = "FSISimulations/Honey/TempFile/";
+        std::string output_dir = "FSISimulations/Honey/CollapseCentralVessel3/";
 
         double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -6;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
@@ -203,7 +203,7 @@ public:
         double EndTime = 10;
         double SamplingStep = 50;
         double dt = 0.00005; // 0.0002;
-        double RemeshingTime = 199;//50;
+        double RemeshingTime = 400;//50;
         double EdgeLength =0.00045;
         double FSI_Iterations = 400;//50;
 
@@ -318,15 +318,15 @@ public:
         p_simulator->AddForce(p_ForceOut);
 
 
-      // for (int i =1; i<=50; i++)
-      //   { 
+      for (int i =1; i<=50; i++)
+        { 
     
             EndTime +=0.01;
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-        // }
+        }
 
     }
     /* */
