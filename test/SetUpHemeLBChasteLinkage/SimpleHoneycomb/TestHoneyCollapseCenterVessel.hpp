@@ -55,7 +55,7 @@ public:
 
  
         double EndTime = 11;
-        double SamplingStep = 50;
+        double SamplingStep = 1;
         double dt = 0.00001; // 0.0002;
         double RemeshingTime = 700;//50;
         double EdgeLength =0.0004;
