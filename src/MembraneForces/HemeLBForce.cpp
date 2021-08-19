@@ -1070,9 +1070,9 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
                 }
                 else if  ( norm_2(shear_stress)<1.1*mMaxSS  &&  norm_2(shear_stress) > 0.9*mMinSS  ) 
                 {
-                    TRACE("5")
+                    // TRACE("5")
                          cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);  
-                         PRINT_3_VARIABLES(mMinSS,  norm_2(shear_stress),mMaxSS )
+                        //  PRINT_3_VARIABLES(mMinSS,  norm_2(shear_stress),mMaxSS )
                          assert(norm_2(shear_stress) > 0.9*mMinSS );
 
                 }
