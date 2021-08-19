@@ -229,29 +229,35 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
 
         }
 
-    unsigned node_index0 = elem_iter->GetNodeGlobalIndex(0);
-    CellPtr p_cell0 = p_cell_population->GetCellUsingLocationIndex(node_index0);
-    unsigned node_index1 = elem_iter->GetNodeGlobalIndex(1);
-    CellPtr p_cell1 = p_cell_population->GetCellUsingLocationIndex(node_index1);
-    unsigned node_index2 = elem_iter->GetNodeGlobalIndex(2);
-    CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(node_index2);
+    // unsigned node_index0 = elem_iter->GetNodeGlobalIndex(0);
+    // CellPtr p_cell0 = p_cell_population->GetCellUsingLocationIndex(node_index0);
+    // unsigned node_index1 = elem_iter->GetNodeGlobalIndex(1);
+    // CellPtr p_cell1 = p_cell_population->GetCellUsingLocationIndex(node_index1);
+    // unsigned node_index2 = elem_iter->GetNodeGlobalIndex(2);
+    // CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(node_index2);
 
 
-    if(!(p_cell0->GetMutationState()->IsType<EmptyBasementMatrix>()) )
-    {
-        pNode0->AddAppliedForceContribution(ForceOnNode[0]);
-    }
-    if(!(p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()) )
-    {
-        pNode1->AddAppliedForceContribution(ForceOnNode[1]);
-    }
-     if(!(p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()) )
-    {
-        pNode2->AddAppliedForceContribution(ForceOnNode[2]);
-    }
+
+
+    // if(!(p_cell0->GetMutationState()->IsType<EmptyBasementMatrix>()) )
+    // {
+    //     pNode0->AddAppliedForceContribution(ForceOnNode[0]);
+    // }
+    // if(!(p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()) )
+    // {
+    //     pNode1->AddAppliedForceContribution(ForceOnNode[1]);
+    // }
+    //  if(!(p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()) )
+    // {
+    //     pNode2->AddAppliedForceContribution(ForceOnNode[2]);
+    // }
         
         // pNode1->AddAppliedForceContribution(ForceOnNode[1]);
         // pNode2->AddAppliedForceContribution(ForceOnNode[2]);
+
+        pNode0->AddAppliedForceContribution(ForceOnNode[0]);
+        pNode1->AddAppliedForceContribution(ForceOnNode[1]);
+        pNode2->AddAppliedForceContribution(ForceOnNode[2]);
        
     }
 
