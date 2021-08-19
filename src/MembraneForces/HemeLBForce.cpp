@@ -589,7 +589,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     // double deltaX = 2*mRadius/41;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
  
  
-    double deltaX = 2*mRadius/14;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
+    double deltaX = 2*mRadius/21;//15; // Diameter/15 This will need thinking about later -- Need to talk to someone about 
     double deltaT = 0.1 * deltaX * deltaX / V;
    
     double MaxPressure = *std::min_element(mPressure.begin(), mPressure.end());
