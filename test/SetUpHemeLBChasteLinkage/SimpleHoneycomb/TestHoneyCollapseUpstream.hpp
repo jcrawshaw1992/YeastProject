@@ -46,7 +46,7 @@ public:
    {
 
       
-        std::string output_dir = "FSISimulations/Honey/CollapseUpstreamVessels/";
+        std::string output_dir = "FSISimulations/Honey/CollapseUpstreamVessels2/";
 
         double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -6;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
@@ -55,10 +55,10 @@ public:
 
  
         double EndTime = 11.035;
-        double SamplingStep = 50;
-        double dt = 0.001; // 0.0002;
+        double SamplingStep = 10;
+        double dt = 0.00005; // 0.0002;
         double RemeshingTime = 700;//50;
-        double EdgeLength =0.00045;
+        double EdgeLength =0.00040;
         double FSI_Iterations = 700;//50;
 
 
@@ -73,21 +73,29 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetPrintRemeshedIC(1);
 
+        p_simulator->SetOutputDirectory(output_dir);
         ////////
 
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRelativePath(output_dir, EndTime);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetBinningIntervals(15, 10, 1);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetBinningIntervals(15, 15, 1);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).EdgeLengthVariable(1);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingIterations(5);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRemeshingSoftwear("CGAL");
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetOperatingSystem("server");
+        TRACE("ExecuteHistoryDependentRemeshing")
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
 
         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
         p_simulator->SetDt(dt);
-        p_simulator->SetOutputDirectory(output_dir);
+        // p_simulator->SetOutputDirectory(output_dir);
         p_simulator->RemoveAllForces();
   
 
+
+
+// get mesh 
+
+// pElement->DeleteNode(i);
         /* 
         -----------------------------
         Edit  RemeshingTriggerOnStepHeteroModifier
@@ -168,7 +176,7 @@ public:
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
 
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
         p_simulator->AddForce(p_ForceOut);
 
 

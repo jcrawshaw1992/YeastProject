@@ -16,32 +16,27 @@ from os import path
 
 if __name__=="__main__":
  
-    OldFolder = "/data/vascrem/testoutput/FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing2/"
+    OldFolder = "/data/vascrem/testoutput/FSISimulations/Honey/CollapseCentralVessel3/"
     NewFolder = OldFolder+"CollectedResults/"
-    # if path.exists(NewFolder) ==0:
-    #     os.mkdir(NewFolder)
+    if path.exists(NewFolder) ==0:
+        os.mkdir(NewFolder)
     NewMeshFolder = NewFolder+"CollectedMeshes/"
-    # if path.exists(NewMeshFolder) ==0:
-    #     os.mkdir(NewMeshFolder)
+    if path.exists(NewMeshFolder) ==0:
+        os.mkdir(NewMeshFolder)
   
 
-    Simulations = np.arange(10, 12, 0.1)
+    Simulations = np.arange(10, 10.35, 0.01)
     # results.viznodes
 
     # Results
     counter = 0
-    # for i in Simulations:
-    #     File = OldFolder+"results_from_time_"+str(i)+"/results.viznodes"
-    #     NewFile  = NewFolder + "/results_"+str(i)+".viznodes"
-    #     shutil.copy(File, NewFile)
-
     for i in Simulations:
         MeshFiles = []
         if i ==10 or i ==11 or i ==12 or i== 10.999999999999996:
             CurrentFolder = OldFolder+"results_from_time_"+str(int(i))+"/"
         else:
             print round(i,2)
-            CurrentFolder = OldFolder+"results_from_time_"+str(round(i,2))+"/"
+            CurrentFolder = OldFolder+"results_from_time_"+str(round(i,3))+"/"
 
         for file in os.listdir(CurrentFolder):
             if file.startswith("mesh_") and file.endswith(".vtu"):
