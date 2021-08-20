@@ -233,27 +233,53 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
 
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
 
+         for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
+         elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
+         ++elem_iter)
+         {
+
+                // I want to exclude the edge region 
+                unsigned elem_index = elem_iter->GetIndex();
+                // Node<3>* pNode0 = rCellPopulation.rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(0));
+                // Node<3>* pNode1 = rCellPopulation.rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(1));
+                // Node<3>* pNode2 = rCellPopulation.rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(2));
+
+                unsigned node_index1 = elem_iter->GetNodeGlobalIndex(0); unsigned node_index2 = elem_iter->GetNodeGlobalIndex(1); unsigned node_index3 = elem_iter->GetNodeGlobalIndex(2);
+            
+                CellPtr p_cell1 =  p_cell_population->GetCellUsingLocationIndex(node_index1);
+                CellPtr p_cell2 =  p_cell_population->GetCellUsingLocationIndex(node_index2);
+                CellPtr p_cell3 =  p_cell_population->GetCellUsingLocationIndex(node_index3);
+                
+                if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()   || p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
+                {   
+                    unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+		          Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
+                    pNode->ClearAppliedForce();
+                } 
+        }
+
+
     
 
 
-    MAKE_PTR(EmptyBasementMatrix, p_Basement);
-       for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = p_cell_population->Begin();
-            cell_iter != p_cell_population->End();
-            ++cell_iter)
-        {
+    // MAKE_PTR(EmptyBasementMatrix, p_Basement);
+    //    for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = p_cell_population->Begin();
+    //         cell_iter != p_cell_population->End();
+    //         ++cell_iter)
+    //     {
 
-            // cell_iter->GetMutationState(p_Basement)
-            // p_Basement
-            // if (cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>() )
-            bool cell_is_wild_type = (cell_iter)->GetMutationState()->IsType<EmptyBasementMatrix>();
+    //         // cell_iter->GetMutationState(p_Basement)
+    //         // p_Basement
+    //         // if (cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>() )
+    //         bool cell_is_wild_type = (cell_iter)->GetMutationState()->IsType<EmptyBasementMatrix>();
 
-            if (cell_is_wild_type)
-            {
-                unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-		        Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
-                pNode->ClearAppliedForce();
-            }
-        }
+    //         if (cell_is_wild_type)
+    //         {
+    //             unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+	// 	        Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
+    //             pNode->ClearAppliedForce();
+    //         }
+    //     }
 
 }
 
