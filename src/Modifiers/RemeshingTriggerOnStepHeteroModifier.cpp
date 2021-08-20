@@ -230,11 +230,15 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                 
 
     }
+    MAKE_PTR(EmptyBasementMatrix, p_Basement);
        for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
             cell_iter != rCellPopulation.End();
             ++cell_iter)
         {
-            if (cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>() )
+
+           
+            // p_Basement
+            if (cell_iter->GetMutationState(p_Basement))
             // p_cell1-> 
             {
                 unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
