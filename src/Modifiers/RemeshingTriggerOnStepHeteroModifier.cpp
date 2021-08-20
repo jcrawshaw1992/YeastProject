@@ -234,7 +234,8 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
             cell_iter != rCellPopulation.End();
             ++cell_iter)
         {
-            if (cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>())
+            if (cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>() )
+            // p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()  
             {
                 unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
 		        Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
