@@ -238,10 +238,6 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
          ++elem_iter)
          {
 
-                // I want to exclude the edge region 
-                // unsigned elem_index = elem_iter->GetIndex();
-
-
                 unsigned node_index1 = elem_iter->GetNodeGlobalIndex(0); unsigned node_index2 = elem_iter->GetNodeGlobalIndex(1); unsigned node_index3 = elem_iter->GetNodeGlobalIndex(2);
             
                 CellPtr p_cell1 =  p_cell_population->GetCellUsingLocationIndex(node_index1);
@@ -256,7 +252,6 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
 
                     pNode0->ClearAppliedForce(); pNode1->ClearAppliedForce(); pNode2->ClearAppliedForce();
 
-                double A= 0;
                 } 
         }
 
