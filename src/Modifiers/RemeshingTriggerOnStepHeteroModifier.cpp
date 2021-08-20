@@ -21,6 +21,7 @@
 #include <algorithm>
 #include "MeshBasedCellPopulation.hpp"
 
+#include "EmptyBasementMatrix.hpp"
 #include "SmartPointers.hpp"
 #include <cxxtest/TestSuite.h>
 #include <math.h>
