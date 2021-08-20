@@ -76,6 +76,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
             iter != containing_elements.end();
             ++iter)
         {
+            bool HasBasementElement = 0;
             Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
             Node<SPACE_DIM>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
             Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
@@ -84,6 +85,19 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
             c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
 
             NormalVector  += VectorProduct(vector_12, vector_13);
+
+            CellPtr p_cell1 = p_cell_population->GetCellUsingLocationIndex(pNode0->GetIndex());
+            CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(pNode1->GetIndex());
+            CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex(pNode2->GetIndex());
+
+            double Counter = p_cell1->GetMutationState()->IsType<EmptyBasementMatrix> () +  p_cell2->GetMutationState()->IsType<EmptyBasementMatrix> () + p_cell3->GetMutationState()->IsType<EmptyBasementMatrix> (); 
+
+            if (Counter == 3)
+            {
+                HasBasementElement = 1;
+            }
+
+
         }
 		NormalVector /=norm_2(NormalVector); // I think the normal is inwards facing 
 
@@ -113,12 +127,11 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
         // pNode->AddAppliedForceContribution(Force); 
 
 
-        CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
-        if (p_cell->GetMutationState()->IsType<EmptyBasementMatrix> ())
-        {
-            double A = 0;
-        }
-        {
+        // CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
+        // if (p_cell->GetMutationState()->IsType<EmptyBasementMatrix> ())
+
+        if (HasBasementElement ==0)
+        {s
             pNode->AddAppliedForceContribution(Force);
         }
    
