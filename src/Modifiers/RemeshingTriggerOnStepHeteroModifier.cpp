@@ -240,9 +240,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
 
                 // I want to exclude the edge region 
                 // unsigned elem_index = elem_iter->GetIndex();
-                // Node<3>* pNode0 = rCellPopulation.rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(0));
-                // Node<3>* pNode1 = rCellPopulation.rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(1));
-                // Node<3>* pNode2 = rCellPopulation.rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(2));
+
 
                 unsigned node_index1 = elem_iter->GetNodeGlobalIndex(0); unsigned node_index2 = elem_iter->GetNodeGlobalIndex(1); unsigned node_index3 = elem_iter->GetNodeGlobalIndex(2);
             
@@ -252,9 +250,12 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                 
                 if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()   || p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
                 {   
-                //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-		        //   Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
-                //     pNode->ClearAppliedForce();
+                    Node<3>* pNode0 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(0));
+                    Node<3>* pNode1 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(1));
+                    Node<3>* pNode2 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(2));
+
+                    pNode0->ClearAppliedForce(); pNode1->ClearAppliedForce(); pNode2->ClearAppliedForce();
+
                 double A= 0;
                 } 
         }
