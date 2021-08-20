@@ -166,8 +166,14 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
 
      if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix> () || p_cell2->GetMutationState()->IsType<EmptyBasementMatrix> ()  || p_cell3->GetMutationState()->IsType<EmptyBasementMatrix> () || p_cell4->GetMutationState()->IsType<EmptyBasementMatrix> () )
         {
+            p_cell1->GetCellData()->SetItem("BendingForce", -100);
+            p_cell2->GetCellData()->SetItem("BendingForce", -100);
+            p_cell3->GetCellData()->SetItem("BendingForce", -100);
+            p_cell4->GetCellData()->SetItem("BendingForce", -100);
             continue;
         }
+        else
+        { 
      
 
 
@@ -298,6 +304,7 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         pNode2->AddAppliedForceContribution(node2_contribution);
         pNode3->AddAppliedForceContribution(node3_contribution);
         pNode4->AddAppliedForceContribution(node4_contribution);
+    }
     }
 
 

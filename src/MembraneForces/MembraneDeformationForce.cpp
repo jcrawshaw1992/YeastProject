@@ -32,6 +32,15 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
          elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
          ++elem_iter)
     {
+
+    unsigned node_index0 = elem_iter->GetNodeGlobalIndex(0);
+    CellPtr p_cell0 = p_cell_population->GetCellUsingLocationIndex(node_index0);
+    unsigned node_index1 = elem_iter->GetNodeGlobalIndex(1);
+    CellPtr p_cell1 = p_cell_population->GetCellUsingLocationIndex(node_index1);
+    unsigned node_index2 = elem_iter->GetNodeGlobalIndex(2);
+    CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(node_index2);
+    if(!(p_cell0->GetMutationState()->IsType<EmptyBasementMatrix>()) &&  !(p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>())   && !(p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()) )
+    {
         // THis will be needed later -- going to need to figure out how to stream line this later 
         double Kalpha = 0;
         double KA = 0;
@@ -202,12 +211,6 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
             
             CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
 
-            // if (Curvature)
-            // {
-            //     ForceOnNode[i]/=10;
-            // }
-
-
             currentForce = p_cell->GetCellData()->GetItem("MembraneForce");
             p_cell->GetCellData()->SetItem("MembraneForce",currentForce + norm_2(ForceOnNode[i]));
 
@@ -229,26 +232,8 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
 
         }
 
-    unsigned node_index0 = elem_iter->GetNodeGlobalIndex(0);
-    CellPtr p_cell0 = p_cell_population->GetCellUsingLocationIndex(node_index0);
-    unsigned node_index1 = elem_iter->GetNodeGlobalIndex(1);
-    CellPtr p_cell1 = p_cell_population->GetCellUsingLocationIndex(node_index1);
-    unsigned node_index2 = elem_iter->GetNodeGlobalIndex(2);
-    CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(node_index2);
-
-
-
-
-    if(!(p_cell0->GetMutationState()->IsType<EmptyBasementMatrix>()) )
-    {
-        pNode0->AddAppliedForceContribution(ForceOnNode[0]);
-    }
-    if(!(p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()) )
-    {
+        pNode0->AddAppliedForceContribution(ForceOnNode[0]);   
         pNode1->AddAppliedForceContribution(ForceOnNode[1]);
-    }
-     if(!(p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()) )
-    {
         pNode2->AddAppliedForceContribution(ForceOnNode[2]);
     }
         

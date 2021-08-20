@@ -229,7 +229,17 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                 
 
     }
-
+       for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+            cell_iter != rCellPopulation.End();
+            ++cell_iter)
+        {
+            if (cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>())
+            {
+                unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+		        Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
+                pNode->ClearAppliedForce();
+            }
+        }
 
 }
 
@@ -275,7 +285,6 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateCellDat
                     double DotToLowerPlane = inner_prod(NodeToLowerPlane,LowerPlane );
     
                     // double radius = 1;//0.005; // XXX TODO Radius threshold needs fixing
-
 
                     if (DotToLowerPlane >= 0 && DotToUpperPlane >= 0 )
                     {
