@@ -56,7 +56,7 @@ public:
  
         double EndTime = 11.035;
         double SamplingStep = 100;
-        double dt = 0.001; // 0.0002;
+        double dt = 0.0001; // 0.0002;
         double RemeshingTime = 700;//50;
         double EdgeLength =0.00040;
         double FSI_Iterations = 700;//50;
@@ -136,7 +136,7 @@ public:
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
 
         p_Mesh_modifier->SetRadius(0.007);
-        p_Mesh_modifier->SetUpdateFrequency(0.001/dt);
+        p_Mesh_modifier->SetUpdateFrequency(0.01/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
 
 
@@ -192,7 +192,7 @@ public:
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
 
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
         p_simulator->AddForce(p_ForceOut);
 
 
