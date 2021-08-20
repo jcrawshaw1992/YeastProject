@@ -230,9 +230,15 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                 
 
     }
+
+    HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+
+    
+
+
     MAKE_PTR(EmptyBasementMatrix, p_Basement);
-       for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
-            cell_iter != rCellPopulation.End();
+       for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = p_cell_population->Begin();
+            cell_iter != p_cell_population->End();
             ++cell_iter)
         {
 
@@ -242,7 +248,6 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
             bool cell_is_wild_type = (cell_iter)->GetMutationState()->IsType<EmptyBasementMatrix>();
 
             if (cell_is_wild_type)
-            // p_cell1-> 
             {
                 unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
 		        Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
