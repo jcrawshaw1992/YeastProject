@@ -131,7 +131,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
         // if (p_cell->GetMutationState()->IsType<EmptyBasementMatrix> ())
 
         if (HasBasementElement ==0)
-        {s
+        {
             pNode->AddAppliedForceContribution(Force);
         }
    
