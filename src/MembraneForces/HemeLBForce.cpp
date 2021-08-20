@@ -67,7 +67,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
 	{
 		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
 		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
-
+        bool HasBasementElement = 0;
+        
 		c_vector<double, 3> NormalVector = Create_c_vector(0,0,0);
 		std::set<unsigned>& containing_elements = pNode->rGetContainingElementIndices();
         assert(containing_elements.size() > 0);
@@ -76,7 +77,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
             iter != containing_elements.end();
             ++iter)
         {
-            bool HasBasementElement = 0;
+            
             Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
             Node<SPACE_DIM>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
             Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
