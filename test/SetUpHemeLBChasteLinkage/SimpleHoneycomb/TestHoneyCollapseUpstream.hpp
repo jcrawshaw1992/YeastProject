@@ -169,7 +169,7 @@ void TestHemeLBCollapse() throw(Exception)
         // c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.04307533991933138, -5e-5,0 );
         // c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(1,0,0);
 
-        p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
+        // p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
 
         p_Mesh_modifier->SetRadius(0.007);
         p_Mesh_modifier->SetUpdateFrequency(0.01/dt);
