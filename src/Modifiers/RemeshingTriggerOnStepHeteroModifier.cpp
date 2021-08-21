@@ -527,35 +527,41 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
     }
 
     //////////////
-    if (mOn1 ==1)
-    {
-        HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-        for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
-         elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
-         ++elem_iter)
-         {
-                // I want to exclude the edge region 
-                unsigned elem_index = elem_iter->GetIndex();
-                unsigned node_index1 = elem_iter->GetNodeGlobalIndex(0); unsigned node_index2 = elem_iter->GetNodeGlobalIndex(1); unsigned node_index3 = elem_iter->GetNodeGlobalIndex(2);
-            
-                CellPtr p_cell1 =  p_cell_population->GetCellUsingLocationIndex(node_index1);
-                CellPtr p_cell2 =  p_cell_population->GetCellUsingLocationIndex(node_index2);
-                CellPtr p_cell3 =  p_cell_population->GetCellUsingLocationIndex(node_index3);
-                
-                if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
-                {   
-                    AdaptHeteroRegion(p_cell_population, elem_index, 1.5);
-                } 
-            if( ( p_cell1->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell1->GetCellData()->GetItem("MembraneState") ==0 ) &&   ( p_cell2->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell2->GetCellData()->GetItem("MembraneState") ==0 )  && ( p_cell3->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell3->GetCellData()->GetItem("MembraneState") ==0 )  )
+    HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+    for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = p_simulator->rGetCellPopulation()).Begin();
+        cell_iter != p_simulator->rGetCellPopulation()).End();
+        ++cell_iter)
+      {
+          if( cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == -1 &&  cell_iter->GetCellData()->GetItem("IniitialConditionAdjusted") == 0  )
             {
                 AdaptHeteroRegion(p_cell_population, elem_index, 15);
+                cell_iter->GetCellData()->SetItem("IniitialConditionAdjusted",1); 
                 
             }
-          }
-          mOn1 =0;
 
-    }
+      }
 
+
+
+        
+        // for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
+        //  elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
+        //  ++elem_iter)
+        //  {
+        //         // I want to exclude the edge region 
+        //         unsigned elem_index = elem_iter->GetIndex();
+        //         unsigned node_index1 = elem_iter->GetNodeGlobalIndex(0); unsigned node_index2 = elem_iter->GetNodeGlobalIndex(1); unsigned node_index3 = elem_iter->GetNodeGlobalIndex(2);
+            
+        //         CellPtr p_cell1 =  p_cell_population->GetCellUsingLocationIndex(node_index1);
+        //         CellPtr p_cell2 =  p_cell_population->GetCellUsingLocationIndex(node_index2);
+        //         CellPtr p_cell3 =  p_cell_population->GetCellUsingLocationIndex(node_index3);
+                
+        //         if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()  || p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
+        //         {   
+        //             AdaptHeteroRegion(p_cell_population, elem_index, 1.5);
+        //         } 
+                    
+        //   }
 //  if ( p_cell->GetCellData()->GetItem("FixedBoundary") !=2)
     double ShearModulus = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus");
     double AreaDilationModulus = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus");
