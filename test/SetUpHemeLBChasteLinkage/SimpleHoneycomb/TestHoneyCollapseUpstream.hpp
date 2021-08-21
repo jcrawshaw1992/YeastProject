@@ -56,7 +56,7 @@ void TestHemeLBCollapse() throw(Exception)
 
 
         double EndTime =  11.05;//11.035;
-        double SamplingStep = 100;
+        double SamplingStep = 50;
         double dt = 0.0001; // 0.0002;
         double RemeshingTime = 700;//50;
         double EdgeLength =0.00040;
