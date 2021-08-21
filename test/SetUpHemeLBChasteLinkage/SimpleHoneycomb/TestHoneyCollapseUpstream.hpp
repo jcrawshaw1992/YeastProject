@@ -46,7 +46,7 @@ public:
    {
 
       
-        std::string output_dir = "FSISimulations/Honey/CollapseUpstreamVessels4/";
+        std::string output_dir = "FSISimulations/Honey/CollapseUpstreamVessels5/";
 
         double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -6;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
@@ -105,13 +105,55 @@ public:
         p_simulator->SetDt(dt);
         // p_simulator->SetOutputDirectory(output_dir);
         p_simulator->RemoveAllForces();
-  
+
+
+           /*
+        -----------------------------
+        Boundary conditions
+        ----------------------------
+        */
 
 
 
-// get mesh 
+        p_simulator->RemoveAllCellPopulationBoundaryConditions();
 
-// pElement->DeleteNode(i);
+           // First collapse option 
+        // Upstream 
+        
+        c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.03557311260368838 , -5e-5,-0.0013416773024934928);
+        c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
+        // Down stream                                                             
+        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.04247433325365091, -5e-5,0 );
+        c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(1,0,0);
+
+
+
+
+        boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
+
+        p_condition->SetPointOnPlane2( LowerPlanePoint);
+        p_condition->SetNormalToPlane2(-LowerPlaneNormal);
+        p_simulator->AddCellPopulationBoundaryCondition(p_condition);
+       
+
+        std::vector<c_vector<double, 3> > boundary_plane_points;
+        std::vector<c_vector<double, 3> > boundary_plane_normals;
+
+        boundary_plane_points.push_back(Create_c_vector(0.007,0,0 ));
+        boundary_plane_normals.push_back(Create_c_vector(-1, 0, 0));
+
+        boundary_plane_points.push_back(Create_c_vector(0.074,0,0));
+        boundary_plane_normals.push_back(Create_c_vector(1,0,0));
+
+    
+        for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
+        {
+   
+                boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id],2));
+                p_simulator->AddCellPopulationBoundaryCondition(p_condition);
+
+        }
+
         /* 
         -----------------------------
         Edit  RemeshingTriggerOnStepHeteroModifier
@@ -337,6 +379,10 @@ void offTestWithConstantForce() throw(Exception)
         p_simulator->AddForce(p_ForceOut);
 
 
+     
+
+
+
       for (int i =1; i<=50; i++)
         { 
     
@@ -349,6 +395,11 @@ void offTestWithConstantForce() throw(Exception)
 
     }
     /* */
+
+
+
+
+
 
 
 

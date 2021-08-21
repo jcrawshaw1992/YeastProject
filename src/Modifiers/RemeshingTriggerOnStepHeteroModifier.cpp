@@ -232,51 +232,17 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
     }
 
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-
-         for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
-         elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
-         ++elem_iter)
-         {
-
-                unsigned node_index1 = elem_iter->GetNodeGlobalIndex(0); unsigned node_index2 = elem_iter->GetNodeGlobalIndex(1); unsigned node_index3 = elem_iter->GetNodeGlobalIndex(2);
-            
-                CellPtr p_cell1 =  p_cell_population->GetCellUsingLocationIndex(node_index1);
-                CellPtr p_cell2 =  p_cell_population->GetCellUsingLocationIndex(node_index2);
-                CellPtr p_cell3 =  p_cell_population->GetCellUsingLocationIndex(node_index3);
-                
-                if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>()   &&  p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()  &&  p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
-                {   
-                    Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(0));
-                    Node<SPACE_DIM>* pNode1 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(1));
-                    Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(2));
-
-                    pNode0->ClearAppliedForce(); pNode1->ClearAppliedForce(); pNode2->ClearAppliedForce();
-
-                } 
+    for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = p_cell_population->Begin();
+        cell_iter != p_cell_population->End();
+        ++cell_iter)
+    {
+        if (cell_iter->GetCellData()->GetItem("FixedBoundary") ==2)
+        {
+            unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+            Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
+            pNode->ClearAppliedForce();
         }
-
-
-    
-
-
-    // MAKE_PTR(EmptyBasementMatrix, p_Basement);
-    //    for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = p_cell_population->Begin();
-    //         cell_iter != p_cell_population->End();
-    //         ++cell_iter)
-    //     {
-
-    //         // cell_iter->GetMutationState(p_Basement)
-    //         // p_Basement
-    //         // if (cell_iter->GetMutationState()->IsType<EmptyBasementMatrix>() )
-    //         bool cell_is_wild_type = (cell_iter)->GetMutationState()->IsType<EmptyBasementMatrix>();
-
-    //         if (cell_is_wild_type)
-    //         {
-    //             unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-	// 	        Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
-    //             pNode->ClearAppliedForce();
-    //         }
-    //     }
+    }
 
 }
 
@@ -561,8 +527,10 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
     }
 
     //////////////
-    HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-    for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
+    if (mOn ==1)
+    {
+        HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+        for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
          elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
          ++elem_iter)
          {
@@ -578,18 +546,15 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
                 {   
                     AdaptHeteroRegion(p_cell_population, elem_index, 1.5);
                 } 
-
-
             if( ( p_cell1->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell1->GetCellData()->GetItem("MembraneState") ==0 ) &&   ( p_cell2->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell2->GetCellData()->GetItem("MembraneState") ==0 )  && ( p_cell3->GetCellData()->GetItem("WallShearStressExtremes") == -1  && p_cell3->GetCellData()->GetItem("MembraneState") ==0 )  )
             {
-                AdaptHeteroRegion(p_cell_population, elem_index, 1.2);
+                AdaptHeteroRegion(p_cell_population, elem_index, 15);
                 
             }
-
-
-
           }
+          mOn =0;
 
+    }
 
 
     double ShearModulus = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus");

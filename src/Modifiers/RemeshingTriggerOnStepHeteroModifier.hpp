@@ -160,6 +160,7 @@ public:
     void SetUpdateFrequency(double MaxCounter);
     double mMaxCounter = 100;
     bool mSetUpSolve =1;
+    bool mOn =1;
 
    
     void AdaptHeteroRegion(HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation, unsigned elem_index, double Collapse);

@@ -67,78 +67,71 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
 	{
 		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
 		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
-        bool HasBasementElement = 0;
-        
-		c_vector<double, 3> NormalVector = Create_c_vector(0,0,0);
-		std::set<unsigned>& containing_elements = pNode->rGetContainingElementIndices();
-        assert(containing_elements.size() > 0);
-		// Finding the normal to the node -- need to check this 
-        for (std::set<unsigned>::iterator iter = containing_elements.begin();
-            iter != containing_elements.end();
-            ++iter)
-        {
-            
-            Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
-            Node<SPACE_DIM>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
-            Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
-
-            c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
-            c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
-
-            NormalVector  += VectorProduct(vector_12, vector_13);
-
-            CellPtr p_cell1 = p_cell_population->GetCellUsingLocationIndex(pNode0->GetIndex());
-            CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(pNode1->GetIndex());
-            CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex(pNode2->GetIndex());
-
-            double Counter = p_cell1->GetMutationState()->IsType<EmptyBasementMatrix> () +  p_cell2->GetMutationState()->IsType<EmptyBasementMatrix> () + p_cell3->GetMutationState()->IsType<EmptyBasementMatrix> (); 
-
-            if (Counter == 3)
-            {
-                HasBasementElement = 1;
-            }
-
-
-        }
-		NormalVector /=norm_2(NormalVector); // I think the normal is inwards facing 
-
-
-        double Pressure;
-        if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
-        {
-           c_vector<double, 3> AverageForce = Create_c_vector(0,0,0);
-           c_vector<unsigned, 2> NearestNodes =  p_cell_population->GetNearestInternalNodes(node_index);
-
-            for ( int i = 0; i <2; i++)
-            {  
-                AverageForce += mForceMap[NearestNodes[i]];
-            }
-            Pressure = norm_2(AverageForce)/2;
-
-        }else
-        {
-            c_vector<long double,3> force = mForceMap[node_index];
-            Pressure = norm_2(force);
-
-        }
-
-        c_vector<long double,3> HemeLBForce = Pressure * NormalVector; 
-        c_vector<long double,3> TissueForce = P_tissue * NormalVector; 
-        c_vector<long double,3> Force =  (Pressure - P_tissue)* NormalVector; //                 HemeLBForce -TissueForce;
-        // pNode->AddAppliedForceContribution(Force); 
-
-
-        // CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
+  
+         CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
         // if (p_cell->GetMutationState()->IsType<EmptyBasementMatrix> ())
-
-        if (HasBasementElement ==0)
+        if ( p_cell->GetCellData()->GetItem("FixedBoundary") !=2)
         {
-            pNode->AddAppliedForceContribution(Force);
+            c_vector<double, 3> NormalVector = Create_c_vector(0,0,0);
+            std::set<unsigned>& containing_elements = pNode->rGetContainingElementIndices();
+            assert(containing_elements.size() > 0);
+            // Finding the normal to the node -- need to check this 
+            for (std::set<unsigned>::iterator iter = containing_elements.begin();
+                iter != containing_elements.end();
+                ++iter)
+            {
+                
+                Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
+                Node<SPACE_DIM>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
+                Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
+
+                c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
+                c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
+
+                NormalVector  += VectorProduct(vector_12, vector_13);
+
+                CellPtr p_cell1 = p_cell_population->GetCellUsingLocationIndex(pNode0->GetIndex());
+                CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(pNode1->GetIndex());
+                CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex(pNode2->GetIndex());
+
+                // double Counter = p_cell1->GetMutationState()->IsType<EmptyBasementMatrix> () +  p_cell2->GetMutationState()->IsType<EmptyBasementMatrix> () + p_cell3->GetMutationState()->IsType<EmptyBasementMatrix> (); 
+
+                // if (Counter == 3)
+                // {
+                //     HasBasementElement = 1;
+                // }
+
+
+            }
+            NormalVector /=norm_2(NormalVector); // I think the normal is inwards facing 
+
+
+            double Pressure;
+            if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
+            {
+            c_vector<double, 3> AverageForce = Create_c_vector(0,0,0);
+            c_vector<unsigned, 2> NearestNodes =  p_cell_population->GetNearestInternalNodes(node_index);
+
+                for ( int i = 0; i <2; i++)
+                {  
+                    AverageForce += mForceMap[NearestNodes[i]];
+                }
+                Pressure = norm_2(AverageForce)/2;
+
+            }else
+            {
+                c_vector<long double,3> force = mForceMap[node_index];
+                Pressure = norm_2(force);
+
+            }
+
+            c_vector<long double,3> HemeLBForce = Pressure * NormalVector; 
+            c_vector<long double,3> TissueForce = P_tissue * NormalVector; 
+            c_vector<long double,3> Force =  (Pressure - P_tissue)* NormalVector; //                 HemeLBForce -TissueForce;
+            pNode->AddAppliedForceContribution(Force); 
         }
-   
 
-
-
+       
     }
 
 
