@@ -55,7 +55,7 @@ public:
 
         std::string Archieved = "FSISimulations/Honey/CollapseUpstreamVessels6/";
         double EndTime = 11.135;
-        double SamplingStep = 100;
+        double SamplingStep = 10;
         double dt = 0.001; // 0.0002;
         double RemeshingTime = 700;//50;
         double EdgeLength =0.00040;
@@ -235,7 +235,7 @@ public:
 
       for (int i =1; i<=50; i++)
         { 
-            EndTime +=0.1;
+            EndTime +=1;
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();
