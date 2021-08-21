@@ -42,21 +42,20 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
 
-void TestHemeLBCollapse() throw(Exception)
+  void TestHemeLBCollapse() throw(Exception)
    {
 
       
-        std::string output_dir = "FSISimulations/Honey/CollapseUpstreamVessels8/";
+        std::string output_dir = "FSISimulations/Honey/CollapseUpstreamVessels7/";
 
         double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -6;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
                                 
-        // std::string Archieved ="FSISimulations/Honey/CollapseUpstreamVessels/LittleMoreCenterCollapse";//  "FSISimulations/Honey/CollapseCentralVessel2/"; //"SimpleHemeLBHoneycomb/GrowingToEqui/";//"FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing4/";
-        std::string Archieved = "FSISimulations/Honey/CollapseUpstreamVessels7/"; 
+        std::string Archieved ="FSISimulations/Honey/CollapseUpstreamVessels/LittleMoreCenterCollapse";//  "FSISimulations/Honey/CollapseCentralVessel2/"; //"SimpleHemeLBHoneycomb/GrowingToEqui/";//"FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing4/";
 
-
-        double EndTime =  11.05;//11.035;
-        double SamplingStep = 50;
+ 
+        double EndTime = 11.035;
+        double SamplingStep = 100;
         double dt = 0.0001; // 0.0002;
         double RemeshingTime = 700;//50;
         double EdgeLength =0.00040;
@@ -85,16 +84,16 @@ void TestHemeLBCollapse() throw(Exception)
         TRACE("SetBinningIntervals")
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).EdgeLengthVariable(1);
         TRACE("EdgeLengthVariable")
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingIterations(15);
-        // TRACE("SetTargetRemeshingIterations")
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingIterations(20);
+        TRACE("SetTargetRemeshingIterations")
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRemeshingSoftwear("CGAL");
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetOperatingSystem("server");
-        // TRACE("ExecuteHistoryDependentRemeshing")
-        // TRACE("ABout to leave test")
-        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
-        // EdgeLength =0.00045;
-        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
-        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+        TRACE("ExecuteHistoryDependentRemeshing")
+        TRACE("ABout to leave test")
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+        EdgeLength =0.0005;
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
         // EdgeLength =0.0006;
         // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
         // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
@@ -110,12 +109,10 @@ void TestHemeLBCollapse() throw(Exception)
         ----------------------------
         */
 
-
-
         p_simulator->RemoveAllCellPopulationBoundaryConditions();
 
-        //    // First collapse option 
-        // // Upstream 
+           // First collapse option 
+        // Upstream 
         
         c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.03557311260368838 , -5e-5,-0.0013416773024934928);
         c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
@@ -124,7 +121,6 @@ void TestHemeLBCollapse() throw(Exception)
         c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(1,0,0);
 
         boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
-
         p_condition->SetPointOnPlane2( LowerPlanePoint);
         p_condition->SetNormalToPlane2(-LowerPlaneNormal);
         p_simulator->AddCellPopulationBoundaryCondition(p_condition);
@@ -173,16 +169,10 @@ void TestHemeLBCollapse() throw(Exception)
 
         p_Mesh_modifier->SetRadius(0.007);
         p_Mesh_modifier->SetUpdateFrequency(0.01/dt);
-        p_Mesh_modifier->SetmSetUpSolve(1);
+        // p_Mesh_modifier->SetmSetUpSolve(1);
         p_Mesh_modifier->SetAdaptedElementRecorder(p_simulator->rGetCellPopulation() );
 
-    
-
-        // boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
-        // p_condition->SetPointOnPlane2( LowerPlanePoint);
-        // p_condition->SetNormalToPlane2(-LowerPlaneNormal);
-        // p_simulator->AddCellPopulationBoundaryCondition(p_condition);
-       
+  
         /*
         -----------------------------
         Membrane forces
@@ -237,211 +227,6 @@ void TestHemeLBCollapse() throw(Exception)
       for (int i =1; i<=50; i++)
         { 
             EndTime +=0.5;
-            p_simulator->SetEndTime(EndTime);
-
-            p_simulator->Solve();
-            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-        }
-
-    }
-    /* */
-
-
-
-  void offTestHemeLBCollapse() throw(Exception)
-   {
-
-      
-        std::string output_dir = "FSISimulations/Honey/CollapseUpstreamVessels7/";
-
-        double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -6;
-        std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
-                                
-        std::string Archieved ="FSISimulations/Honey/CollapseUpstreamVessels/LittleMoreCenterCollapse";//  "FSISimulations/Honey/CollapseCentralVessel2/"; //"SimpleHemeLBHoneycomb/GrowingToEqui/";//"FSISimulations/Honey/Collapse1_StrongMembraneParameterVariationAdditionalInitialConditionCollapseMoreRemeshing4/";
-
- 
-        double EndTime = 11.035;
-        double SamplingStep = 100;
-        double dt = 0.0001; // 0.0002;
-        double RemeshingTime = 700;//50;
-        double EdgeLength =0.00040;
-        double FSI_Iterations = 700;//50;
-
-        PRINT_2_VARIABLES(Archieved,EndTime )
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
-        TRACE("Loaded")
-
-        /* Update the ouput directory for the population  */
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
-         TRACE("SetChasteOutputDirectory")
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
-        TRACE("SetTargetRemeshingEdgeLength")
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetPrintRemeshedIC(1);
-        TRACE("SetPrintRemeshedIC")
-        
-
-        p_simulator->SetOutputDirectory(output_dir);
-        ////////
-        TRACE("SetOutputDirectory")
-
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRelativePath(output_dir, EndTime);
-        TRACE("SetRelativePath")
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetBinningIntervals(15, 15, 1);
-        TRACE("SetBinningIntervals")
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).EdgeLengthVariable(1);
-        TRACE("EdgeLengthVariable")
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingIterations(15);
-        TRACE("SetTargetRemeshingIterations")
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRemeshingSoftwear("CGAL");
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetOperatingSystem("server");
-        TRACE("ExecuteHistoryDependentRemeshing")
-        TRACE("ABout to leave test")
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
-        EdgeLength =0.00045;
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
-        EdgeLength =0.0005;
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
-
-        p_simulator->SetSamplingTimestepMultiple(SamplingStep);
-        p_simulator->SetDt(dt);
-        // p_simulator->SetOutputDirectory(output_dir);
-        p_simulator->RemoveAllForces();
-
-        /*
-        -----------------------------
-        Boundary conditions
-        ----------------------------
-        */
-
-
-
-        p_simulator->RemoveAllCellPopulationBoundaryConditions();
-
-        //    // First collapse option 
-        // // Upstream 
-        
-        // c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.03557311260368838 , -5e-5,-0.0013416773024934928);
-        // c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
-        // // Down stream                                                             
-        // c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.04247433325365091, -5e-5,0 );
-        // c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(1,0,0);
-
-        // boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
-
-        // p_condition->SetPointOnPlane2( LowerPlanePoint);
-        // p_condition->SetNormalToPlane2(-LowerPlaneNormal);
-        // p_simulator->AddCellPopulationBoundaryCondition(p_condition);
-       
-
-        // std::vector<c_vector<double, 3> > boundary_plane_points;
-        // std::vector<c_vector<double, 3> > boundary_plane_normals;
-
-        // boundary_plane_points.push_back(Create_c_vector(0.007,0,0 ));
-        // boundary_plane_normals.push_back(Create_c_vector(-1, 0, 0));
-
-        // boundary_plane_points.push_back(Create_c_vector(0.074,0,0));
-        // boundary_plane_normals.push_back(Create_c_vector(1,0,0));
-
-    
-        // for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
-        // {
-   
-        //         boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id],2));
-        //         p_simulator->AddCellPopulationBoundaryCondition(p_condition);
-
-        // }
-
-        // /* 
-        // -----------------------------
-        // Edit  RemeshingTriggerOnStepHeteroModifier
-        // ----------------------------
-        // */
-        // std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
-        // boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
-        // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
-
-        // p_Mesh_modifier->SetStepSize(pow(10, -8));
-        // p_Mesh_modifier->TurnOffRemeshing();   
-        // p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
-
-        // // First collapse option 
-        // // Upstream 
-        // // c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.034963365591332625, -5e-5,0);
-        // // c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
-        // // // Down stream                                                             
-        // // c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.04307533991933138, -5e-5,0 );
-        // // c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(1,0,0);
-
-        // p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-
-        // p_Mesh_modifier->SetRadius(0.007);
-        // p_Mesh_modifier->SetUpdateFrequency(0.01/dt);
-        // p_Mesh_modifier->SetmSetUpSolve(1);
-        // p_Mesh_modifier->SetAdaptedElementRecorder(p_simulator->rGetCellPopulation() );
-
-    
-
-        // // boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
-        // // p_condition->SetPointOnPlane2( LowerPlanePoint);
-        // // p_condition->SetNormalToPlane2(-LowerPlaneNormal);
-        // // p_simulator->AddCellPopulationBoundaryCondition(p_condition);
-       
-        // /*
-        // -----------------------------
-        // Membrane forces
-        // ----------------------------
-        // */
-        // boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        // p_simulator->AddForce(p_shear_force);
-
-        // boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        // p_membrane_force->SetMembraneStiffness(pow(10, -7));
-        // p_simulator->AddForce(p_membrane_force);
-
-
-        // /*
-        // -----------------------------
-        // Add the HemeLB Force
-        // ----------------------------
-        // */
-      
-        // double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
-
-        // double InletPressure = P_blood* (1.2); // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
-        // double OutletPressure = P_blood * (0.8);
-
-
-        // // Inlet1
-        // c_vector<double, 3> Point1 = Create_c_vector(0.0022124205632440453, -0.01409714283809368,0);
-        // c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0 );
-        // // Inlet2
-        // c_vector<double, 3> Point2 = Create_c_vector(0.0022124205632440453, 0.0004613958360830862,0);
-        // c_vector<double, 3> PlaneNormal2 = Create_c_vector(1,0,0 );
-        // // Outlet1
-        // c_vector<double, 3> Point3 = Create_c_vector(0.07584026562645844, -0.01409714283809368,0);
-        // c_vector<double, 3> PlaneNormal3 = Create_c_vector(-1,0,0 );
-        // // Outlet2
-        // c_vector<double, 3> Point4 = Create_c_vector(0.07584026562645844, 0.0004613958360830862,0);
-        // c_vector<double, 3> PlaneNormal4 = Create_c_vector(-1,0,0 );
-
-
-        // boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
-        // p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
-        // p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure,  "Inlet");
-        // p_ForceOut->Inlets(PlaneNormal3, Point3, OutletPressure, "Outlet");
-        // p_ForceOut->Inlets(PlaneNormal4, Point4, OutletPressure, "Outlet");
-        // p_ForceOut->SetStartTime(EndTime);
-        // p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
-
-        // p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
-        // p_simulator->AddForce(p_ForceOut);
-
-
-      for (int i =1; i<=50; i++)
-        { 
-            EndTime +=0.0015;
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();
