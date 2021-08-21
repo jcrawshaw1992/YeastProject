@@ -53,7 +53,7 @@ private:
     // Need my own version of "UblasCustomFunctions.hpp", which has c_vector<double, 4>, get James to push this one day 
 
     // c_vector<double, 4> Create_c_vector(double x, double y, double z, double t);
-    bool mOn = 0;
+    // bool mOn = 0;
 
     unsigned mSamplebasementNode;
     double mStrength =1;
