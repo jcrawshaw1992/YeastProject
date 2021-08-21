@@ -126,9 +126,6 @@ public:
         c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.04247433325365091, -5e-5,0 );
         c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(1,0,0);
 
-
-
-
         boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
 
         p_condition->SetPointOnPlane2( LowerPlanePoint);
@@ -169,11 +166,11 @@ public:
 
         // First collapse option 
         // Upstream 
-        c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.034963365591332625, -5e-5,0);
-        c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
-        // Down stream                                                             
-        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.04307533991933138, -5e-5,0 );
-        c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(1,0,0);
+        // c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.034963365591332625, -5e-5,0);
+        // c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
+        // // Down stream                                                             
+        // c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.04307533991933138, -5e-5,0 );
+        // c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(1,0,0);
 
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
 
