@@ -178,10 +178,17 @@ public:
         p_Mesh_modifier->SetmSetUpSolve(1);
 
         // HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-      for (typename AbstractTetrahedralMesh<2,3>::ElementIterator elem_iter = p_simulator->rGetCellPopulation().rGetMesh().GetElementIteratorBegin();
-        elem_iter != p_simulator->rGetCellPopulation().rGetMesh().GetElementIteratorEnd();
-        ++elem_iter)
+      // for (typename AbstractTetrahedralMesh<2,3>::ElementIterator elem_iter = p_simulator->rGetCellPopulation().rGetMesh().GetElementIteratorBegin();
+      //   elem_iter != p_simulator->rGetCellPopulation().rGetMesh().GetElementIteratorEnd();
+      //   ++elem_iter)
+      //   {
+
+         for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_simulator->rGetCellPopulation().rGetMesh().GetElementIteratorBegin();
+         elem_iter != p_simulator->rGetCellPopulation().rGetMesh().GetElementIteratorEnd();
+         ++elem_iter)
         {
+
+
             // I want to exclude the edge region 
             unsigned elem_index = elem_iter->GetIndex();
             p_Mesh_modifier->SetAdaptedElementRecorder(elem_index, 0);          
