@@ -90,13 +90,13 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetOperatingSystem("server");
         TRACE("ExecuteHistoryDependentRemeshing")
         TRACE("ABout to leave test")
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
-        EdgeLength =0.00045;
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
-        EdgeLength =0.0006;
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+        // EdgeLength =0.00045;
+        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
+        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+        // EdgeLength =0.0006;
+        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
+        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
 
         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
         p_simulator->SetDt(dt);
@@ -221,16 +221,16 @@ public:
         c_vector<double, 3> PlaneNormal4 = Create_c_vector(-1,0,0 );
 
 
-        boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
-        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
-        p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure,  "Inlet");
-        p_ForceOut->Inlets(PlaneNormal3, Point3, OutletPressure, "Outlet");
-        p_ForceOut->Inlets(PlaneNormal4, Point4, OutletPressure, "Outlet");
-        p_ForceOut->SetStartTime(EndTime);
-        p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
+        // boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
+        // p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet");
+        // p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure,  "Inlet");
+        // p_ForceOut->Inlets(PlaneNormal3, Point3, OutletPressure, "Outlet");
+        // p_ForceOut->Inlets(PlaneNormal4, Point4, OutletPressure, "Outlet");
+        // p_ForceOut->SetStartTime(EndTime);
+        // p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
 
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
-        p_simulator->AddForce(p_ForceOut);
+        // p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
+        // p_simulator->AddForce(p_ForceOut);
 
 
       for (int i =1; i<=50; i++)

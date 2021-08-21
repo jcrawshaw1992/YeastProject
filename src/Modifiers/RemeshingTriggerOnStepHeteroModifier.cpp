@@ -540,14 +540,16 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
             CellPtr p_cell2 =  p_cell_population->GetCellUsingLocationIndex(node_index2);
             CellPtr p_cell3 =  p_cell_population->GetCellUsingLocationIndex(node_index3);
             PRINT_VARIABLE(AdaptedElementRecorder[elem_index])
-            
+            if ( AdaptedElementRecorder[elem_index] <3 )
+            {
     
                 if ( AdaptedElementRecorder[elem_index] ==0 && p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>() && p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>() && p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
                 {   
-                    AdaptHeteroRegion(p_cell_population, elem_index, 15);
-                    AdaptedElementRecorder[elem_index] =1;
+                    AdaptHeteroRegion(p_cell_population, elem_index, 10);
+                    AdaptedElementRecorder[elem_index] +=1;
                     TRACE("New intiial conditions")
                 }
+            }
         }
 //  if ( p_cell->GetCellData()->GetItem("FixedBoundary") !=2)
     double ShearModulus = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus");
@@ -625,7 +627,6 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetAdaptedEle
             // I want to exclude the edge region 
             unsigned elem_index = elem_iter->GetIndex();
             AdaptedElementRecorder[elem_index]= 0; 
-            TRACE("Set to zero")
         }
 
 
