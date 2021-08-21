@@ -61,9 +61,6 @@ public:
         double EdgeLength =0.00040;
         double FSI_Iterations = 700;//50;
 
-
-
-
         PRINT_2_VARIABLES(Archieved,EndTime )
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
         TRACE("Loaded")
@@ -93,13 +90,13 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetOperatingSystem("server");
         TRACE("ExecuteHistoryDependentRemeshing")
         TRACE("ABout to leave test")
-        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
         EdgeLength =0.00045;
-        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
-        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
-        // EdgeLength =0.0006;
-        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
-        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+        EdgeLength =0.0006;
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
 
         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
         p_simulator->SetDt(dt);
@@ -178,36 +175,7 @@ public:
         p_Mesh_modifier->SetmSetUpSolve(1);
         p_Mesh_modifier->SetAdaptedElementRecorder(p_simulator->rGetCellPopulation() );
 
-        // HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-      // for (typename AbstractTetrahedralMesh<2,3>::ElementIterator elem_iter = p_simulator->rGetCellPopulation().rGetMesh().GetElementIteratorBegin();
-      //   elem_iter != p_simulator->rGetCellPopulation().rGetMesh().GetElementIteratorEnd();
-      //   ++elem_iter)
-      //   {
-
-        // HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&( p_simulator->rGetCellPopulation() ));
-
-        //  for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population.rGetMesh().GetElementIteratorBegin();
-        //  elem_iter != p_cell_population.rGetMesh().rGetMesh().GetElementIteratorEnd();
-        //  ++elem_iter)
-        // {
-
-
-        //     // I want to exclude the edge region 
-        //     unsigned elem_index = elem_iter->GetIndex();
-        //     p_Mesh_modifier->SetAdaptedElementRecorder(elem_index, 0);          
-        // }
-      //   for (typename AbstractCellPopulation<2,3>::Iterator cell_iter = (p_simulator->rGetCellPopulation()).Begin();
-      //   cell_iter != (p_simulator->rGetCellPopulation()).End();
-      //   ++cell_iter)
-      //   {
-      //     cell_iter->GetCellData()->SetItem("IniitialConditionAdjusted",0); 
-
-      //  }
-
-   
-
-
-
+    
 
         // boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
         // p_condition->SetPointOnPlane2( LowerPlanePoint);
