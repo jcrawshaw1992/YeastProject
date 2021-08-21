@@ -612,13 +612,19 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetAdaptedElementRecorder(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
-  AdaptedElementRecorder[1]= 1;
-
-
-
-
-
   
+
+
+    HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+    for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
+        elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
+        ++elem_iter)
+        {
+            // I want to exclude the edge region 
+            unsigned elem_index = elem_iter->GetIndex();
+            AdaptedElementRecorder[elem_index]= 0; 
+        }
+
 
 
 }
