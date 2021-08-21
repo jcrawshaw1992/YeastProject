@@ -106,7 +106,7 @@ public:
         // p_simulator->SetOutputDirectory(output_dir);
         p_simulator->RemoveAllForces();
 
-         for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = (p_simulator->rGetCellPopulation()).Begin();
+        for (typename AbstractCellPopulation<2,3>::Iterator cell_iter = (p_simulator->rGetCellPopulation()).Begin();
         cell_iter != (p_simulator->rGetCellPopulation()).End();
         ++cell_iter)
         {
