@@ -528,7 +528,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
 
     //////////////
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-   for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
+    for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
         elem_iter != p_cell_population->rGetMesh().GetElementIteratorEnd();
         ++elem_iter)
         {
@@ -540,30 +540,13 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
             CellPtr p_cell2 =  p_cell_population->GetCellUsingLocationIndex(node_index2);
             CellPtr p_cell3 =  p_cell_population->GetCellUsingLocationIndex(node_index3);
             
-               if(AdaptedElementRecorder[elem_index] ==0);
-               {
-                if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>() && p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>() && p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
+    
+                if ( AdaptedElementRecorder[elem_index] ==0 && p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>() && p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>() && p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
                 {   
                     AdaptHeteroRegion(p_cell_population, elem_index, 1.5);
                     AdaptedElementRecorder[elem_index] =1;
-                } 
-               }
-    
-               
-
-            }
-     
+                }
         }
-   
-
-
-
-
-
-
-
-
-
 //  if ( p_cell->GetCellData()->GetItem("FixedBoundary") !=2)
     double ShearModulus = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus");
     double AreaDilationModulus = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus");
