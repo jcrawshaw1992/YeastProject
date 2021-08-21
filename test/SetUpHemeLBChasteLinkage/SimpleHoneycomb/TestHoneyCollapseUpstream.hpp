@@ -230,13 +230,13 @@ void TestHemeLBCollapse() throw(Exception)
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
 
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
 
 
       for (int i =1; i<=50; i++)
         { 
-            EndTime +=0.0015;
+            EndTime +=0.5;
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();
