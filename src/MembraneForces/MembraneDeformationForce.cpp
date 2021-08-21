@@ -40,19 +40,6 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
     unsigned node_index2 = elem_iter->GetNodeGlobalIndex(2);
     CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(node_index2);
 
-    if (p_cell0->GetCellData()->GetItem("FixedBoundary") ==2)
-    {
-        TRACE("Fixed boundary condition 0 ")
-    }
-    if (p_cell1->GetCellData()->GetItem("FixedBoundary") ==2)
-    {
-        TRACE("Fixed boundary condition 1 ")
-    }
-    if (p_cell2->GetCellData()->GetItem("FixedBoundary") ==2)
-    {
-        TRACE("Fixed boundary condition 2 ")
-    }
-
     if ( p_cell0->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell1->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell2->GetCellData()->GetItem("FixedBoundary") !=2)
     {
     // if(!(p_cell0->GetMutationState()->IsType<EmptyBasementMatrix>()) &&  !(p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>())   && !(p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()) )
