@@ -623,6 +623,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetAdaptedEle
             // I want to exclude the edge region 
             unsigned elem_index = elem_iter->GetIndex();
             AdaptedElementRecorder[elem_index]= 0; 
+            TRACE("Set to zero")
         }
 
 
