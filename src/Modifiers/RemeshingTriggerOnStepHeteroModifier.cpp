@@ -627,9 +627,17 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetAdaptedElementRecorder(unsigned Element, bool Adapted)
+void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetAdaptedElementRecorder(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
 {
-  AdaptedElementRecorder[Element]= Adapted;
+  AdaptedElementRecorder[1]= 1;
+
+
+
+
+
+  
+
+
 }
 
 

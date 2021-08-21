@@ -176,6 +176,7 @@ public:
         p_Mesh_modifier->SetRadius(0.007);
         p_Mesh_modifier->SetUpdateFrequency(0.01/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
+        p_Mesh_modifier->SetAdaptedElementRecorder(p_simulator->rGetCellPopulation() );
 
         // HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
       // for (typename AbstractTetrahedralMesh<2,3>::ElementIterator elem_iter = p_simulator->rGetCellPopulation().rGetMesh().GetElementIteratorBegin();
@@ -183,18 +184,18 @@ public:
       //   ++elem_iter)
       //   {
 
-        HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&( p_simulator->rGetCellPopulation() ));
+        // HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&( p_simulator->rGetCellPopulation() ));
 
-         for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population.rGetMesh().GetElementIteratorBegin();
-         elem_iter != p_cell_population.rGetMesh().rGetMesh().GetElementIteratorEnd();
-         ++elem_iter)
-        {
+        //  for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population.rGetMesh().GetElementIteratorBegin();
+        //  elem_iter != p_cell_population.rGetMesh().rGetMesh().GetElementIteratorEnd();
+        //  ++elem_iter)
+        // {
 
 
-            // I want to exclude the edge region 
-            unsigned elem_index = elem_iter->GetIndex();
-            p_Mesh_modifier->SetAdaptedElementRecorder(elem_index, 0);          
-        }
+        //     // I want to exclude the edge region 
+        //     unsigned elem_index = elem_iter->GetIndex();
+        //     p_Mesh_modifier->SetAdaptedElementRecorder(elem_index, 0);          
+        // }
       //   for (typename AbstractCellPopulation<2,3>::Iterator cell_iter = (p_simulator->rGetCellPopulation()).Begin();
       //   cell_iter != (p_simulator->rGetCellPopulation()).End();
       //   ++cell_iter)

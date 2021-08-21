@@ -205,7 +205,7 @@ public:
     void SetmSetUpSolve(double SetUpSolve);
 
     std::map<unsigned, bool > AdaptedElementRecorder;
-    void SetAdaptedElementRecorder(unsigned Element, bool Adapted);
+    void SetAdaptedElementRecorder(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
 
 
 
