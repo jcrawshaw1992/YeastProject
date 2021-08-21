@@ -74,7 +74,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(Ab
         {
                 cell_iter->GetCellData()->SetItem("CollpasingRegion", 0);
                 cell_iter->GetCellData()->SetItem("Counter", 0);
-                cell_iter->GetCellData()->SetItem("FixedBoundary", 0);
+                // cell_iter->GetCellData()->SetItem("FixedBoundary", 0);
         }
         mSetUpSolve = 0;
 
@@ -527,7 +527,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
     }
 
     //////////////
-    if (mOn ==1)
+    if (mOn1 ==1)
     {
         HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
         for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = p_cell_population->rGetMesh().GetElementIteratorBegin();
@@ -552,11 +552,11 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
                 
             }
           }
-          mOn =0;
+          mOn1 =0;
 
     }
 
-
+//  if ( p_cell->GetCellData()->GetItem("FixedBoundary") !=2)
     double ShearModulus = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus");
     double AreaDilationModulus = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus");
     double AreaConstant = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant"); 

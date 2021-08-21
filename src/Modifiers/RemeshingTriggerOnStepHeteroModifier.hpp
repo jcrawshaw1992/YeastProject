@@ -67,6 +67,8 @@ private:
     bool mRemeshing = 0;
     int mStepsSinceLastRemesh = 1;
     double mRadius =10;
+
+    bool mOn1=1;
     
 
     
