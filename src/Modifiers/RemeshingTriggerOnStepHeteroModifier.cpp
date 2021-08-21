@@ -540,13 +540,16 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
             CellPtr p_cell2 =  p_cell_population->GetCellUsingLocationIndex(node_index2);
             CellPtr p_cell3 =  p_cell_population->GetCellUsingLocationIndex(node_index3);
             
-            if (p_cell1->GetCellData()->GetItem("IniitialConditionAdjusted") ==0 && p_cell2->GetCellData()->GetItem("IniitialConditionAdjusted") ==0  && p_cell3->GetCellData()->GetItem("IniitialConditionAdjusted") ==0 )
-            {
+               if(AdaptedElementRecorder[elem_index] ==0);
+               {
                 if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>() && p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>() && p_cell3->GetMutationState()->IsType<EmptyBasementMatrix>() )
                 {   
                     AdaptHeteroRegion(p_cell_population, elem_index, 1.5);
-                    cell_iter->GetCellData()->SetItem("IniitialConditionAdjusted",1); 
+                    AdaptedElementRecorder[elem_index] =1;
                 } 
+               }
+    
+               
 
             }
      
@@ -623,6 +626,11 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
 
 
 
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetAdaptedElementRecorder(unsigned Element, bool Adapted)
+{
+  AdaptedElementRecorder[Element]= Adapted;
+}
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>

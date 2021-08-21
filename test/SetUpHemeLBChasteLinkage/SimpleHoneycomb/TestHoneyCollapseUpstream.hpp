@@ -106,16 +106,7 @@ public:
         // p_simulator->SetOutputDirectory(output_dir);
         p_simulator->RemoveAllForces();
 
-        for (typename AbstractCellPopulation<2,3>::Iterator cell_iter = (p_simulator->rGetCellPopulation()).Begin();
-        cell_iter != (p_simulator->rGetCellPopulation()).End();
-        ++cell_iter)
-        {
-          cell_iter->GetCellData()->SetItem("IniitialConditionAdjusted",0); 
-
-       }
-
-
-           /*
+        /*
         -----------------------------
         Boundary conditions
         ----------------------------
@@ -185,6 +176,29 @@ public:
         p_Mesh_modifier->SetRadius(0.007);
         p_Mesh_modifier->SetUpdateFrequency(0.01/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
+
+        // std::map<unsigned, bool > AdaptedElementRecorder;
+
+        // HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+      for (typename AbstractTetrahedralMesh<2,3>::ElementIterator elem_iter = (p_simulator->rGetCellPopulation()).rGetMesh().GetElementIteratorBegin();
+        elem_iter != (p_simulator->rGetCellPopulation()).rGetMesh().GetElementIteratorEnd();
+        ++elem_iter)
+        {
+            // I want to exclude the edge region 
+            unsigned elem_index = elem_iter->GetIndex();
+            p_Mesh_modifier->SetAdaptedElementRecorder(elem_index, 0);          
+        }
+      //   for (typename AbstractCellPopulation<2,3>::Iterator cell_iter = (p_simulator->rGetCellPopulation()).Begin();
+      //   cell_iter != (p_simulator->rGetCellPopulation()).End();
+      //   ++cell_iter)
+      //   {
+      //     cell_iter->GetCellData()->SetItem("IniitialConditionAdjusted",0); 
+
+      //  }
+
+   
+
+
 
 
         // boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
