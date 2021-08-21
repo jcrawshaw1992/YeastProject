@@ -528,8 +528,8 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
 
     //////////////
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-    for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = p_cell_population->rGetCellPopulation()).Begin();
-        cell_iter != p_cell_population->rGetCellPopulation()).End();
+    for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = p_cell_population->rGetCellPopulation().Begin();
+        cell_iter != p_cell_population->rGetCellPopulation().End();
         ++cell_iter)
       {
           if( cell_iter->GetCellData()->GetItem("WallShearStressExtremes") == -1 &&  cell_iter->GetCellData()->GetItem("IniitialConditionAdjusted") == 0  )
