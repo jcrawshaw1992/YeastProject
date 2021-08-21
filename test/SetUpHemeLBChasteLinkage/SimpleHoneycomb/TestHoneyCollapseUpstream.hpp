@@ -183,8 +183,10 @@ public:
       //   ++elem_iter)
       //   {
 
-         for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_simulator->rGetCellPopulation().rGetMesh().GetElementIteratorBegin();
-         elem_iter != p_simulator->rGetCellPopulation().rGetMesh().GetElementIteratorEnd();
+        HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&( p_simulator->rGetCellPopulation() ));
+
+         for (typename AbstractTetrahedralMesh<2, 3>::ElementIterator elem_iter = p_cell_population.rGetMesh().GetElementIteratorBegin();
+         elem_iter != p_cell_population.rGetMesh().rGetMesh().GetElementIteratorEnd();
          ++elem_iter)
         {
 
