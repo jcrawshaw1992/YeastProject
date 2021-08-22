@@ -985,6 +985,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Network(std::string Network)
     else if(Network == "Plexus" || Network == "plexus"||Network == "P" ||Network == "p" )
     {
         mRegionOfForceCollection = 0.0007;
+        mMinSS =  5.69087e-06;
+        mMaxSS =  0.0016764; 
     }
     
 }

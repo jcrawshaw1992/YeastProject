@@ -120,11 +120,6 @@ public:
         p_membrane_force->SetMembraneStiffness(pow(10, -7));
         p_membrane_force->SetCollapseType(1);
         p_simulator->AddForce(p_membrane_force);
-
-
-
-
-
         /*
         -----------------------------
         Add the HemeLB Force
@@ -173,21 +168,22 @@ public:
         p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure*0.98, "Outlet");
         p_ForceOut->Inlets(PlaneNormal7, Point7, OutletPressure*0.95, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
+        p_ForceOut->Network("Plexus");
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
         p_ForceOut->SetCollapseType(1);
         p_simulator->AddForce(p_ForceOut);
 
 
-      // for (int i =1; i<=50; i++)
-      //   { 
+      for (int i =1; i<=50; i++)
+        { 
     
-            EndTime +=0.005;
+            EndTime +=0.5;
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-        // }
+        }
 
     }
 
