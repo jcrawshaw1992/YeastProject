@@ -522,7 +522,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
                     TRACE("New intiial conditions")
                 }
             }
-            else
+            else if (mCollapseType == 2)
             {
 
                 if (p_cell1->GetCellData()->GetItem("WallShearStressExtremes") == -1 || p_cell2->GetCellData()->GetItem("WallShearStressExtremes") == -1 || p_cell3->GetCellData()->GetItem("WallShearStressExtremes") == -1)

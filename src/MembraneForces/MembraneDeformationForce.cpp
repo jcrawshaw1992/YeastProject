@@ -246,6 +246,7 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
         Node<3>* pNode1 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(1));
         Node<3>* pNode2 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(2));
         pNode0->ClearAppliedForce();  pNode1->ClearAppliedForce();  pNode2->ClearAppliedForce(); 
+        p_cell->GetCellData()->SetItem("MembraneForce", -10000);
     }
         
         // pNode1->AddAppliedForceContribution(ForceOnNode[1]);
