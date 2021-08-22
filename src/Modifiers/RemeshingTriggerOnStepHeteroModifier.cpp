@@ -549,6 +549,15 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
                     AdaptedElementRecorder[elem_index] +=1;
                     TRACE("New intiial conditions")
                 }
+
+                if (p_cell1->GetCellData()->GetItem("WallShearStressExtremes") == -1  ||  p_cell2->GetCellData()->GetItem("WallShearStressExtremes") == -1   ||  p_cell3->GetCellData()->GetItem("WallShearStressExtremes") == -1   )
+                {   
+                    AdaptHeteroRegion(p_cell_population, elem_index, 2);
+                    AdaptedElementRecorder[elem_index] +=1;
+                    TRACE("New intiial conditions")
+                }
+
+
             }
         }
 //  if ( p_cell->GetCellData()->GetItem("FixedBoundary") !=2)
