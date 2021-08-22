@@ -96,6 +96,7 @@ public:
         p_Mesh_modifier->SetRadius(0.006);
         p_Mesh_modifier->SetUpdateFrequency(0.1/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
+        p_Mesh_modifier->SetCollapseType(1);
 
 
         boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
@@ -112,11 +113,16 @@ public:
         ----------------------------
         */
         boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
+        p_shear_force->SetCollapseType(1);
         p_simulator->AddForce(p_shear_force);
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
         p_membrane_force->SetMembraneStiffness(pow(10, -7));
+        p_membrane_force->SetCollapseType(1);
         p_simulator->AddForce(p_membrane_force);
+
+
+
 
 
         /*
@@ -169,6 +175,7 @@ public:
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
         p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetCollapseType(1);
         p_simulator->AddForce(p_ForceOut);
 
 

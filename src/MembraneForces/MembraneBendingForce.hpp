@@ -52,6 +52,10 @@ public:
 
     void SetMembraneStiffness(double membraneStiffnes);
 
+      void SetCollapseType(double CollapseType);
+    double mCollapseType =1;
+
+
     // double GetMembraneStiffness() const;
 
     // double GetOriginalAngle(std::pair<Node<3>*, Node<3>*> edge);

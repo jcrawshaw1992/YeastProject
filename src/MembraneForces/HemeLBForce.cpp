@@ -70,7 +70,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
   
          CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
         // if (p_cell->GetMutationState()->IsType<EmptyBasementMatrix> ())
-        if ( p_cell->GetCellData()->GetItem("FixedBoundary") !=2)
+        if ( p_cell->GetCellData()->GetItem("FixedBoundary") !=2  && mCollapseType == 2)
         {
             c_vector<double, 3> NormalVector = Create_c_vector(0,0,0);
             std::set<unsigned>& containing_elements = pNode->rGetContainingElementIndices();
@@ -175,6 +175,15 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
 
     // double P_tissue = 0.001466542;
 
+}
+
+mCollapseType
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetCollapseType(double CollapseType)
+{
+    mCollapseType = CollapseType;
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>

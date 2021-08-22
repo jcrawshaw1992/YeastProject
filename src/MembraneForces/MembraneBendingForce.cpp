@@ -106,6 +106,12 @@ bool MembraneBendingForce::CalculateElementNormals(MutableMesh<2, 3>& rMesh, std
     return false;
 }
 
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void MembraneBendingForce<ELEMENT_DIM, SPACE_DIM>::SetCollapseType(double CollapseType)
+{
+    mCollapseType = CollapseType;
+}
+
 
 
 void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCellPopulation)
@@ -123,7 +129,6 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         cell_iter->GetCellData()->SetItem("BendingForce", 0);
 
     }
-
 
     // Iterate over all springs and add force contributions
     for (MeshBasedCellPopulation<2,3>::SpringIterator spring_iterator = p_cell_population->SpringsBegin();
@@ -162,7 +167,7 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex(node_index3); // MembraneStiffness += p_cell3->GetCellData()->GetItem("BendingConstant");
         CellPtr p_cell4 = p_cell_population->GetCellUsingLocationIndex(node_index4);  //MembraneStiffness += p_cell4->GetCellData()->GetItem("BendingConstant");
  
-    if ( p_cell3->GetCellData()->GetItem("FixedBoundary") ==2 && p_cell1->GetCellData()->GetItem("FixedBoundary") ==2 && p_cell2->GetCellData()->GetItem("FixedBoundary") ==2 && p_cell4->GetCellData()->GetItem("FixedBoundary") ==2)
+    if (  mCollapseType == 2 &&  p_cell3->GetCellData()->GetItem("FixedBoundary") ==2 && p_cell1->GetCellData()->GetItem("FixedBoundary") ==2 && p_cell2->GetCellData()->GetItem("FixedBoundary") ==2 && p_cell4->GetCellData()->GetItem("FixedBoundary") ==2)
       {
     //  if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix> () && p_cell2->GetMutationState()->IsType<EmptyBasementMatrix> ()  && p_cell3->GetMutationState()->IsType<EmptyBasementMatrix> () && p_cell4->GetMutationState()->IsType<EmptyBasementMatrix> () )
     //     {

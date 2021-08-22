@@ -208,6 +208,9 @@ public:
     void SetAdaptedElementRecorder(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
 
 
+    void SetCollapseType(double CollapseType);
+    double mCollapseType=1;
+
 
 
     

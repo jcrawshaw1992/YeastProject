@@ -239,6 +239,14 @@ public:
     void Inlets(c_vector<double, 3> PlaneNormal, c_vector<double, 3> Point, double pressure, std::string FlowDirection);
     void CollapsedRegions(c_vector<double, 3> UpperPlaneNormal, c_vector<double, 3> UpperPoint, c_vector<double, 3> LowerPlaneNormal, c_vector<double, 3> LowerPoint);
 
+
+
+    void SetCollapseType(double CollapseType);
+    double mCollapseType =1;
+
+
+
+
     void SetFluidSolidIterations(double Iterations);
     std::vector<std::vector<c_vector<double, 3>>> mIolets; // Each vector has one boundary, this is a vecotr of two vectors, none being the normal and the other is the point defining the plane
 

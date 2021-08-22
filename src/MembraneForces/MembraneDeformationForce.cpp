@@ -14,6 +14,13 @@ MembraneDeformationForce::MembraneDeformationForce()
 {
 }
 
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void MembraneDeformationForce<ELEMENT_DIM, SPACE_DIM>::SetCollapseType(double CollapseType)
+{
+    mCollapseType = CollapseType;
+}
+
+
 void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
    HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
@@ -40,7 +47,7 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
     unsigned node_index2 = elem_iter->GetNodeGlobalIndex(2);
     CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(node_index2);
 
-    if ( p_cell0->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell1->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell2->GetCellData()->GetItem("FixedBoundary") !=2)
+    if ( mCollapseType == 2 && p_cell0->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell1->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell2->GetCellData()->GetItem("FixedBoundary") !=2)
     {
     // if(!(p_cell0->GetMutationState()->IsType<EmptyBasementMatrix>()) &&  !(p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>())   && !(p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()) )
     // {
