@@ -55,11 +55,11 @@ public:
 
  
         double EndTime = 11.035;
-        double SamplingStep = 100;
-        double dt = 0.0001; // 0.0002;
+        double SamplingStep = 50;
+        double dt = 0.000001; // 0.0002;
         double RemeshingTime = 700;//50;
         double EdgeLength =0.00040;
-        double FSI_Iterations = 700;//50;
+        double FSI_Iterations = 10001001;///700;//50;
 
         PRINT_2_VARIABLES(Archieved,EndTime )
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
@@ -114,7 +114,7 @@ public:
            // First collapse option 
         // Upstream 
         
-        c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.03557311260368838 , -5e-5,-0.0013416773024934928);
+        c_vector<double, 3> UpperPlanePoint = Create_c_vector(0.03557311260368838 , -5e-5,0);
         c_vector<double, 3> UpperPlaneNormal = Create_c_vector(1,0,0);
         // Down stream                                                             
         c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.04247433325365091, -5e-5,0 );
@@ -165,11 +165,11 @@ public:
         // c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.04307533991933138, -5e-5,0 );
         // c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(1,0,0);
 
-        // p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
+        p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
 
         p_Mesh_modifier->SetRadius(0.007);
         p_Mesh_modifier->SetUpdateFrequency(0.01/dt);
-        // p_Mesh_modifier->SetmSetUpSolve(1);
+        // p_Mesh_modifier->SetmSetUpSolve(0);
         p_Mesh_modifier->SetAdaptedElementRecorder(p_simulator->rGetCellPopulation() );
 
   
