@@ -140,11 +140,11 @@ public:
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
 
         double InletPressure = P_blood; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
-        double OutletPressure = P_blood * (0.98);
+        double OutletPressure = P_blood * (0.9);
 
         boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
         p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure*1.01, "Inlet"); // Issues here 
-        p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure, "Inlet"); //FIne
+        p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure*1.005, "Inlet"); //FIne
         p_ForceOut->Inlets(PlaneNormal3, Point3, InletPressure, "Inlet");// Issues here 
         p_ForceOut->Inlets(PlaneNormal4, Point4, InletPressure, "Inlet");// Issues here 
         p_ForceOut->Inlets(PlaneNormal5, Point5, OutletPressure, "Outlet");

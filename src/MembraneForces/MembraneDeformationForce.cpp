@@ -47,7 +47,7 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
     unsigned node_index2 = elem_iter->GetNodeGlobalIndex(2);
     CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(node_index2);
 
-    if ( mCollapseType == 2 && p_cell0->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell1->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell2->GetCellData()->GetItem("FixedBoundary") !=2)
+    if ( mCollapseType == 1 && p_cell0->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell1->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell2->GetCellData()->GetItem("FixedBoundary") !=2)
     {
     // if(!(p_cell0->GetMutationState()->IsType<EmptyBasementMatrix>()) &&  !(p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>())   && !(p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()) )
     // {
