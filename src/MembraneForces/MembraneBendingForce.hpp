@@ -52,7 +52,7 @@ public:
 
     void SetMembraneStiffness(double membraneStiffnes);
 
-      void SetCollapseType(double CollapseType);
+    void SetCollapseType(double CollapseType);
     double mCollapseType =1;
 
 

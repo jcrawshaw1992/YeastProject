@@ -177,7 +177,6 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
 
 }
 
-mCollapseType
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>

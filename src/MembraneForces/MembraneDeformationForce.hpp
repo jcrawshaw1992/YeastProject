@@ -89,6 +89,9 @@ public:
     void SetElasticShearModulus(double ElasticShearModulus);
     void SetMembraneStiffness(double MembraneSurface);
 
+    void SetCollapseType(double CollapseType);
+    double mCollapseType =1;
+
     
 
 /*
