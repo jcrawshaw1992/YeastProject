@@ -55,7 +55,7 @@ public:
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
 
         std::string Archieved = "SimpleHemeLBPlexus2/GrowingToEqui3/";//std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
-        std::string output_dir = "FSISimulations/Plexus/EquiWithHemeLB2/";
+        std::string output_dir = "FSISimulations/Plexus/EquiWithHemeLB3/";
         double EndTime = 10;
         double SamplingStep = 50;
         double dt = 0.001;
@@ -140,10 +140,10 @@ public:
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
 
         double InletPressure = P_blood; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
-        double OutletPressure = P_blood * (0.98);
+        double OutletPressure = P_blood * (0.8);
 
         boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
-        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet"); // Issues here 
+        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure*1.1, "Inlet"); // Issues here 
         p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure, "Inlet"); //FIne
         p_ForceOut->Inlets(PlaneNormal3, Point3, InletPressure, "Inlet");// Issues here 
         p_ForceOut->Inlets(PlaneNormal4, Point4, InletPressure, "Inlet");// Issues here 
