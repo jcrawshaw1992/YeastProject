@@ -47,7 +47,194 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
     unsigned node_index2 = elem_iter->GetNodeGlobalIndex(2);
     CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(node_index2);
 
-    if ( mCollapseType == 1 && p_cell0->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell1->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell2->GetCellData()->GetItem("FixedBoundary") !=2)
+    if ( mCollapseType == 1)
+    {
+
+            // if(!(p_cell0->GetMutationState()->IsType<EmptyBasementMatrix>()) &&  !(p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>())   && !(p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()) )
+         // {
+        // THis will be needed later -- going to need to figure out how to stream line this later 
+        double Kalpha = 0;
+        double KA = 0;
+        double KS = 0;
+        // bool Curvature = 0;
+        for (int i = 0; i < 3; i++)
+        {
+            unsigned node_index = elem_iter->GetNodeGlobalIndex(i);
+            CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
+
+            Kalpha +=p_cell->GetCellData()->GetItem("AreaDilationModulus");
+            KS +=p_cell->GetCellData()->GetItem("ShearModulus");
+            KA += p_cell->GetCellData()->GetItem("AreaConstant"); 
+
+            // if (p_cell->GetCellData()->GetItem("Curvature") ==2)
+            // {
+            //     Curvature =1;
+            // }
+        }
+        Kalpha/=3;
+        KA/=3;
+        KS/=3;
+        // PRINT_3_VARIABLES(Kalpha,KA,KS ) 
+
+        unsigned elem_index = elem_iter->GetIndex();
+
+        Node<3>* pNode0 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(0));
+        Node<3>* pNode1 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(1));
+        Node<3>* pNode2 = p_cell_population->rGetMesh().GetNode(elem_iter->GetNodeGlobalIndex(2));
+
+        // c_vector<double, 3> Vector1 = pNode1->rGetLocation();
+        // c_vector<double, 3> Vector2 = pNode2->rGetLocation();
+        // c_vector<double, 3> Vector0 = pNode0->rGetLocation();
+        // PRINT_VECTOR(Vector0 );
+
+        c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
+        c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 33);
+        
+
+
+        unsigned node_index;
+        // CellPtr p_cell;
+
+        // Get side lengths and angle to create an equal triangle at the origin
+        double a = norm_2(vector_12); // Lenght a -> edge connecting P0 and P1
+        double b = norm_2(vector_13); // Lenght b -> edge connecting P0 and P2
+        double alpha = acos(inner_prod(vector_12, vector_13) / (a * b));
+
+        // This will create an equal triangle at the origin
+        c_vector<double, 2> x1 = Create_c_vector(0, 0);
+        c_vector<double, 2> x2 = Create_c_vector(a, 0);
+        c_vector<double, 2> x3 = Create_c_vector(b * cos(alpha), b * sin(alpha));
+
+        // Get the original triangle
+        c_vector<c_vector<double, 2>, 3> InitialVectors = p_cell_population->GetInitalVectors(elem_index);
+
+        //Displacement vectors.
+        c_vector<double, 2> V1 = x1 - InitialVectors[0];
+        c_vector<double, 2> V2 = x2 - InitialVectors[1];
+        c_vector<double, 2> V3 = x3 - InitialVectors[2];
+
+        // Get the shape function coefficents for this element
+        c_vector<c_vector<double, 3>, 2>  ShapeFunction = p_cell_population->GetInitalShapeFunction(elem_index);
+        c_vector<double, 3> a_i = ShapeFunction[0];
+        c_vector<double, 3> b_i = ShapeFunction[1];
+
+        double Area0 = p_cell_population->GetOriginalArea(elem_index);
+
+        // if (Curvature)
+        // {
+        //     Area0/=10;
+        //     a_i/=10;
+        //     b_i/=10;
+        // }
+
+        // Deformation tensor
+        double Dxx = 1 + a_i[0] * V1[0] + a_i[1] * V2[0] + a_i[2] * V3[0];
+        double Dxy = b_i[0] * V1[0] + b_i[1] * V2[0] + b_i[2] * V3[0];
+        double Dyx = a_i[0] * V1[1] + a_i[1] * V2[1] + a_i[2] * V3[1];
+        double Dyy = 1 + b_i[0] * V1[1] + b_i[1] * V2[1] + b_i[2] * V3[1];
+
+        c_vector<c_vector<double, 2>, 2> G;
+
+        // G =DTD  -- Caughy green 
+        G[0][0] = Dxx * Dxx + Dyx * Dyx;
+        G[0][1] = Dxx * Dxy + Dyx * Dyy;
+        G[1][0] = Dxx * Dxy + Dyy * Dyx;
+        G[1][1] = Dxy * Dxy + Dyy * Dyy;
+
+        // Strain invarients 
+        double I1 = tr(G) - 2;
+        double I2 = det(G) - 1;
+
+
+        c_vector<c_vector<double, 3>, 3> RotatedForceOnNode;
+        // c_vector<double, 3> RotatedMag;
+    
+        double dedvX;
+        double dedvY;
+
+        for (int i = 0; i < 3; i++)
+        {
+            dedvX = KS * (I1 + 1) * (Dxx * a_i[i] + Dxy * b_i[i]) + (-KS + Kalpha * I2) * ((Dxx * Dyy * Dyy - Dxy * Dyx * Dyy) * a_i[i] + (Dxy * Dyx * Dyx - Dxx * Dyx * Dyy) * b_i[i]);
+            dedvY = KS * (I1 + 1) * (Dyx * a_i[i] + Dyy * b_i[i]) + (-KS + Kalpha * I2) * ((Dxx * Dxx * Dyy - Dxx * Dxy * Dyx) * b_i[i] + (Dyx * Dxy * Dxy - Dxx * Dxy * Dyy) * a_i[i]);
+            RotatedForceOnNode[i] = -Area0 / 3 * Create_c_vector(dedvX, dedvY, 0);
+            // RotatedMag[i] = norm_2(RotatedForceOnNode[i]);
+            // This is the force for each node  for the triangle situated at the origin
+            // Matrix with each row containing the force on the corresponding element
+        }
+
+        c_vector<c_vector<double, 3>, 3> X;
+        c_vector<c_vector<double, 3>, 3> ForceOnNode;
+
+        X[0] = Create_c_vector(a, 0, 0);
+        X[1] = Create_c_vector(b * cos(alpha), b * sin(alpha), 0);
+        X[2] = Create_c_vector(0, 0, 1);
+        X = MatrixTranspose(X);
+
+        // Rotate the force to the original configuretion
+
+        c_vector<double, 3> F0_rp = MatrixMultiplication(Inverse(X), RotatedForceOnNode[0]);
+        c_vector<double, 3> F1_rp = MatrixMultiplication(Inverse(X), RotatedForceOnNode[1]);
+        c_vector<double, 3> F2_rp = MatrixMultiplication(Inverse(X), RotatedForceOnNode[2]);
+
+        c_vector<c_vector<double, 3>, 3> Ident = MatrixMultiplication(Inverse(X), X);
+        ForceOnNode[0] = F0_rp[0] * vector_12 + F0_rp[1] * vector_13 + F0_rp[2] * X[2];
+        ForceOnNode[1] = F1_rp[0] * vector_12 + F1_rp[1] * vector_13 + F1_rp[2] * X[2];
+        ForceOnNode[2] = F2_rp[0] * vector_12 + F2_rp[1] * vector_13 + F2_rp[2] * X[2];
+        
+
+        // Area force
+        
+        c_vector<double, 3> vector_A = pNode0->rGetLocation() - pNode2->rGetLocation();
+        c_vector<double, 3> vector_B = pNode1->rGetLocation() - pNode2->rGetLocation();
+
+        // Calculate the normal, unit normal and |normal|.
+        c_vector<double, 3> normal = VectorProduct(vector_A, vector_B);
+        double NormNormal = norm_2(normal);
+        c_vector<double, 3> UnitNormal = normal / NormNormal;
+      
+        // Calculate the area of the element
+        double Area = 0.5 * NormNormal;
+        double AreaDiff = (Area - Area0)/Area0;
+        
+          // Force on Node 0
+        c_vector<double, 3> vector_12t = pNode2->rGetLocation() - pNode1->rGetLocation();
+        ForceOnNode[0] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, vector_12t);
+        // Force on Node 1
+        c_vector<double, 3> vector_20 = pNode0->rGetLocation() - pNode2->rGetLocation();
+        ForceOnNode[1] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, vector_20);
+        
+        // Force on Node 2
+        c_vector<double, 3> vector_01 = pNode1->rGetLocation() - pNode0->rGetLocation();
+        ForceOnNode[2] -= 0.5 * KA * AreaDiff * VectorProduct(UnitNormal, vector_01);
+
+        double CellArea;
+        double currentForce;
+
+
+        for (int i = 0; i < 3; i++)
+        {
+            node_index = elem_iter->GetNodeGlobalIndex(i);
+            CellArea= rCellPopulation.GetVolumeOfCell(rCellPopulation.GetCellUsingLocationIndex(node_index));
+            ForceOnNode[i] /= CellArea;
+            MembraneForceMap[node_index] += ForceOnNode[i];  
+            
+            CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
+
+            currentForce = p_cell->GetCellData()->GetItem("MembraneForce");
+            p_cell->GetCellData()->SetItem("MembraneForce",currentForce + norm_2(ForceOnNode[i]));
+        }
+        if (norm_2(ForceOnNode[0])>200 || norm_2(ForceOnNode[1])>200|| norm_2(ForceOnNode[2])>200)
+        {
+
+            PRINT_4_VARIABLES(elem_index, norm_2(ForceOnNode[0]), norm_2(ForceOnNode[1]), norm_2(ForceOnNode[2]) )
+        }
+
+        pNode0->AddAppliedForceContribution(ForceOnNode[0]);   
+        pNode1->AddAppliedForceContribution(ForceOnNode[1]);
+        pNode2->AddAppliedForceContribution(ForceOnNode[2]);
+
+    }
+    else if ( mCollapseType == 2 && p_cell0->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell1->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell2->GetCellData()->GetItem("FixedBoundary") !=2)
     {
     // if(!(p_cell0->GetMutationState()->IsType<EmptyBasementMatrix>()) &&  !(p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>())   && !(p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()) )
     // {
