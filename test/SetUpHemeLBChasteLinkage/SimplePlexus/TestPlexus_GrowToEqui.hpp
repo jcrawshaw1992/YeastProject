@@ -152,7 +152,7 @@ public:
         p_ForceOut->Inlets(PlaneNormal7, Point7, OutletPressure*0.95, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
 
 
