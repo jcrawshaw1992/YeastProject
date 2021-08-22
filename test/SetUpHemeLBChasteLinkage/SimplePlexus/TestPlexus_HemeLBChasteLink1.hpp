@@ -179,15 +179,15 @@ public:
         p_simulator->AddForce(p_ForceOut);
 
 
-      for (int i =1; i<=50; i++)
-        { 
+      // for (int i =1; i<=50; i++)
+      //   { 
     
-            EndTime +=0.5;
+            EndTime +=0.005;
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-        }
+        // }
 
     }
 

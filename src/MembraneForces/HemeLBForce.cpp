@@ -979,6 +979,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Network(std::string Network)
     if (Network == "Honeycomb" || Network == "Honycomb"||Network == "Honey" ||Network == "H" )
     {
         mRegionOfForceCollection = 0.001;
+        mMinSS =  0.000424725;
+        mMaxSS = 0.00211783; 
     }   
     else if(Network == "Plexus" || Network == "plexus"||Network == "P" ||Network == "p" )
     {
@@ -1061,8 +1063,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
         // assert(mMaxSS== 0.00258637);
         // PRINT_2_VARIABLES(mMinSS ,mMaxSS )
 
-        // if (mCenterlinesNumber >=2)
-            //  {
+        if (mCenterlinesNumber >=2)
+             {
                 // PRINT_3_VARIABLES(mMinSS,  0.3*(mMaxSS- mMinSS) ,mMaxSS )
                 if ( norm_2(shear_stress)>= 1.1*mMaxSS )
                 {
@@ -1086,6 +1088,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
                          assert(norm_2(shear_stress) > 0.9*mMinSS );
 
                 }
+             }
             
 	}
 
@@ -1104,6 +1107,14 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 
 
 }
+
+
+template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
+void  HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetCenterlinesNumber(double CenterlinesNumber)
+{
+    mCenterlinesNumber = CenterlinesNumber;
+}
+
 
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>

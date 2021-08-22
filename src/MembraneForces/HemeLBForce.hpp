@@ -154,7 +154,7 @@ public:
     void WriteHemeLBBashScript();
     void CopyFile(std::string InputDirectory, std::string OutputDirectory);
     void UpdateCurrentyFlowVtuCount();
-    int mCenterlinesNumber =28;
+    int mCenterlinesNumber =0;
     bool mRunHemeLB = 1;
     bool mSetupHemeLB = 1;
     double mConstantPressure =0;
@@ -226,13 +226,15 @@ public:
   
 
 
-   void  Network(std::string Network);
+   void Network(std::string Network);
    std::string  mNetwork = "Honeycomb";
+
+
    double mMinSS =  0.000424725;
    double mMaxSS = 0.00211783; 
 
    double mRegionOfForceCollection = 0.0015;
-
+   void  SetCenterlinesNumber(double CenterlinesNumber);
 
 
     // Inlets and out lets -- this will let me write the pr2 file 
