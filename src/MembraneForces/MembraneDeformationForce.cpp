@@ -14,8 +14,8 @@ MembraneDeformationForce::MembraneDeformationForce()
 {
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void MembraneDeformationForce<ELEMENT_DIM, SPACE_DIM>::SetCollapseType(double CollapseType)
+
+void MembraneDeformationForce::SetCollapseType(double CollapseType)
 {
     mCollapseType = CollapseType;
 }

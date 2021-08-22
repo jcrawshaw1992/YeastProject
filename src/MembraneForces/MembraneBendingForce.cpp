@@ -106,8 +106,7 @@ bool MembraneBendingForce::CalculateElementNormals(MutableMesh<2, 3>& rMesh, std
     return false;
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void MembraneBendingForce<ELEMENT_DIM, SPACE_DIM>::SetCollapseType(double CollapseType)
+void MembraneBendingForce::SetCollapseType(double CollapseType)
 {
     mCollapseType = CollapseType;
 }
