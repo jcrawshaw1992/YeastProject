@@ -52,7 +52,7 @@ public:
         std::string output_dir = "FSISimulations/Plexus/Collapse1/";
         double EndTime = 10;
         double SamplingStep = 250;
-        double dt = 0.0001;
+        double dt = 0.001;
         double RemeshingTime = 500;
         double EdgeLength =0.0005;
         double FSI_Iterations = 500;
@@ -182,7 +182,7 @@ public:
       for (int i =1; i<=50; i++)
         { 
     
-            EndTime +=1;
+            EndTime +=0.5;
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();
