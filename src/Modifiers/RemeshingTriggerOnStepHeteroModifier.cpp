@@ -216,18 +216,22 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
         }
     }
 
-    HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-    for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = p_cell_population->Begin();
-         cell_iter != p_cell_population->End();
-         ++cell_iter)
-    {
-        if (cell_iter->GetCellData()->GetItem("FixedBoundary") == 2)
+
+        if (mCollapseType == 1)
         {
-            unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-            Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
-            pNode->ClearAppliedForce();
+            HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+            for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = p_cell_population->Begin();
+                cell_iter != p_cell_population->End();
+                ++cell_iter)
+            {
+                if (cell_iter->GetCellData()->GetItem("FixedBoundary") == 2)
+                {
+                    unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
+                    Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
+                    pNode->ClearAppliedForce();
+                }
+            }
         }
-    }
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>

@@ -174,7 +174,7 @@ public:
         p_ForceOut->SetCollapseType(1);
         p_ForceOut->Network("Plexus");
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
         p_simulator->AddForce(p_ForceOut);
 
 
