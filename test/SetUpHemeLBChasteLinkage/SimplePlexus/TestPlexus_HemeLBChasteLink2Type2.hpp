@@ -55,7 +55,7 @@ public:
         double SamplingStep = 50;
         double dt = 0.0001;
         double RemeshingTime = 600 ;
-        double EdgeLength =0.0005;
+        double EdgeLength =0.00055;
         double FSI_Iterations = 150;
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
@@ -72,7 +72,9 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingIterations(20);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRemeshingSoftwear("CGAL");
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetOperatingSystem("server");
-       
+
+         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+   
 
         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
         p_simulator->SetDt(dt);
@@ -88,7 +90,7 @@ public:
         std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
-        // p_Mesh_modifier->TurnOffRemeshing();   
+        p_Mesh_modifier->TurnOffRemeshing();   
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
         p_Mesh_modifier->SetStepSize(pow(10, -8));
 
@@ -105,7 +107,7 @@ public:
         p_Mesh_modifier->SetRadius(0.01);
         p_Mesh_modifier->SetUpdateFrequency(0.1/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
-        p_Mesh_modifier->SetCollapseType(1);
+        p_Mesh_modifier->SetCollapseType(2);
 
 
         boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
@@ -122,12 +124,12 @@ public:
         ----------------------------
         */
         boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        p_shear_force->SetCollapseType(1);
+        p_shear_force->SetCollapseType(2);
         p_simulator->AddForce(p_shear_force);
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
         p_membrane_force->SetMembraneStiffness(pow(10, -7));
-        p_membrane_force->SetCollapseType(1);
+        p_membrane_force->SetCollapseType(2);
         p_simulator->AddForce(p_membrane_force);
 
 
@@ -178,7 +180,7 @@ public:
         p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure*0.98, "Outlet");
         p_ForceOut->Inlets(PlaneNormal7, Point7, OutletPressure*0.95, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
-        p_ForceOut->SetCollapseType(1);
+        p_ForceOut->SetCollapseType(2);
         p_ForceOut->Network("Plexus");
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
         p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
