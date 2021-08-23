@@ -62,7 +62,7 @@ private:
     double mStepSize =  pow(10,-9);
     double mCounter = 0;
     unsigned mSteps =1;
-    // double mSetupSolve;
+    double mSetupSolve;
     int mRemeshingInterval = 500;
     int mExecute = 0;
     bool mRemeshing = 0;
