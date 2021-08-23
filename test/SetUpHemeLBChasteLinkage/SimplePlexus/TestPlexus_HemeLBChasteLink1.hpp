@@ -52,11 +52,11 @@ public:
         std::string output_dir = "FSISimulations/Plexus/Collapse1/";
 
         double EndTime = 12;
-        double SamplingStep = 100;
+        double SamplingStep = 50;
         double dt = 0.0001;
-        double RemeshingTime = 5000;
+        double RemeshingTime = 600 ;
         double EdgeLength =0.0005;
-        double FSI_Iterations =5000;
+        double FSI_Iterations = 150;
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
  
@@ -179,7 +179,7 @@ public:
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->Network("Plexus");
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
         p_ForceOut->SetCollapseType(1);
         p_simulator->AddForce(p_ForceOut);
 
