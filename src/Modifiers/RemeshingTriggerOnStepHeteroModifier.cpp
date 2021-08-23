@@ -166,7 +166,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::UpdateAtEndOf
                     SetMembraneStrenghtOnNewMesh(rCellPopulation);
                     NumberOfRemeshingIterations += 1;
 
-                    if (NumberOfRemeshingIterations >= 2)
+                    if (NumberOfRemeshingIterations >= 4)
                     {
                         mRemeshing = 0;
                     }
