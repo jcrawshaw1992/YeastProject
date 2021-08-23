@@ -48,14 +48,14 @@ public:
         double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -7;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
 
-        std::string Archieved = "FSISimulations/Plexus/EquiWithHemeLB3/";
-        std::string output_dir = "FSISimulations/Plexus/Collapse1/";
+        std::string Archieved = "FSISimulations/Plexus/Collapse1/";//"FSISimulations/Plexus/EquiWithHemeLB3/";
+        std::string output_dir = "FSISimulations/Plexus/Collapse1/Type2/";
 
-        double EndTime = 12;
+        double EndTime = 12.5;
         double SamplingStep = 50;
         double dt = 0.0001;
         double RemeshingTime = 600 ;
-        double EdgeLength =0.0005;
+        double EdgeLength =0.00055;//0.0005
         double FSI_Iterations = 150;
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
@@ -74,6 +74,11 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetOperatingSystem("server");
 
 
+        TRACE("ExecuteHistoryDependentRemeshing")
+        TRACE("ABout to leave test")
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+   
+
         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
         p_simulator->SetDt(dt);
         p_simulator->SetOutputDirectory(output_dir);
@@ -87,8 +92,8 @@ public:
         */
         std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
-        p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
-        // p_Mesh_modifier->TurnOffRemeshing();   
+        // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); 
+        p_Mesh_modifier->TurnOffRemeshing();   
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
         p_Mesh_modifier->SetStepSize(pow(10, -8));
 
@@ -104,8 +109,8 @@ public:
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
         p_Mesh_modifier->SetRadius(0.006);
         p_Mesh_modifier->SetUpdateFrequency(0.1/dt);
-        p_Mesh_modifier->SetmSetUpSolve(1);
-        p_Mesh_modifier->SetCollapseType(1);
+        p_Mesh_modifier->SetmSetUpSolve(0);
+        p_Mesh_modifier->SetCollapseType(2);
 
 
         boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation())  , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
@@ -122,12 +127,12 @@ public:
         ----------------------------
         */
         boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        p_shear_force->SetCollapseType(1);
+        p_shear_force->SetCollapseType(2);
         p_simulator->AddForce(p_shear_force);
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
         p_membrane_force->SetMembraneStiffness(pow(10, -7));
-        p_membrane_force->SetCollapseType(1);
+        p_membrane_force->SetCollapseType(2);
         p_simulator->AddForce(p_membrane_force);
         /*
         -----------------------------
@@ -180,7 +185,7 @@ public:
         p_ForceOut->Network("Plexus");
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
         p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
-        p_ForceOut->SetCollapseType(1);
+        p_ForceOut->SetCollapseType(2);
         p_simulator->AddForce(p_ForceOut);
 
 
