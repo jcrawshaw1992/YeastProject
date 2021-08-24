@@ -1,4 +1,5 @@
 /*
+
 */
 
 #ifndef HISTORYDEPMESHBASEDCELLPOPULATION_HPP_
@@ -77,7 +78,7 @@ private:
 
         archive & mOriginalNodePositions;
         archive & mInitalPositionOfRemeshedNodes;
-        //archive & mNew_mesh;
+        // archive & mNew_mesh;
         archive & mInitalVectors;
         archive & mACoefficients;
         archive & mBCoefficients;
@@ -91,7 +92,6 @@ private:
         archive & mRemeshingSoftwear;
         archive & mMapOfProbNodes;
         archive & mNumberOfChanges;
-        archive & mRemeshingSoftwear;
         archive & mNearestNodesMap;
         archive & mNx;
         archive & mNy;
@@ -99,6 +99,42 @@ private:
         archive & mCentroidMap;
         archive & mStartTime;
         archive & mServer;
+        archive & mSetUpInitialConfigurations; /////
+        archive & mChasteOutputDirectory;///////
+        archive & mSetBoundaries;////////
+        archive & mCounter;////
+        archive & mNewNodeToOldElementMap;//////
+        archive & mNewNodeToOldElementDistanceMap; /////
+
+
+        archive & mMappingVariables_a_b; /////
+        archive & mMappingVariables_alpha; /////
+        archive & mMappingVariables_z_basis; /////
+        archive & mMappingVariables_PointInNewRef; /////
+        archive & mMappingVariables_Difference; /////
+
+        archive & mMappingVariables_P_Translated; /////
+        archive & mMappingVariables_Cs; /////
+
+        archive & mBin; /////
+        // Map for the edges in each bin -- each bin has a vector of edges, the edges are descirbed by the nodes on the edge
+        archive & mEdgeBin; /////
+        archive & mBinCoords; /////
+
+        archive & mDIM ; /////
+
+        archive & mMaxX; /////
+        archive & mMinX;/////
+
+        archive & mMaxY;/////
+        archive & mMinY;/////
+
+        archive & mMaxZ;/////
+        archive & mMinZ;/////
+
+        archive & mVariableEdgeLength ;/////
+        archive & mEdgeLengthMultiple ;/////
+        archive & mUpdateComplete;/////
 
     }
 
