@@ -48,10 +48,10 @@ public:
          double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -7;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
 
-        std::string Archieved ="FSISimulations/Plexus/EquiWithHemeLB3/";
-        std::string output_dir = "FSISimulations/Plexus/CollapseTypes/Collapse_2/";
+        std::string Archieved ="FSISimulations/Plexus/Collapse3/";//"FSISimulations/Plexus/EquiWithHemeLB3/";
+        std::string output_dir = "FSISimulations/Plexus/Collapse3/Type2/";
 
-        double EndTime = 12;
+        double EndTime = 12.4;
         double SamplingStep = 50;
         double dt = 0.0001;
         double RemeshingTime = 600 ;
@@ -61,7 +61,7 @@ public:
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
  
-      /* Update the ouput directory for the population  */
+        /* Update the ouput directory for the population  */
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetPrintRemeshedIC(1);
@@ -72,9 +72,7 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingIterations(20);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRemeshingSoftwear("CGAL");
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetOperatingSystem("server");
-
-        //  
-   
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
 
         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
         p_simulator->SetDt(dt);
@@ -107,7 +105,7 @@ public:
         p_Mesh_modifier->SetRadius(0.01);
         p_Mesh_modifier->SetUpdateFrequency(0.1/dt);
         p_Mesh_modifier->SetmSetUpSolve(1);
-        p_Mesh_modifier->SetCollapseType(1);
+        p_Mesh_modifier->SetCollapseType(2);
 
 
         boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
@@ -122,12 +120,12 @@ public:
         ----------------------------
         */
         boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        p_shear_force->SetCollapseType(1);
+        p_shear_force->SetCollapseType(2);
         p_simulator->AddForce(p_shear_force);
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
         p_membrane_force->SetMembraneStiffness(pow(10, -7));
-        p_membrane_force->SetCollapseType(1);
+        p_membrane_force->SetCollapseType(2);
         p_simulator->AddForce(p_membrane_force);
 
 
@@ -178,40 +176,12 @@ public:
         p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure*0.98, "Outlet");
         p_ForceOut->Inlets(PlaneNormal7, Point7, OutletPressure*0.95, "Outlet");
         p_ForceOut->SetStartTime(EndTime);
-        p_ForceOut->SetCollapseType(1);
+        p_ForceOut->SetCollapseType(2);
         p_ForceOut->Network("Plexus");
+        
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
         p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
-
-
-
-     for (int i =0; i<=3; i++)
-        { 
-    
-            EndTime +=0.1;
-            p_simulator->SetEndTime(EndTime);
-
-            p_simulator->Solve();
-            CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-        }
-
-
-        p_ForceOut->SetCollapseType(2);
-        p_shear_force->SetCollapseType(2);
-        p_membrane_force->SetCollapseType(2);
-        p_Mesh_modifier->SetCollapseType(2);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
-        p_Mesh_modifier->SetmSetUpSolve(1);
-
-
-
-        output_dir = "FSISimulations/Plexus/CollapseTypes/Collapse_2/Type2/";
-        ////////////////////////////////////////////////
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRelativePath(output_dir, EndTime);
-        ////////////////////////////////////////////////
-        p_simulator->SetOutputDirectory(output_dir);
 
 
 
@@ -224,6 +194,28 @@ public:
             p_simulator->Solve();
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
         }
+
+
+
+
+
+    //     output_dir = "FSISimulations/Plexus/Collapse3/Type2/";
+    //     ////////////////////////////////////////////////
+    //     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
+    //     static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRelativePath(output_dir, EndTime);
+    //     ////////////////////////////////////////////////
+
+
+
+    //  for (int i =0; i<=300; i++)
+    //     { 
+    
+    //         EndTime +=0.1;
+    //         p_simulator->SetEndTime(EndTime);
+
+    //         p_simulator->Solve();
+    //         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+    //     }
 
 
 

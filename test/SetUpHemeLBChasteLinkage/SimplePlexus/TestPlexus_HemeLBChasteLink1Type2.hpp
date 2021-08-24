@@ -49,7 +49,7 @@ public:
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
 
         std::string Archieved = "FSISimulations/Plexus/EquiWithHemeLB3/";
-        std::string output_dir = "FSISimulations/Plexus/Collapse4/";
+        std::string output_dir = "FSISimulations/Plexus/CollapseTypes/Collapse_1/";
 
         double EndTime = 12;
         double SamplingStep = 50;
@@ -72,6 +72,8 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingIterations(20);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRemeshingSoftwear("CGAL");
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetOperatingSystem("server");
+
+        
 
 
         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
@@ -201,14 +203,16 @@ public:
             p_membrane_force->SetCollapseType(2);
             p_Mesh_modifier->SetCollapseType(2);
             static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+            p_Mesh_modifier->SetmSetUpSolve(1);
 
 
 
-            output_dir = "FSISimulations/Plexus/Collapse4/Type2/";
+            output_dir = "FSISimulations/Plexus/CollapseTypes/Collapse_1/Type2/";
             ////////////////////////////////////////////////
             static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
             static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRelativePath(output_dir, EndTime);
             ////////////////////////////////////////////////
+            p_simulator->SetOutputDirectory(output_dir);
 
 
 
