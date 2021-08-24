@@ -78,7 +78,7 @@ private:
 
         archive & mOriginalNodePositions;
         archive & mInitalPositionOfRemeshedNodes;
-        archive & mNew_mesh;
+        // archive & mNew_mesh;
         archive & mInitalVectors;
         archive & mACoefficients;
         archive & mBCoefficients;
