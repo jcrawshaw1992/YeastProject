@@ -99,19 +99,19 @@ private:
         archive & mCentroidMap;
         archive & mStartTime;
         archive & mServer;
-        archive & mSetUpInitialConfigurations; /////
-        archive & mChasteOutputDirectory;///////
-        archive & mSetBoundaries;////////
-        archive & mCounter;////
-        archive & mNewNodeToOldElementMap;//////
-        archive & mNewNodeToOldElementDistanceMap; /////
+        // archive & mSetUpInitialConfigurations; /////
+        // archive & mChasteOutputDirectory;///////
+        // archive & mSetBoundaries;////////
+        // archive & mCounter;////
+        // archive & mNewNodeToOldElementMap;//////
+        // archive & mNewNodeToOldElementDistanceMap; /////
 
 
-        archive & mMappingVariables_a_b; /////
-        archive & mMappingVariables_alpha; /////
-        archive & mMappingVariables_z_basis; /////
-        archive & mMappingVariables_PointInNewRef; /////
-        archive & mMappingVariables_Difference; /////
+        // archive & mMappingVariables_a_b; /////
+        // archive & mMappingVariables_alpha; /////
+        // archive & mMappingVariables_z_basis; /////
+        // archive & mMappingVariables_PointInNewRef; /////
+        // archive & mMappingVariables_Difference; /////
 
         // archive & mMappingVariables_P_Translated; /////
         // archive & mMappingVariables_Cs; /////
