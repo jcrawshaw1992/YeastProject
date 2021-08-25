@@ -1572,7 +1572,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
             {
                 Angle = 0;
             }
-            // nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] = Angle;
+            nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] = Angle;
 
             MeanAngle += Angle;
             counter += 1;
@@ -1591,11 +1591,11 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
 
         std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge = std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*>(edge_iterator.GetNodeA(), edge_iterator.GetNodeB());
 
-        bool boundary_edge_found = CalculateElementNormals(edge, UnitNormals, otherNodes);
-        if (!boundary_edge_found)
-        {
-            variance += pow(nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] - MeanAngle, 2);
-        }
+        // bool boundary_edge_found = CalculateElementNormals(edge, UnitNormals, otherNodes);
+        // if (!boundary_edge_found)
+        // {
+        //     variance += pow(nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] - MeanAngle, 2);
+        // }
     }
     variance /= counter;
 
