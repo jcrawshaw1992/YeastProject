@@ -1530,8 +1530,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
         double Angle = 0;
         if (boundary_edge_found)
         {
-            double A=1;
-            nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] = DOUBLE_UNSET;
+            mOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] = DOUBLE_UNSET;
         }
         else
         {
@@ -1568,44 +1567,15 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
             normal_2 = normal_2 / norm_2(normal_2);
             normal_1 = normal_1 / norm_2(normal_1);
             double NormalsDot = inner_prod(normal_1, normal_2);
-              Angle = 1;//acos(NormalsDot);
-            // if (NormalsDot == 1)
-            // {
-            //     Angle = 0;
-            // }
+              Angle = acos(NormalsDot);
+            if (NormalsDot == 1)
+            {
+                Angle = 0;
+                continue;
+            }
 
             std::pair<unsigned, unsigned> edgeIndex =std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex());
-            
-            // nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] = acos(NormalsDot);;
-            // // PRINT_VARIABLE(Angle)
-
-             nNewOriginalAngles[edgeIndex] = 1;// acos(NormalsDot);
-
-            MeanAngle += Angle;
-            counter += 1;
-
-
-
-
-
-
-
-
-
-            
-            // Angle = 1;//acos(NormalsDot);
-            // if (NormalsDot == 1)
-            // {
-            //     Angle = 0;
-            // }
-
-            // std::pair<unsigned, unsigned> edgeIndex =std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex());
-            
-            // nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] = Angle;
-            // PRINT_VARIABLE(Angle)
-
-            //  nNewOriginalAngles[edgeIndex] =  acos(NormalsDot);
-
+            mOriginalAngles[edgeIndex] = NormalsDot;
             MeanAngle += Angle;
             counter += 1;
         }
@@ -1626,7 +1596,8 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
         bool boundary_edge_found = CalculateElementNormals(edge, UnitNormals, otherNodes);
         if (!boundary_edge_found)
         {
-            variance += 1;//pow(nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] - MeanAngle, 2);
+            double Angle = acos(mOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())]);
+            variance += pow(Angle - MeanAngle, 2);
         }
     }
     variance /= counter;
@@ -1654,7 +1625,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
 
         if (!boundary_edge_found)
         {
-            double Angle = 1;//nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())];
+            double Angle = acos(mOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())]);
 
             if (Angle < Threshold1b || Angle > Threshold2b)
             {
@@ -1731,7 +1702,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetOriginalAngle(std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge)
 {
-    return 1;// nNewOriginalAngles.at(std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex()));
+    return acos(mOriginalAngles.at(std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())) );
 }
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 std::map<unsigned, c_vector<double, SPACE_DIM> > HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetInitalNodePositions()
