@@ -442,7 +442,7 @@ public:
      */
 
     void SetInitialAnlgesAcrossMembrane();
-    std::map<std::pair<unsigned, unsigned>, double> m ;
+    std::map<std::pair<unsigned, unsigned>, double> mOriginalAngles ;
 
     // std::map<std::pair<unsigned, unsigned>, double> Test;
 
