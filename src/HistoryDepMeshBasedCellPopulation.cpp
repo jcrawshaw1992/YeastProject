@@ -55,7 +55,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBoundaries(bo
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDependentRemeshing()
 {
-    TRACE("SetBinningRegions")
     this->SetBinningRegions();
     // TRACE("ExecuteHistoryDependentRemeshing")
     /*
@@ -71,7 +70,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
     }
     else if (mRemeshingSoftwear == "CGAL")
     {
-        TRACE("this->RemeshGeometry();")
         this->RemeshGeometry();
     }
     else if (mRemeshingSoftwear == "PreAllocatedMatlabMesh")
@@ -79,7 +77,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
         this->TakeInPreAllocatedRemeshGeometry();
     }
 
-    
     TRACE("About to remesh")
     // this->SetBinningRegions();
     this->MappingAdaptedMeshToInitalGeometry();
@@ -179,8 +176,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
     {
         node_iter->ClearAppliedForce();
         CellPtr p_cell = this->GetCellUsingLocationIndex(node_iter->GetIndex());
-        // p_cell->GetCellData()->SetItem("MappingMethod", mMapOfProbNodes[node_iter->GetIndex()]);
-        p_cell->GetCellData()->SetItem("WallShearStressExtremes", 0);
+        p_cell->GetCellData()->SetItem("MappingMethod", mMapOfProbNodes[node_iter->GetIndex()]);
     }
     
     this->SetBinningRegions();
@@ -1469,41 +1465,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetupMembraneCon
     //     // }
     // }
 }
-
-
-
-
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::AdaptmACoefficients(c_vector<double, SPACE_DIM>  aVector, unsigned elem_index)
-{
-     mACoefficients[elem_index] = aVector;
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::AdaptmBCoefficients(c_vector<double, SPACE_DIM>  bVector, unsigned elem_index)
-{
-     mBCoefficients[elem_index] = bVector;
-}
-
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::AdaptmmInitalVectors(c_vector<double, SPACE_DIM> x1, c_vector<double, SPACE_DIM> x2,c_vector<double, SPACE_DIM> x3, unsigned elem_index)
-{
-      mInitalVectors[elem_index][0] = x1;
-      mInitalVectors[elem_index][1] = x2;
-      mInitalVectors[elem_index][2] = x3;
-
-}
-
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::AdaptmArea0(double Area, unsigned elem_index)
-{
-      mArea0[elem_index] = Area;
-}
-
-
-
 
 // For the bending force
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
