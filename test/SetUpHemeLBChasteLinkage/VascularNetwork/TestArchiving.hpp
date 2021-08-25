@@ -60,6 +60,7 @@ public:
         /////////////////////////////////////////////////////////////////////////////////////
         std::string output_dir =  "FSISimulations/VascularNetwork/GrowingToEqui/ConstantForceArchiving/";
         std::string mesh_file = "/data/vascrem/MeshCollection/VascularNetwork/VascularNetwork.vtu";
+        
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
@@ -77,18 +78,19 @@ public:
         // Create a cell population
         HistoryDepMeshBasedCellPopulation<2, 3> cell_population(mesh, cells);
 
-        // cell_population.SetChasteOutputDirectory(output_dir, 0);
-        // // cell_population.SetInitialAnlgesAcrossMembrane(); // Dont worry about this for now, I think there is something moff
-        // cell_population.SetRelativePath(output_dir, 0);
-        // cell_population.SetTargetRemeshingEdgeLength(EdgeLength);
-        // cell_population.SetBinningIntervals(10, 10, 1);
-        // // cell_population.EdgeLengthVariable(1.2);
-        // cell_population.SetPrintRemeshedIC(1);
-        // cell_population.SetTargetRemeshingIterations(10);
-        // cell_population.SetWriteVtkAsPoints(false);
-        // cell_population.SetOutputMeshInVtk(true);
-        // cell_population.SetRemeshingSoftwear("CGAL");
-        // cell_population.SetOperatingSystem("server");
+        cell_population.SetChasteOutputDirectory(output_dir, 0);
+        cell_population.SetInitialAnlgesAcrossMembrane(); // Dont worry about this for now, I think there is something moff
+        cell_population.SetRelativePath(output_dir, 0);
+        cell_population.SetTargetRemeshingEdgeLength(EdgeLength);
+        cell_population.SetBinningIntervals(10, 10, 1);
+        cell_population.EdgeLengthVariable(1.2);
+        cell_population.SetPrintRemeshedIC(1);
+        cell_population.SetTargetRemeshingIterations(10);
+        cell_population.SetWriteVtkAsPoints(false);
+        cell_population.SetOutputMeshInVtk(true);
+        cell_population.SetRemeshingSoftwear("CGAL");
+        cell_population.SetOperatingSystem("server");
+        cell_population.ExecuteHistoryDependentRemeshing();
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
 
@@ -103,12 +105,12 @@ public:
         StepHeteroModifier
         ----------------------------
         */
-        // boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
-        // p_Mesh_modifier->SetMembraneStrength(1);
-        // p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
-        // p_Mesh_modifier->SetCollapseType(1);
-        // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); // I have turned this off because I need to know what will happen without remeshing, and then with remeshing
-        // // simulator.AddSimulationModifier(p_Mesh_modifier);
+        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
+        p_Mesh_modifier->SetMembraneStrength(1);
+        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
+        p_Mesh_modifier->SetCollapseType(1);
+        p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); // I have turned this off because I need to know what will happen without remeshing, and then with remeshing
+        simulator.AddSimulationModifier(p_Mesh_modifier);
 
         // /*
         // -----------------------------
@@ -172,8 +174,8 @@ public:
             // for (int i = 0; i < 5; i++)
             // {
                 PRINT_VARIABLE(EndTime)
-                // cell_population.SetStartTime(EndTime);
-                EndTime += 1;
+                cell_population.SetStartTime(EndTime);
+                EndTime += 0.5;
                 simulator.SetEndTime(EndTime);
 
                 simulator.Solve();
@@ -191,20 +193,20 @@ void TestContinuedWithConstantForce() throw(Exception)
 
         std::string Archieved ="FSISimulations/VascularNetwork/GrowingToEqui/ConstantForceArchiving/";
 
-        double EndTime = 1;
+        double EndTime = 0.5;
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
 
         
-        for (int i =0; i<=3; i++)
-            { 
+        // for (int i =0; i<=3; i++)
+        //     { 
         
-                EndTime +=10;
-                p_simulator->SetEndTime(EndTime);
+        //         EndTime +=10;
+        //         p_simulator->SetEndTime(EndTime);
 
-                p_simulator->Solve();
-                CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-            }
+        //         p_simulator->Solve();
+        //         CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
+        //     }
 
     }
 
