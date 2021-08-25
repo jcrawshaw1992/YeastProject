@@ -82,17 +82,17 @@ private:
         archive & mInitalVectors;
         archive & mACoefficients;
         archive & mBCoefficients;
-        // archive & mArea0;
-        // archive & mOriginalAngles;
-        // archive & mTargetRemeshingEdgeLength;
-        // archive & mIterations;
-        // archive & mRelativePath;
-        // archive & mPrintRemeshedIC;
-        // archive & mMaxEdgelength;
-        // archive & mRemeshingSoftwear;
-        // archive & mMapOfProbNodes;
-        // archive & mNumberOfChanges;
-        // archive & mNearestNodesMap;
+        archive & mArea0;
+        archive & mOriginalAngles;
+        archive & mTargetRemeshingEdgeLength;
+        archive & mIterations;
+        archive & mRelativePath;
+        archive & mPrintRemeshedIC;
+        archive & mMaxEdgelength;
+        archive & mRemeshingSoftwear;
+        archive & mMapOfProbNodes;
+        archive & mNumberOfChanges;
+        archive & mNearestNodesMap;
 
 
 
