@@ -91,8 +91,8 @@ private:
         archive & mACoefficients;
         archive & mBCoefficients;
 
-        // archive & mArea0;
-        // archive & mOriginalAngles;
+        archive & mArea0;
+        archive & mOriginalAngles;
         // archive & mTargetRemeshingEdgeLength;
         // archive & mIterations;
         // archive & mRelativePath;
