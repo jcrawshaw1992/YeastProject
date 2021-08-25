@@ -1579,7 +1579,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
             // nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] = Angle;
             PRINT_VARIABLE(Angle)
 
-             nNewOriginalAngles[edgeIndex] =  Angle;
+             nNewOriginalAngles[edgeIndex] =  acos(NormalsDot);
 
             MeanAngle += Angle;
             counter += 1;
