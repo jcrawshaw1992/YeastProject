@@ -1530,7 +1530,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
         double Angle = 0;
         if (boundary_edge_found)
         {
-            nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] = DOUBLE_UNSET;
+            mNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] = DOUBLE_UNSET;
         }
         else
         {
@@ -1575,7 +1575,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
             }
 
             std::pair<unsigned, unsigned> edgeIndex =std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex());
-            nNewOriginalAngles[edgeIndex] = NormalsDot;
+            mNewOriginalAngles[edgeIndex] = NormalsDot;
             MeanAngle += Angle;
             counter += 1;
         }
@@ -1596,7 +1596,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
         bool boundary_edge_found = CalculateElementNormals(edge, UnitNormals, otherNodes);
         if (!boundary_edge_found)
         {
-            double Angle = acos(nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())]);
+            double Angle = acos(mNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())]);
             variance += pow(Angle - MeanAngle, 2);
         }
     }
@@ -1625,7 +1625,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
 
         if (!boundary_edge_found)
         {
-            double Angle = acos(nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())]);
+            double Angle = acos(mNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())]);
 
             if (Angle < Threshold1b || Angle > Threshold2b)
             {
@@ -1702,7 +1702,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetOriginalAngle(std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge)
 {
-    return acos(nNewOriginalAngles.at(std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())) );
+    return acos(mNewOriginalAngles.at(std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())) );
 }
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 std::map<unsigned, c_vector<double, SPACE_DIM> > HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetInitalNodePositions()
