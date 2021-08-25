@@ -92,7 +92,7 @@ private:
         archive & mBCoefficients;
 
         archive & mArea0;
-        archive & mOriginalAngles;
+        // archive & mOriginalAngles;
         // archive & mTargetRemeshingEdgeLength;
         // archive & mIterations;
         // archive & mRelativePath;
