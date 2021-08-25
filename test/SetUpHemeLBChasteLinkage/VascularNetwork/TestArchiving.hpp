@@ -98,89 +98,17 @@ public:
         simulator.SetSamplingTimestepMultiple(SamplingStep);
         simulator.SetDt(dt);
         simulator.SetUpdateCellPopulationRule(false);
-        /*
-        -----------------------------
-        StepHeteroModifier
-        ----------------------------
-        */
-        // boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
-        // p_Mesh_modifier->SetMembraneStrength(1);
-        // p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
-        // p_Mesh_modifier->SetCollapseType(1);
-        // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); // I have turned this off because I need to know what will happen without remeshing, and then with remeshing
-        // simulator.AddSimulationModifier(p_Mesh_modifier);
 
-        // /*
-        // -----------------------------
-        // Constant Compressive tissue pressure
-        // ----------------------------
-        // */
-        // double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
-        // double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
-
-        // boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        // p_ForceOut->SetPressure(P_blood - P_tissue);
-        // //simulator.AddForce(p_ForceOut);
-
-
-        //   /*
-        // -----------------------------
-        // Membrane forces
-        // ----------------------------
-        // */
-        // boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
-        // p_shear_force->SetCollapseType(1);
-        // //simulator.AddForce(p_shear_force);
-
-        // boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
-        // p_membrane_force->SetMembraneStiffness(pow(10, -7));
-        // p_membrane_force->SetCollapseType(1);
-        // //simulator.AddForce(p_membrane_force);
-
-
-      
-        // /*
-        // -----------------------------
-        // Boundary conditions
-        // ----------------------------
-        // */
-
-        // std::vector<c_vector<double, 3> > boundary_plane_points;
-        // std::vector<c_vector<double, 3> > boundary_plane_normals;
-
-
-        // boundary_plane_points.push_back(Create_c_vector(0.016595194405737763,0.12835719623300196,-0.002236333573976076   ));
-        // boundary_plane_normals.push_back(Create_c_vector( -0.9477460065412346,   0.31902584258272776,-0.000137293563571154   ));
-
-        // boundary_plane_points.push_back(Create_c_vector(0.04573485665015318, 0.2339987318146692,  -0.0015555058516746553 ));
-        // boundary_plane_normals.push_back(Create_c_vector(-0.810093202633425, 0.5861764198996681, -0.012091641771441898 ));
-
-
-        // boundary_plane_points.push_back(Create_c_vector(0.1661163256187882,0.03058976097334303, -0.00045885113080672426 ));
-        // boundary_plane_normals.push_back(Create_c_vector(-0.08886496326216727,-0.9954743652165818, -0.03367204331574329 ));
-
-
-        // for (unsigned boundary_id = 0; boundary_id < boundary_plane_points.size(); boundary_id++)
-        // {
-        //         boost::shared_ptr<FixedRegionBoundaryCondition<2, 3> > p_condition(new FixedRegionBoundaryCondition<2, 3>(&cell_population, boundary_plane_points[boundary_id], boundary_plane_normals[boundary_id], 0.01));
-        //         simulator.AddCellPopulationBoundaryCondition(p_condition);
-        // }
 
         TRACE("First Solve ")
+        PRINT_VARIABLE(EndTime)
+        cell_population.SetStartTime(EndTime);
+        EndTime += 0.5;
+        simulator.SetEndTime(EndTime);
 
-    
-            // for (int i = 0; i < 5; i++)
-            // {
-                PRINT_VARIABLE(EndTime)
-                cell_population.SetStartTime(EndTime);
-                EndTime += 0.5;
-                simulator.SetEndTime(EndTime);
-
-                simulator.Solve();
-                CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
-            // }
-
-
+        simulator.Solve();
+        CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
+   
 
     }
 
