@@ -23,19 +23,17 @@
 #include "HistoryDepMeshBasedCellPopulation.hpp"
 #include "HistoryDepMutableMesh.hpp"
 
-// #include "AppliedForceModifier.hpp"
-#include "FixedRegionBoundaryCondition.hpp"
-#include "EnclosedRegionBoundaryCondition.hpp"
-#include "HemeLBForce.hpp"
-#include "MembraneDeformationForce.hpp"
-#include "MembraneDeformationForceOnCylinder.hpp"
-#include "OutwardsPressureWithBreaks.hpp"
-#include "OutwardsPressure.hpp"
-#include "RemeshingTriggerOnStepHeteroModifier.hpp"
-#include "StepHeteroModifier.hpp"
-#include "MembraneBendingForce.hpp"
 
-#include "MembraneBendingForceSensitive.hpp"
+// #include "FixedRegionBoundaryCondition.hpp"
+// #include "EnclosedRegionBoundaryCondition.hpp"
+// #include "HemeLBForce.hpp"
+// #include "MembraneDeformationForce.hpp"
+// #include "OutwardsPressureWithBreaks.hpp"
+// #include "OutwardsPressure.hpp"
+// #include "RemeshingTriggerOnStepHeteroModifier.hpp"
+// #include "MembraneBendingForce.hpp"
+
+
 
 
 class TestRemeshing : public AbstractCellBasedTestSuite
@@ -90,7 +88,7 @@ public:
         cell_population.SetOutputMeshInVtk(true);
         cell_population.SetRemeshingSoftwear("CGAL");
         cell_population.SetOperatingSystem("server");
-        cell_population.ExecuteHistoryDependentRemeshing();
+        // cell_population.ExecuteHistoryDependentRemeshing();
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
 
@@ -105,12 +103,12 @@ public:
         StepHeteroModifier
         ----------------------------
         */
-        boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
-        p_Mesh_modifier->SetMembraneStrength(1);
-        p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
-        p_Mesh_modifier->SetCollapseType(1);
-        p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); // I have turned this off because I need to know what will happen without remeshing, and then with remeshing
-        simulator.AddSimulationModifier(p_Mesh_modifier);
+        // boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier(new RemeshingTriggerOnStepHeteroModifier<2, 3>());
+        // p_Mesh_modifier->SetMembraneStrength(1);
+        // p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
+        // p_Mesh_modifier->SetCollapseType(1);
+        // p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); // I have turned this off because I need to know what will happen without remeshing, and then with remeshing
+        // simulator.AddSimulationModifier(p_Mesh_modifier);
 
         // /*
         // -----------------------------
