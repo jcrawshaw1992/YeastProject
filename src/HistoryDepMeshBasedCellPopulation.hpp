@@ -80,24 +80,14 @@ private:
         // archive & mInitalPositionOfRemeshedNodes;
         // archive & mNew_mesh;
 
-        archive & mTestMaps;
-        archive & mTestMaps2;
-        archive & mTestMaps3;
-
-        archive & mTestMaps4; //////// latext
-
-
         archive & mInitalVectors;
         archive & mACoefficients;
         archive & mBCoefficients;
 
         archive & mArea0;
+        archive & Test2;
 
 
-
-        archive & mOriginalAngles;
-
-        
         // archive & mTargetRemeshingEdgeLength;
         // archive & mIterations;
         // archive & mRelativePath;
@@ -307,12 +297,6 @@ public:
     void SetupMembraneConfiguration();
     std::map<unsigned, c_vector<c_vector<double, 2>, 3> > mInitalVectors;
 
-    std::map<unsigned,std::vector<double>> mTestMaps2;
-    std::map<unsigned,double> mTestMaps;
-    std::map<unsigned, c_vector<c_vector<double, 2>, 3> > mTestMaps3;
-
-
-
 
 
     void AdaptmACoefficients(c_vector<double, SPACE_DIM>  aVector, unsigned elem_index);
@@ -359,12 +343,6 @@ public:
 
 
 
-
-
-
-
-    ///////
-    std::map<unsigned, c_vector<double, 3> > mTestMaps4;
 
     // Map to the inital aCoefficients for each element
     std::map<unsigned, c_vector<double, 3> > mACoefficients;
@@ -463,6 +441,10 @@ public:
 
     void SetInitialAnlgesAcrossMembrane();
     std::map<std::pair<unsigned, unsigned>, double> mOriginalAngles;
+
+    // std::map<std::pair<unsigned, unsigned>, double> Test;
+
+    std::pair<unsigned, unsigned> Test2;
 
     bool CalculateElementNormals(std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge,
                                  std::pair<c_vector<double, SPACE_DIM>, c_vector<double, SPACE_DIM> >& nonUnitNormals,
