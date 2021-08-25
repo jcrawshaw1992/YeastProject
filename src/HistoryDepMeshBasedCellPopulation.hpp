@@ -85,35 +85,33 @@ private:
         archive & mBCoefficients;
 
         archive & mArea0;
-        archive & Test2;
-        archive & Test3;
         archive & mOriginalAngles;
 
 
-        // archive & mTargetRemeshingEdgeLength;
-        // archive & mIterations;
-        // archive & mRelativePath;
-        // archive & mPrintRemeshedIC;
-        // archive & mMaxEdgelength;
-        // archive & mRemeshingSoftwear;
-        // archive & mMapOfProbNodes;
-        // archive & mNumberOfChanges;
-        // archive & mNearestNodesMap;
+        archive & mTargetRemeshingEdgeLength;
+        archive & mIterations;
+        archive & mRelativePath;
+        archive & mPrintRemeshedIC;
+        archive & mMaxEdgelength;
+        archive & mRemeshingSoftwear;
+        archive & mMapOfProbNodes;
+        archive & mNumberOfChanges;
+        archive & mNearestNodesMap;
 
 
 
-        // archive & mNx;
-        // archive & mNy;
-        // archive & mNz;
-        // archive & mCentroidMap;
-        // archive & mStartTime;
-        // archive & mServer;
-        // archive & mSetUpInitialConfigurations; /////
-        // archive & mChasteOutputDirectory;///////
-        // archive & mSetBoundaries;////////
-        // archive & mCounter;////
-        // archive & mNewNodeToOldElementMap;//////
-        // archive & mNewNodeToOldElementDistanceMap; /////
+        archive & mNx;
+        archive & mNy;
+        archive & mNz;
+        archive & mCentroidMap;
+        archive & mStartTime;
+        archive & mServer;
+        archive & mSetUpInitialConfigurations; /////
+        archive & mChasteOutputDirectory;///////
+        archive & mSetBoundaries;////////
+        archive & mCounter;////
+        archive & mNewNodeToOldElementMap;//////
+        archive & mNewNodeToOldElementDistanceMap; /////
 
 
         // archive & mMappingVariables_a_b; /////
@@ -442,12 +440,6 @@ public:
      */
 
     void SetInitialAnlgesAcrossMembrane();
-    // std::map<std::pair<unsigned, unsigned>, double> mOriginalAngles ;
-
-    // std::map<std::pair<unsigned, unsigned>, double> Test;
-
-    std::pair<unsigned, unsigned> Test2;
-    std::map<std::pair<unsigned, unsigned>, double> Test3;
     std::map<std::pair<unsigned, unsigned>, double>  mOriginalAngles;
 
     bool CalculateElementNormals(std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge,
