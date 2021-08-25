@@ -79,9 +79,9 @@ private:
         archive & mOriginalNodePositions;
         // archive & mInitalPositionOfRemeshedNodes;
         // archive & mNew_mesh;
-        // archive & mInitalVectors;
-        // archive & mACoefficients;
-        // archive & mBCoefficients;
+        archive & mInitalVectors;
+        archive & mACoefficients;
+        archive & mBCoefficients;
         // archive & mArea0;
         // archive & mOriginalAngles;
         // archive & mTargetRemeshingEdgeLength;
