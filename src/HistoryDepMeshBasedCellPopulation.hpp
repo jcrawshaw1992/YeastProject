@@ -85,7 +85,7 @@ private:
         archive & mTestMaps3;
 
 
-        // archive & mInitalVectors;
+        archive & mInitalVectors;
         // archive & mACoefficients;
         // archive & mBCoefficients;
 
