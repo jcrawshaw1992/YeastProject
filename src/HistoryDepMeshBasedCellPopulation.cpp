@@ -1527,7 +1527,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
         std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge = std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*>(edge_iterator.GetNodeA(), edge_iterator.GetNodeB());
 
         bool boundary_edge_found = CalculateElementNormals(edge, UnitNormals, otherNodes);
-
+        double Angle = 0;
         if (boundary_edge_found)
         {
             double A=1;
@@ -1568,7 +1568,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
             normal_2 = normal_2 / norm_2(normal_2);
             normal_1 = normal_1 / norm_2(normal_1);
             double NormalsDot = inner_prod(normal_1, normal_2);
-            double Angle = acos(NormalsDot);
+            Angle = acos(NormalsDot);
             if (NormalsDot == 1)
             {
                 Angle = 0;
@@ -1578,7 +1578,8 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
             
             // nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] = Angle;
             PRINT_VARIABLE(Angle)
-             nNewOriginalAngles[edgeIndex] = 1;
+
+             nNewOriginalAngles[edgeIndex] =  Angle;
 
             MeanAngle += Angle;
             counter += 1;
