@@ -174,7 +174,7 @@ public:
             {
                 PRINT_VARIABLE(EndTime)
                 // cell_population.SetStartTime(EndTime);
-                EndTime += 1;
+                EndTime += 5;
                 simulator.SetEndTime(EndTime);
 
                 simulator.Solve();
