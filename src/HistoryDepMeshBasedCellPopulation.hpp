@@ -114,34 +114,34 @@ private:
         archive & mNewNodeToOldElementDistanceMap; /////
 
 
-        // archive & mMappingVariables_a_b; /////
-        // archive & mMappingVariables_alpha; /////
-        // archive & mMappingVariables_z_basis; /////
-        // archive & mMappingVariables_PointInNewRef; /////
-        // archive & mMappingVariables_Difference; /////
+        archive & mMappingVariables_a_b; /////
+        archive & mMappingVariables_alpha; /////
+        archive & mMappingVariables_z_basis; /////
+        archive & mMappingVariables_PointInNewRef; /////
+        archive & mMappingVariables_Difference; /////
 
-        // archive & mMappingVariables_P_Translated; /////
-        // archive & mMappingVariables_Cs; /////
+        archive & mMappingVariables_P_Translated; /////
+        archive & mMappingVariables_Cs; /////
 
-        // archive & mBin; /////
-        // // Map for the edges in each bin -- each bin has a vector of edges, the edges are descirbed by the nodes on the edge
-        // archive & mEdgeBin; /////
-        // archive & mBinCoords; /////
+        archive & mBin; /////
+        // Map for the edges in each bin -- each bin has a vector of edges, the edges are descirbed by the nodes on the edge
+        archive & mEdgeBin; /////
+        archive & mBinCoords; /////
 
-        // archive & mDIM ; /////
+        archive & mDIM ; /////
 
-        // archive & mMaxX; /////
-        // archive & mMinX;/////
+        archive & mMaxX; /////
+        archive & mMinX;/////
 
-        // archive & mMaxY;/////
-        // archive & mMinY;/////
+        archive & mMaxY;/////
+        archive & mMinY;/////
 
-        // archive & mMaxZ;/////
-        // archive & mMinZ;/////
+        archive & mMaxZ;/////
+        archive & mMinZ;/////
 
-        // archive & mVariableEdgeLength ;/////
-        // archive & mEdgeLengthMultiple ;/////
-        // archive & mUpdateComplete;/////
+        archive & mVariableEdgeLength ;/////
+        archive & mEdgeLengthMultiple ;/////
+        archive & mUpdateComplete;/////
 
     }
 
