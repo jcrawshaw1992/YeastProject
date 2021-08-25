@@ -1,4 +1,4 @@
-/*
+/*2
 
 */
 
@@ -76,9 +76,9 @@ private:
     {
         archive & boost::serialization::base_object<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM> >(*this);
 
-        archive & mOriginalNodePositions;
+        // archive & mOriginalNodePositions;
         // archive & mInitalPositionOfRemeshedNodes;
-        // //archive & mNew_mesh;
+        // // archive & mNew_mesh;
         // archive & mInitalVectors;
         // archive & mACoefficients;
         // archive & mBCoefficients;
@@ -92,7 +92,6 @@ private:
         // archive & mRemeshingSoftwear;
         // archive & mMapOfProbNodes;
         // archive & mNumberOfChanges;
-        // archive & mRemeshingSoftwear;
         // archive & mNearestNodesMap;
         // archive & mNx;
         // archive & mNy;
@@ -100,6 +99,42 @@ private:
         // archive & mCentroidMap;
         // archive & mStartTime;
         // archive & mServer;
+        // archive & mSetUpInitialConfigurations; /////
+        // archive & mChasteOutputDirectory;///////
+        // archive & mSetBoundaries;////////
+        // archive & mCounter;////
+        // archive & mNewNodeToOldElementMap;//////
+        // archive & mNewNodeToOldElementDistanceMap; /////
+
+
+        // archive & mMappingVariables_a_b; /////
+        // archive & mMappingVariables_alpha; /////
+        // archive & mMappingVariables_z_basis; /////
+        // archive & mMappingVariables_PointInNewRef; /////
+        // archive & mMappingVariables_Difference; /////
+
+        // archive & mMappingVariables_P_Translated; /////
+        // archive & mMappingVariables_Cs; /////
+
+        // archive & mBin; /////
+        // // Map for the edges in each bin -- each bin has a vector of edges, the edges are descirbed by the nodes on the edge
+        // archive & mEdgeBin; /////
+        // archive & mBinCoords; /////
+
+        // archive & mDIM ; /////
+
+        // archive & mMaxX; /////
+        // archive & mMinX;/////
+
+        // archive & mMaxY;/////
+        // archive & mMinY;/////
+
+        // archive & mMaxZ;/////
+        // archive & mMinZ;/////
+
+        // archive & mVariableEdgeLength ;/////
+        // archive & mEdgeLengthMultiple ;/////
+        // archive & mUpdateComplete;/////
 
     }
 
@@ -256,6 +291,17 @@ public:
     std::map<unsigned, c_vector<c_vector<double, 2>, 3> > mInitalVectors;
 
 
+
+
+
+    void AdaptmACoefficients(c_vector<double, SPACE_DIM>  aVector, unsigned elem_index);
+    void AdaptmBCoefficients(c_vector<double, SPACE_DIM>  bVector, unsigned elem_index);
+    void AdaptmmInitalVectors(c_vector<double, SPACE_DIM> x1, c_vector<double, SPACE_DIM> x2,c_vector<double, SPACE_DIM> x3, unsigned elem_index);
+    void AdaptmArea0(double Area, unsigned elem_index);
+
+
+
+
     // Mapping the new nodes to the old elements; am recording this for debugging purposes
     std::map<unsigned,double > mNewNodeToOldElementMap;
 
@@ -304,7 +350,7 @@ public:
     // Map to the inital aCoefficients for each element
     std::map<unsigned, c_vector<double, 3> > mBCoefficients;
     std::map<unsigned, double> mArea0;
-    std::map<unsigned, c_vector<unsigned, 3> > mNearestNodesMap;
+    std::map<unsigned, c_vector<unsigned, 2> > mNearestNodesMap;
 
     // Make the intial conditions accessable from other classes
     // Access the inital angle for the bending force from other classes
@@ -383,7 +429,7 @@ public:
 
 
     // Get the nearest nodes
-    c_vector<unsigned, 3> GetNearestInternalNodes(unsigned node_index);
+    c_vector<unsigned, 2> GetNearestInternalNodes(unsigned node_index);
 
     // Several methods need the centroids, so here is a method to create a map of the centoroids
     void SetCentroidMap();
@@ -436,6 +482,10 @@ public:
     std::pair<double, c_vector<double, SPACE_DIM> >  ProjectPointToPlane( c_vector<double, SPACE_DIM>  NewPoint, unsigned Element);
     double ProjectPointToLine(c_vector<double, SPACE_DIM> x1, c_vector<double, SPACE_DIM> x2, c_vector<double, SPACE_DIM>  NewPoint);
     double ProjectPointToLine(std::pair<unsigned, unsigned> edgeIndex , c_vector<double, SPACE_DIM>  NewPoint);
+
+
+    // Added to solve my mesh problem  .....mChasteOutputDirectory
+    void WriteVtkResultsToFile(const std::string& rDirectory);
 
 
     /**
