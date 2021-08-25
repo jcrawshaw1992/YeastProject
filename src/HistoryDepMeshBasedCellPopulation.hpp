@@ -81,6 +81,7 @@ private:
         // archive & mNew_mesh;
 
         archive & mTestMaps;
+        archive & mTestMaps2;
 
 
         // archive & mInitalVectors;
@@ -298,6 +299,7 @@ public:
     void SetupMembraneConfiguration();
     std::map<unsigned, c_vector<c_vector<double, 2>, 3> > mInitalVectors;
 
+    std::map<unsigned,std::vector<double>> mTestMaps2;
     std::map<unsigned,double> mTestMaps;
 
 
