@@ -79,20 +79,23 @@ private:
         archive & mOriginalNodePositions;
         archive & mInitalPositionOfRemeshedNodes;
         // archive & mNew_mesh;
-        archive & mInitalVectors;
-        archive & mACoefficients;
-        archive & mBCoefficients;
-        archive & mArea0;
-        archive & mOriginalAngles;
-        archive & mTargetRemeshingEdgeLength;
-        archive & mIterations;
-        archive & mRelativePath;
-        archive & mPrintRemeshedIC;
-        archive & mMaxEdgelength;
-        archive & mRemeshingSoftwear;
-        archive & mMapOfProbNodes;
-        archive & mNumberOfChanges;
-        archive & mNearestNodesMap;
+        // archive & mInitalVectors;
+        // archive & mACoefficients;
+        // archive & mBCoefficients;
+        // archive & mArea0;
+        // archive & mOriginalAngles;
+        // archive & mTargetRemeshingEdgeLength;
+        // archive & mIterations;
+        // archive & mRelativePath;
+        // archive & mPrintRemeshedIC;
+        // archive & mMaxEdgelength;
+        // archive & mRemeshingSoftwear;
+        // archive & mMapOfProbNodes;
+        // archive & mNumberOfChanges;
+        // archive & mNearestNodesMap;
+
+
+
         // archive & mNx;
         // archive & mNy;
         // archive & mNz;
