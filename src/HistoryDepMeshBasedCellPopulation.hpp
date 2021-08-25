@@ -84,9 +84,11 @@ private:
         archive & mTestMaps2;
         archive & mTestMaps3;
 
+        archive & mTestMaps4; //////// latext
+
 
         archive & mInitalVectors;
-        // archive & mACoefficients;
+        archive & mACoefficients;
         // archive & mBCoefficients;
 
         // archive & mArea0;
@@ -357,7 +359,7 @@ public:
 
 
     ///////
-
+    std::map<unsigned, c_vector<double, 3> > mTestMaps4;
 
     // Map to the inital aCoefficients for each element
     std::map<unsigned, c_vector<double, 3> > mACoefficients;
