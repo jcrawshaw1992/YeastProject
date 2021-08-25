@@ -103,7 +103,7 @@ public:
         TRACE("First Solve ")
         PRINT_VARIABLE(EndTime)
         cell_population.SetStartTime(EndTime);
-        EndTime += 0.5;
+        EndTime += 0.1;
         simulator.SetEndTime(EndTime);
 
         simulator.Solve();
@@ -119,7 +119,7 @@ void TestContinuedWithConstantForce() throw(Exception)
 
         std::string Archieved ="FSISimulations/VascularNetwork/GrowingToEqui/ConstantForceArchiving/";
 
-        double EndTime = 0.5;
+        double EndTime = 0.1;
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
 
