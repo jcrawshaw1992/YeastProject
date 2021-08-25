@@ -52,9 +52,9 @@ public:
         double EndTime = 0;
         double scale = 0.0011; 
 
-        double SamplingStep = 100;
+        double SamplingStep = 50;
         double dt = 0.02;
-        double RemeshingTime = 500;
+        double RemeshingTime = 300;
         double EdgeLength =1.5*scale;
         
         /////////////////////////////////////////////////////////////////////////////////////
@@ -108,7 +108,7 @@ public:
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
         p_Mesh_modifier->SetCollapseType(1);
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); // I have turned this off because I need to know what will happen without remeshing, and then with remeshing
-        // simulator.AddSimulationModifier(p_Mesh_modifier);
+        simulator.AddSimulationModifier(p_Mesh_modifier);
 
         /*
         -----------------------------
@@ -119,8 +119,8 @@ public:
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        p_ForceOut->SetPressure(P_blood - P_tissue);
-        //simulator.AddForce(p_ForceOut);
+        p_ForceOut->SetPressure(1*(P_blood - P_tissue)/3);
+        simulator.AddForce(p_ForceOut);
 
 
           /*
@@ -130,12 +130,12 @@ public:
         */
         boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
         p_shear_force->SetCollapseType(1);
-        //simulator.AddForce(p_shear_force);
+        simulator.AddForce(p_shear_force);
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
         p_membrane_force->SetMembraneStiffness(pow(10, -7));
         p_membrane_force->SetCollapseType(1);
-        //simulator.AddForce(p_membrane_force);
+        simulator.AddForce(p_membrane_force);
 
 
       
@@ -169,8 +169,8 @@ public:
         TRACE("First Solve ")
 
     
-            // for (int i = 0; i < 5; i++)
-            // {
+            for (int i = 0; i < 50; i++)
+            {
                 PRINT_VARIABLE(EndTime)
                 // cell_population.SetStartTime(EndTime);
                 EndTime += 1;
@@ -178,7 +178,7 @@ public:
 
                 simulator.Solve();
                 CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(&simulator);
-            // }
+            }
 
 
 
@@ -191,7 +191,7 @@ void TestContinuedWithConstantForce() throw(Exception)
 
         std::string Archieved ="FSISimulations/VascularNetwork/GrowingToEqui/ConstantForceArchiving/";
 
-        double EndTime = 1;
+        double EndTime = 0.1;
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
 

@@ -245,10 +245,10 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         node4_contribution *= force_coefficient;////rCellPopulation.GetVolumeOfCell(p_cell4);
 
 
-        if (norm_2(node1_contribution)>1 || norm_2(node2_contribution)>1 ||norm_2(node3_contribution)>1 || norm_2(node4_contribution)>1  )
-        {
-             PRINT_4_VARIABLES(norm_2(node1_contribution), norm_2(node2_contribution), norm_2(node3_contribution) , norm_2(node4_contribution))
-        }
+        // if (norm_2(node1_contribution)>1 || norm_2(node2_contribution)>1 ||norm_2(node3_contribution)>1 || norm_2(node4_contribution)>1  )
+        // {
+        //      PRINT_4_VARIABLES(norm_2(node1_contribution), norm_2(node2_contribution), norm_2(node3_contribution) , norm_2(node4_contribution))
+        // }
 
         double Boundary1 = p_cell1->GetCellData()->GetItem("Boundary"); double Boundary2 = p_cell2->GetCellData()->GetItem("Boundary");
         double Boundary3 = p_cell3->GetCellData()->GetItem("Boundary"); double Boundary4 = p_cell4->GetCellData()->GetItem("Boundary");
@@ -266,10 +266,10 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
 
         if (norm_2(node1_contribution)>0.1|| norm_2(node2_contribution)>0.1||norm_2(node3_contribution)>0.1|| norm_2(node4_contribution)>0.1 )
         {
-            PRINT_VECTOR(node1_contribution);
-            PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
+            // PRINT_VECTOR(node1_contribution);
+            // PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
         
-            PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
+            // PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
                 node1_contribution =Create_c_vector(0,0,0);
                 node2_contribution= Create_c_vector(0,0,0);
                 node3_contribution= Create_c_vector(0,0,0);
@@ -286,10 +286,10 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
 
          if (std::isnan(norm_2(node1_contribution)) || std::isnan(norm_2(node2_contribution))  || std::isnan(norm_2(node3_contribution))  || std::isnan(norm_2(node4_contribution)) )
         {
-            PRINT_VECTOR(node1_contribution);
-            PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
+            // PRINT_VECTOR(node1_contribution);
+            // PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
         
-            PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
+            // PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
                 node1_contribution =Create_c_vector(0,0,0);
                 node2_contribution= Create_c_vector(0,0,0);
                 node3_contribution= Create_c_vector(0,0,0);
