@@ -53,13 +53,13 @@ public:
         double scale = 0.0011; 
 
         double SamplingStep = 50;
-        double dt = 0.02;
+        double dt = 0.04;
         double RemeshingTime = 300;
-        double EdgeLength =1.5*scale;
+        double EdgeLength =1.1*scale;
         
         /////////////////////////////////////////////////////////////////////////////////////
         std::string output_dir =  "FSISimulations/VascularNetwork/GrowingToEqui/ConstantForceArchiving/";
-        std::string mesh_file = "/data/vascrem/MeshCollection/VascularNetwork/VascularNetwork.vtu";
+        std::string mesh_file = "/data/vascrem/MeshCollection/VascularNetwork/VascularNetwork2.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
@@ -89,6 +89,7 @@ public:
         cell_population.SetOutputMeshInVtk(true);
         cell_population.SetRemeshingSoftwear("CGAL");
         cell_population.SetOperatingSystem("server");
+        // cell_population.ExecuteHistoryDependentRemeshing();
         // Set population to output all data to results files
         cell_population.AddCellWriter<CellProliferativeTypesWriter>();
 
@@ -119,7 +120,7 @@ public:
         double P_tissue = 0.001466542; // Pa == 1.5000e-05 mmHg , need to set up some collasping force for this -- this should be taken into consideration for the membrane properties :)
 
         boost::shared_ptr<OutwardsPressure> p_ForceOut(new OutwardsPressure());
-        p_ForceOut->SetPressure(1*(P_blood - P_tissue)/3);
+        p_ForceOut->SetPressure(2*(P_blood - P_tissue)/3);
         simulator.AddForce(p_ForceOut);
 
 
