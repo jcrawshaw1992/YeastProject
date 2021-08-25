@@ -87,6 +87,7 @@ private:
         archive & mArea0;
         archive & Test2;
         archive & Test3;
+        archive & OriginalAngles;
 
 
         // archive & mTargetRemeshingEdgeLength;
@@ -441,12 +442,13 @@ public:
      */
 
     void SetInitialAnlgesAcrossMembrane();
-    std::map<std::pair<unsigned, unsigned>, double> mOriginalAngles;
+    std::map<std::pair<unsigned, unsigned>, double> m ;
 
     // std::map<std::pair<unsigned, unsigned>, double> Test;
 
     std::pair<unsigned, unsigned> Test2;
     std::map<std::pair<unsigned, unsigned>, double> Test3;
+    std::map<std::pair<unsigned, unsigned>, double>  ;
 
     bool CalculateElementNormals(std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge,
                                  std::pair<c_vector<double, SPACE_DIM>, c_vector<double, SPACE_DIM> >& nonUnitNormals,
