@@ -304,7 +304,7 @@ public:
     // Map to the inital aCoefficients for each element
     std::map<unsigned, c_vector<double, 3> > mBCoefficients;
     std::map<unsigned, double> mArea0;
-    std::map<unsigned, c_vector<unsigned, 2> > mNearestNodesMap;
+    std::map<unsigned, c_vector<unsigned, 3> > mNearestNodesMap;
 
     // Make the intial conditions accessable from other classes
     // Access the inital angle for the bending force from other classes
@@ -383,7 +383,7 @@ public:
 
 
     // Get the nearest nodes
-    c_vector<unsigned, 2> GetNearestInternalNodes(unsigned node_index);
+    c_vector<unsigned, 3> GetNearestInternalNodes(unsigned node_index);
 
     // Several methods need the centroids, so here is a method to create a map of the centoroids
     void SetCentroidMap();

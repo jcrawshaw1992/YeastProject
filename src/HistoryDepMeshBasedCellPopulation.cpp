@@ -607,7 +607,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBinningRegion
     // Clear the map so I dont have the old elements and the new elements messing the binning up
     mBin.clear();
     mEdgeBin.clear();
-    double BlurryRegion = 30;
+    double BlurryRegion = 10;
     double X = (mMaxX - mMinX)/BlurryRegion;
     double Y = (mMaxY - mMinY)/BlurryRegion;
     double Z = (mMaxZ - mMinZ)/BlurryRegion;
@@ -847,21 +847,20 @@ double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetClosestElem
     std::vector<int> Bin = GetBin(NewNodeLocation);
     std::vector<unsigned> ElementsInDaBin= mBin[Bin];
 
-    for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
-    {
-
-    // for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
-    // elem_iter != this->rGetMesh().GetElementIteratorEnd();
-    // ++elem_iter)
+    // for (std::vector<unsigned>::iterator elem_index = ElementsInDaBin.begin(); elem_index != ElementsInDaBin.end(); ++elem_index)
     // {
+
+    for (typename AbstractTetrahedralMesh<ELEMENT_DIM, SPACE_DIM>::ElementIterator elem_iter = this->rGetMesh().GetElementIteratorBegin();
+    elem_iter != this->rGetMesh().GetElementIteratorEnd();
+    ++elem_iter)
+    {
         // c_vector<double, SPACE_DIM> Centroid = mCentroidMap[*elem_index];
-        // unsigned elem_index = elem_iter->GetIndex();
-        double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, *elem_index) ;
-        // PRINT_VARIABLE(DistanceFromContainingElement)
+        unsigned elem_index = elem_iter->GetIndex();
+        double DistanceFromContainingElement = DistanceBetweenPointAndElement(NewNodeLocation, elem_index) ;
         if (std::abs(DistanceFromContainingElement) < ClosestElementDistance)
         {
             ClosestElementDistance = std::abs(DistanceFromContainingElement);
-            ClosestElement = *elem_index;
+            ClosestElement = elem_index;
         }
     }
     mNewNodeToOldElementDistanceMap[node_index] = ClosestElementDistance;
@@ -1725,7 +1724,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MarkBoundaryNode
             Node<SPACE_DIM>* pNode = this->rGetMesh().GetNode(node_index);
             c_vector<long double, SPACE_DIM> CellLocation = pNode->rGetLocation();
 
-            c_vector<unsigned, 2> NearestNodes;
+            c_vector<unsigned, 3> NearestNodes;
 
             double Distance3 = 0.5;
             double Distance2 = 0.5;
@@ -1752,6 +1751,11 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MarkBoundaryNode
                         NearestNodes[1] = node_index_Search;
                         Distance2 = Distance;
                     }
+                    else if (Distance <= Distance3)
+                    {
+                        NearestNodes[2] = node_index_Search;
+                        Distance3 = Distance;
+                    }
                 }
             }
        
@@ -1761,7 +1765,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::MarkBoundaryNode
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-c_vector<unsigned, 2> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetNearestInternalNodes(unsigned node_index)
+c_vector<unsigned, 3> HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetNearestInternalNodes(unsigned node_index)
 {
     return mNearestNodesMap[node_index];
 }
