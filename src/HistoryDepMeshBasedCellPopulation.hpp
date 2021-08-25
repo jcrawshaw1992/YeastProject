@@ -77,7 +77,7 @@ private:
         archive & boost::serialization::base_object<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM> >(*this);
 
         archive & mOriginalNodePositions;
-        archive & mInitalPositionOfRemeshedNodes;
+        // archive & mInitalPositionOfRemeshedNodes;
         // archive & mNew_mesh;
         // archive & mInitalVectors;
         // archive & mACoefficients;
