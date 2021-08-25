@@ -1591,11 +1591,11 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
 
         std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge = std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*>(edge_iterator.GetNodeA(), edge_iterator.GetNodeB());
 
-        // bool boundary_edge_found = CalculateElementNormals(edge, UnitNormals, otherNodes);
-        // if (!boundary_edge_found)
-        // {
-        //     variance += pow(nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] - MeanAngle, 2);
-        // }
+        bool boundary_edge_found = CalculateElementNormals(edge, UnitNormals, otherNodes);
+        if (!boundary_edge_found)
+        {
+            variance += pow(nNewOriginalAngles[std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex())] - MeanAngle, 2);
+        }
     }
     variance /= counter;
 
@@ -1699,7 +1699,7 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetInitialAnlges
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 double HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetOriginalAngle(std::pair<Node<SPACE_DIM>*, Node<SPACE_DIM>*> edge)
 {
-    return nNewOriginalAngles.at(std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex()));
+    return 1;//nNewOriginalAngles.at(std::pair<unsigned, unsigned>(edge.first->GetIndex(), edge.second->GetIndex()));
 }
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 std::map<unsigned, c_vector<double, SPACE_DIM> > HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::GetInitalNodePositions()
