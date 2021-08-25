@@ -256,17 +256,6 @@ public:
     std::map<unsigned, c_vector<c_vector<double, 2>, 3> > mInitalVectors;
 
 
-
-
-
-    void AdaptmACoefficients(c_vector<double, SPACE_DIM>  aVector, unsigned elem_index);
-    void AdaptmBCoefficients(c_vector<double, SPACE_DIM>  bVector, unsigned elem_index);
-    void AdaptmmInitalVectors(c_vector<double, SPACE_DIM> x1, c_vector<double, SPACE_DIM> x2,c_vector<double, SPACE_DIM> x3, unsigned elem_index);
-    void AdaptmArea0(double Area, unsigned elem_index);
-
-
-
-
     // Mapping the new nodes to the old elements; am recording this for debugging purposes
     std::map<unsigned,double > mNewNodeToOldElementMap;
 
@@ -447,10 +436,6 @@ public:
     std::pair<double, c_vector<double, SPACE_DIM> >  ProjectPointToPlane( c_vector<double, SPACE_DIM>  NewPoint, unsigned Element);
     double ProjectPointToLine(c_vector<double, SPACE_DIM> x1, c_vector<double, SPACE_DIM> x2, c_vector<double, SPACE_DIM>  NewPoint);
     double ProjectPointToLine(std::pair<unsigned, unsigned> edgeIndex , c_vector<double, SPACE_DIM>  NewPoint);
-
-
-    // Added to solve my mesh problem  .....mChasteOutputDirectory
-    void WriteVtkResultsToFile(const std::string& rDirectory);
 
 
     /**
