@@ -55,7 +55,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::SetBoundaries(bo
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDependentRemeshing()
 {
-    TRACE("SetBinningRegions")
     this->SetBinningRegions();
     // TRACE("ExecuteHistoryDependentRemeshing")
     /*
@@ -71,7 +70,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
     }
     else if (mRemeshingSoftwear == "CGAL")
     {
-        TRACE("this->RemeshGeometry();")
         this->RemeshGeometry();
     }
     else if (mRemeshingSoftwear == "PreAllocatedMatlabMesh")
@@ -79,7 +77,6 @@ void HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>::ExecuteHistoryDe
         this->TakeInPreAllocatedRemeshGeometry();
     }
 
-    
     TRACE("About to remesh")
     // this->SetBinningRegions();
     this->MappingAdaptedMeshToInitalGeometry();
