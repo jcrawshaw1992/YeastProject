@@ -89,7 +89,7 @@ private:
 
         archive & mInitalVectors;
         archive & mACoefficients;
-        // archive & mBCoefficients;
+        archive & mBCoefficients;
 
         // archive & mArea0;
         // archive & mOriginalAngles;
