@@ -82,6 +82,7 @@ private:
 
         archive & mTestMaps;
         archive & mTestMaps2;
+        archive & mTestMaps3;
 
 
         // archive & mInitalVectors;
@@ -301,6 +302,7 @@ public:
 
     std::map<unsigned,std::vector<double>> mTestMaps2;
     std::map<unsigned,double> mTestMaps;
+    std::map<unsigned, c_vector<c_vector<double, 2>, 3> > mTestMaps3;
 
 
 
