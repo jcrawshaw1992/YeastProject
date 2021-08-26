@@ -271,9 +271,9 @@ public:
         double OutletPressure = P_blood * (0.9);
 
         boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
-        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet"); // Issues here 
-        p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure, "Inlet"); //FIne
-        p_ForceOut->Inlets(PlaneNormal3, Point3, OutletPressure, "Outlet");// Issues here 
+        p_ForceOut->Inlets(PlaneNormal1, Point1, OutletPressure, "Outlet"); // Issues here 
+        p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet"); //FIne
+        p_ForceOut->Inlets(PlaneNormal3, Point3, InletPressure, "Inlet");// Issues here 
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetCollapseType(1);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
