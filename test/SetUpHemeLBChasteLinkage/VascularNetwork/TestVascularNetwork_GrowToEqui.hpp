@@ -42,24 +42,24 @@ class TestRemeshing : public AbstractCellBasedTestSuite
 {
 public:
 
- void TestWithConstantForce() throw(Exception)
+ void offTestWithConstantForce() throw(Exception)
    {
 
-        double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -7;
+        double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -5;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
 
         TRACE("Jess is good")
         double EndTime = 0;
         double scale = 0.0011; 
 
-        double SamplingStep = 50;
-        double dt = 0.04;
-        double RemeshingTime = 300;
-        double EdgeLength =1.1*scale;
+        double SamplingStep = 200;
+        double dt = 0.01;
+        double RemeshingTime = 7000;
+        double EdgeLength =1.2*scale;
         
         /////////////////////////////////////////////////////////////////////////////////////
-        std::string output_dir =  "FSISimulations/VascularNetwork/GrowingToEqui/ConstantForceArchiving/";
-        std::string mesh_file = "/data/vascrem/MeshCollection/VascularNetwork/VascularNetwork2.vtu";
+        std::string output_dir =  "FSISimulations/VascularNetworkLargerBendingForce/GrowingToEqui/ConstantForceArchiving/";
+        std::string mesh_file = "/data/vascrem/MeshCollection/VascularNetwork/VascularNetwork.vtu";
         VtkMeshReader<2, 3> mesh_reader(mesh_file);
         MutableMesh<2, 3> mesh;
         mesh.ConstructFromMeshReader(mesh_reader);
@@ -173,8 +173,8 @@ public:
             for (int i = 0; i < 50; i++)
             {
                 PRINT_VARIABLE(EndTime)
-                // cell_population.SetStartTime(EndTime);
-                EndTime += 5;
+                //cell_population.SetStartTime(EndTime);
+                EndTime += 20;
                 simulator.SetEndTime(EndTime);
 
                 simulator.Solve();
@@ -185,65 +185,27 @@ public:
 
     }
 
-
-
-void TestContinuedWithConstantForce() throw(Exception)
+  void TestWithHemeLBForce() throw(Exception)
    {
 
-        std::string Archieved ="FSISimulations/VascularNetwork/GrowingToEqui/ConstantForceArchiving/";
-
-        double EndTime = 0.1;
-
-        OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
-
-        
-        for (int i =0; i<=3; i++)
-            { 
-        
-                EndTime +=10;
-                p_simulator->SetEndTime(EndTime);
-
-                p_simulator->Solve();
-                CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-            }
-
-    }
-
-
-
-
-
-
-  void offTestWithHemeLBForce() throw(Exception)
-   {
-
-        double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -7;
+        double AreaParameter = -5;  double DilationParameter = -5.5; double DeformationParamter = -5; double BendingParameter = -5;
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
 
-        std::string Archieved = "SimpleHemeLBPlexus2/GrowingToEqui3/";//std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
-        std::string output_dir = "FSISimulations/Plexus/EquiWithHemeLB3/";
-        double EndTime = 10;
-        double SamplingStep = 50;
-        double dt = 0.001;
+        TRACE("Jess is good")
+        double EndTime = 20;
+        double scale = 0.0011; 
+
+        double SamplingStep = 200;
+        double dt = 0.01;
         double RemeshingTime = 10000;
-        double EdgeLength =0.00045;
-        double FSI_Iterations = 100000000;
-
-
+        double FSI_Iterations = 10000;
+        double EdgeLength =1.2*scale;
         
-
-        // 0.00115
-
-
+        /////////////////////////////////////////////////////////////////////////////////////
+        std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/GrowingToEqui/ConstantForceArchiving/";;//std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
+        std::string output_dir = "FSISimulations/VascularNetworkLargerBendingForce/HemeLBEqui/ConstantForceArchiving/";
         // this simulaiton is in mm. Have chosen this magnitude because um in m will give me numbers too close to machince presision, and movment
         // in um will be too large and break chaste without carefull playing with or a tiny time step
-
-
-
-// -0.04
-
-// -0.1993
-
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(Archieved, EndTime);
  
@@ -259,7 +221,6 @@ void TestContinuedWithConstantForce() throw(Exception)
         p_simulator->RemoveAllForces();
         // p_simulator->RemoveAllCellPopulationBoundaryConditions();
 
-
         /* 
         -----------------------------
         Edit  RemeshingTriggerOnStepHeteroModifier
@@ -268,9 +229,8 @@ void TestContinuedWithConstantForce() throw(Exception)
         std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
-        p_Mesh_modifier->SetStepSize(pow(10, -8));
-
-        p_Mesh_modifier->SetmSetUpSolve(1);
+        // p_Mesh_modifier->SetStepSize(pow(10, -8));
+        // p_Mesh_modifier->SetmSetUpSolve(1);
     
         /*
         -----------------------------
@@ -278,10 +238,12 @@ void TestContinuedWithConstantForce() throw(Exception)
         ----------------------------
         */
         boost::shared_ptr<MembraneDeformationForce> p_shear_force(new MembraneDeformationForce());
+        p_shear_force->SetCollapseType(1);
         p_simulator->AddForce(p_shear_force);
 
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
         p_membrane_force->SetMembraneStiffness(pow(10, -7));
+        p_membrane_force->SetCollapseType(1);
         p_simulator->AddForce(p_membrane_force);
 
 
@@ -290,34 +252,18 @@ void TestContinuedWithConstantForce() throw(Exception)
         Add the HemeLB Force
         ----------------------------
         */
-        // Inlet1
+       // Inlet1
+       c_vector<double, 3> Point1 = Create_c_vector(0.016595194405737763,0.12835719623300196,-0.002236333573976076);
+       c_vector<double, 3> PlaneNormal1 = Create_c_vector(0.9477460065412346, -0.31902584258272776,-0.000137293563571154  );
+        
 
-       c_vector<double, 3> Point1 = Create_c_vector(0.023244704133811703, 0.037075481876763385, 0);
-        c_vector<double, 3> PlaneNormal1 = Create_c_vector(1,0,0 );
-        // Inlet2
-        c_vector<double, 3> Point2 = Create_c_vector(0.036837793060229,0.055384952301980456,-0.0007597519518940717)  ;
-        c_vector<double, 3> PlaneNormal2 = Create_c_vector(0.6732805342808156,-0.7380737547778258,  -0.04405059212657047);
+       c_vector<double, 3> Point2 = Create_c_vector(0.04165292612840986, 0.23533064715360683, -0.0007601220860857502);
+       c_vector<double, 3> PlaneNormal2 = Create_c_vector(0.7969315092041309, -0.604064075870372, -0.002600361609387508 );
+       
 
-        // Outlet1 This is the bug bar
-        c_vector<double, 3> Point3 = Create_c_vector(0.051243051697026636,0.05386889597979771, 0.00016345376729906492 ) ;
-        c_vector<double, 3> PlaneNormal3 = Create_c_vector( -0.8734008505817445, -0.4862907639633924, 0.026310588875685135  );
-
-        // Outlet2
-        c_vector<double, 3> Point4 = Create_c_vector( 0.05849786867183286,0.04003892834739773, -8.346812953121241e-5) ;
-        c_vector<double, 3> PlaneNormal4 = Create_c_vector( -0.7771752850914773, -0.6286228836915505, 0.028841746519592842);
-
-        // Inlet3
-        c_vector<double, 3> Point5 = Create_c_vector(0.056296622912376706, 0.020105116941221777, 0.0002243854912119816) ;
-        c_vector<double, 3> PlaneNormal5 = Create_c_vector(-0.7208815333497773, 0.6929575165100672, -0.011819271867331964);
-
-        // Outlet3
-        c_vector<double, 3> Point6 = Create_c_vector(0.039492636709086544, 0.013468141696478432, -0.00030703284641268327) ;
-        c_vector<double, 3> PlaneNormal6 = Create_c_vector(0.14577215937619503, 0.9879552859046741, -0.0519117578571096);
-
-         // Inlet4
-        c_vector<double, 3> Point7 = Create_c_vector(0.027954386139121126, 0.02122180981896879, 0.0008357837352478671) ;
-        c_vector<double, 3> PlaneNormal7 = Create_c_vector(0.6878807670924608, 0.7247343474980099, -0.03975142539484216);
-
+       c_vector<double, 3> Point3 = Create_c_vector(0.1661163256187882,0.027296779685866353,0.002303039834163201);
+       c_vector<double, 3> PlaneNormal3 = Create_c_vector(0.0807491790098989,0.9963585613635368,  0.027371285808498066 );
+       
 
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
 
@@ -325,14 +271,11 @@ void TestContinuedWithConstantForce() throw(Exception)
         double OutletPressure = P_blood * (0.9);
 
         boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
-        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure*1.01, "Inlet"); // Issues here 
-        p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure*1.005, "Inlet"); //FIne
-        p_ForceOut->Inlets(PlaneNormal3, Point3, InletPressure, "Inlet");// Issues here 
-        p_ForceOut->Inlets(PlaneNormal4, Point4, InletPressure, "Inlet");// Issues here 
-        p_ForceOut->Inlets(PlaneNormal5, Point5, OutletPressure, "Outlet");
-        p_ForceOut->Inlets(PlaneNormal6, Point6, OutletPressure*0.98, "Outlet");
-        p_ForceOut->Inlets(PlaneNormal7, Point7, OutletPressure*0.95, "Outlet");
+        p_ForceOut->Inlets(PlaneNormal1, Point1, InletPressure, "Inlet"); // Issues here 
+        p_ForceOut->Inlets(PlaneNormal2, Point2, InletPressure, "Inlet"); //FIne
+        p_ForceOut->Inlets(PlaneNormal3, Point3, OutletPressure, "Outlet");// Issues here 
         p_ForceOut->SetStartTime(EndTime);
+        p_ForceOut->SetCollapseType(1);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
         p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
         p_simulator->AddForce(p_ForceOut);
@@ -341,7 +284,7 @@ void TestContinuedWithConstantForce() throw(Exception)
       for (int i =1; i<=50; i++)
         { 
     
-            EndTime +=1;
+            EndTime +=5;
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();
