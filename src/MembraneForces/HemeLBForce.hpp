@@ -108,9 +108,9 @@ private:
         // archive& mHemeLB_output;
         // archive& mhemelb_setup_exe;
         // archive& mHemeLBPath ;
-        // archive& mFlowVtus;
+        archive& mFlowVtus;
 
-        // archive& mMachine;
+        archive& mMachine;
         archive& mStartTime;
         archive& mCenterlinesNumber;
         archive& mRunHemeLB;
@@ -273,7 +273,7 @@ public:
     bool mFlowVtus=0;
 
     void SetMachine(std::string Machine);
-    std::string mMachine ="server"; // Machine can be mac or Linux server, will make this better soon 
+    // std::string mMachine ="server"; // Machine can be mac or Linux server, will make this better soon 
 
     // Function to help return system commands     
     std::pair<std::string, int> exec(const char* cmd);

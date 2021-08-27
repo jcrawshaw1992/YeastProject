@@ -1030,6 +1030,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 			}
 		}
         shear_stress/=counter;
+        PRINT_VARIABLE(shear_stress)
 
 
 
