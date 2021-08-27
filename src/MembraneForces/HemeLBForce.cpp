@@ -1083,6 +1083,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
                 {
                         cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);  
                 }
+             }
 	}
 
 
