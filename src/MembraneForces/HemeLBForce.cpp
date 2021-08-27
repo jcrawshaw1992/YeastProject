@@ -1025,7 +1025,10 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 			}
             if (distance <  mRegionOfForceCollection)
             {
-                shear_stress +=mAppliedTangentTractions[fluid_site_index];
+                // shear_stress +=mAppliedTangentTractions[fluid_site_index];
+                shear_stress[0] +=mAppliedTangentTractions[fluid_site_index][0];
+                shear_stress[1] +=mAppliedTangentTractions[fluid_site_index][1];
+                shear_stress[2] +=mAppliedTangentTractions[fluid_site_index][2];
             
                 counter+=1;
 			}
