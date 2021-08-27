@@ -1026,11 +1026,12 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
             if (distance <  mRegionOfForceCollection)
             {
                 shear_stress +=mAppliedTangentTractions[fluid_site_index];
+            
                 counter+=1;
 			}
 		}
         shear_stress/=counter;
-        PRINT_VARIABLE(shear_stress)
+        PRINT_2_VARIABLES(shear_stress, counter)
 
 
 
@@ -1056,7 +1057,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         mForceMap[node_index] = force;//mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
-        // cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
+        cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 
 
 
