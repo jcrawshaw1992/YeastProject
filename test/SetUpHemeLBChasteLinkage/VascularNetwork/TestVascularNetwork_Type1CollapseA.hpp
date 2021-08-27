@@ -49,7 +49,7 @@ public:
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
 
         TRACE("Jess is good")
-        double EndTime = 70;
+        double EndTime = 25;
         double scale = 0.0011; 
 
         double SamplingStep = 200;
@@ -59,7 +59,8 @@ public:
         double EdgeLength =1.1*scale;
         
         /////////////////////////////////////////////////////////////////////////////////////
-        std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/HemeLBEqui/ConstantForceArchiving/";//std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
+        //  std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/GrowingToEqui/ConstantForceArchiving/";//
+         std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/HemeLBEqui/ConstantForceArchiving/";//std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
         std::string output_dir = "FSISimulations/VascularNetworkLargerBendingForce/Type1Collapse/A/";
         // this simulaiton is in mm. Have chosen this magnitude because um in m will give me numbers too close to machince presision, and movment
         // in um will be too large and break chaste without carefull playing with or a tiny time step
