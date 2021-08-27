@@ -1025,9 +1025,9 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 			}
             if (distance <  mRegionOfForceCollection)
             {
-                assert(std::isnan(mAppliedTangentTractions[fluid_site_index][0] ==0)
-                assert(std::isnan(mAppliedTangentTractions[fluid_site_index][1] ==0)
-                assert(std::isnan(mAppliedTangentTractions[fluid_site_index][2] ==0)
+                assert(std::isnan(mAppliedTangentTractions[fluid_site_index][0]) ==0)
+                assert(std::isnan(mAppliedTangentTractions[fluid_site_index][1]) ==0)
+                assert(std::isnan(mAppliedTangentTractions[fluid_site_index][2]) ==0)
                 
                 shear_stress +=mAppliedTangentTractions[fluid_site_index];
 
