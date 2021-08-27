@@ -1042,7 +1042,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         else
         {
                 cell_iter->GetCellData()->SetItem("shear_stress",WallShearStress2); 
-                 if (mCenterlinesNumber <1)
+                 if (mCenterlinesNumber <2)
              {
                 if (MinimumShearStress > WallShearStress2)
                 {
@@ -1096,7 +1096,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 	}
 
 PRINT_3_VARIABLES(mCenterlinesNumber,MinimumShearStress , MaximumShearStress)
-        if (mCenterlinesNumber <1)
+        if (mCenterlinesNumber <2)
             {
                 mMaxSS = MaximumShearStress;
                 mMinSS = MinimumShearStress;
