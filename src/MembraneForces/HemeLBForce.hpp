@@ -92,8 +92,8 @@ private:
         // // archive& mAppliedPressure;//
 
         // archive& mNetwork;
-        // archive& mMinSS; 
-        // archive& mMaxSS; 
+        archive& mMinSS; 
+        archive& mMaxSS; 
         // archive& mRegionOfForceCollection;
 
         // // archive& mIolets;  //
@@ -111,13 +111,13 @@ private:
         // archive& mFlowVtus;
 
         // archive& mMachine;
-        // archive& mStartTime;
+        archive& mStartTime;
         archive& mCenterlinesNumber;
-        // archive& mRunHemeLB;
-        // archive& mSetupHemeLB;
-        // archive& mConstantPressure;
-        // archive& mNewInlets;
-        // archive& mRemeshingCounter;
+        archive& mRunHemeLB;
+        archive& mSetupHemeLB;
+        archive& mConstantPressure;
+        archive& mNewInlets;
+        archive& mRemeshingCounter;
 
         // archive& mCollapsedRegion;
 

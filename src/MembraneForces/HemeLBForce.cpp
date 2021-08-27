@@ -979,6 +979,12 @@ void HemeLBForce::Network(std::string Network)
         mMinSS =  5.69087e-06;
         mMaxSS =  0.0016764; 
     }
+    else if(Network == "VascularNetwork" || Network == "vascularnetwork"||Network == "VN" ||Network == "vn" )
+    {
+        mRegionOfForceCollection =0.002;// 0.0007;
+        mMinSS =  5.69087e-06;
+        mMaxSS =  0.0016764; 
+    }
     
 }
 
@@ -1049,10 +1055,8 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         mForceMap[node_index] = force;//mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
-        // cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
+        cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 
-
-        // PRINT_2_VARIABLES(mMinSS ,mMaxSS )
 
         if (mCenterlinesNumber >=2)
              {

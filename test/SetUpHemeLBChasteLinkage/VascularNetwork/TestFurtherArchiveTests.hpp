@@ -292,7 +292,7 @@ public:
 
         OffLatticeSimulation<2, 3>* p_simulator = CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Load(output_dir, EndTime);
 
-        EndTime +=0.5;
+        EndTime +=0.05;
         p_simulator->SetEndTime(EndTime);
 
         p_simulator->Solve();
