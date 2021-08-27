@@ -49,7 +49,7 @@ public:
         std::map<double, c_vector<long double, 4> > GrowthMaps = { { 1, Create_c_vector(pow(10, AreaParameter), pow(10, DilationParameter), pow(10, DeformationParamter), pow(10, BendingParameter)) }, {0,  Create_c_vector(pow(10, -4), pow(10, -4), pow(10, -4),pow(10, BendingParameter))} };
 
         TRACE("Jess is good")
-        double EndTime = 25;
+        double EndTime = 70;
         double scale = 0.0011; 
 
         double SamplingStep = 200;
@@ -60,7 +60,7 @@ public:
         
         /////////////////////////////////////////////////////////////////////////////////////
         //  std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/GrowingToEqui/ConstantForceArchiving/";//
-         std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/HemeLBEqui/ConstantForceArchiving/";//std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
+         std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/HemeLBEqui2/ConstantForceArchiving/";//std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
         std::string output_dir = "FSISimulations/VascularNetworkLargerBendingForce/Type1Collapse/A/";
         // this simulaiton is in mm. Have chosen this magnitude because um in m will give me numbers too close to machince presision, and movment
         // in um will be too large and break chaste without carefull playing with or a tiny time step
@@ -87,6 +87,7 @@ public:
         std::vector<boost::shared_ptr<AbstractCellBasedSimulationModifier<2, 3> > >::iterator iter = p_simulator->GetSimulationModifiers()->begin();
         boost::shared_ptr<RemeshingTriggerOnStepHeteroModifier<2, 3> > p_Mesh_modifier = boost::static_pointer_cast<RemeshingTriggerOnStepHeteroModifier<2, 3> >(*iter);     
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
+        p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); // 
         p_Mesh_modifier->SetStepSize(pow(10, -8));
         p_Mesh_modifier->SetmSetUpSolve(1);
 
@@ -138,31 +139,31 @@ public:
         ----------------------------
         */
        // Inlet1
-       c_vector<double, 3> Point1 = Create_c_vector(0.016595194405737763,0.12835719623300196,-0.002236333573976076);
-       c_vector<double, 3> PlaneNormal1 = Create_c_vector(0.9477460065412346, -0.31902584258272776,-0.000137293563571154  );
+        // Inlet1
+       c_vector<double, 3> Point1 = Create_c_vector(0.012896438155977795,0.1296022543191808, -0.002236333573976076 );
+       c_vector<double, 3> PlaneNormal1 = Create_c_vector(0.9491166468623324, -0.3145145356937025,0 );
         
 
-       c_vector<double, 3> Point2 = Create_c_vector(0.04165292612840986, 0.23533064715360683, -0.0007601220860857502);
-       c_vector<double, 3> PlaneNormal2 = Create_c_vector(0.7969315092041309, -0.604064075870372, -0.002600361609387508 );
+       c_vector<double, 3> Point2 = Create_c_vector(0.04152531239022141, 0.23542737676454184, -0.0007601220860857502);
+       c_vector<double, 3> PlaneNormal2 = Create_c_vector(0.7969315092041309, -0.604064075870372, 0 );
        
 
-       c_vector<double, 3> Point3 = Create_c_vector(0.1661163256187882,0.027296779685866353,0.002303039834163201);
+       c_vector<double, 3> Point3 = Create_c_vector(0.1651556668051053,0.02512909630785012,0.0011455782250521602);
        c_vector<double, 3> PlaneNormal3 = Create_c_vector(0.0807491790098989,0.9963585613635368,  0.027371285808498066 );
-       
 
         double P_blood = 0.002133152; // Pa ==   1.6004e-05 mmHg
 
         double InletPressure = P_blood; // Fluid - Tissue pressure, think about adding a negative tissue force in the HemeLB force. but do this later
         double OutletPressure = P_blood * (0.9);
 
-        boost::shared_ptr<HemeLBForce<2, 3> > p_ForceOut(new HemeLBForce<2, 3>());
+        boost::shared_ptr<HemeLBForce> p_ForceOut(new HemeLBForce());
         p_ForceOut->Inlets(PlaneNormal1, Point1, OutletPressure, "Outlet"); // Issues here 
         p_ForceOut->Inlets(PlaneNormal2, Point2, OutletPressure, "Outlet"); //FIne
         p_ForceOut->Inlets(PlaneNormal3, Point3, InletPressure, "Inlet");// Issues here 
         p_ForceOut->SetStartTime(EndTime);
         p_ForceOut->SetCollapseType(1);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation());
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
         p_simulator->AddForce(p_ForceOut);
 
 

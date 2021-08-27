@@ -16,7 +16,7 @@ from os import path
 
 if __name__=="__main__":
 
-    OldFolder = "/data/vascrem/testoutput/FSISimulations/VascularNetworkLargerBendingForce/HemeLBEqui/ConstantForceArchiving/"
+    OldFolder = "/data/vascrem/testoutput/FSISimulations/VascularNetworkLargerBendingForce/HemeLBEqui2/ConstantForceArchiving/"
                                         #  "FSISimulations/VascularNetworkLargerBendingForce/HemeLBEqui/ConstantForceArchiving/";
     NewFolder = OldFolder+"CollectedResults/"
     if path.exists(NewFolder) ==0:

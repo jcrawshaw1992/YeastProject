@@ -425,6 +425,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetRemeshingI
 {
     mRemeshing = 1;
     // mRemeshing = 0;
+    mExecute = 0;
     mRemeshingInterval = RemeshingInterval;
 }
 
