@@ -179,19 +179,19 @@ void HemeLBForce::SetCollapseType(double CollapseType)
 }
 
 
-void HemeLBForce::SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<2, 3>& rCellPopulation)
-{
-//    TRACE("SetUpHemeLBConfiguration -- only 2 inputs") -- Hit here
-    MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
-    MutableMesh<2, 3>& Mesh = p_cell_population->rGetMesh();
-    mMesh = static_cast<HistoryDepMutableMesh<2, 3>*>(&Mesh); 
+// void HemeLBForce::SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<2, 3>& rCellPopulation)
+// {
+// //    TRACE("SetUpHemeLBConfiguration -- only 2 inputs") -- Hit here
+//     MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
+//     MutableMesh<2, 3>& Mesh = p_cell_population->rGetMesh();
+//     mMesh = static_cast<HistoryDepMutableMesh<2, 3>*>(&Mesh); 
 
-    SetUpFilePaths(outputDirectory, 1,0);
-    // WriteHemeLBBashScript();  
-    ExecuteHemeLB();
-    LoadTractionFromFile();
-    UpdateCellData(rCellPopulation);
-}
+//     SetUpFilePaths(outputDirectory, 1,0);
+//     // WriteHemeLBBashScript();  
+//     ExecuteHemeLB();
+//     LoadTractionFromFile();
+//     UpdateCellData(rCellPopulation);
+// }
 
 
 void HemeLBForce::SetUpHemeLBConfiguration(std::string outputDirectory, AbstractCellPopulation<2, 3>& rCellPopulation, bool RunInitalHemeLB)

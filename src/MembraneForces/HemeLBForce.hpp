@@ -172,7 +172,7 @@ public:
 
     HistoryDepMutableMesh<2, 3> *mMesh;
 
-    void SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<2, 3>& rCellPopulation);
+    // void SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<2, 3>& rCellPopulation);
     void SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<2, 3>& rCellPopulation, bool RunInitalHemeLB);
     void SetUpFilePaths(std::string outputDirectory, bool CreateFiles, bool RenamePriorResults);
 
