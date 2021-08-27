@@ -101,7 +101,7 @@ public:
         c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(0.6046730891694198,-0.7958736679245955, 0 ); 
   
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-        p_Mesh_modifier->SetRadius(0.016);
+        p_Mesh_modifier->SetRadius(0.0155);
         p_Mesh_modifier->SetUpdateFrequency(1/dt);
 
 
@@ -170,7 +170,7 @@ public:
       for (int i =1; i<=50; i++)
         { 
     
-            EndTime +=5;
+            EndTime +=0.05;
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();

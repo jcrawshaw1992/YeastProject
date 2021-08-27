@@ -1095,7 +1095,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         }
 	}
 
-
+PRINT_3_VARIABLES(mCenterlinesNumber,MinimumShearStress , MaximumShearStress)
         if (mCenterlinesNumber <1)
             {
                 mMaxSS = MaximumShearStress;
