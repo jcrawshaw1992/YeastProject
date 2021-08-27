@@ -111,16 +111,16 @@ private:
         // archive& mHemeLBPath ;
         // archive& mFlowVtus;
 
-        archive& mMachine;
-        archive& mStartTime;
-        archive& mCenterlinesNumber;
-        archive& mRunHemeLB;
-        archive& mSetupHemeLB;
-        archive& mConstantPressure;
-        archive& mNewInlets;
-        archive& mRemeshingCounter;
+        // archive& mMachine;
+        // archive& mStartTime;
+        // archive& mCenterlinesNumber;
+        // archive& mRunHemeLB;
+        // archive& mSetupHemeLB;
+        // archive& mConstantPressure;
+        // archive& mNewInlets;
+        // archive& mRemeshingCounter;
 
-        archive& mCollapsedRegion;
+        // archive& mCollapsedRegion;
 
     }
 
