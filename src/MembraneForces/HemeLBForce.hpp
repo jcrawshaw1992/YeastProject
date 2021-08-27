@@ -234,7 +234,7 @@ public:
    double mMinSS =  0.000424725;
    double mMaxSS = 0.00211783; 
 
-   double mRegionOfForceCollection = 0.0015;
+   double mRegionOfForceCollection = 0.003;
    void  SetCenterlinesNumber(double CenterlinesNumber);
 
 
