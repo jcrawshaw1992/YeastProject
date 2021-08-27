@@ -253,7 +253,7 @@ public:
     std::vector<std::vector<c_vector<double, 3>>> mIolets; // Each vector has one boundary, this is a vecotr of two vectors, none being the normal and the other is the point defining the plane
     // THis could be an issue!!!!! Convert to map?
 
-    // std::vector<double> mPressure;
+    std::vector<double> mPressure;
     double mEstimatedIC;
     double mExpectedVelocity;
     std::vector<std::string> mType;
