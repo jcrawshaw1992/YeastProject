@@ -1031,8 +1031,10 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 			}
 		}
         shear_stress/=counter;
-        PRINT_2_VARIABLES(shear_stress, counter)
+        double WallShearStress = norm_2(shear_stress);
 
+
+        PRINT_3_VARIABLES(shear_stress, counter,WallShearStress)
 
 
            if (mCenterlinesNumber <=1)
@@ -1053,7 +1055,8 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 		// Get the HemeLB force at the closest lattice site 
 		c_vector<double,3> force = mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
 		double Pressure = norm_2(force); 
-        double WallShearStress = norm_2(shear_stress);
+        
+
 
         mForceMap[node_index] = force;//mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
 		// Store the force in CellData
