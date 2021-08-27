@@ -272,7 +272,7 @@ public:
         p_simulator->AddForce(p_ForceOut);
 
     
-            EndTime +=0.1;
+            EndTime +=0.05;
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();
@@ -283,7 +283,7 @@ public:
 
    void TestWithHemeLBForce6() throw(Exception)
    {
-       double EndTime = 22.1;
+       double EndTime = 22.05;
         /////////////////////////////////////////////////////////////////////////////////////
          std::string output_dir = "FSISimulations/VascularNetworkLargerBendingForce/HemeLBEqui/ConstantForceArchiving/";
         // this simulaiton is in mm. Have chosen this magnitude because um in m will give me numbers too close to machince presision, and movment
