@@ -1035,6 +1035,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 
 
         PRINT_3_VARIABLES(shear_stress, counter,WallShearStress)
+        PRINT_3_VARIABLES(shear_stress[0], shear_stress[1],shear_stress[2])
 
 
            if (mCenterlinesNumber <=1)
