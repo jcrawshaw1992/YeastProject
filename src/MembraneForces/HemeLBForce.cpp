@@ -982,8 +982,9 @@ void HemeLBForce::Network(std::string Network)
     else if(Network == "VascularNetwork" || Network == "vascularnetwork"||Network == "VN" ||Network == "vn" )
     {
         mRegionOfForceCollection =0.003;// 0.0007;
-        mMinSS =  4.79917e-07;
-        mMaxSS =  0.000836732; 
+        mMinSS =   1.79384e-07;
+        mMaxSS =  0.000725138
+
     }
     
 }
@@ -1095,7 +1096,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         }
 	}
 
-PRINT_3_VARIABLES(mCenterlinesNumber,MinimumShearStress , MaximumShearStress)
+
         if (mCenterlinesNumber <2)
             {
                 mMaxSS = MaximumShearStress;
@@ -1105,6 +1106,7 @@ PRINT_3_VARIABLES(mCenterlinesNumber,MinimumShearStress , MaximumShearStress)
                 // PRINT_2_VARIABLES(mMinSS , mMaxSS )
                 // PRINT_2_VARIABLES(0.9*mMinSS ,1.1*mMaxSS )
                 PRINT_2_VARIABLES(MinimumShearStress , MaximumShearStress )
+                PRINT_3_VARIABLES(mCenterlinesNumber,MinimumShearStress , MaximumShearStress)
               } 
               
 
