@@ -52,10 +52,10 @@ public:
         double EndTime = 70;
         double scale = 0.0011; 
 
-        double SamplingStep = 50;
+        double SamplingStep = 25;
         double dt = 0.001;
         double RemeshingTime = 200;
-        double FSI_Iterations =5000;// 50;
+        double FSI_Iterations =50;// 50;
         double EdgeLength =1.1*scale;
         
         /////////////////////////////////////////////////////////////////////////////////////
@@ -164,19 +164,19 @@ public:
         p_ForceOut->Network("VascularNetwork");
         p_ForceOut->SetCollapseType(1);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),1s);
         p_simulator->AddForce(p_ForceOut);
 
 
-      // for (int i =1; i<=50; i++)
-      //   { 
+      for (int i =1; i<=50; i++)
+        { 
     
-            EndTime +=0.05;
+            EndTime +=5;
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
-        // }
+        }
 
     }
 

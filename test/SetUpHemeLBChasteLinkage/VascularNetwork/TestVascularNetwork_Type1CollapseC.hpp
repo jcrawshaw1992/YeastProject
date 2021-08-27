@@ -52,11 +52,12 @@ public:
         double EndTime = 70;
         double scale = 0.0011; 
 
-        double SamplingStep = 50;
+        double SamplingStep = 25;
         double dt = 0.001;
         double RemeshingTime = 200;
-        double FSI_Iterations = 50;
+        double FSI_Iterations =50;// 50;
         double EdgeLength =1.1*scale;
+        
         
         /////////////////////////////////////////////////////////////////////////////////////
         //  std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/GrowingToEqui/ConstantForceArchiving/";//

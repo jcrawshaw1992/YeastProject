@@ -1069,18 +1069,18 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -1);
         }
-        else if ( WallShearStress <= 0.95*mMinSS)
-        {
-            cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -2);
-        }
-        else if ( WallShearStress <= 0.98*mMinSS)
-        {
-            cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -3);
-        }
+        // else if ( WallShearStress <= 0.95*mMinSS)
+        // {
+        //     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -2);
+        // }
+        // else if ( WallShearStress <= 0.98*mMinSS)
+        // {
+        //     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -3);
+        // }
         else if  ( WallShearStress<1.1*mMaxSS  &&  WallShearStress > 0.9*mMinSS  ) 
         {
                     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);  
-                    assert(WallShearStress > 0.9*mMinSS );
+                    // assert(WallShearStress > 0.9*mMinSS );
 
         }
         else 
