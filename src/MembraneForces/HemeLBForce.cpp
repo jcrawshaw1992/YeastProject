@@ -1046,7 +1046,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 		c_vector<double,3> force = mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
 		double Pressure = norm_2(force); 
 
-        mForceMap[node_index] = mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
+        mForceMap[node_index] = force;//mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         // cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
