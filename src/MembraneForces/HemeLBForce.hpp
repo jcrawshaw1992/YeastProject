@@ -87,17 +87,17 @@ private:
         archive& mResultsDirectory;
         archive& mRemoveResultsDirectory;
         archive& mForceMap;
-        archive& mAppliedTractions;
-        archive& mAppliedTangentTractions;
-        archive& mAppliedPosition;
-        archive& mAppliedPressure;
+        // archive& mAppliedTractions;//
+        // archive& mAppliedTangentTractions;//
+        // archive& mAppliedPosition;//
+        // archive& mAppliedPressure;//
 
         archive& mNetwork;
         archive& mMinSS; 
         archive& mMaxSS; 
         archive& mRegionOfForceCollection;
 
-        archive& mIolets; 
+        // archive& mIolets;  //
         archive& mPressure;
         archive& mEstimatedIC;
         archive& mExpectedVelocity;
@@ -251,6 +251,7 @@ public:
 
     void SetFluidSolidIterations(double Iterations);
     std::vector<std::vector<c_vector<double, 3>>> mIolets; // Each vector has one boundary, this is a vecotr of two vectors, none being the normal and the other is the point defining the plane
+    // THis could be an issue!!!!! Convert to map?
 
     std::vector<double> mPressure;
     double mEstimatedIC;
