@@ -1039,17 +1039,18 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         // PRINT_3_VARIABLES(shear_stress, counter,WallShearStress)
         // PRINT_3_VARIABLES(shear_stress[0], shear_stress[1],shear_stress[2])
         double WallShearStress2 = sqrt(shear_stress[0]*shear_stress[0]+shear_stress[1]*shear_stress[1]+shear_stress[2]*shear_stress[2])/counter;
+        cell_iter->GetCellData()->SetItem("shear_stress",WallShearStress2);
 
 
            if (mCenterlinesNumber <=1)
              {
-                if (MinimumShearStress > norm_2(shear_stress))
+                if (MinimumShearStress > WallShearStress2)
                 {
-                    MinimumShearStress = norm_2(shear_stress);
+                    MinimumShearStress = WallShearStress2;
                 }
-                else if (MaximumShearStress < norm_2(shear_stress))
+                else if (MaximumShearStress < WallShearStress2)
                 {
-                    MaximumShearStress = norm_2(shear_stress);
+                    MaximumShearStress = WallShearStress2;
                 }
              }
     
@@ -1065,7 +1066,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         mForceMap[node_index] = force;//mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
-        cell_iter->GetCellData()->SetItem("shear_stress",WallShearStress2);
+        
 
 
 
