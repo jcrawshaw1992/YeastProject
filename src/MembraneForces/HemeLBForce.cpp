@@ -213,7 +213,7 @@ void HemeLBForce::SetUpHemeLBConfiguration(std::string outputDirectory, Abstract
     // TRACE("ExecuteHemeLB")
     LoadTractionFromFile();
     // TRACE("Done LoadTractionFromFile")
-    // UpdateCellData(rCellPopulation);
+    UpdateCellData(rCellPopulation);
 }
 
 
