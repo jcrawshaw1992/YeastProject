@@ -1017,7 +1017,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 		{
 			// Find the closest fluid site 
             //  TRACE("F")
-			double distance = norm_2(location - mAppliedPosition[fluid_site_index]*1e3);
+			double distance = std::abs(norm_2(location - mAppliedPosition[fluid_site_index]*1e3));
 			if (distance < distance_to_fluid_site)
 			{
 				distance_to_fluid_site = distance;	
@@ -1037,17 +1037,12 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         if (counter == 0)
         {
             PRINT_2_VARIABLES(WallShearStress2, counter)
-            cell_iter->GetCellData()->SetItem("shear_stress",-100);
+            cell_iter->GetCellData()->SetItem("shear_stress",100);
         }
         else
         {
                 cell_iter->GetCellData()->SetItem("shear_stress",WallShearStress2); 
-        }
-        
-
-
-
-           if (mCenterlinesNumber <=1)
+                 if (mCenterlinesNumber <=1)
              {
                 if (MinimumShearStress > WallShearStress2)
                 {
@@ -1059,6 +1054,12 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
                 }
              }
     
+        }
+        
+
+
+
+          
         
 		// assert(nearest_fluid_site != UNSIGNED_UNSET);
 	
@@ -1108,7 +1109,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 	}
 
 
-        if (mCenterlinesNumber <2)
+        if (mCenterlinesNumber <2 )
             {
                 mMaxSS = MaximumShearStress;
                 mMinSS = MinimumShearStress;

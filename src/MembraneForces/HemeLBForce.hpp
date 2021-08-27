@@ -231,8 +231,9 @@ public:
    std::string  mNetwork = "Honeycomb";
 
 
-   double mMinSS =  0.000424725;
-   double mMaxSS = 0.00211783; 
+   double mMinSS =    4.79917e-07;
+   double mMaxSS = 0.000836732; 
+
 
    double mRegionOfForceCollection = 0.003;
    void  SetCenterlinesNumber(double CenterlinesNumber);
