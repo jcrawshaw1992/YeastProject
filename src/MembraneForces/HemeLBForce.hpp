@@ -72,7 +72,7 @@
 template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 class HemeLBForce  : public AbstractForce<ELEMENT_DIM, SPACE_DIM>
 {
-friend class TestForces;
+// friend class TestForces;
 
 private:
 
