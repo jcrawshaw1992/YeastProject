@@ -276,6 +276,7 @@ public:
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();
+            p_simulator->RemoveAllForces();
             CellBasedSimulationArchiver<2, OffLatticeSimulation<2, 3>, 3>::Save(p_simulator);
 
     }

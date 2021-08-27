@@ -7,13 +7,7 @@
     1) SO far I think this will only work on mac, im going to need to check the bash scripts 
     will run on linx, 
     2) Need to put in a bunch of asserts that HemeLB exists on the machine 
-
-
-         TO DO 
-    ----------------
-    1) For the inital time step, have some measure of complexity of the vessel for how long we let the first time step run for, maybe this will
-    be the spread of the radii 
-    2) See if I can get the code to run for long time in more complicated geometry i.e check for reliability
+    3) Templating has been removed, it dosnt make sense to have anything other than <2,3>
 */
 
 HemeLBForce::HemeLBForce()
