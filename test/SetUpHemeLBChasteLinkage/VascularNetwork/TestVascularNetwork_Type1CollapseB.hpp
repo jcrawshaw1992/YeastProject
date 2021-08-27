@@ -174,7 +174,7 @@ public:
       for (int i =1; i<=50; i++)
         { 
     
-            EndTime +=5;
+            EndTime +=1;
             p_simulator->SetEndTime(EndTime);
 
             p_simulator->Solve();
