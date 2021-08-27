@@ -937,7 +937,7 @@ void HemeLBForce::LoadTractionFromFile()
 			assert(fabs(tangent_traction[2])<1e10);
 
 			mAppliedTangentTractions.push_back(tangent_traction);
-            /[fluid_site_index] = tangent_traction;
+            // /[fluid_site_index] = tangent_traction;
             //  if (mCenterlinesNumber <2)
             //  {
                 if (MinimumShearStress > norm_2(tangent_traction))
