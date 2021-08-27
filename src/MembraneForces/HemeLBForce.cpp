@@ -1063,7 +1063,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         mForceMap[node_index] = force;//mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
-        cell_iter->GetCellData()->SetItem("shear_stress",WallShearStress2);
+        cell_iter->GetCellData()->SetItem("shear_stress",1);
 
 
 
