@@ -816,9 +816,6 @@ void HemeLBForce::SetUpFilePaths(std::string outputDirectory, bool CreateFiles, 
 }
 
 
-
-
-template<unsigned 2, unsigned 3>
 void HemeLBForce::LoadTractionFromFile()
 {
 
@@ -971,7 +968,7 @@ void HemeLBForce::LoadTractionFromFile()
 }
 
 
-template<unsigned 2, unsigned 3>
+
 void HemeLBForce::Network(std::string Network)
 {
     mNetwork = Network;
@@ -990,7 +987,7 @@ void HemeLBForce::Network(std::string Network)
     
 }
 
-template<unsigned 2, unsigned 3>
+
 void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 {
 	
@@ -1338,7 +1335,7 @@ CHASTE_CLASS_EXPORT(HemeLBForce)
 
 
 
-// template<unsigned 2, unsigned 3>
+// 
 // void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 // {
 	
