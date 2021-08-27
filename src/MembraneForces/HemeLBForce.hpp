@@ -69,8 +69,7 @@
 /**
  * A force class to be used with an HemeLBForceOffLatticeSimulation to impose an externally defined force.
  */
-template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-class HemeLBForce  : public AbstractForce<ELEMENT_DIM, SPACE_DIM>
+class HemeLBForce  : public AbstractForce<2, 3>
 {
 // friend class TestForces;
 
@@ -80,7 +79,7 @@ private:
     template<class Archive>
     void serialize(Archive & archive, const unsigned int version)
     {
-        archive & boost::serialization::base_object<AbstractForce<ELEMENT_DIM, SPACE_DIM> >(*this);
+        archive & boost::serialization::base_object<AbstractForce<2, 3> >(*this);
 
         // archive& mExecuteHemeLBCounter;
         // archive& mTriggerHemeLB;
@@ -143,7 +142,7 @@ public:
      * @param rCellPopulation reference to the cell population
      *
      */
-    void AddForceContribution(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
+    void AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation);
 
 
     void Writepr2File(std::string Directory, double SimulationDuration);
@@ -171,17 +170,17 @@ public:
     void WriteOpenVtus(int Period, int mCenterlinesNumber);
 
 
-    HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM> *mMesh;
+    HistoryDepMutableMesh<2, 3> *mMesh;
 
-    void SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation);
-    void SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, bool RunInitalHemeLB);
+    void SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<2, 3>& rCellPopulation);
+    void SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<2, 3>& rCellPopulation, bool RunInitalHemeLB);
     void SetUpFilePaths(std::string outputDirectory, bool CreateFiles, bool RenamePriorResults);
 
     void ExecuteHemeLB();
     bool CheckIfSteadyStateAchieved();
     void ReRunHemeLB();
     void LoadTractionFromFile();
-    void UpdateCellData(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation);
+    void UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation);
 
     void SetStartTime(double StartTime);
 
@@ -192,7 +191,7 @@ public:
 
 
     // void LoadTractionFromVTKFile();
-    // void UpdateCellData2(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation);
+    // void UpdateCellData2(AbstractCellPopulation<2,3>& rCellPopulation);
 
 
     double mLatestFinialHemeLBVTU = -1;
@@ -289,8 +288,14 @@ public:
     void OutputForceParameters(out_stream& rParamsFile);
 };
 
+// #include "SerializationExportWrapper.hpp"
+// EXPORT_TEMPLATE_CLASS_ALL_DIMS(HemeLBForce)
+
+// #endif /*HemeLBForce_HPP_*/
+
+// Declare identifier for the serializer
 #include "SerializationExportWrapper.hpp"
-EXPORT_TEMPLATE_CLASS_ALL_DIMS(HemeLBForce)
+CHASTE_CLASS_EXPORT(HemeLBForce)
 
 #endif /*HemeLBForce_HPP_*/
 
@@ -306,21 +311,20 @@ EXPORT_TEMPLATE_CLASS_ALL_DIMS(HemeLBForce)
 ********************
    Code graveyard 
 ********************
-template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData2(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation)
+void HemeLBForce<2, 3>::UpdateCellData2(AbstractCellPopulation<2,3>& rCellPopulation)
 {
 
-	assert(SPACE_DIM==3); // Currently assumes that SPACE_DIM = 3
+	assert(3==3); // Currently assumes that 3 = 3
 	std::map<unsigned, c_vector<unsigned, 2>  > LatticeToNodeMap;
-	MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+	MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
 
-	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+	for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
 		 cell_iter != rCellPopulation.End();
 		 ++cell_iter)
 	{
-		c_vector<double, SPACE_DIM> location = rCellPopulation.GetLocationOfCellCentre(*cell_iter);
+		c_vector<double, 3> location = rCellPopulation.GetLocationOfCellCentre(*cell_iter);
 		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
+		Node<3>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
 		unsigned nearest_fluid_site = UNSIGNED_UNSET;
 		double distance_to_fluid_site = DBL_MAX;
 	
@@ -346,9 +350,9 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData2(AbstractCellPopulation
             iter != containing_elements.end();
             ++iter)
         {
-            Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
-            Node<SPACE_DIM>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
-            Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
+            Node<3>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
+            Node<3>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
+            Node<3>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
 
             c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
             c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
@@ -376,8 +380,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData2(AbstractCellPopulation
 
 
 
-template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromVTKFile()
+void HemeLBForce<2, 3>::LoadTractionFromVTKFile()
 {
     //   std::string TractionFile = mHemeLBDirectory + "results/Extracted/surface-tractions.xtr";
       std::string file = mHemeLBDirectory + "results/Extracted/surface-pressure_3348.vtu";

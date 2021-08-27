@@ -15,30 +15,30 @@
     be the spread of the radii 
     2) See if I can get the code to run for long time in more complicated geometry i.e check for reliability
 */
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-HemeLBForce<ELEMENT_DIM, SPACE_DIM>::HemeLBForce()
-        : AbstractForce<ELEMENT_DIM, SPACE_DIM>()
+
+HemeLBForce<2, 3>::HemeLBForce()
+        : AbstractForce<2, 3>()
 {
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-HemeLBForce<ELEMENT_DIM, SPACE_DIM>::~HemeLBForce()
+
+HemeLBForce<2, 3>::~HemeLBForce()
 {
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
+
+void HemeLBForce<2, 3>::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
     double P_tissue = 0.001466542;
-    assert(ELEMENT_DIM ==2); assert(SPACE_DIM ==3);
-    HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+    assert(2 ==2); assert(3 ==3);
+    HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
     // PRINT_2_VARIABLES(mExecuteHemeLBCounter, mTriggerHemeLB)
     if (mExecuteHemeLBCounter == mTriggerHemeLB)
     {
         TRACE("mExecuteHemeLBCounter == mTriggerHemeLB");
         // /* Update mesh */
-        MutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh = p_cell_population->rGetMesh();
-        mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
+        MutableMesh<2, 3>& Mesh = p_cell_population->rGetMesh();
+        mMesh = static_cast<HistoryDepMutableMesh<2, 3>*>(&Mesh); 
 
         // WriteOutVtuFile(mOutputDirectory);
 
@@ -60,12 +60,12 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
 
     // TRACE("Adding HemeLB Force to the nodes :) ")
 	
-	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+	for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
 		 cell_iter != rCellPopulation.End();
 		 ++cell_iter)
 	{
 		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
+		Node<3>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
   
          CellPtr p_cell = p_cell_population->GetCellUsingLocationIndex(node_index);
         // if (p_cell->GetMutationState()->IsType<EmptyBasementMatrix> ())
@@ -80,9 +80,9 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
                 ++iter)
             {
                 
-                Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
-                Node<SPACE_DIM>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
-                Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
+                Node<3>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
+                Node<3>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
+                Node<3>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
 
                 c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
                 c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
@@ -142,13 +142,13 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
      
 
     // double Nc =45;
-	// for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+	// for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
 	// 	 cell_iter != rCellPopulation.End();
 	// 	 ++cell_iter)
 	// {
     //     unsigned ReferenceNode = 0;
     //     unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-    //     Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
+    //     Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
 
     //     if (cell_iter->GetCellData()->GetItem("Boundary") == 1)
     //     {     
@@ -178,19 +178,19 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::AddForceContribution(AbstractCellPopul
 
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetCollapseType(double CollapseType)
+
+void HemeLBForce<2, 3>::SetCollapseType(double CollapseType)
 {
     mCollapseType = CollapseType;
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation)
+
+void HemeLBForce<2, 3>::SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<2, 3>& rCellPopulation)
 {
 //    TRACE("SetUpHemeLBConfiguration -- only 2 inputs") -- Hit here
-    MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-    MutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh = p_cell_population->rGetMesh();
-    mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
+    MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
+    MutableMesh<2, 3>& Mesh = p_cell_population->rGetMesh();
+    mMesh = static_cast<HistoryDepMutableMesh<2, 3>*>(&Mesh); 
 
     SetUpFilePaths(outputDirectory, 1,0);
     // WriteHemeLBBashScript();  
@@ -199,12 +199,12 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
     UpdateCellData(rCellPopulation);
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string outputDirectory, AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>& rCellPopulation, bool RunInitalHemeLB)
+
+void HemeLBForce<2, 3>::SetUpHemeLBConfiguration(std::string outputDirectory, AbstractCellPopulation<2, 3>& rCellPopulation, bool RunInitalHemeLB)
 {  
-    MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
-    MutableMesh<ELEMENT_DIM, SPACE_DIM>& Mesh = p_cell_population->rGetMesh();
-    mMesh = static_cast<HistoryDepMutableMesh<ELEMENT_DIM, SPACE_DIM>*>(&Mesh); 
+    MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
+    MutableMesh<2, 3>& Mesh = p_cell_population->rGetMesh();
+    mMesh = static_cast<HistoryDepMutableMesh<2, 3>*>(&Mesh); 
     bool RenamePriorResults =0;
     SetUpFilePaths(outputDirectory,RunInitalHemeLB,RenamePriorResults);
     /*  Need to generate the HemeLB bash script first */
@@ -223,14 +223,14 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpHemeLBConfiguration(std::string o
 }
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
+
+void HemeLBForce<2, 3>::ExecuteHemeLB()
 {       
 
 
     // if (mRemeshingCounter =2 )
     // {
-    //      HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+    //      HistoryDepMeshBasedCellPopulation<2, 3>* pCellPopulation = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
     //     pCellPopulation->ExecuteHistoryDependentRemeshing();
     // }
     // else
@@ -403,8 +403,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ExecuteHemeLB()
 
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOpenVtus(int Period, int mCenterlinesNumber)
+
+void HemeLBForce<2, 3>::WriteOpenVtus(int Period, int mCenterlinesNumber)
 {  
         ofstream bash_script;
 
@@ -443,8 +443,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOpenVtus(int Period, int mCenterl
 
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ReRunHemeLB()
+
+void HemeLBForce<2, 3>::ReRunHemeLB()
 {
     int SystemOutput; 
     TRACE("HemeLB had initially failed, running again with longer simulation time ")
@@ -481,15 +481,15 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::ReRunHemeLB()
   
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetFluidSolidIterations(double Iterations)
+
+void HemeLBForce<2, 3>::SetFluidSolidIterations(double Iterations)
 {
     mTriggerHemeLB = Iterations;
     // TRACE("Have set fluid iterations") -- This was fine 
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Inlets(c_vector<double, 3> PlaneNormal, c_vector<double, 3> Point, double pressure, std::string FlowDirection)
+
+void HemeLBForce<2, 3>::Inlets(c_vector<double, 3> PlaneNormal, c_vector<double, 3> Point, double pressure, std::string FlowDirection)
 {
     // Set the boundary planes for this hetro region, set an upper and a lower bound.
     std::vector<c_vector<double, 3> > CurrentBoundary;
@@ -514,11 +514,11 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Inlets(c_vector<double, 3> PlaneNormal
 
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOutVtuFile(std::string outputDirectory)
+
+void HemeLBForce<2, 3>::WriteOutVtuFile(std::string outputDirectory)
 {
 
-    VtkMeshWriter<ELEMENT_DIM, SPACE_DIM> mesh_writer(outputDirectory + "HemeLBFluid/", "Chaste", false);
+    VtkMeshWriter<2, 3> mesh_writer(outputDirectory + "HemeLBFluid/", "Chaste", false);
     mesh_writer.WriteFilesUsingMesh(*mMesh);
  
     // Not sure why this is called chaste.vtu, but it could be a bloody issue
@@ -531,8 +531,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteOutVtuFile(std::string outputDire
 }
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetHemeLBPath(std::string HemeLBPath)
+
+void HemeLBForce<2, 3>::SetHemeLBPath(std::string HemeLBPath)
 {
 
     std::string mhemelb_setup_exe = "env PYTHONPATH=" + HemeLBPath +"/Tools/setuptool:$PYTHONPATH " + HemeLBPath +"/Tools/setuptool/scripts/hemelb-setup-nogui";
@@ -540,8 +540,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetHemeLBPath(std::string HemeLBPath)
 
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirectory, double SimulationDuration)
+
+void HemeLBForce<2, 3>::Writepr2File(std::string outputDirectory, double SimulationDuration)
 {
 
 // scp linalg/src/UblasCustomFunctions.hpp vascrem@josborne.science.unimelb.edu.au:/home/vascrem/Chaste/linalg/src/UblasCustomFunctions.hpp
@@ -662,7 +662,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     mEstimatedIC/=mIolets.size();
     
     /* Get seed point */
-    c_vector<double, SPACE_DIM> Seed = mMesh->GetNode(200)->rGetLocation();     
+    c_vector<double, 3> Seed = mMesh->GetNode(200)->rGetLocation();     
   
     config_pr2 << "SeedPoint: {x: " + std::to_string(Seed[0]) + ", y: " + std::to_string(Seed[1]) + ", z: " + std::to_string(Seed[2]) + "}\n";
     config_pr2 << "StlFile: config.stl\n";
@@ -680,8 +680,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Writepr2File(std::string outputDirecto
     config_pr2.close();
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
+
+void HemeLBForce<2, 3>::WriteHemeLBBashScript()
 {
     PRINT_VARIABLE(mMachine)
     if(mMachine =="server")
@@ -729,26 +729,26 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
 // /home/vascrem/hemelb-dev
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetStartTime(double StartTime)
+
+void HemeLBForce<2, 3>::SetStartTime(double StartTime)
 {
     mStartTime = StartTime;
     // TRACE("Here the start time is set") -- This was fine
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-double HemeLBForce<ELEMENT_DIM, SPACE_DIM>::GetStartTime()
+
+double HemeLBForce<2, 3>::GetStartTime()
 {
     return mStartTime;
 }
 
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirectory, bool CreateFiles, bool RenamePriorResults)
+
+void HemeLBForce<2, 3>::SetUpFilePaths(std::string outputDirectory, bool CreateFiles, bool RenamePriorResults)
 {
     int SystemOutput;
-    assert(SPACE_DIM == 3);
+    assert(3 == 3);
     if (!boost::algorithm::ends_with(outputDirectory, "/"))
     {   
         outputDirectory = outputDirectory + "/";
@@ -818,8 +818,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetUpFilePaths(std::string outputDirec
 
 
 
-template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
+template<unsigned 2, unsigned 3>
+void HemeLBForce<2, 3>::LoadTractionFromFile()
 {
 
     TRACE("LoadTractionFromFile")
@@ -971,8 +971,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::LoadTractionFromFile()
 }
 
 
-template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Network(std::string Network)
+template<unsigned 2, unsigned 3>
+void HemeLBForce<2, 3>::Network(std::string Network)
 {
     mNetwork = Network;
     if (Network == "Honeycomb" || Network == "Honycomb"||Network == "Honey" ||Network == "H" )
@@ -990,8 +990,8 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::Network(std::string Network)
     
 }
 
-template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation)
+template<unsigned 2, unsigned 3>
+void HemeLBForce<2, 3>::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 {
 	
     double MaximumShearStress = 0;
@@ -999,17 +999,17 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
     
 
     TRACE("UpdateCellData")
-	assert(SPACE_DIM==3); 
-	MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+	assert(3==3); 
+	MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
     PRINT_VARIABLE(mAppliedPosition.size());
-	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+	for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
 		 cell_iter != rCellPopulation.End();
 		 ++cell_iter)
 	{
 
-		c_vector<double, SPACE_DIM> location = rCellPopulation.GetLocationOfCellCentre(*cell_iter);
+		c_vector<double, 3> location = rCellPopulation.GetLocationOfCellCentre(*cell_iter);
 		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
+		Node<3>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
 		unsigned nearest_fluid_site = UNSIGNED_UNSET;
 		double distance_to_fluid_site = DBL_MAX;
 
@@ -1111,23 +1111,23 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<
 }
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void  HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetCenterlinesNumber(double CenterlinesNumber)
+
+void  HemeLBForce<2, 3>::SetCenterlinesNumber(double CenterlinesNumber)
 {
     mCenterlinesNumber = CenterlinesNumber;
 }
 
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void  HemeLBForce<ELEMENT_DIM, SPACE_DIM>::CopyFile(std::string InputDirectory, std::string OutputDirectory)
+
+void  HemeLBForce<2, 3>::CopyFile(std::string InputDirectory, std::string OutputDirectory)
 {
   boost::filesystem::copy_file(InputDirectory.c_str(), OutputDirectory.c_str()); // This was changed so the code could work on linux and mac
 }
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void  HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCurrentyFlowVtuCount()
+
+void  HemeLBForce<2, 3>::UpdateCurrentyFlowVtuCount()
 {
         ifstream inFile;
         inFile.open(mHemeLB_output + "CurrentLastFluidOutput.txt");
@@ -1138,8 +1138,8 @@ void  HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCurrentyFlowVtuCount()
 }
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-bool HemeLBForce<ELEMENT_DIM, SPACE_DIM>::CheckIfSteadyStateAchieved()
+
+bool HemeLBForce<2, 3>::CheckIfSteadyStateAchieved()
 {
 
     /* Check if steady state was ever achieved by HemeLB*/
@@ -1177,8 +1177,8 @@ bool HemeLBForce<ELEMENT_DIM, SPACE_DIM>::CheckIfSteadyStateAchieved()
     return SSAchieved;
 }
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-std::pair<std::string, int> HemeLBForce<ELEMENT_DIM, SPACE_DIM>::exec(const char* cmd)
+
+std::pair<std::string, int> HemeLBForce<2, 3>::exec(const char* cmd)
 {
     std::array<char, 128> buffer;
     std::string result;
@@ -1198,8 +1198,8 @@ std::pair<std::string, int> HemeLBForce<ELEMENT_DIM, SPACE_DIM>::exec(const char
 }
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-std::string HemeLBForce<ELEMENT_DIM, SPACE_DIM>::double_to_string(double Number, long double precision)
+
+std::string HemeLBForce<2, 3>::double_to_string(double Number, long double precision)
 {
 
     std::string NumberString = std::to_string(Number);
@@ -1216,26 +1216,26 @@ std::string HemeLBForce<ELEMENT_DIM, SPACE_DIM>::double_to_string(double Number,
 }
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::OutputForceParameters(out_stream& rParamsFile)
+
+void HemeLBForce<2, 3>::OutputForceParameters(out_stream& rParamsFile)
 {
     // No parameters to include
 
     // Call method on direct parent class
-    AbstractForce<ELEMENT_DIM, SPACE_DIM>::OutputForceParameters(rParamsFile);
+    AbstractForce<2, 3>::OutputForceParameters(rParamsFile);
 }
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetMachine(std::string Machine)
+
+void HemeLBForce<2, 3>::SetMachine(std::string Machine)
 {
     assert( Machine == "mac" || Machine == "server");
     mMachine = Machine;
 }
 
 
-template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetGenerateFlowVtus(bool FlowVtus)
+
+void HemeLBForce<2, 3>::SetGenerateFlowVtus(bool FlowVtus)
 {
 
     bool mFlowVtus = FlowVtus;
@@ -1245,12 +1245,20 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::SetGenerateFlowVtus(bool FlowVtus)
 /////////////////////////////////////////////////////////////////////////////
 // Explicit instantiation
 /////////////////////////////////////////////////////////////////////////////
-template class HemeLBForce<2, 3>;
+// template class HemeLBForce<2, 3>;
+
+// // Serialization for Boost >= 1.36
+// #include "SerializationExportWrapperForCpp.hpp"
+// EXPORT_TEMPLATE_CLASS_ALL_DIMS(HemeLBForce)
+// // CHASTE_CLASS_EXPORT(HemeLBForce)
 
 // Serialization for Boost >= 1.36
 #include "SerializationExportWrapperForCpp.hpp"
-EXPORT_TEMPLATE_CLASS_ALL_DIMS(HemeLBForce)
-// CHASTE_CLASS_EXPORT(HemeLBForce)
+CHASTE_CLASS_EXPORT(HemeLBForce)
+
+
+
+
 
 // ----------------------------------------------------------------------------------------------------------
 
@@ -1330,26 +1338,26 @@ EXPORT_TEMPLATE_CLASS_ALL_DIMS(HemeLBForce)
 
 
 
-// template<unsigned ELEMENT_DIM, unsigned SPACE_DIM>
-// void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::UpdateCellData(AbstractCellPopulation<ELEMENT_DIM,SPACE_DIM>& rCellPopulation)
+// template<unsigned 2, unsigned 3>
+// void HemeLBForce<2, 3>::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 // {
 	
-// 	assert(SPACE_DIM==3); // Currently assumes that SPACE_DIM = 3
+// 	assert(3==3); // Currently assumes that 3 = 3
 	
 // 	// std::map<unsigned, c_vector<unsigned, 2>  > LatticeToNodeMap;
 	
 
-// 	MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<MeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
+// 	MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
 
-// 	for (typename AbstractCellPopulation<ELEMENT_DIM, SPACE_DIM>::Iterator cell_iter = rCellPopulation.Begin();
+// 	for (typename AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
 // 		 cell_iter != rCellPopulation.End();
 // 		 ++cell_iter)
 // 	{
 
-// 		c_vector<double, SPACE_DIM> location = rCellPopulation.GetLocationOfCellCentre(*cell_iter);
+// 		c_vector<double, 3> location = rCellPopulation.GetLocationOfCellCentre(*cell_iter);
 
 // 		unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-// 		Node<SPACE_DIM>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
+// 		Node<3>* pNode = rCellPopulation.rGetMesh().GetNode(node_index);
 // 		unsigned nearest_fluid_site = UNSIGNED_UNSET;
 // 		double distance_to_fluid_site = DBL_MAX;
 	
@@ -1391,9 +1399,9 @@ EXPORT_TEMPLATE_CLASS_ALL_DIMS(HemeLBForce)
 //         //     iter != containing_elements.end();
 //         //     ++iter)
 //         // {
-//         //     Node<SPACE_DIM>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
-//         //     Node<SPACE_DIM>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
-//         //     Node<SPACE_DIM>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
+//         //     Node<3>* pNode0 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(0));
+//         //     Node<3>* pNode1 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(1));
+//         //     Node<3>* pNode2 = p_cell_population->rGetMesh().GetNode(p_cell_population->rGetMesh().GetElement(*iter)->GetNodeGlobalIndex(2));
 
 //         //     c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 2
 //         //     c_vector<double, 3> vector_13 = pNode2->rGetLocation() - pNode0->rGetLocation(); // Vector 1 to 3
@@ -1421,7 +1429,7 @@ EXPORT_TEMPLATE_CLASS_ALL_DIMS(HemeLBForce)
 
 
 //         // unsigned node_index = rCellPopulation.GetLocationIndexUsingCell(*cell_iter);
-//         //     Node<SPACE_DIM>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
+//         //     Node<3>* pNode = p_cell_population->rGetMesh().GetNode(node_index);
 //         //     c_vector<double, 3> ForceOnNode = mForceMap[node_index]/1;
 //         //     rCellPopulation.GetNode(node_index)->AddAppliedForceContribution(ForceOnNode); 
 
