@@ -211,7 +211,7 @@ void HemeLBForce::SetUpHemeLBConfiguration(std::string outputDirectory, Abstract
         ExecuteHemeLB();
     }
     // TRACE("ExecuteHemeLB")
-    // LoadTractionFromFile();
+    LoadTractionFromFile();
     // TRACE("Done LoadTractionFromFile")
     // UpdateCellData(rCellPopulation);
 }
@@ -920,6 +920,7 @@ void HemeLBForce::LoadTractionFromFile()
 			assert(fabs(traction[2])<1e10);
 
 			mAppliedTractions.push_back(traction);
+            mAppliedTractionsMap[fluid_site_index] = traction;
     	}
 
     	{
@@ -936,7 +937,7 @@ void HemeLBForce::LoadTractionFromFile()
 			assert(fabs(tangent_traction[2])<1e10);
 
 			mAppliedTangentTractions.push_back(tangent_traction);
-
+            mAppliedTangentTractionsMap[fluid_site_index] = tangent_traction;
             //  if (mCenterlinesNumber <2)
             //  {
                 if (MinimumShearStress > norm_2(tangent_traction))

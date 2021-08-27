@@ -206,17 +206,19 @@ public:
     /**
 	 * 	Store the loaded traction data; this is the applied traction at a given point.
 	 */
-	std::vector < c_vector<double,3> > mAppliedTractions;
+	std::vector < c_vector<float,3> > mAppliedTractions;
+  std::map<unsigned, c_vector<double, 3>> mAppliedTractionsMap;
+  std::map<unsigned, c_vector<double, 3>> mAppliedTangentTractionsMap;
 
 	/**
 	 * 	Store the loaded tangential component of the traction data; this is the applied tangential traction at a given point.
 	 */
-	std::vector < c_vector<double,3> > mAppliedTangentTractions;
+	std::vector < c_vector<float,3> > mAppliedTangentTractions;
 
 	/**
 	 * 	Store the loaded traction data; this is the location that the traction is defined at.
 	 */
-	std::vector < c_vector<double,3> > mAppliedPosition;
+	std::vector < c_vector<float,3> > mAppliedPosition;
 
     /**
 	 * 	Store the loaded traction data; this is the location that the traction is defined at.
