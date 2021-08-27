@@ -983,7 +983,7 @@ void HemeLBForce::Network(std::string Network)
     {
         mRegionOfForceCollection =0.003;// 0.0007;
         mMinSS =   1.79384e-07;
-        mMaxSS =  0.000725138
+        mMaxSS =  0.000725138;
 
     }
     
