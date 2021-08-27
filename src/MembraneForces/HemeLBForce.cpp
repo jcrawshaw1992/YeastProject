@@ -19,7 +19,6 @@ template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
 HemeLBForce<ELEMENT_DIM, SPACE_DIM>::HemeLBForce()
         : AbstractForce<ELEMENT_DIM, SPACE_DIM>()
 {
-    mMachine ="server";
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
