@@ -1039,10 +1039,15 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         // PRINT_3_VARIABLES(shear_stress, counter,WallShearStress)
         // PRINT_3_VARIABLES(shear_stress[0], shear_stress[1],shear_stress[2])
         double WallShearStress2 = sqrt(shear_stress[0]*shear_stress[0]+shear_stress[1]*shear_stress[1]+shear_stress[2]*shear_stress[2])/counter;
-        cell_iter->GetCellData()->SetItem("shear_stress",WallShearStress2);
+        
         if (counter == 0)
         {
             PRINT_2_VARIABLES(WallShearStress2, counter)
+            cell_iter->GetCellData()->SetItem("shear_stress",-1000);
+        }
+        else
+        {
+                cell_iter->GetCellData()->SetItem("shear_stress",WallShearStress2); 
         }
         
 
