@@ -1012,7 +1012,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 
         double counter =0;
        
-        c_vector<double,3> shear_stress = Create_c_vector(0,0,0);
+        c_vector<float,3> shear_stress = Create_c_vector(0,0,0);
 		for (unsigned fluid_site_index = 0; fluid_site_index <  mAppliedPosition.size(); fluid_site_index++)
 		{
 			// Find the closest fluid site 
@@ -1034,8 +1034,9 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         double WallShearStress = norm_2(shear_stress);
 
 
-        PRINT_3_VARIABLES(shear_stress, counter,WallShearStress)
-        PRINT_3_VARIABLES(shear_stress[0], shear_stress[1],shear_stress[2])
+        // PRINT_3_VARIABLES(shear_stress, counter,WallShearStress)
+        // PRINT_3_VARIABLES(shear_stress[0], shear_stress[1],shear_stress[2])
+        double WallShearStress2 = sqrt(shear_stress[0]*shear_stress[0]+shear_stress[1]*shear_stress[1]+shear_stress[2]*shear_stress[2]);
 
 
            if (mCenterlinesNumber <=1)
@@ -1062,7 +1063,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         mForceMap[node_index] = force;//mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
 		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
-        cell_iter->GetCellData()->SetItem("shear_stress",WallShearStress);
+        cell_iter->GetCellData()->SetItem("shear_stress",WallShearStress2);
 
 
 
