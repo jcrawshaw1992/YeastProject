@@ -1044,11 +1044,11 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 	
 		// Get the HemeLB force at the closest lattice site 
 		c_vector<double,3> force = mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
-		// double Pressure = norm_2(force); 
+		double Pressure = norm_2(force); 
 
-        mForceMap[node_index] = force;
+        mForceMap[node_index] = mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
 		// Store the force in CellData
-		// cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
+		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         // cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 
         // assert(mMinSS== 2.58288e-05);
