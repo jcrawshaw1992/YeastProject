@@ -981,9 +981,9 @@ void HemeLBForce::Network(std::string Network)
     }
     else if(Network == "VascularNetwork" || Network == "vascularnetwork"||Network == "VN" ||Network == "vn" )
     {
-        mRegionOfForceCollection =0.002;// 0.0007;
-        mMinSS =  5.69087e-06;
-        mMaxSS =  0.0016764; 
+        mRegionOfForceCollection =0.003;// 0.0007;
+        mMinSS =  4.79917e-07;
+        mMaxSS =  0.000836732; 
     }
     
 }
@@ -1025,10 +1025,6 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 			}
             if (distance <  mRegionOfForceCollection)
             {
-                assert(std::isnan(mAppliedTangentTractions[fluid_site_index][0]) ==0);
-                assert(std::isnan(mAppliedTangentTractions[fluid_site_index][1]) ==0);
-                assert(std::isnan(mAppliedTangentTractions[fluid_site_index][2]) ==0);
-                
                 shear_stress +=mAppliedTangentTractions[fluid_site_index];
 
                 //   std::map<unsigned, c_vector<double, 3>> mAppliedTangentTractions;
@@ -1049,7 +1045,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         if (counter == 0)
         {
             PRINT_2_VARIABLES(WallShearStress2, counter)
-            cell_iter->GetCellData()->SetItem("shear_stress",-1000);
+            cell_iter->GetCellData()->SetItem("shear_stress",mMinSS);
         }
         else
         {
