@@ -203,7 +203,7 @@ public:
         
         /////////////////////////////////////////////////////////////////////////////////////
         std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/GrowingToEqui/ConstantForceArchiving/";;//std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
-        std::string output_dir = "FSISimulations/VascularNetworkLargerBendingForce/HemeLBEqui/ConstantForceArchiving/";
+        std::string output_dir = "FSISimulations/VascularNetworkLargerBendingForce/HemeLBEqui2/ConstantForceArchiving/";
         // this simulaiton is in mm. Have chosen this magnitude because um in m will give me numbers too close to machince presision, and movment
         // in um will be too large and break chaste without carefull playing with or a tiny time step
 
@@ -253,7 +253,6 @@ public:
         ----------------------------
         */
        // Inlet1
-       
        c_vector<double, 3> Point1 = Create_c_vector(0.012896438155977795,0.1296022543191808, -0.002236333573976076 );
        c_vector<double, 3> PlaneNormal1 = Create_c_vector(0.9491166468623324, -0.3145145356937025,0 );
         
