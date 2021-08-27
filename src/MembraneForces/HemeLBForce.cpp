@@ -1055,34 +1055,34 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         // assert(mMaxSS== 0.00258637);
         // PRINT_2_VARIABLES(mMinSS ,mMaxSS )
 
-        // if (mCenterlinesNumber >=2)
-        //      {
-                // PRINT_3_VARIABLES(mMinSS,  0.3*(mMaxSS- mMinSS) ,mMaxSS )
-                // if ( norm_2(shear_stress)>= 1.1*mMaxSS )
-                // {
-                //     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 1);
-                // }else if ( norm_2(shear_stress) <= 0.9*mMinSS)
-                // {
-                //     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -1);
-                // }
-                // else if ( norm_2(shear_stress) <= 0.95*mMinSS)
-                // {
-                //     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -2);
-                // }
-                // else if ( norm_2(shear_stress) <= 0.98*mMinSS)
-                // {
-                //     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -3);
-                // }
-                // else if  ( norm_2(shear_stress)<1.1*mMaxSS  &&  norm_2(shear_stress) > 0.9*mMinSS  ) 
-                // {
-                //          cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);  
-                //          assert(norm_2(shear_stress) > 0.9*mMinSS );
+        if (mCenterlinesNumber >=2)
+             {
+                PRINT_3_VARIABLES(mMinSS,  0.3*(mMaxSS- mMinSS) ,mMaxSS )
+                if ( norm_2(shear_stress)>= 1.1*mMaxSS )
+                {
+                    cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 1);
+                }else if ( norm_2(shear_stress) <= 0.9*mMinSS)
+                {
+                    cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -1);
+                }
+                else if ( norm_2(shear_stress) <= 0.95*mMinSS)
+                {
+                    cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -2);
+                }
+                else if ( norm_2(shear_stress) <= 0.98*mMinSS)
+                {
+                    cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -3);
+                }
+                else if  ( norm_2(shear_stress)<1.1*mMaxSS  &&  norm_2(shear_stress) > 0.9*mMinSS  ) 
+                {
+                         cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);  
+                         assert(norm_2(shear_stress) > 0.9*mMinSS );
 
-                // }
-                // else 
-                // {
-                //         cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);  
-                // }
+                }
+                else 
+                {
+                        cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);  
+                }
 	}
 
 
