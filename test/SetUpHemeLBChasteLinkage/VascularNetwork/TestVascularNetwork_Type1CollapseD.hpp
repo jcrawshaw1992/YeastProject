@@ -61,7 +61,7 @@ public:
         /////////////////////////////////////////////////////////////////////////////////////
         //  std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/GrowingToEqui/ConstantForceArchiving/";//
          std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/HemeLBEqui2/ConstantForceArchiving/";//std::string mesh_file = "/data/vascrem/testoutput/DeformingPlexus/FlatForceFINAL9/results_from_time_3/mesh_50.vtu";
-        std::string output_dir = "FSISimulations/VascularNetworkLargerBendingForce/Type1Collapse/A/";
+        std::string output_dir = "FSISimulations/VascularNetworkLargerBendingForce/Type1Collapse/D/";
         // this simulaiton is in mm. Have chosen this magnitude because um in m will give me numbers too close to machince presision, and movment
         // in um will be too large and break chaste without carefull playing with or a tiny time step
 
@@ -94,15 +94,14 @@ public:
 
         // Thirdcollapse option 
         // Upstream 
-        c_vector<double, 3> UpperPlanePoint =  Create_c_vector( 0.1586131433521622,0.19209192617731166, -0.0007928821405329238 ); 
-        c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0.9980163519220365, -0.005462078345927057, -0.06271783634958086);  
+        c_vector<double, 3> UpperPlanePoint =  Create_c_vector( 0.11626205737085708, 0.10571858807887478,0 ); 
+        c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0.7449205225843839,0.6562838465324978,0 );  
         // Down stream
-        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.18365705867142654,0.18329596299781725, 0.0038421010648107957 ); 
-        c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(0.6046730891694198,-0.7958736679245955, 0 ); 
+        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.12388625231475274,  0.12337047519998665,0); 
+        c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(0.09672559393307234,0.9937310411108554, 0 ); 
   
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
         p_Mesh_modifier->SetRadius(0.0155);
-        // p_Mesh_modifier->TurnOffRemeshing();
         p_Mesh_modifier->SetUpdateFrequency(1/dt);
 
 

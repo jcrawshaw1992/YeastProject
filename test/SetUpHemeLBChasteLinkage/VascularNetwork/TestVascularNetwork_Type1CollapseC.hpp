@@ -54,7 +54,7 @@ public:
 
         double SamplingStep = 25;
         double dt = 0.001;
-        double RemeshingTime = 200;
+        double RemeshingTime = 100;
         double FSI_Iterations =50;// 50;
         double EdgeLength =1.1*scale;
         
@@ -131,6 +131,7 @@ public:
         boost::shared_ptr<MembraneBendingForce> p_membrane_force(new MembraneBendingForce());
         p_membrane_force->SetMembraneStiffness(pow(10, -7));
         p_membrane_force->SetCollapseType(1);
+        
         p_simulator->AddForce(p_membrane_force);
 
 
