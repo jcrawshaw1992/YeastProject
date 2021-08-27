@@ -53,8 +53,8 @@ public:
         double scale = 0.0011; 
 
         double SamplingStep = 200;
-        double dt = 0.005;
-        double RemeshingTime = 5000;
+        double dt = 0.001;
+        double RemeshingTime = 10000;
         double FSI_Iterations = 100;
         double EdgeLength =1.1*scale;
         
