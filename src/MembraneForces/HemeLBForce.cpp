@@ -993,8 +993,8 @@ void HemeLBForce::Network(std::string Network)
 void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 {
 	
-    double MaximumShearStress = 0;
-    double MinimumShearStress = 1000;
+    // double MaximumShearStress = 0;
+    // double MinimumShearStress = 1000;
     
     TRACE("UpdateCellData")
 	MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
@@ -1030,30 +1030,30 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
                 counter+=1;
 			}
 		}
-        // shear_stress/=counter;
+        shear_stress/=counter;
         // PRINT_3_VARIABLES(shear_stress, counter,WallShearStress)
         // PRINT_3_VARIABLES(shear_stress[0], shear_stress[1],shear_stress[2])
-        double WallShearStress2 = sqrt(shear_stress[0]*shear_stress[0]+shear_stress[1]*shear_stress[1]+shear_stress[2]*shear_stress[2])/counter;
+        double WallShearStress = sqrt(shear_stress[0]*shear_stress[0]+shear_stress[1]*shear_stress[1]+shear_stress[2]*shear_stress[2])/counter;
         
         if (counter == 0)
         {
-            PRINT_2_VARIABLES(WallShearStress2, counter)
+            PRINT_2_VARIABLES(WallShearStress, counter)
             cell_iter->GetCellData()->SetItem("shear_stress",100);
         }
         else
         {
-                cell_iter->GetCellData()->SetItem("shear_stress",WallShearStress2); 
-                 if (mCenterlinesNumber <2)
-             {
-                if (MinimumShearStress > WallShearStress2)
-                {
-                    MinimumShearStress = WallShearStress2;
-                }
-                else if (MaximumShearStress < WallShearStress2)
-                {
-                    MaximumShearStress = WallShearStress2;
-                }
-             }
+                cell_iter->GetCellData()->SetItem("shear_stress",WallShearStress); 
+            //      if (mCenterlinesNumber <2)
+            //  {
+            //     if (MinimumShearStress > WallShearStress)
+            //     {
+            //         MinimumShearStress = WallShearStress;
+            //     }
+            //     else if (MaximumShearStress < WallShearStress)
+            //     {
+            //         MaximumShearStress = WallShearStress;
+            //     }
+            //  }
     
         }
     
@@ -1064,30 +1064,28 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 
 
         mForceMap[node_index] = force;//mAppliedTractions[nearest_fluid_site]/133.3223874;//;  Convert to Pas
-		// Store the force in CellData
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
-        cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);  
+        
 
-        // PRINT_3_VARIABLES(mMinSS,  0.3*(mMaxSS- mMinSS) ,mMaxSS )
-        if ( norm_2(shear_stress)>= 1.1*mMaxSS )
+        if ( WallShearStress>= 1.1*mMaxSS )
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 1);
-        }else if ( norm_2(shear_stress) <= 0.9*mMinSS)
+        }else if ( WallShearStress <= 0.9*mMinSS)
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -1);
         }
-        else if ( norm_2(shear_stress) <= 0.95*mMinSS)
+        else if ( WallShearStress <= 0.95*mMinSS)
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -2);
         }
-        else if ( norm_2(shear_stress) <= 0.98*mMinSS)
+        else if ( WallShearStress <= 0.98*mMinSS)
         {
             cell_iter->GetCellData()->SetItem("WallShearStressExtremes", -3);
         }
-        else if  ( norm_2(shear_stress)<1.1*mMaxSS  &&  norm_2(shear_stress) > 0.9*mMinSS  ) 
+        else if  ( WallShearStress<1.1*mMaxSS  &&  WallShearStress > 0.9*mMinSS  ) 
         {
                     cell_iter->GetCellData()->SetItem("WallShearStressExtremes", 0);  
-                    assert(norm_2(shear_stress) > 0.9*mMinSS );
+                    assert(WallShearStress > 0.9*mMinSS );
 
         }
         else 
@@ -1097,17 +1095,17 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 	}
 
 
-        if (mCenterlinesNumber <2)
-            {
-                mMaxSS = MaximumShearStress;
-                mMinSS = MinimumShearStress;
-                // PRINT_2_VARIABLES(mMaxSS, MaximumShearStress);
-                // PRINT_2_VARIABLES(mMinSS, MinimumShearStress);
-                // PRINT_2_VARIABLES(mMinSS , mMaxSS )
-                // PRINT_2_VARIABLES(0.9*mMinSS ,1.1*mMaxSS )
-                PRINT_2_VARIABLES(MinimumShearStress , MaximumShearStress )
-                PRINT_3_VARIABLES(mCenterlinesNumber,MinimumShearStress , MaximumShearStress)
-              } 
+        // if (mCenterlinesNumber <2)
+        //     {
+        //         mMaxSS = MaximumShearStress;
+        //         mMinSS = MinimumShearStress;
+        //         // PRINT_2_VARIABLES(mMaxSS, MaximumShearStress);
+        //         // PRINT_2_VARIABLES(mMinSS, MinimumShearStress);
+        //         // PRINT_2_VARIABLES(mMinSS , mMaxSS )
+        //         // PRINT_2_VARIABLES(0.9*mMinSS ,1.1*mMaxSS )
+        //         PRINT_2_VARIABLES(MinimumShearStress , MaximumShearStress )
+        //         PRINT_3_VARIABLES(mCenterlinesNumber,MinimumShearStress , MaximumShearStress)
+        //       } 
               
 
 
