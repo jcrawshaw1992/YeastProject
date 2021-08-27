@@ -1027,17 +1027,17 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 
 
 
-        //    if (mCenterlinesNumber <=1)
-        //      {
-        //         if (MinimumShearStress > norm_2(shear_stress))
-        //         {
-        //             MinimumShearStress = norm_2(shear_stress);
-        //         }
-        //         else if (MaximumShearStress < norm_2(shear_stress))
-        //         {
-        //             MaximumShearStress = norm_2(shear_stress);
-        //         }
-        //      }
+           if (mCenterlinesNumber <=1)
+             {
+                if (MinimumShearStress > norm_2(shear_stress))
+                {
+                    MinimumShearStress = norm_2(shear_stress);
+                }
+                else if (MaximumShearStress < norm_2(shear_stress))
+                {
+                    MaximumShearStress = norm_2(shear_stress);
+                }
+             }
     
         
 		// assert(nearest_fluid_site != UNSIGNED_UNSET);
@@ -1051,8 +1051,7 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 		cell_iter->GetCellData()->SetItem("HemeLBForce", Pressure);
         // cell_iter->GetCellData()->SetItem("shear_stress", norm_2(shear_stress));
 
-        // assert(mMinSS== 2.58288e-05);
-        // assert(mMaxSS== 0.00258637);
+
         // PRINT_2_VARIABLES(mMinSS ,mMaxSS )
 
         if (mCenterlinesNumber >=2)

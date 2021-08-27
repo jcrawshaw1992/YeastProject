@@ -112,7 +112,7 @@ private:
 
         // archive& mMachine;
         // archive& mStartTime;
-        // archive& mCenterlinesNumber;
+        archive& mCenterlinesNumber;
         // archive& mRunHemeLB;
         // archive& mSetupHemeLB;
         // archive& mConstantPressure;
