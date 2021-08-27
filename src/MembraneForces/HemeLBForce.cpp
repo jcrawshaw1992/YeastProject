@@ -16,18 +16,18 @@
     2) See if I can get the code to run for long time in more complicated geometry i.e check for reliability
 */
 
-HemeLBForce<2, 3>::HemeLBForce()
+HemeLBForce::HemeLBForce()
         : AbstractForce<2, 3>()
 {
 }
 
 
-HemeLBForce<2, 3>::~HemeLBForce()
+HemeLBForce::~HemeLBForce()
 {
 }
 
 
-void HemeLBForce<2, 3>::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
+void HemeLBForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
     double P_tissue = 0.001466542;
     assert(2 ==2); assert(3 ==3);
@@ -179,13 +179,13 @@ void HemeLBForce<2, 3>::AddForceContribution(AbstractCellPopulation<2, 3>& rCell
 
 
 
-void HemeLBForce<2, 3>::SetCollapseType(double CollapseType)
+void HemeLBForce::SetCollapseType(double CollapseType)
 {
     mCollapseType = CollapseType;
 }
 
 
-void HemeLBForce<2, 3>::SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<2, 3>& rCellPopulation)
+void HemeLBForce::SetUpHemeLBConfiguration(std::string outputDirectory,  AbstractCellPopulation<2, 3>& rCellPopulation)
 {
 //    TRACE("SetUpHemeLBConfiguration -- only 2 inputs") -- Hit here
     MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
@@ -200,7 +200,7 @@ void HemeLBForce<2, 3>::SetUpHemeLBConfiguration(std::string outputDirectory,  A
 }
 
 
-void HemeLBForce<2, 3>::SetUpHemeLBConfiguration(std::string outputDirectory, AbstractCellPopulation<2, 3>& rCellPopulation, bool RunInitalHemeLB)
+void HemeLBForce::SetUpHemeLBConfiguration(std::string outputDirectory, AbstractCellPopulation<2, 3>& rCellPopulation, bool RunInitalHemeLB)
 {  
     MeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<MeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
     MutableMesh<2, 3>& Mesh = p_cell_population->rGetMesh();
@@ -224,7 +224,7 @@ void HemeLBForce<2, 3>::SetUpHemeLBConfiguration(std::string outputDirectory, Ab
 
 
 
-void HemeLBForce<2, 3>::ExecuteHemeLB()
+void HemeLBForce::ExecuteHemeLB()
 {       
 
 
@@ -404,7 +404,7 @@ void HemeLBForce<2, 3>::ExecuteHemeLB()
 
 
 
-void HemeLBForce<2, 3>::WriteOpenVtus(int Period, int mCenterlinesNumber)
+void HemeLBForce::WriteOpenVtus(int Period, int mCenterlinesNumber)
 {  
         ofstream bash_script;
 
@@ -444,7 +444,7 @@ void HemeLBForce<2, 3>::WriteOpenVtus(int Period, int mCenterlinesNumber)
 
 
 
-void HemeLBForce<2, 3>::ReRunHemeLB()
+void HemeLBForce::ReRunHemeLB()
 {
     int SystemOutput; 
     TRACE("HemeLB had initially failed, running again with longer simulation time ")
@@ -482,14 +482,14 @@ void HemeLBForce<2, 3>::ReRunHemeLB()
 }
 
 
-void HemeLBForce<2, 3>::SetFluidSolidIterations(double Iterations)
+void HemeLBForce::SetFluidSolidIterations(double Iterations)
 {
     mTriggerHemeLB = Iterations;
     // TRACE("Have set fluid iterations") -- This was fine 
 }
 
 
-void HemeLBForce<2, 3>::Inlets(c_vector<double, 3> PlaneNormal, c_vector<double, 3> Point, double pressure, std::string FlowDirection)
+void HemeLBForce::Inlets(c_vector<double, 3> PlaneNormal, c_vector<double, 3> Point, double pressure, std::string FlowDirection)
 {
     // Set the boundary planes for this hetro region, set an upper and a lower bound.
     std::vector<c_vector<double, 3> > CurrentBoundary;
@@ -515,7 +515,7 @@ void HemeLBForce<2, 3>::Inlets(c_vector<double, 3> PlaneNormal, c_vector<double,
 
 
 
-void HemeLBForce<2, 3>::WriteOutVtuFile(std::string outputDirectory)
+void HemeLBForce::WriteOutVtuFile(std::string outputDirectory)
 {
 
     VtkMeshWriter<2, 3> mesh_writer(outputDirectory + "HemeLBFluid/", "Chaste", false);
@@ -532,7 +532,7 @@ void HemeLBForce<2, 3>::WriteOutVtuFile(std::string outputDirectory)
 
 
 
-void HemeLBForce<2, 3>::SetHemeLBPath(std::string HemeLBPath)
+void HemeLBForce::SetHemeLBPath(std::string HemeLBPath)
 {
 
     std::string mhemelb_setup_exe = "env PYTHONPATH=" + HemeLBPath +"/Tools/setuptool:$PYTHONPATH " + HemeLBPath +"/Tools/setuptool/scripts/hemelb-setup-nogui";
@@ -541,7 +541,7 @@ void HemeLBForce<2, 3>::SetHemeLBPath(std::string HemeLBPath)
 }
 
 
-void HemeLBForce<2, 3>::Writepr2File(std::string outputDirectory, double SimulationDuration)
+void HemeLBForce::Writepr2File(std::string outputDirectory, double SimulationDuration)
 {
 
 // scp linalg/src/UblasCustomFunctions.hpp vascrem@josborne.science.unimelb.edu.au:/home/vascrem/Chaste/linalg/src/UblasCustomFunctions.hpp
@@ -681,7 +681,7 @@ void HemeLBForce<2, 3>::Writepr2File(std::string outputDirectory, double Simulat
 }
 
 
-void HemeLBForce<2, 3>::WriteHemeLBBashScript()
+void HemeLBForce::WriteHemeLBBashScript()
 {
     PRINT_VARIABLE(mMachine)
     if(mMachine =="server")
@@ -730,14 +730,14 @@ void HemeLBForce<2, 3>::WriteHemeLBBashScript()
 
 
 
-void HemeLBForce<2, 3>::SetStartTime(double StartTime)
+void HemeLBForce::SetStartTime(double StartTime)
 {
     mStartTime = StartTime;
     // TRACE("Here the start time is set") -- This was fine
 }
 
 
-double HemeLBForce<2, 3>::GetStartTime()
+double HemeLBForce::GetStartTime()
 {
     return mStartTime;
 }
@@ -745,7 +745,7 @@ double HemeLBForce<2, 3>::GetStartTime()
 
 
 
-void HemeLBForce<2, 3>::SetUpFilePaths(std::string outputDirectory, bool CreateFiles, bool RenamePriorResults)
+void HemeLBForce::SetUpFilePaths(std::string outputDirectory, bool CreateFiles, bool RenamePriorResults)
 {
     int SystemOutput;
     assert(3 == 3);
@@ -819,7 +819,7 @@ void HemeLBForce<2, 3>::SetUpFilePaths(std::string outputDirectory, bool CreateF
 
 
 template<unsigned 2, unsigned 3>
-void HemeLBForce<2, 3>::LoadTractionFromFile()
+void HemeLBForce::LoadTractionFromFile()
 {
 
     TRACE("LoadTractionFromFile")
@@ -972,7 +972,7 @@ void HemeLBForce<2, 3>::LoadTractionFromFile()
 
 
 template<unsigned 2, unsigned 3>
-void HemeLBForce<2, 3>::Network(std::string Network)
+void HemeLBForce::Network(std::string Network)
 {
     mNetwork = Network;
     if (Network == "Honeycomb" || Network == "Honycomb"||Network == "Honey" ||Network == "H" )
@@ -991,7 +991,7 @@ void HemeLBForce<2, 3>::Network(std::string Network)
 }
 
 template<unsigned 2, unsigned 3>
-void HemeLBForce<2, 3>::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
+void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 {
 	
     double MaximumShearStress = 0;
@@ -1112,7 +1112,7 @@ void HemeLBForce<2, 3>::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulat
 
 
 
-void  HemeLBForce<2, 3>::SetCenterlinesNumber(double CenterlinesNumber)
+void  HemeLBForce::SetCenterlinesNumber(double CenterlinesNumber)
 {
     mCenterlinesNumber = CenterlinesNumber;
 }
@@ -1120,14 +1120,14 @@ void  HemeLBForce<2, 3>::SetCenterlinesNumber(double CenterlinesNumber)
 
 
 
-void  HemeLBForce<2, 3>::CopyFile(std::string InputDirectory, std::string OutputDirectory)
+void  HemeLBForce::CopyFile(std::string InputDirectory, std::string OutputDirectory)
 {
   boost::filesystem::copy_file(InputDirectory.c_str(), OutputDirectory.c_str()); // This was changed so the code could work on linux and mac
 }
 
 
 
-void  HemeLBForce<2, 3>::UpdateCurrentyFlowVtuCount()
+void  HemeLBForce::UpdateCurrentyFlowVtuCount()
 {
         ifstream inFile;
         inFile.open(mHemeLB_output + "CurrentLastFluidOutput.txt");
@@ -1139,7 +1139,7 @@ void  HemeLBForce<2, 3>::UpdateCurrentyFlowVtuCount()
 
 
 
-bool HemeLBForce<2, 3>::CheckIfSteadyStateAchieved()
+bool HemeLBForce::CheckIfSteadyStateAchieved()
 {
 
     /* Check if steady state was ever achieved by HemeLB*/
@@ -1178,7 +1178,7 @@ bool HemeLBForce<2, 3>::CheckIfSteadyStateAchieved()
 }
 
 
-std::pair<std::string, int> HemeLBForce<2, 3>::exec(const char* cmd)
+std::pair<std::string, int> HemeLBForce::exec(const char* cmd)
 {
     std::array<char, 128> buffer;
     std::string result;
@@ -1199,7 +1199,7 @@ std::pair<std::string, int> HemeLBForce<2, 3>::exec(const char* cmd)
 
 
 
-std::string HemeLBForce<2, 3>::double_to_string(double Number, long double precision)
+std::string HemeLBForce::double_to_string(double Number, long double precision)
 {
 
     std::string NumberString = std::to_string(Number);
@@ -1217,7 +1217,7 @@ std::string HemeLBForce<2, 3>::double_to_string(double Number, long double preci
 
 
 
-void HemeLBForce<2, 3>::OutputForceParameters(out_stream& rParamsFile)
+void HemeLBForce::OutputForceParameters(out_stream& rParamsFile)
 {
     // No parameters to include
 
@@ -1227,7 +1227,7 @@ void HemeLBForce<2, 3>::OutputForceParameters(out_stream& rParamsFile)
 
 
 
-void HemeLBForce<2, 3>::SetMachine(std::string Machine)
+void HemeLBForce::SetMachine(std::string Machine)
 {
     assert( Machine == "mac" || Machine == "server");
     mMachine = Machine;
@@ -1235,7 +1235,7 @@ void HemeLBForce<2, 3>::SetMachine(std::string Machine)
 
 
 
-void HemeLBForce<2, 3>::SetGenerateFlowVtus(bool FlowVtus)
+void HemeLBForce::SetGenerateFlowVtus(bool FlowVtus)
 {
 
     bool mFlowVtus = FlowVtus;
@@ -1245,7 +1245,7 @@ void HemeLBForce<2, 3>::SetGenerateFlowVtus(bool FlowVtus)
 /////////////////////////////////////////////////////////////////////////////
 // Explicit instantiation
 /////////////////////////////////////////////////////////////////////////////
-// template class HemeLBForce<2, 3>;
+// template class HemeLBForce;
 
 // // Serialization for Boost >= 1.36
 // #include "SerializationExportWrapperForCpp.hpp"
@@ -1339,7 +1339,7 @@ CHASTE_CLASS_EXPORT(HemeLBForce)
 
 
 // template<unsigned 2, unsigned 3>
-// void HemeLBForce<2, 3>::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
+// void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
 // {
 	
 // 	assert(3==3); // Currently assumes that 3 = 3
