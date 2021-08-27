@@ -82,34 +82,34 @@ private:
     {
         archive & boost::serialization::base_object<AbstractForce<ELEMENT_DIM, SPACE_DIM> >(*this);
 
-        archive& mExecuteHemeLBCounter;
-        archive& mTriggerHemeLB;
-        archive& mResultsDirectory;
-        archive& mRemoveResultsDirectory;
-        // archive& mForceMap;
-        // archive& mAppliedTractions;//
-        // archive& mAppliedTangentTractions;//
-        // archive& mAppliedPosition;//
-        // archive& mAppliedPressure;//
+        // archive& mExecuteHemeLBCounter;
+        // archive& mTriggerHemeLB;
+        // archive& mResultsDirectory;
+        // archive& mRemoveResultsDirectory;
+        // // archive& mForceMap;
+        // // archive& mAppliedTractions;//
+        // // archive& mAppliedTangentTractions;//
+        // // archive& mAppliedPosition;//
+        // // archive& mAppliedPressure;//
 
-        archive& mNetwork;
-        archive& mMinSS; 
-        archive& mMaxSS; 
-        archive& mRegionOfForceCollection;
+        // archive& mNetwork;
+        // archive& mMinSS; 
+        // archive& mMaxSS; 
+        // archive& mRegionOfForceCollection;
 
-        // archive& mIolets;  //
-        // archive& mPressure;
-        archive& mEstimatedIC;
-        archive& mExpectedVelocity;
-        archive& mType;
-        archive& mHemeLBScalling;
-        archive& mChasteOutputDirectory;
-        archive& mOutputDirectory;
-        archive& mHemeLBDirectory;
-        archive& mHemeLB_output;
-        archive& mhemelb_setup_exe;
-        archive& mHemeLBPath ;
-        archive& mFlowVtus;
+        // // archive& mIolets;  //
+        // // archive& mPressure;
+        // archive& mEstimatedIC;
+        // archive& mExpectedVelocity;
+        // archive& mType;
+        // archive& mHemeLBScalling;
+        // archive& mChasteOutputDirectory;
+        // archive& mOutputDirectory;
+        // archive& mHemeLBDirectory;
+        // archive& mHemeLB_output;
+        // archive& mhemelb_setup_exe;
+        // archive& mHemeLBPath ;
+        // archive& mFlowVtus;
 
         archive& mMachine;
         archive& mStartTime;
