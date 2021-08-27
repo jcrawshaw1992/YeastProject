@@ -15,8 +15,9 @@ import os.path
 from os import path
 
 if __name__=="__main__":
- 
-    OldFolder = "/data/vascrem/testoutput/FSISimulations/VascularNetworkFine/GrowingToEqui/ConstantForceArchiving/"
+
+    OldFolder = "/data/vascrem/testoutput/FSISimulations/VascularNetworkLargerBendingForce/HemeLBEqui/ConstantForceArchiving/"
+                                        #  "FSISimulations/VascularNetworkLargerBendingForce/HemeLBEqui/ConstantForceArchiving/";
     NewFolder = OldFolder+"CollectedResults/"
     if path.exists(NewFolder) ==0:
         os.mkdir(NewFolder)
@@ -25,7 +26,7 @@ if __name__=="__main__":
         os.mkdir(NewMeshFolder)
   
 
-    Simulations = np.arange(0, 66,5)
+    Simulations = np.arange(20, 71,5)
     # results.viznodes
 
     # Results

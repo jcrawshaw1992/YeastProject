@@ -178,6 +178,6 @@ if __name__=="__main__":
 
 # #  cd  ~/Documents/CGAL-5.0.2/examples/Polygon_mesh_processing/;
 
-# # ./isotropic_remeshing_ForChaste -input /Volumes/Hardrive/Projects/MeshCollection/VascularNetworks/Network/ClippedNetwork.off -output /Volumes/Hardrive/Projects/MeshCollection/VascularNetworks/Network/Remeshed.off -target_edge_length 10 -iterations 500
+# # ./isotropic_remeshing_ForChaste -input /Volumes/Hardrive/Projects/MeshCollection/VascularNetworks/Network/ClippedNetwork.off -output /Volumes/Hardrive/Projects/MeshCollection/VascularNetworks/Network/Remeshed.off -target_edge_length 1000 -iterations 5
 
 # ./isotropic_remeshing_ForChaste -input /Volumes/Hardrive/Projects/MeshCollection/Plexus/Mesh.off -output /Volumes/Hardrive/Projects/MeshCollection/Plexus/Remesh.off -target_edge_length 5 -iterations 5

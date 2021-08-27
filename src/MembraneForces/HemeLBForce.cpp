@@ -689,7 +689,7 @@ void HemeLBForce<ELEMENT_DIM, SPACE_DIM>::WriteHemeLBBashScript()
     {
             // Need to write bash scrip .... issue here 
             TRACE("Have set to 20 cores, will decrease later")
-            int Cores =31;
+            int Cores =21;
             ofstream bash_script;
 
             std::string BashFile =  mChasteOutputDirectory + mOutputDirectory + "RunHemeLB";
