@@ -1030,13 +1030,10 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
                 counter+=1;
 			}
 		}
-        shear_stress/=counter;
-        double WallShearStress = norm_2(shear_stress);
-
-
+        // shear_stress/=counter;
         // PRINT_3_VARIABLES(shear_stress, counter,WallShearStress)
         // PRINT_3_VARIABLES(shear_stress[0], shear_stress[1],shear_stress[2])
-        double WallShearStress2 = sqrt(shear_stress[0]*shear_stress[0]+shear_stress[1]*shear_stress[1]+shear_stress[2]*shear_stress[2]);
+        double WallShearStress2 = sqrt(shear_stress[0]*shear_stress[0]+shear_stress[1]*shear_stress[1]+shear_stress[2]*shear_stress[2])/counter;
 
 
            if (mCenterlinesNumber <=1)
