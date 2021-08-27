@@ -1016,8 +1016,6 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
         c_vector<float,3> shear_stress = Create_c_vector(0,0,0);
 		for (unsigned fluid_site_index = 0; fluid_site_index <  mAppliedPosition.size(); fluid_site_index++)
 		{
-			// Find the closest fluid site 
-            //  TRACE("F")
 			double distance = std::abs(norm_2(location - mAppliedPosition[fluid_site_index]*1e3));
 			if (distance < distance_to_fluid_site)
 			{
@@ -1030,9 +1028,6 @@ void HemeLBForce::UpdateCellData(AbstractCellPopulation<2,3>& rCellPopulation)
                 counter+=1;
 			}
 		}
-        shear_stress/=counter;
-        // PRINT_3_VARIABLES(shear_stress, counter,WallShearStress)
-        // PRINT_3_VARIABLES(shear_stress[0], shear_stress[1],shear_stress[2])
         double WallShearStress = sqrt(shear_stress[0]*shear_stress[0]+shear_stress[1]*shear_stress[1]+shear_stress[2]*shear_stress[2])/counter;
         
         if (counter == 0)
