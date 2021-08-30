@@ -77,6 +77,11 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::SetupSolve(Ab
         }
         mSetUpSolve = 0;
     }
+
+    if (mCollapseType ==2)
+    {
+      StepChange(rCellPopulation);
+    }
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
@@ -466,22 +471,24 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
 	*/
     TRACE("VARIABLE CHANGE!!!!")
     CellPtr p_Sample_Basement_cell = rCellPopulation.GetCellUsingLocationIndex(mSamplebasementNode);
-    double Step_Kbs = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus") + mStepSize;
-    double Step_Kba = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus") + mStepSize; // 1e-15;
-    double Step_KbA = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant") + mStepSize; // 1e-12;
+    if (mCollapseType == 1)
+    {
 
-    TRACE("Doing A step Change")
-    double K_ShearMod = mGrowthMaps[0](2);
-    double K_AreaDilationMod = mGrowthMaps[0](1);
-    double K_AreaMod = mGrowthMaps[0](0);
+            double Step_Kbs = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus") + mStepSize;
+            double Step_Kba = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus") + mStepSize; // 1e-15;
+            double Step_KbA = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant") + mStepSize; // 1e-12;
 
-    K_ShearMod = std::min((double)Step_Kbs, K_ShearMod);
-    K_AreaDilationMod = std::min((double)Step_Kba, K_AreaDilationMod);
-    K_AreaMod = std::min((double)Step_KbA, K_AreaMod);
+            TRACE("Doing A step Change")
+            double K_ShearMod = mGrowthMaps[0](2);
+            double K_AreaDilationMod = mGrowthMaps[0](1);
+            double K_AreaMod = mGrowthMaps[0](0);
 
-    mStepSize *= 1.05;
-     if (mCollapseType == 1)
-            {
+            K_ShearMod = std::min((double)Step_Kbs, K_ShearMod);
+            K_AreaDilationMod = std::min((double)Step_Kba, K_AreaDilationMod);
+            K_AreaMod = std::min((double)Step_KbA, K_AreaMod);
+
+            mStepSize *= 1.05;
+
 
             for (unsigned i = 0; i < mBoundaries.size(); i++)
             {
@@ -494,7 +501,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
                     cell_iter->GetCellData()->SetItem("AreaConstant", K_AreaMod);
                 }
             }
-         }
+    }
 
     //////////////
     HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<ELEMENT_DIM, SPACE_DIM>*>(&rCellPopulation);
@@ -512,7 +519,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
         CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(node_index2);
         CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex(node_index3);
         //
-        if (AdaptedElementRecorder[elem_index] < 1)
+        if (AdaptedElementRecorder[elem_index] < 3)
         {
             if (mCollapseType == 1)
             {

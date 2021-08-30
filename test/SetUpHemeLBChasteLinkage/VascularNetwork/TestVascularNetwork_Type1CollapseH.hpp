@@ -216,7 +216,7 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetPrintRemeshedIC(1);
 
-    // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+    static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
 
         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
         p_simulator->SetDt(dt);
@@ -252,11 +252,11 @@ public:
 
         //       // Thirdcollapse option 
         // // Upstream 
-        // c_vector<double, 3> UpperPlanePoint =  Create_c_vector( 0.15429402927086544, 0.179490164745615,0 ); 
-        // c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0.7229590897477705, -0.6905862771818618,0);  
-        // // Down stream
-        // c_vector<double, 3> LowerPlanePoint = Create_c_vector( 0.16827330952059658, 0.16613685161594424,0); 
-        // c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(0.7229590897477705, -0.6905862771818618,0 ); 
+        UpperPlanePoint =  Create_c_vector( 0.1682021165089261,0.16620405098655894 ,0 ); 
+        UpperPlaneNormal = Create_c_vector(-0.723661565982717, 0.689,0);  
+        // Down stream
+        LowerPlanePoint = Create_c_vector( 0.15463541648755397,0.17913604629657606,0 ); 
+        LowerPlaneNormal = -Create_c_vector(-0.723661565982717, 0.689,0); 
 
 
         boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
