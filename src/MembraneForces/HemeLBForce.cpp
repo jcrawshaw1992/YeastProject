@@ -24,8 +24,8 @@ HemeLBForce::~HemeLBForce()
 void HemeLBForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
     double P_tissue = 0.001466542;
-    PRINT_VARIABLE(mCollapseType)
-    assert(2 ==2); assert(3 ==3);
+    // PRINT_VARIABLE(mCollapseType)
+    
     HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
     // PRINT_2_VARIABLES(mExecuteHemeLBCounter, mTriggerHemeLB)
     if (mExecuteHemeLBCounter == mTriggerHemeLB)

@@ -246,9 +246,9 @@ public:
         // c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(0.870408755948827, -0.47734167113341636, 0 ); 
   
         // p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-        // p_Mesh_modifier->SetRadius(0.015);
+        p_Mesh_modifier->SetRadius(0.015);
         // p_Mesh_modifier->TurnOffRemeshing();
-        // p_Mesh_modifier->SetUpdateFrequency(1/dt);
+        p_Mesh_modifier->SetUpdateFrequency(1/dt);
 
     
         /*

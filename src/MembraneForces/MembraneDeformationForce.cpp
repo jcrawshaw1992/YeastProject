@@ -24,7 +24,8 @@ void MembraneDeformationForce::SetCollapseType(double CollapseType)
 void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
     HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
-    PRINT_VARIABLE(mCollapseType)
+   
+   
     std::map<unsigned, c_vector<double, 3> > MembraneForceMap;
     for (AbstractCellPopulation<2, 3>::Iterator cell_iter = rCellPopulation.Begin();
         cell_iter != rCellPopulation.End();

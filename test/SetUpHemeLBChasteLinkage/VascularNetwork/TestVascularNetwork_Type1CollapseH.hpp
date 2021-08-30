@@ -195,11 +195,11 @@ public:
         double EndTime = 88;
         double scale = 0.0011; 
 
-        double SamplingStep = 25;
+        double SamplingStep = 1;
         double dt = 0.001;
         double RemeshingTime = 100;
         double FSI_Iterations =50;// 50;
-        double EdgeLength =1.1*scale;
+        double EdgeLength =0.9*scale;
         
         /////////////////////////////////////////////////////////////////////////////////////
         //  std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/GrowingToEqui/ConstantForceArchiving/";//
@@ -215,6 +215,8 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetChasteOutputDirectory(output_dir, EndTime);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetPrintRemeshedIC(1);
+
+    // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
 
         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
         p_simulator->SetDt(dt);
@@ -232,21 +234,39 @@ public:
         p_Mesh_modifier->SetMembranePropeties(GrowthMaps, 1);
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); // 
         p_Mesh_modifier->SetStepSize(pow(10, -8));
-        p_Mesh_modifier->SetmSetUpSolve(0);
+        p_Mesh_modifier->SetmSetUpSolve(1);
 
 
         // Thirdcollapse option 
         // Upstream 
-        // c_vector<double, 3> UpperPlanePoint =  Create_c_vector( 0.148450771419833, 0.17540001846872066,0 ); 
-        // c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0.6681809321405496, -0.7397789537602159, 0);  
-        // // Down stream
-        // c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.16467321416038386, 0.1592262610683606,0 ); 
-        // c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(0.870408755948827, -0.47734167113341636, 0 ); 
+        c_vector<double, 3> UpperPlanePoint =  Create_c_vector( 0.148450771419833, 0.17540001846872066,0 ); 
+        c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0.6681809321405496, -0.7397789537602159, 0);  
+        // Down stream
+        c_vector<double, 3> LowerPlanePoint = Create_c_vector(0.16467321416038386, 0.1592262610683606,0 ); 
+        c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(0.870408755948827, -0.47734167113341636, 0 ); 
   
-        // p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
-        // p_Mesh_modifier->SetRadius(0.015);
-        // p_Mesh_modifier->TurnOffRemeshing();
-        // p_Mesh_modifier->SetUpdateFrequency(1/dt);
+        p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
+        p_Mesh_modifier->SetRadius(0.015);
+        p_Mesh_modifier->TurnOffRemeshing();
+        p_Mesh_modifier->SetUpdateFrequency(1/dt);
+
+        //       // Thirdcollapse option 
+        // // Upstream 
+        // c_vector<double, 3> UpperPlanePoint =  Create_c_vector( 0.15429402927086544, 0.179490164745615,0 ); 
+        // c_vector<double, 3> UpperPlaneNormal = Create_c_vector(0.7229590897477705, -0.6905862771818618,0);  
+        // // Down stream
+        // c_vector<double, 3> LowerPlanePoint = Create_c_vector( 0.16827330952059658, 0.16613685161594424,0); 
+        // c_vector<double, 3> LowerPlaneNormal = -Create_c_vector(0.7229590897477705, -0.6905862771818618,0 ); 
+
+
+        boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
+
+        p_condition->SetPointOnPlane2( LowerPlanePoint);
+        p_condition->SetNormalToPlane2(-LowerPlaneNormal);
+        p_simulator->AddCellPopulationBoundaryCondition(p_condition);
+       
+
+
 
     
         /*

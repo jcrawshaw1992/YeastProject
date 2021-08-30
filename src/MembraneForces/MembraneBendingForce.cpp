@@ -115,7 +115,7 @@ void MembraneBendingForce::SetCollapseType(double CollapseType)
 
 void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCellPopulation)
 {
-    PRINT_VARIABLE(mCollapseType)
+    // PRINT_VARIABLE(mCollapseType)
     HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
 
 
