@@ -195,7 +195,7 @@ public:
         double EndTime = 88;
         double scale = 0.0011; 
 
-        double SamplingStep = 1;
+        double SamplingStep = 100;
         double dt = 0.001;
         double RemeshingTime = 100;
         double FSI_Iterations =50;// 50;
@@ -216,7 +216,13 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingEdgeLength(EdgeLength);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetPrintRemeshedIC(1);
 
-    static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRelativePath(output_dir, EndTime);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetBinningIntervals(15, 10, 1);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).EdgeLengthVariable(1);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingIterations(15);
+
+        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+
 
         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
         p_simulator->SetDt(dt);
@@ -259,7 +265,7 @@ public:
         LowerPlaneNormal = -Create_c_vector(-0.723661565982717, 0.689,0); 
 
 
-        boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , UpperPlanePoint, UpperPlaneNormal, 0.01)); //0.01));
+        boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , UpperPlanePoint, UpperPlaneNormal, 0.018)); //0.01));
 
         p_condition->SetPointOnPlane2( LowerPlanePoint);
         p_condition->SetNormalToPlane2(-LowerPlaneNormal);
@@ -315,7 +321,7 @@ public:
         p_ForceOut->Network("VascularNetwork");
         p_ForceOut->SetCollapseType(2);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),1);
         p_simulator->AddForce(p_ForceOut);
 
 

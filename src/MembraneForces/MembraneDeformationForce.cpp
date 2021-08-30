@@ -235,7 +235,7 @@ void MembraneDeformationForce::AddForceContribution(AbstractCellPopulation<2, 3>
         pNode2->AddAppliedForceContribution(ForceOnNode[2]);
 
     }
-    else if ( mCollapseType == 2 && p_cell0->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell1->GetCellData()->GetItem("FixedBoundary") !=2 && p_cell2->GetCellData()->GetItem("FixedBoundary") !=2)
+    else if ( mCollapseType == 2 && (p_cell0->GetCellData()->GetItem("FixedBoundary") !=2 ||  p_cell1->GetCellData()->GetItem("FixedBoundary") !=2 ||  p_cell2->GetCellData()->GetItem("FixedBoundary") !=2))
     {
     // if(!(p_cell0->GetMutationState()->IsType<EmptyBasementMatrix>()) &&  !(p_cell1->GetMutationState()->IsType<EmptyBasementMatrix>())   && !(p_cell2->GetMutationState()->IsType<EmptyBasementMatrix>()) )
     // {
