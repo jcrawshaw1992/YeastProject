@@ -519,7 +519,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
         CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(node_index2);
         CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex(node_index3);
         //
-        if (AdaptedElementRecorder[elem_index] < 4)
+        if (AdaptedElementRecorder[elem_index] < 2)
         {
             if (mCollapseType == 1)
             {
@@ -535,7 +535,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
 
                 if (p_cell1->GetCellData()->GetItem("WallShearStressExtremes") == -1 || p_cell2->GetCellData()->GetItem("WallShearStressExtremes") == -1 || p_cell3->GetCellData()->GetItem("WallShearStressExtremes") == -1)
                 {
-                    AdaptHeteroRegion(p_cell_population, elem_index, 2);
+                    AdaptHeteroRegion(p_cell_population, elem_index, 5);
                     AdaptedElementRecorder[elem_index] += 1;
                     // TRACE("New intiial conditions")
                 }
@@ -543,8 +543,8 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
         }
     }
 
-    if (mCollapseType == 2)
-    {
+    // if (mCollapseType == 2)
+    // {
         double ShearModulus = p_Sample_Basement_cell->GetCellData()->GetItem("ShearModulus");
         double AreaDilationModulus = p_Sample_Basement_cell->GetCellData()->GetItem("AreaDilationModulus");
         double AreaConstant = p_Sample_Basement_cell->GetCellData()->GetItem("AreaConstant");
@@ -584,7 +584,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
                 }
             }
         }
-    }
+    // }
 }
 
 template <unsigned ELEMENT_DIM, unsigned SPACE_DIM>
