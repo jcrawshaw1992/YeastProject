@@ -24,6 +24,7 @@ HemeLBForce::~HemeLBForce()
 void HemeLBForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopulation)
 {
     double P_tissue = 0.001466542;
+    PRINT_VARIABLE(mCollapseType)
     assert(2 ==2); assert(3 ==3);
     HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
     // PRINT_2_VARIABLES(mExecuteHemeLBCounter, mTriggerHemeLB)
@@ -36,9 +37,9 @@ void HemeLBForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopula
 
         // WriteOutVtuFile(mOutputDirectory);
 
-        // /* Run HemeLB */
+        /* Run HemeLB */
         ExecuteHemeLB();
-        // /* Get the traction  */
+        /* Get the traction  */
         LoadTractionFromFile();
         UpdateCellData(rCellPopulation);
         mExecuteHemeLBCounter = 0;
@@ -122,9 +123,7 @@ void HemeLBForce::AddForceContribution(AbstractCellPopulation<2, 3>& rCellPopula
             c_vector<long double,3> TissueForce = P_tissue * NormalVector; 
             c_vector<long double,3> Force =  (Pressure - P_tissue)* NormalVector; //                 HemeLBForce -TissueForce;
             pNode->AddAppliedForceContribution(Force); 
-        }
-
-       
+        }   
     }
 
 

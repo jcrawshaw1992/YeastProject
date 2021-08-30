@@ -115,6 +115,7 @@ void MembraneBendingForce::SetCollapseType(double CollapseType)
 
 void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCellPopulation)
 {
+    PRINT_VARIABLE(mCollapseType)
     HistoryDepMeshBasedCellPopulation<2, 3>* p_cell_population = static_cast<HistoryDepMeshBasedCellPopulation<2, 3>*>(&rCellPopulation);
 
 
@@ -149,11 +150,8 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         {
             continue;
         }
-
         Node<3>* pNode2 = otherNodes.first;
         Node<3>* pNode4 = otherNodes.second;
-
-
         unsigned node_index1 = pNode1->GetIndex();
         unsigned node_index2 = pNode2->GetIndex();
         unsigned node_index3 = pNode3->GetIndex();
@@ -167,9 +165,9 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         CellPtr p_cell4 = p_cell_population->GetCellUsingLocationIndex(node_index4);  //MembraneStiffness += p_cell4->GetCellData()->GetItem("BendingConstant");
  
     if (  mCollapseType == 2 &&  p_cell3->GetCellData()->GetItem("FixedBoundary") ==2 && p_cell1->GetCellData()->GetItem("FixedBoundary") ==2 && p_cell2->GetCellData()->GetItem("FixedBoundary") ==2 && p_cell4->GetCellData()->GetItem("FixedBoundary") ==2)
-      {
-    //  if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix> () && p_cell2->GetMutationState()->IsType<EmptyBasementMatrix> ()  && p_cell3->GetMutationState()->IsType<EmptyBasementMatrix> () && p_cell4->GetMutationState()->IsType<EmptyBasementMatrix> () )
-    //     {
+       {
+         // if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix> () && p_cell2->GetMutationState()->IsType<EmptyBasementMatrix> ()  && p_cell3->GetMutationState()->IsType<EmptyBasementMatrix> () && p_cell4->GetMutationState()->IsType<EmptyBasementMatrix> () )
+         //  {
             p_cell1->GetCellData()->SetItem("BendingForce", -100);
             p_cell2->GetCellData()->SetItem("BendingForce", -100);
             p_cell3->GetCellData()->SetItem("BendingForce", -100);
@@ -179,137 +177,133 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         }
         else
         { 
-     
+            double  MembraneStiffness = p_cell1->GetCellData()->GetItem("BendingConstant"); 
+            MembraneStiffness += p_cell2->GetCellData()->GetItem("BendingConstant");
+            MembraneStiffness += p_cell3->GetCellData()->GetItem("BendingConstant");
+            MembraneStiffness += p_cell4->GetCellData()->GetItem("BendingConstant"); 
+            MembraneStiffness/=4;
 
-
-
-        double  MembraneStiffness = p_cell1->GetCellData()->GetItem("BendingConstant"); 
-        MembraneStiffness += p_cell2->GetCellData()->GetItem("BendingConstant");
-        MembraneStiffness += p_cell3->GetCellData()->GetItem("BendingConstant");
-        MembraneStiffness += p_cell4->GetCellData()->GetItem("BendingConstant"); 
-        MembraneStiffness/=4;
-
-        c_vector<double, 3> normal_1 = nonUnitNormals.first;
-        double area_1 = 0.5 * norm_2(normal_1);
-        normal_1 /= norm_2(normal_1);
-   
-        c_vector<double, 3> normal_2 = nonUnitNormals.second;
-        double area_2 = 0.5 * norm_2(normal_2);
-        normal_2 /= norm_2(normal_2);
-
- 
-        c_vector<double, 3> projection_21 = normal_2 - inner_prod(normal_1, normal_2) * normal_1;
-        c_vector<double, 3> projection_12 = normal_1 - inner_prod(normal_1, normal_2) * normal_2;
-        if (norm_2(projection_21) >1e-12)// If normals are parallel then orthogonal projections are zero.
-        {
-            projection_21 /= norm_2(projection_21);// Not sure why this is here???? Its not in my calculations in the confirmation
-        }
-        
-        
-        if (norm_2(projection_12) >1e-12)
-        {
-            projection_12 /= norm_2(projection_12);
-        }
-
-        c_vector<double, 3> vector_23 = pNode2->rGetLocation() - pNode3->rGetLocation();
-        c_vector<double, 3> vector_34 = pNode3->rGetLocation() - pNode4->rGetLocation();
-        c_vector<double, 3> node1_contribution = 1 / (2*area_1) * VectorProduct(vector_23, projection_21) +
-                                                 1 / (2*area_2) * VectorProduct(vector_34, projection_12);
-
-        c_vector<double, 3> vector_31 = pNode3->rGetLocation() - pNode1->rGetLocation();
-        c_vector<double, 3> node2_contribution = 1 / (2*area_1) * VectorProduct(vector_31, projection_21);
-
-        c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode2->rGetLocation();
-        c_vector<double, 3> vector_41 = pNode4->rGetLocation() - pNode1->rGetLocation();
-        c_vector<double, 3> node3_contribution = 1 / (2*area_1) * VectorProduct(vector_12, projection_21) +
-                                                 1 / (2*area_2) * VectorProduct(vector_41, projection_12);
-
-        c_vector<double, 3> vector_13 = pNode1->rGetLocation() - pNode3->rGetLocation();
-        c_vector<double, 3> node4_contribution = 1 / (2*area_2) * VectorProduct(vector_13, projection_12);
-
-        double OriginalAngle = p_cell_population->GetOriginalAngle(edge);
-        assert(OriginalAngle != DOUBLE_UNSET);
-        double CurrentAngle = acos(inner_prod(normal_1, normal_2));
-        
-        
-        double force_coefficient = MembraneStiffness * (acos(inner_prod(normal_1, normal_2)) - OriginalAngle);
-        double AngleDiff = (acos(inner_prod(normal_1, normal_2)) - OriginalAngle);
+            c_vector<double, 3> normal_1 = nonUnitNormals.first;
+            double area_1 = 0.5 * norm_2(normal_1);
+            normal_1 /= norm_2(normal_1);
     
-        // PRINT_3_VARIABLES(AngleDiff, force_coefficient,MembraneStiffness );
-        // force_coefficient  /=sqrt(1-inner_prod(normal_1, normal_2)*inner_prod(normal_1, normal_2));
+            c_vector<double, 3> normal_2 = nonUnitNormals.second;
+            double area_2 = 0.5 * norm_2(normal_2);
+            normal_2 /= norm_2(normal_2);
 
+    
+            c_vector<double, 3> projection_21 = normal_2 - inner_prod(normal_1, normal_2) * normal_1;
+            c_vector<double, 3> projection_12 = normal_1 - inner_prod(normal_1, normal_2) * normal_2;
+            if (norm_2(projection_21) >1e-12)// If normals are parallel then orthogonal projections are zero.
+            {
+                projection_21 /= norm_2(projection_21);// Not sure why this is here???? Its not in my calculations in the confirmation
+            }
+            
+            
+            if (norm_2(projection_12) >1e-12)
+            {
+                projection_12 /= norm_2(projection_12);
+            }
 
-        node1_contribution *= force_coefficient;///rCellPopulation.GetVolumeOfCell(p_cell2);
-        node2_contribution *= force_coefficient;////rCellPopulation.GetVolumeOfCell(p_cell2);
-        node3_contribution *= force_coefficient;////rCellPopulation.GetVolumeOfCell(p_cell3);
-        node4_contribution *= force_coefficient;////rCellPopulation.GetVolumeOfCell(p_cell4);
+            c_vector<double, 3> vector_23 = pNode2->rGetLocation() - pNode3->rGetLocation();
+            c_vector<double, 3> vector_34 = pNode3->rGetLocation() - pNode4->rGetLocation();
+            c_vector<double, 3> node1_contribution = 1 / (2*area_1) * VectorProduct(vector_23, projection_21) +
+                                                    1 / (2*area_2) * VectorProduct(vector_34, projection_12);
 
+            c_vector<double, 3> vector_31 = pNode3->rGetLocation() - pNode1->rGetLocation();
+            c_vector<double, 3> node2_contribution = 1 / (2*area_1) * VectorProduct(vector_31, projection_21);
 
-        // if (norm_2(node1_contribution)>1 || norm_2(node2_contribution)>1 ||norm_2(node3_contribution)>1 || norm_2(node4_contribution)>1  )
-        // {
-        //      PRINT_4_VARIABLES(norm_2(node1_contribution), norm_2(node2_contribution), norm_2(node3_contribution) , norm_2(node4_contribution))
-        // }
+            c_vector<double, 3> vector_12 = pNode1->rGetLocation() - pNode2->rGetLocation();
+            c_vector<double, 3> vector_41 = pNode4->rGetLocation() - pNode1->rGetLocation();
+            c_vector<double, 3> node3_contribution = 1 / (2*area_1) * VectorProduct(vector_12, projection_21) +
+                                                    1 / (2*area_2) * VectorProduct(vector_41, projection_12);
 
-        double Boundary1 = p_cell1->GetCellData()->GetItem("Boundary"); double Boundary2 = p_cell2->GetCellData()->GetItem("Boundary");
-        double Boundary3 = p_cell3->GetCellData()->GetItem("Boundary"); double Boundary4 = p_cell4->GetCellData()->GetItem("Boundary");
-        // Add the force contribution to each node
-   
-        double LastNodeContribution = p_cell1->GetCellData()->GetItem("BendingForce");
-        p_cell1->GetCellData()->SetItem("BendingForce", LastNodeContribution + norm_2(node1_contribution));
-        LastNodeContribution = p_cell2->GetCellData()->GetItem("BendingForce");
-        p_cell2->GetCellData()->SetItem("BendingForce", LastNodeContribution + norm_2(node2_contribution));
-        LastNodeContribution = p_cell3->GetCellData()->GetItem("BendingForce");
-        p_cell3->GetCellData()->SetItem("BendingForce", LastNodeContribution + norm_2(node3_contribution));
-        LastNodeContribution = p_cell4->GetCellData()->GetItem("BendingForce");
-        p_cell4->GetCellData()->SetItem("BendingForce", LastNodeContribution + norm_2(node4_contribution));
+            c_vector<double, 3> vector_13 = pNode1->rGetLocation() - pNode3->rGetLocation();
+            c_vector<double, 3> node4_contribution = 1 / (2*area_2) * VectorProduct(vector_13, projection_12);
 
-
-        if (norm_2(node1_contribution)>0.1|| norm_2(node2_contribution)>0.1||norm_2(node3_contribution)>0.1|| norm_2(node4_contribution)>0.1 )
-        {
-            // PRINT_VECTOR(node1_contribution);
-            // PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
+            double OriginalAngle = p_cell_population->GetOriginalAngle(edge);
+            assert(OriginalAngle != DOUBLE_UNSET);
+            double CurrentAngle = acos(inner_prod(normal_1, normal_2));
+            
+            
+            double force_coefficient = MembraneStiffness * (acos(inner_prod(normal_1, normal_2)) - OriginalAngle);
+            double AngleDiff = (acos(inner_prod(normal_1, normal_2)) - OriginalAngle);
         
-            // PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
-                node1_contribution =Create_c_vector(0,0,0);
-                node2_contribution= Create_c_vector(0,0,0);
-                node3_contribution= Create_c_vector(0,0,0);
-                node4_contribution= Create_c_vector(0,0,0);
-                p_cell1->GetCellData()->SetItem("BendingForce", -100);
-                p_cell2->GetCellData()->SetItem("BendingForce", -100);
-                p_cell3->GetCellData()->SetItem("BendingForce", -100);
-                p_cell4->GetCellData()->SetItem("BendingForce", -100);
+            // PRINT_3_VARIABLES(AngleDiff, force_coefficient,MembraneStiffness );
+            // force_coefficient  /=sqrt(1-inner_prod(normal_1, normal_2)*inner_prod(normal_1, normal_2));
+
+
+            node1_contribution *= force_coefficient;///rCellPopulation.GetVolumeOfCell(p_cell2);
+            node2_contribution *= force_coefficient;////rCellPopulation.GetVolumeOfCell(p_cell2);
+            node3_contribution *= force_coefficient;////rCellPopulation.GetVolumeOfCell(p_cell3);
+            node4_contribution *= force_coefficient;////rCellPopulation.GetVolumeOfCell(p_cell4);
+
+
+            // if (norm_2(node1_contribution)>1 || norm_2(node2_contribution)>1 ||norm_2(node3_contribution)>1 || norm_2(node4_contribution)>1  )
+            // {
+            //      PRINT_4_VARIABLES(norm_2(node1_contribution), norm_2(node2_contribution), norm_2(node3_contribution) , norm_2(node4_contribution))
+            // }
+
+            double Boundary1 = p_cell1->GetCellData()->GetItem("Boundary"); double Boundary2 = p_cell2->GetCellData()->GetItem("Boundary");
+            double Boundary3 = p_cell3->GetCellData()->GetItem("Boundary"); double Boundary4 = p_cell4->GetCellData()->GetItem("Boundary");
+            // Add the force contribution to each node
+    
+            double LastNodeContribution = p_cell1->GetCellData()->GetItem("BendingForce");
+            p_cell1->GetCellData()->SetItem("BendingForce", LastNodeContribution + norm_2(node1_contribution));
+            LastNodeContribution = p_cell2->GetCellData()->GetItem("BendingForce");
+            p_cell2->GetCellData()->SetItem("BendingForce", LastNodeContribution + norm_2(node2_contribution));
+            LastNodeContribution = p_cell3->GetCellData()->GetItem("BendingForce");
+            p_cell3->GetCellData()->SetItem("BendingForce", LastNodeContribution + norm_2(node3_contribution));
+            LastNodeContribution = p_cell4->GetCellData()->GetItem("BendingForce");
+            p_cell4->GetCellData()->SetItem("BendingForce", LastNodeContribution + norm_2(node4_contribution));
+
+
+            if (norm_2(node1_contribution)>0.1|| norm_2(node2_contribution)>0.1||norm_2(node3_contribution)>0.1|| norm_2(node4_contribution)>0.1 )
+            {
+                // PRINT_VECTOR(node1_contribution);
+                // PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
+            
+                // PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
+                    node1_contribution =Create_c_vector(0,0,0);
+                    node2_contribution= Create_c_vector(0,0,0);
+                    node3_contribution= Create_c_vector(0,0,0);
+                    node4_contribution= Create_c_vector(0,0,0);
+                    p_cell1->GetCellData()->SetItem("BendingForce", -100);
+                    p_cell2->GetCellData()->SetItem("BendingForce", -100);
+                    p_cell3->GetCellData()->SetItem("BendingForce", -100);
+                    p_cell4->GetCellData()->SetItem("BendingForce", -100);
+            }
+
+
+
+
+
+            if (std::isnan(norm_2(node1_contribution)) || std::isnan(norm_2(node2_contribution))  || std::isnan(norm_2(node3_contribution))  || std::isnan(norm_2(node4_contribution)) )
+            {
+                // PRINT_VECTOR(node1_contribution);
+                // PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
+            
+                // PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
+                    node1_contribution =Create_c_vector(0,0,0);
+                    node2_contribution= Create_c_vector(0,0,0);
+                    node3_contribution= Create_c_vector(0,0,0);
+                    node4_contribution= Create_c_vector(0,0,0);
+                    p_cell1->GetCellData()->SetItem("BendingForce", -100);
+                    p_cell2->GetCellData()->SetItem("BendingForce", -100);
+                    p_cell3->GetCellData()->SetItem("BendingForce", -100);
+                    p_cell4->GetCellData()->SetItem("BendingForce", -100);
+            }
+
+            // BendingForceMap[node_index1] += node1_contribution; 
+            // BendingForceMap[node_index2] += node2_contribution; 
+            // BendingForceMap[node_index3] += node3_contribution; 
+            // BendingForceMap[node_index4] += node4_contribution; 
+
+            pNode1->AddAppliedForceContribution(node1_contribution);
+            pNode2->AddAppliedForceContribution(node2_contribution);
+            pNode3->AddAppliedForceContribution(node3_contribution);
+            pNode4->AddAppliedForceContribution(node4_contribution);
         }
-
-
-
-
-
-         if (std::isnan(norm_2(node1_contribution)) || std::isnan(norm_2(node2_contribution))  || std::isnan(norm_2(node3_contribution))  || std::isnan(norm_2(node4_contribution)) )
-        {
-            // PRINT_VECTOR(node1_contribution);
-            // PRINT_2_VARIABLES(force_coefficient,(acos(inner_prod(normal_1, normal_2)) - OriginalAngle));
-        
-            // PRINT_4_VARIABLES(rCellPopulation.GetVolumeOfCell(p_cell1),rCellPopulation.GetVolumeOfCell(p_cell2),rCellPopulation.GetVolumeOfCell(p_cell3),rCellPopulation.GetVolumeOfCell(p_cell4) )
-                node1_contribution =Create_c_vector(0,0,0);
-                node2_contribution= Create_c_vector(0,0,0);
-                node3_contribution= Create_c_vector(0,0,0);
-                node4_contribution= Create_c_vector(0,0,0);
-                p_cell1->GetCellData()->SetItem("BendingForce", -100);
-                p_cell2->GetCellData()->SetItem("BendingForce", -100);
-                p_cell3->GetCellData()->SetItem("BendingForce", -100);
-                p_cell4->GetCellData()->SetItem("BendingForce", -100);
-        }
-
-        // BendingForceMap[node_index1] += node1_contribution; 
-        // BendingForceMap[node_index2] += node2_contribution; 
-        // BendingForceMap[node_index3] += node3_contribution; 
-        // BendingForceMap[node_index4] += node4_contribution; 
-
-        pNode1->AddAppliedForceContribution(node1_contribution);
-        pNode2->AddAppliedForceContribution(node2_contribution);
-        pNode3->AddAppliedForceContribution(node3_contribution);
-        pNode4->AddAppliedForceContribution(node4_contribution);
-    }
     }
 
 
