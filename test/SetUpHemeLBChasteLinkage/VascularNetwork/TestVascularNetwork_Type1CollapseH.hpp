@@ -198,7 +198,7 @@ public:
         double SamplingStep = 100;
         double dt = 0.001;
         double RemeshingTime = 100;
-        double FSI_Iterations =50;// 50;
+        double FSI_Iterations =200;// 50;
         double EdgeLength =0.9*scale;
         
         /////////////////////////////////////////////////////////////////////////////////////
@@ -220,8 +220,7 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetBinningIntervals(15, 10, 1);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).EdgeLengthVariable(1);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingIterations(15);
-
-        // static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
 
 
         p_simulator->SetSamplingTimestepMultiple(SamplingStep);
@@ -270,10 +269,6 @@ public:
         p_condition->SetPointOnPlane2( LowerPlanePoint);
         p_condition->SetNormalToPlane2(-LowerPlaneNormal);
         p_simulator->AddCellPopulationBoundaryCondition(p_condition);
-       
-
-
-
     
         /*
         -----------------------------
