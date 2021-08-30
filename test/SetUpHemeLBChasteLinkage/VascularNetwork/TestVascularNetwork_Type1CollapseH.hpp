@@ -198,13 +198,13 @@ public:
         double SamplingStep = 100;
         double dt = 0.001;
         double RemeshingTime = 100;
-        double FSI_Iterations =200;// 50;
-        double EdgeLength =0.9*scale;
+        double FSI_Iterations =600;// 50;
+        double EdgeLength =1*scale;
         
         /////////////////////////////////////////////////////////////////////////////////////
         //  std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/GrowingToEqui/ConstantForceArchiving/";//
         std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/Type1Collapse/H";
-        std::string output_dir = "FSISimulations/VascularNetworkLargerBendingForce/Type2Collapse/H/";
+        std::string output_dir = "FSISimulations/VascularNetworkLargerBendingForce/Type2Collapse/H2/";
         // this simulaiton is in mm. Have chosen this magnitude because um in m will give me numbers too close to machince presision, and movment
         // in um will be too large and break chaste without carefull playing with or a tiny time step
 
@@ -217,7 +217,7 @@ public:
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetPrintRemeshedIC(1);
 
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetRelativePath(output_dir, EndTime);
-        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetBinningIntervals(15, 10, 1);
+        static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetBinningIntervals(15, 15, 1);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).EdgeLengthVariable(1);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).SetTargetRemeshingIterations(15);
         static_cast<HistoryDepMeshBasedCellPopulation<2, 3>&>(p_simulator->rGetCellPopulation()).ExecuteHistoryDependentRemeshing();
@@ -257,14 +257,14 @@ public:
 
         //       // Thirdcollapse option 
         // // Upstream 
-        UpperPlanePoint =  Create_c_vector( 0.1682021165089261,0.16620405098655894 ,0 ); 
+        UpperPlanePoint =  Create_c_vector( 0.1806278903031336,0.15042901369610012,-0.01855221238759841  ); 
         UpperPlaneNormal = Create_c_vector(-0.723661565982717, 0.689,0);  
         // Down stream
-        LowerPlanePoint = Create_c_vector( 0.15463541648755397,0.17913604629657606,0 ); 
+        LowerPlanePoint = Create_c_vector( 0.13826746923399186, 0.17969815406456002, -0.027811228279944044 ); 
         LowerPlaneNormal = -Create_c_vector(-0.723661565982717, 0.689,0); 
 
 
-        boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , UpperPlanePoint, UpperPlaneNormal, 0.018)); //0.01));
+        boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , UpperPlanePoint, UpperPlaneNormal, 0.03)); //0.01));
 
         p_condition->SetPointOnPlane2( LowerPlanePoint);
         p_condition->SetNormalToPlane2(-LowerPlaneNormal);

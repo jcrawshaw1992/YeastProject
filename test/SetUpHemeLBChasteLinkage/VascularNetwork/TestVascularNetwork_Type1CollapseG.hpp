@@ -251,6 +251,14 @@ public:
         p_Mesh_modifier->SetRadius(0.02);
         p_Mesh_modifier->SetUpdateFrequency(1/dt);
 
+        UpperPlanePoint =  Create_c_vector(0.18453959102715042, 0.13269707634823857,0.0006143718435190634  ); 
+       UpperPlaneNormal = Create_c_vector(-0.5881531315305625, 0.7880259858162569, -0.18190915191135804);  
+        // Down stream
+       LowerPlanePoint = Create_c_vector(0.17723072584178173,0.14229783161759343,-0.001274520415947451  ); 
+       LowerPlaneNormal = -Create_c_vector(-0.6744057981081507, 0.7240472195107869, -0.1446804872704227 );  
+
+
+
         boost::shared_ptr<EnclosedRegionBoundaryCondition<2, 3> > p_condition(new EnclosedRegionBoundaryCondition<2, 3>(&(p_simulator->rGetCellPopulation()) , UpperPlanePoint, UpperPlaneNormal, 0.018)); //0.01));
 
         p_condition->SetPointOnPlane2( LowerPlanePoint);
