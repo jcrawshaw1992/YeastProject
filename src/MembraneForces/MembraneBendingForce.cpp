@@ -164,7 +164,7 @@ void MembraneBendingForce::AddForceContribution(AbstractCellPopulation<2,3>& rCe
         CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex(node_index3); // MembraneStiffness += p_cell3->GetCellData()->GetItem("BendingConstant");
         CellPtr p_cell4 = p_cell_population->GetCellUsingLocationIndex(node_index4);  //MembraneStiffness += p_cell4->GetCellData()->GetItem("BendingConstant");
  
-    if (  mCollapseType == 2 &&  p_cell3->GetCellData()->GetItem("FixedBoundary") ==2 || p_cell1->GetCellData()->GetItem("FixedBoundary") ==2 ||  p_cell2->GetCellData()->GetItem("FixedBoundary") ==2 ||  p_cell4->GetCellData()->GetItem("FixedBoundary") ==2)
+    if (  mCollapseType == 2 &&  p_cell3->GetCellData()->GetItem("FixedBoundary") ==2 && p_cell1->GetCellData()->GetItem("FixedBoundary") ==2 &&p_cell2->GetCellData()->GetItem("FixedBoundary") ==2 &&  p_cell4->GetCellData()->GetItem("FixedBoundary") ==2)
        {
          // if (p_cell1->GetMutationState()->IsType<EmptyBasementMatrix> () && p_cell2->GetMutationState()->IsType<EmptyBasementMatrix> ()  && p_cell3->GetMutationState()->IsType<EmptyBasementMatrix> () && p_cell4->GetMutationState()->IsType<EmptyBasementMatrix> () )
          //  {

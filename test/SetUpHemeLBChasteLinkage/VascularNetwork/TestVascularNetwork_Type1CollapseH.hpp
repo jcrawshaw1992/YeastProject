@@ -205,7 +205,7 @@ public:
         /////////////////////////////////////////////////////////////////////////////////////
         //  std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/GrowingToEqui/ConstantForceArchiving/";//
         std::string Archieved = "FSISimulations/VascularNetworkLargerBendingForce/Type1Collapse/H";
-        std::string output_dir = "FSISimulations/VascularNetworkLargerBendingForce/Type2Collapse/H3/";
+        std::string output_dir = "FSISimulations/VascularNetworkLargerBendingForce/Type2Collapse/H4/";
         // this simulaiton is in mm. Have chosen this magnitude because um in m will give me numbers too close to machince presision, and movment
         // in um will be too large and break chaste without carefull playing with or a tiny time step
 
