@@ -241,6 +241,7 @@ public:
         p_Mesh_modifier->SetRemeshingInterval(RemeshingTime); // 
         p_Mesh_modifier->SetStepSize(pow(10, -8));
         p_Mesh_modifier->SetmSetUpSolve(1);
+        p_Mesh_modifier->SetAdaptedElementRecorder(p_simulator->rGetCellPopulation() );
 
 
         // Thirdcollapse option 
