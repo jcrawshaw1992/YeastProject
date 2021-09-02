@@ -519,7 +519,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
         CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(node_index2);
         CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex(node_index3);
         //
-        PRINT_2_VARIABLES(AdaptedElementRecorder[elem_index],mCollapseType )
+        // PRINT_2_VARIABLES(AdaptedElementRecorder[elem_index],mCollapseType )
         if (AdaptedElementRecorder[elem_index] < 2)
         {
             if (mCollapseType == 1)

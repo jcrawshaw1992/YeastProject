@@ -555,6 +555,7 @@ public:
   
         p_Mesh_modifier->Boundaries( UpperPlaneNormal,  UpperPlanePoint,  LowerPlaneNormal,  LowerPlanePoint);
         p_Mesh_modifier->SetRadius(0.015);
+        p_Mesh_modifier->SetCollapseType(2);
         // p_Mesh_modifier->TurnOffRemeshing();
         p_Mesh_modifier->SetUpdateFrequency(1/dt);
 
