@@ -519,7 +519,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
         CellPtr p_cell2 = p_cell_population->GetCellUsingLocationIndex(node_index2);
         CellPtr p_cell3 = p_cell_population->GetCellUsingLocationIndex(node_index3);
         //
-        if (AdaptedElementRecorder[elem_index] < 2)
+        if (AdaptedElementRecorder[elem_index] < 200)
         {
             if (mCollapseType == 1)
             {
@@ -530,13 +530,13 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
                     // TRACE("New intiial conditions")
                 }
             }
-            else if (mCollapseType == 2)
+            if (mCollapseType == 2)
             {
 
                 if (p_cell1->GetCellData()->GetItem("WallShearStressExtremes") == -1 || p_cell2->GetCellData()->GetItem("WallShearStressExtremes") == -1 || p_cell3->GetCellData()->GetItem("WallShearStressExtremes") == -1)
                 {
                     AdaptHeteroRegion(p_cell_population, elem_index, 5);
-                    AdaptedElementRecorder[elem_index] += 1;
+                    AdaptedElementRecorder[elem_index] += 200;
                     TRACE("New intiial conditions")
                 }
             }
