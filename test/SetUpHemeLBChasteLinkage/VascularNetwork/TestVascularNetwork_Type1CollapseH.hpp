@@ -199,7 +199,7 @@ public:
         double SamplingStep = 100;
         double dt = 0.001;
         double RemeshingTime = 100;
-        double FSI_Iterations =1000;// 50;
+        double FSI_Iterations =5000;// 50;
         double EdgeLength =1*scale;
         
         /////////////////////////////////////////////////////////////////////////////////////
@@ -317,7 +317,7 @@ public:
         p_ForceOut->Network("VascularNetwork");
         p_ForceOut->SetCollapseType(2);
         p_ForceOut->SetFluidSolidIterations(FSI_Iterations);
-        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),1);
+        p_ForceOut->SetUpHemeLBConfiguration(output_dir+"HemeLBForce/", p_simulator->rGetCellPopulation(),0);
         p_simulator->AddForce(p_ForceOut);
 
 

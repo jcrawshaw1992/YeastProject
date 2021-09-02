@@ -537,7 +537,7 @@ void RemeshingTriggerOnStepHeteroModifier<ELEMENT_DIM, SPACE_DIM>::StepChange(Ab
                 {
                     AdaptHeteroRegion(p_cell_population, elem_index, 5);
                     AdaptedElementRecorder[elem_index] += 1;
-                    // TRACE("New intiial conditions")
+                    TRACE("New intiial conditions")
                 }
             }
         }
