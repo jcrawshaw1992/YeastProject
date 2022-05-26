@@ -1,6 +1,0 @@
-#!/bin/bash
-# chmod 700 RunChaste
-echo 'Collect Results'
-python BifucationCharacteristicSingleParameter.py -Shear $1  -input $2 -output $3 >$4
-echo "CollectionComplete"
-exit

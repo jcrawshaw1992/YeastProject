@@ -1,6 +1,0 @@
-#!/bin/bash
-# chmod 700 RunChaste
-$1 > $2
-echo 'Chaste simulation complete' > $3
-echo "Chaste simulation complete"
-exit

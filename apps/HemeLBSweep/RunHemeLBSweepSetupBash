@@ -1,6 +1,0 @@
-#!/bin/bash
-# chmod 700 RunHemeLBSweepSetupBash
-$1
-echo "HemeLB set up complete"
-echo 'HemeLB simulation complete' > $2
-exit

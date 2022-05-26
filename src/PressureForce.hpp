@@ -52,8 +52,22 @@ public:
  * can be easily accessed from the other methods in this class. 
 */
 
- 
+    // Add the forces to the nodes 
     void AddForceContribution(AbstractCellPopulation<2,3>& rCellPopulation);
+    void GetConcentrationProfile(AbstractCellPopulation<2,3>& rCellPopulation);
+    void SetReactionDiffusionResultsFile(std::string mesh_file);
+    void UpdateReactionDiffusionProfile();
+
+
+
+/*
+ * Member variables. 
+*/
+
+
+    std::string mMesh_file=  "projects/YeastProject/reaction_diffusion_deforming_membrane/Output/ReactionDiffusionResults.vtu";
+    std::map mConcentrationAcrossYeast;
+    std::vector<double> mConcentrationVector;
 
      
  

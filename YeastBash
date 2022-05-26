@@ -1,0 +1,20 @@
+#!/bin/bash
+# chmod 700 RunChaste
+echo 'Run reaction diffusion equations'
+conda activate fenicsproject
+meshio -- vtu to xdmf
+directory...  launch_simulations_Schnakenberg_on_the_unit_sphere.py  send in updated mesh in xdmf
+conda deactivate 
+echo 'Simulation complete' > $5
+echo "Simulation complete"
+exit
+
+
+
+To get into enviroment 
+source /home/vascrem/anaconda3/bin/activate
+conda activate fenicsproject
+conda deactivate
+conda deactivate
+
+conda activate gmsh_latest_version
