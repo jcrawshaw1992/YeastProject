@@ -32,6 +32,8 @@
 #include "BetaCateninOneHitCellMutationState.hpp"
 #include "PetscSetupAndFinalize.hpp"
 
+#include <boost/filesystem.hpp>
+
 static const double M_TIME_FOR_SIMULATION = 0.010; //50
 
 class YeastDeformation : public AbstractCellBasedTestSuite
@@ -53,13 +55,35 @@ private:
     }
 
 
-public:
+    public:
 
-void TestBasicYeastDeformation() //throw (Exception)
+    void TestBasicYeastDeformation() //throw (Exception)
     {
+    
+            std::string mOutputDirectory = "/data/vascrem/testoutput/YeastDeformation/FirstIterationTest/";
+           
+            /* 1) Set up conditions for FEM */
+            std::string mesh_file = "/home/vascrem/Chaste/projects/YeastProject/reaction_diffusion_deforming_membrane/Meshes/YeastMesh.vtu";
+            std::string Initial_U = mOutputDirectory+ "Updated_u.xml";
+            std::string Initial_V = mOutputDirectory+ "Updated_u.xml";
 
-            std::string mesh_file = "projects/YeastProject/reaction_diffusion_deforming_membrane/Meshes/YeastMesh.vtu";
-            std::string output_directory = "YeastDeformation/";
+            TRACE(" Step 1: Attain initial concentration profile ")
+            std::string HemeLBCommand =  "cd projects/YeastProject/;./YeastBash ";
+            std::string waitFile = mOutputDirectory + "WaitFile.txt";
+            HemeLBCommand +=mesh_file+" "+Initial_U+" "+Initial_V+" "+mOutputDirectory + " 0 0.01 0.001 0 "+waitFile;
+
+            // int SystemOutput = std::system(HemeLBCommand.c_str()); 
+
+            // while(! boost::filesystem::exists(waitFile))
+            // {
+            //     TRACE("waiting within C")
+            //     sleep(2); 
+            // }
+            // // remove(waitFile.c_str())
+            // boost::filesystem::remove(waitFile.c_str());
+
+        
+            std::string output_directory = "YeastDeformation/FirstIterationTest/";
 
             // This data file is in mm
             VtkMeshReader<2,3> mesh_reader(mesh_file);
@@ -89,9 +113,9 @@ void TestBasicYeastDeformation() //throw (Exception)
             // Set up cell-based simulation
             OffLatticeSimulation<2,3> simulator(cell_population);
             simulator.SetOutputDirectory(output_directory);
-            simulator.SetEndTime(10);
-            simulator.SetDt(0.02);
-            simulator.SetSamplingTimestepMultiple(1);
+            simulator.SetEndTime(100);
+            simulator.SetDt(0.01);
+            simulator.SetSamplingTimestepMultiple(10);
             simulator.SetUpdateCellPopulationRule(false); // No remeshing.
 
             // Create a force law and pass it to the simulation
@@ -99,6 +123,8 @@ void TestBasicYeastDeformation() //throw (Exception)
             boost::shared_ptr<GeneralisedLinearSpringForce<2,3> > p_linear_force(new GeneralisedLinearSpringForce<2,3>());
             p_linear_force->SetMeinekeSpringStiffness(0.010);
             simulator.AddForce(p_linear_force);
+
+            
 
             // Create a force law to apply radial pressure force
             double pressure = 0.01; // to match 80mmhg

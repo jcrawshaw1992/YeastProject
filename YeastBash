@@ -1,20 +1,22 @@
 #!/bin/bash
+chmod 700 YeastBash
 # chmod 700 RunChaste
+# $1 Chaste Mesh# 
+# $2 Initial u 
+# $3 Initial v
+# $4 Output Folder
+# $5 Initial simulation time
+# $6 Simulation end time
+# $7 FEM time steps
+# $8 Trigger Initial simulation 
+# $9 wait file
+source /home/vascrem/anaconda3/bin/activate
 echo 'Run reaction diffusion equations'
 conda activate fenicsproject
-meshio -- vtu to xdmf
-directory...  launch_simulations_Schnakenberg_on_the_unit_sphere.py  send in updated mesh in xdmf
-conda deactivate 
-echo 'Simulation complete' > $5
-echo "Simulation complete"
+# meshio-convert $1 to $2
+python /home/vascrem/Chaste/projects/YeastProject/reaction_diffusion_deforming_membrane/Code/launch_simulations_Schnakenberg_sphere.py --chaste_mesh $1 --u_old $2 --v_old $3 --Output $4 --CurrentTime $5 --SimulationEndTime $6 --TimeStep $7 -InitalSimulation $8
+conda deactivate
+conda deactivate
+echo 'Fenics simulation complete' 
+echo 'Fenics simulation complete' > $9
 exit
-
-
-
-To get into enviroment 
-source /home/vascrem/anaconda3/bin/activate
-conda activate fenicsproject
-conda deactivate
-conda deactivate
-
-conda activate gmsh_latest_version

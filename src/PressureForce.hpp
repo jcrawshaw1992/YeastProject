@@ -11,7 +11,7 @@
 #include "AbstractOffLatticeCellPopulation.hpp"
 #include "VertexBasedCellPopulation.hpp"
 #include "BetaCateninOneHitCellMutationState.hpp"
-
+#include <string.h>
 
 
 /**
@@ -57,17 +57,29 @@ public:
     void GetConcentrationProfile(AbstractCellPopulation<2,3>& rCellPopulation);
     void SetReactionDiffusionResultsFile(std::string mesh_file);
     void UpdateReactionDiffusionProfile();
+    void SetOutputDirectory(std::string outputDirectory);
+    void WriteOutVtuFile(std::string OutputDirectory);
 
 
 
 /*
  * Member variables. 
 */
-
-
-    std::string mMesh_file=  "projects/YeastProject/reaction_diffusion_deforming_membrane/Output/ReactionDiffusionResults.vtu";
-    std::map mConcentrationAcrossYeast;
+    double mLoadPreviousResult = 0;
+    std::string mMesh_file;
+    std::map<int, double >  mConcentrationAcrossYeast;
     std::vector<double> mConcentrationVector;
+    MutableMesh<2, 3> *mMesh;
+    std::string mOutputDirectory;
+
+    double mFRMIterationCounter =50;
+    double mCounter =1;
+
+    double FEMTimeStep = 1e-3;
+    double mCurrentTime = 0;
+    double mCurrentEndTime = 1e-2;
+
+
 
      
  
